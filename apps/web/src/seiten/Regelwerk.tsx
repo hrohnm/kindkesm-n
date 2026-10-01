@@ -67,9 +67,9 @@ export function Regelwerk() {
         </div>
       )}
 
-      <div className="mb-5 flex gap-1 overflow-x-auto border-b border-sand-200 dark:border-meer-700">
+      <div className="mb-5 flex gap-1 overflow-x-auto border-b border-sand-200 dark:border-salbei-700">
         {TABS.map((t) => (
-          <button key={t} type="button" onClick={() => setTab(t)} className={`min-h-12 shrink-0 border-b-2 px-4 font-medium ${tab === t ? "border-meer-600 text-meer-700 dark:text-meer-100" : "border-transparent text-slate-500"}`}>
+          <button key={t} type="button" onClick={() => setTab(t)} className={`min-h-12 shrink-0 border-b-2 px-4 font-medium ${tab === t ? "border-salbei-600 text-salbei-700 dark:text-salbei-100" : "border-transparent text-slate-500"}`}>
             {t}
           </button>
         ))}
@@ -81,7 +81,7 @@ export function Regelwerk() {
             <input className="feld sm:max-w-xs" placeholder="GPOS oder Bezeichnung suchen" value={suche} onChange={(e) => setSuche(e.target.value)} />
             <div className="flex flex-wrap gap-2">
               {KATEGORIEN.map((k) => (
-                <button key={k.wert} type="button" onClick={() => setKategorie(k.wert)} className={`min-h-12 rounded-full px-4 text-sm font-medium ${kategorie === k.wert ? "bg-meer-600 text-white" : "bg-white text-slate-600 dark:bg-meer-900/50 dark:text-slate-300"}`}>
+                <button key={k.wert} type="button" onClick={() => setKategorie(k.wert)} className={`min-h-12 rounded-full px-4 text-sm font-medium ${kategorie === k.wert ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}>
                   {k.label}
                 </button>
               ))}
@@ -92,7 +92,7 @@ export function Regelwerk() {
           ) : (
             <div className="karte overflow-x-auto p-0">
               <table className="w-full min-w-[640px] text-left text-sm">
-                <thead className="bg-sand-50 text-slate-500 dark:bg-meer-900">
+                <thead className="bg-sand-50 text-slate-500 dark:bg-salbei-900">
                   <tr>
                     <th className="px-4 py-3">GPOS</th>
                     <th className="px-4 py-3">Bezeichnung</th>
@@ -102,7 +102,7 @@ export function Regelwerk() {
                 </thead>
                 <tbody>
                   {positionen.daten.map((p) => (
-                    <tr key={p.gpos} className="border-t border-sand-200 align-top dark:border-meer-700">
+                    <tr key={p.gpos} className="border-t border-sand-200 align-top dark:border-salbei-700">
                       <td className="px-4 py-3 font-mono font-medium">{p.gpos}</td>
                       <td className="px-4 py-3">
                         <div>{p.bezeichnung}</div>
@@ -128,7 +128,7 @@ export function Regelwerk() {
       )}
 
       {tab === "Kontingente" && detail.daten && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {detail.daten.daten.kontingente.map((k) => (
             <div key={k.id} className="karte">
               <div className="font-semibold">{k.name}</div>
@@ -162,7 +162,7 @@ export function Regelwerk() {
       )}
 
       {tab === "Formulare" && detail.daten && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {Object.entries(detail.daten.daten.formulare)
             .filter(([k]) => k !== "gemeinsam")
             .map(([nr, f]) => (
@@ -188,12 +188,12 @@ export function Regelwerk() {
         ) : (
           <>
             <div className="mb-4"><Meldung art="hinweis">Beispielpreise (Dummydaten). Umsatzsteuer vor dem Echtbetrieb mit der Steuerberatung klären.</Meldung></div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {selbstzahler.daten.map((s) => (
                 <div key={s.id} className="karte">
                   <div className="flex items-start justify-between gap-3">
                     <div className="font-semibold">{s.bezeichnung}</div>
-                    <div className="text-lg font-semibold text-meer-700 dark:text-meer-100">{euro(s.preis)}</div>
+                    <div className="text-lg font-semibold text-salbei-700 dark:text-salbei-100">{euro(s.preis)}</div>
                   </div>
                   <div className="mt-1 text-sm text-slate-500">je {s.einheit} · {s.umsatzsteuer.replace(/_/g, " ")}</div>
                   <div className="mt-2 text-sm">{s.rechnungstext}</div>

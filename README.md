@@ -2,7 +2,9 @@
 
 Praxis-App für die Hebammenpraxis Kindkesmöön (Bad Doberan): Tablet-optimiert, auch fürs Handy, offline-fähig (geplant), Betrieb auf eigenem VPS.
 
-**Stand:** Meilenstein 1 (Grundgerüst): Anmeldung, Team, Hebammenprofile mit Orten, Tourvorlagen und Abrechnungseinstellungen, Praxis-Einstellungen, Regelwerk aus dem Hebammenhilfevertrag (Ansicht), Fristen-Hinweise, Docker-Betrieb.
+**Stand:** Meilenstein 2 (Akte und Hausbesuch):
+- Meilenstein 1: Anmeldung, Team, Hebammenprofile mit Orten, Tourvorlagen und Abrechnungseinstellungen, Regelwerk-Ansicht, Fristen, Docker-Betrieb
+- Meilenstein 2: Klientinnen, Betreuungen, Kinder, Besuchsdokumentation fürs Tablet, Unterschrift auf Papier oder Tablet, automatische Leistungsberechnung nach dem Hebammenhilfevertrag mit Plausibilitätsprüfung und Kontingentanzeige
 
 - [Konzept & Recherche](docs/KONZEPT.md)
 - [Betrieb auf dem Hostinger-VPS](docs/BETRIEB.md)

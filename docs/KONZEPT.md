@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.5 (Entwurf)
+Stand: 01.10.2026 · Version 1.6 (Entwurf)
 
 ---
 
@@ -676,7 +676,7 @@ Die Erinnerung zum persönlichen Versandstichtag kommt mit einstellbarem Vorlauf
 - **Barrierearm**: große Schrift skalierbar, hoher Kontrast
 - **Klare Status-Farben**: offen, zu prüfen, fertig, übergeben
 - **Offline-Anzeige**: kleines Symbol „offline – wird synchronisiert“, ohne die Arbeit zu blockieren
-- **Branding**: Farben und Logo von Kindkesmöön, ruhige Ostsee-Töne
+- **Branding**: Logo und Farben von Kindkesmöön: Salbei (#DADBC5), Oliv (#4A5038, #6E714D) und Tulpe/Terrakotta (#B85A4C) auf hellem Creme
 
 ### 11.3 Kern-Screens (Wireframe-Skizze Tablet quer)
 
@@ -814,7 +814,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 | Meilenstein | Inhalt |
 |---|---|
 | **M-1 Grundgerüst** ✅ | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS ([BETRIEB.md](BETRIEB.md)) |
-| **M-2 Akte und Besuch** | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Leistungserfassung mit Plausi und Kontingentanzeige |
+| **M-2 Akte und Besuch** ✅ | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Unterschrift auf Papier oder Tablet, Leistungsberechnung mit Plausibilitätsprüfung (5-Minuten-Einheiten, Zuschläge inkl. Feiertage MV, Kontingente, Materialpauschalen) und Kontingentanzeige |
 | **M-3 Abrechnung** | Formulare 3.1/3.3/3.4 als PDF, Papier- und Tablet-Unterschrift, Durchschreibesatz-Hilfe, Abrechnungsdatenblatt, Versandmappe, Fristen und Erinnerungen |
 | **M-4 Touren** | OSRM/VROOM, Tourvorlagen mit Start/Ende, Tagesplanung, Wegegeld und Fahrtenbuch |
 | **M-5 Regelwerk-Administration** | Positionen, Kontingente, Fristen, Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe, Testrechner |

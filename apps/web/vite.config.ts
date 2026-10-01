@@ -9,21 +9,21 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "apple-touch-icon.png"],
+      includeAssets: ["favicon.png", "logo.png", "apple-touch-icon.png"],
       manifest: {
         name: "Kindkesmöön – Hebammenpraxis",
         short_name: "Kindkesmöön",
         description: "Praxis-App der Hebammenpraxis Kindkesmöön",
         lang: "de",
-        theme_color: "#1f5f6b",
-        background_color: "#f6f3ee",
+        theme_color: "#575d3f",
+        background_color: "#f8f6ef",
         display: "standalone",
         orientation: "any",
         start_url: "/",
         icons: [
           { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
-          { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {

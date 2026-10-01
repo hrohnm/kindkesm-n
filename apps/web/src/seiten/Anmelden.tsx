@@ -26,9 +26,9 @@ export function Anmelden() {
     <div className="flex min-h-full items-center justify-center px-4 py-10">
       <form onSubmit={absenden} className="karte w-full max-w-md space-y-5 p-8">
         <div className="flex items-center gap-3">
-          <img src="/favicon.svg" alt="" className="size-12" />
+          <img src="/logo.png" alt="" className="size-16" />
           <div>
-            <h1 className="text-2xl font-semibold text-meer-700 dark:text-meer-100">Kindkesmöön</h1>
+            <h1 className="text-2xl font-semibold text-salbei-700 dark:text-salbei-100">Kindkesmöön</h1>
             <p className="text-slate-500">Hebammenpraxis Bad Doberan</p>
           </div>
         </div>

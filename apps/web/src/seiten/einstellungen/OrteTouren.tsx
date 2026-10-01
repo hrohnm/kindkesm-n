@@ -56,10 +56,10 @@ export function OrteTouren() {
             }}
           />
         )}
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {orte.daten.map((o) => (
             <div key={o.id} className="karte flex items-start gap-3">
-              <IconOrt className="mt-0.5 size-6 shrink-0 text-meer-600" />
+              <IconOrt className="mt-0.5 size-6 shrink-0 text-salbei-600" />
               <div className="min-w-0 flex-1">
                 <div className="font-medium">{o.bezeichnung}</div>
                 <div className="text-sm text-slate-500">{ORT_TYP_LABEL[o.typ]}{o.abholzeit ? ` · Abholung ${o.abholzeit} Uhr` : ""}</div>
@@ -69,10 +69,10 @@ export function OrteTouren() {
                 <span className="text-xs text-slate-500">gemeinsam</span>
               ) : (
                 <div className="flex shrink-0 gap-1">
-                  <button type="button" aria-label="Bearbeiten" className="flex size-11 items-center justify-center rounded-lg hover:bg-sand-100 dark:hover:bg-meer-700/50" onClick={() => setOrtBearbeiten(o)}>
+                  <button type="button" aria-label="Bearbeiten" className="flex size-11 items-center justify-center rounded-lg hover:bg-sand-100 dark:hover:bg-salbei-700/50" onClick={() => setOrtBearbeiten(o)}>
                     <IconStift className="size-5" />
                   </button>
-                  <button type="button" aria-label="Löschen" className="flex size-11 items-center justify-center rounded-lg text-koralle-500 hover:bg-koralle-100" onClick={() => ortLoeschen(o)}>
+                  <button type="button" aria-label="Löschen" className="flex size-11 items-center justify-center rounded-lg text-tulpe-500 hover:bg-tulpe-100" onClick={() => ortLoeschen(o)}>
                     <IconMuell className="size-5" />
                   </button>
                 </div>
@@ -110,7 +110,7 @@ export function OrteTouren() {
                 <div className="font-medium">{t.name}</div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {WOCHENTAGE_KURZ.map((w, i) => (
-                    <span key={w} className={`rounded-md px-2 py-0.5 text-xs font-medium ${t.wochentage.includes(i + 1) ? "bg-meer-100 text-meer-700" : "bg-sand-100 text-slate-400 dark:bg-meer-900"}`}>{w}</span>
+                    <span key={w} className={`rounded-md px-2 py-0.5 text-xs font-medium ${t.wochentage.includes(i + 1) ? "bg-salbei-100 text-salbei-700" : "bg-sand-100 text-slate-400 dark:bg-salbei-900"}`}>{w}</span>
                   ))}
                 </div>
                 <div className="mt-2 text-sm">
@@ -120,10 +120,10 @@ export function OrteTouren() {
                 <div className="text-sm text-slate-500">Wegegeld ab: {ortName(t.wegegeldAusgangsOrtId)}</div>
               </div>
               <div className="flex gap-1">
-                <button type="button" aria-label="Bearbeiten" className="flex size-11 items-center justify-center rounded-lg hover:bg-sand-100 dark:hover:bg-meer-700/50" onClick={() => setTourBearbeiten(t)}>
+                <button type="button" aria-label="Bearbeiten" className="flex size-11 items-center justify-center rounded-lg hover:bg-sand-100 dark:hover:bg-salbei-700/50" onClick={() => setTourBearbeiten(t)}>
                   <IconStift className="size-5" />
                 </button>
-                <button type="button" aria-label="Löschen" className="flex size-11 items-center justify-center rounded-lg text-koralle-500 hover:bg-koralle-100" onClick={() => tourLoeschen(t)}>
+                <button type="button" aria-label="Löschen" className="flex size-11 items-center justify-center rounded-lg text-tulpe-500 hover:bg-tulpe-100" onClick={() => tourLoeschen(t)}>
                   <IconMuell className="size-5" />
                 </button>
               </div>
@@ -139,7 +139,7 @@ function OrtFormular({ ort, fertig }: { ort?: Ort; fertig: () => void }) {
   const f = useFormular({ bezeichnung: ort?.bezeichnung ?? "", typ: (ort?.typ ?? "privat") as OrtTyp, anschrift: ort?.anschrift ?? "", abholzeit: ort?.abholzeit ?? "" });
   return (
     <form
-      className="karte mb-4 space-y-4 border-meer-200"
+      className="karte mb-4 space-y-4 border-salbei-200"
       onSubmit={async (e) => {
         e.preventDefault();
         const ok = await f.speichern((w) => api(ort ? `/api/ich/orte/${ort.id}` : "/api/ich/orte", { method: ort ? "PUT" : "POST", body: w }));
@@ -147,7 +147,7 @@ function OrtFormular({ ort, fertig }: { ort?: Ort; fertig: () => void }) {
       }}
     >
       {f.meldung?.art === "fehler" && <Meldung art="fehler">{f.meldung.text}</Meldung>}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Feld label="Bezeichnung" fehler={f.felder.bezeichnung}>
           <input className="feld" placeholder="z. B. Schule der Tochter" value={f.werte.bezeichnung} onChange={(e) => f.setze("bezeichnung", e.target.value)} />
         </Feld>
@@ -204,7 +204,7 @@ function TourFormular({ tour, orte, fertig }: { tour?: Tourvorlage; orte: Ort[];
 
   return (
     <form
-      className="karte mb-4 space-y-4 border-meer-200"
+      className="karte mb-4 space-y-4 border-salbei-200"
       onSubmit={async (e) => {
         e.preventDefault();
         const ok = await f.speichern((w) => api(tour ? `/api/ich/tourvorlagen/${tour.id}` : "/api/ich/tourvorlagen", { method: tour ? "PUT" : "POST", body: w }));
@@ -224,15 +224,15 @@ function TourFormular({ tour, orte, fertig }: { tour?: Tourvorlage; orte: Ort[];
               type="button"
               aria-pressed={f.werte.wochentage.includes(i + 1)}
               onClick={() => tagUmschalten(i + 1)}
-              className={`size-12 rounded-xl font-medium ${f.werte.wochentage.includes(i + 1) ? "bg-meer-600 text-white" : "border border-sand-200 bg-white dark:border-meer-700 dark:bg-meer-900/40"}`}
+              className={`size-12 rounded-xl font-medium ${f.werte.wochentage.includes(i + 1) ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}
             >
               {w}
             </button>
           ))}
         </div>
-        {f.felder.wochentage && <span className="mt-1.5 block text-sm text-koralle-500">{f.felder.wochentage}</span>}
+        {f.felder.wochentage && <span className="mt-1.5 block text-sm text-tulpe-500">{f.felder.wochentage}</span>}
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Feld label="Start">{ortAuswahl("startOrtId")}</Feld>
         <Feld label="Ende">{ortAuswahl("endeOrtId")}</Feld>
         <Feld label="Ende spätestens (optional)" fehler={f.felder.endeSpaetestens}>

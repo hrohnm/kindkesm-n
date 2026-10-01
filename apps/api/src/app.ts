@@ -6,6 +6,7 @@ import Fastify from "fastify";
 import { SITZUNG_COOKIE, sitzungLaden } from "./auth";
 import { config } from "./config";
 import type { Datenbank } from "./db/client";
+import { akteRouten } from "./routes/akte";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
 import { ichRouten } from "./routes/ich";
@@ -16,7 +17,7 @@ import { teamRouten } from "./routes/team";
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit"]);
 
 export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
-  const app = Fastify({ logger: opts.logger ?? false, trustProxy: true, bodyLimit: 1_000_000 });
+  const app = Fastify({ logger: opts.logger ?? false, trustProxy: true, bodyLimit: 2_000_000 });
 
   await app.register(cookie);
   await app.register(rateLimit, { global: false });
@@ -48,6 +49,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await ichRouten(app, db);
   await regelwerkRouten(app, db);
   await hinweisRouten(app, db);
+  await akteRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

@@ -68,7 +68,7 @@ function AbrechnungFormular({ start }: { start: AbrechnungTyp }) {
           optionen={ABRECHNUNGSWEGE.map((x) => ({ wert: x, label: ABRECHNUNGSWEG_LABEL[x], hinweis: ABRECHNUNGSWEG_HINWEIS[x] }))}
         />
         {w.weg === "andere_abrechnungsstelle" && (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Feld label="Name der Abrechnungsstelle" fehler={f.felder.abrechnungsstelleName}>
               <input className="feld" value={w.abrechnungsstelleName} onChange={(e) => f.setze("abrechnungsstelleName", e.target.value)} />
             </Feld>
@@ -120,7 +120,7 @@ function AbrechnungFormular({ start }: { start: AbrechnungTyp }) {
           <Auswahl<Versandrhythmus> name="rhythmus" wert={w.versandRhythmus} aendern={(v) => f.setze("versandRhythmus", v)} optionen={VERSANDRHYTHMEN.map((x) => ({ wert: x, label: VERSANDRHYTHMUS_LABEL[x] }))} />
           <p className="mt-2 text-sm text-slate-500">Anlage 2 § 2: höchstens einmal im Monat, mindestens zweimal im Jahr; Leistungen des Vorjahres bis 30.06.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Feld label="Stichtag im Monat" fehler={f.felder.versandTag} hilfe={`Nächster Versand: ${datum(isoDatum(naechster))}`}>
             <input className="feld" type="number" min={1} max={28} value={w.versandTag} onChange={(e) => f.setze("versandTag", Number(e.target.value))} />
           </Feld>

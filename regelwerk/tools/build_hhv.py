@@ -222,6 +222,8 @@ def build(V):
          kontakte_pro_tag=2, video_nur_zweiter_kontakt=True, einheiten_pro_kontakt=18, einheiten_pro_kontakt_video=6,
          einheiten_pro_tag=18, telefon={"kontakte_pro_tag": 1, "einheiten_pro_kontakt": 2, "einheiten_pro_tag": 2},
          kontakte_gesamt=20,
+         erste_tage={"bis_lebenstag": 3, "auch_tag_erster_hausbesuch": True, "leistungsart": "1", "einheiten_pro_kontakt": 24, "einheiten_pro_tag": 24},
+         mehrling_zusatz_einheiten=2,
          sonderregeln=[
              "301X1: an Lebenstag 1-3 sowie am Tag der ersten aufsuchenden Hilfeleistung bis 24 Einheiten (120 Min.)",
              "301X1/301X2: Mehrlinge +2 Einheiten (10 Min.) je weiterem Kind",
@@ -234,23 +236,24 @@ def build(V):
          kontakte_pro_tag=1, einheiten_pro_kontakt=12, einheiten_pro_kontakt_video=6, einheiten_pro_tag=12,
          telefon={"kontakte_pro_tag": 1, "einheiten_pro_kontakt": 2, "einheiten_pro_tag": 2},
          kontakttage_gesamt=16,
+         mehrling_zusatz_einheiten=2,
          sonderregeln=["303X1/303X2: Mehrlinge +2 Einheiten je weiterem Kind",
                        "Nach Fehlgeburt max. 4 Kontakte"])
     kont("304", "Frühes Wochenbett Kind (Mutter abwesend)", ["304X1", "304X2", "304X3", "30404"],
          zeitraum={"lebenstag_von": 1, "lebenstag_bis": 10}, bezug="Kind",
          kontakte_pro_tag=2, video_nur_zweiter_kontakt=True, einheiten_pro_kontakt=18, einheiten_pro_kontakt_video=6,
          einheiten_pro_tag=18, telefon={"kontakte_pro_tag": 1, "einheiten_pro_kontakt": 2, "einheiten_pro_tag": 2},
-         kontakte_gesamt=20)
+         kontakte_gesamt=20, mehrling_zusatz_einheiten=2)
     kont("305", "Spätes Wochenbett Kind (Mutter abwesend)", ["305X1", "305X2", "305X3", "30504"],
          zeitraum={"lebenstag_von": 11, "lebenswoche_bis": 12}, bezug="Kind",
          kontakte_pro_tag=1, einheiten_pro_kontakt=12, einheiten_pro_kontakt_video=6, einheiten_pro_tag=12,
          telefon={"kontakte_pro_tag": 1, "einheiten_pro_kontakt": 2, "einheiten_pro_tag": 2},
-         kontakttage_gesamt=8)
+         kontakttage_gesamt=8, mehrling_zusatz_einheiten=2)
     kont("306", "Still- und Ernährungsschwierigkeiten", ["306X1", "306X2", "306X3", "30604"],
          zeitraum={"lebenswoche_von": 13, "bis": "Ende Abstillphase; bei Ernährungsproblemen bis Ende 9. Lebensmonat"},
          bezug="Kind", kontakte_pro_tag=1, einheiten_pro_kontakt=9, einheiten_pro_kontakt_video=6, einheiten_pro_tag=9,
          telefon={"kontakte_pro_tag": 1, "einheiten_pro_kontakt": 2, "einheiten_pro_tag": 2},
-         kontakttage_gesamt=8)
+         kontakttage_gesamt=8, mehrling_zusatz_einheiten=2)
     kont("401", "Geburtsvorbereitung Gruppe", ["40102", "40103", "40106"], einheiten_gesamt=168, selbstlern_max_anteil=0.5,
          verhalten="sperre", sonderregeln=["Max. 10 Teilnehmerinnen; Pausen nicht abrechenbar"])
     kont("402", "Geburtsvorbereitung Einzel", ["40202", "40203", "40206"], einheiten_gesamt=84, selbstlern_max_anteil=0.5,

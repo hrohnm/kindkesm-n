@@ -59,3 +59,80 @@ export type Position = {
 };
 
 export type Selbstzahler = { id: string; bezeichnung: string; rechnungstext: string; einheit: string; preis: string; umsatzsteuer: string; details: Record<string, unknown> };
+
+// ------------------------------------------------------------------ Akte
+export type KlientinListe = {
+  id: string;
+  vorname: string;
+  nachname: string;
+  ort: string | null;
+  telefon: string | null;
+  zustaendig: string;
+  zustaendigeHebammeId: string;
+  betreuung: { id: string; status: string; et: string | null; geburtsdatum: string | null; lebenstag: number | null; ssw: string | null; kinder: string[] } | null;
+};
+
+export type Kind = {
+  id: string;
+  betreuungId: string;
+  vorname: string;
+  nachname: string | null;
+  geburtsdatum: string;
+  geburtszeit: string | null;
+  geschlecht: "weiblich" | "maennlich" | "divers" | null;
+  geburtsgewicht: number | null;
+  laenge: string | null;
+  kopfumfang: string | null;
+};
+
+export type Betreuung = {
+  id: string;
+  klientinId: string;
+  status: "anfrage" | "schwangerschaft" | "wochenbett" | "abgeschlossen";
+  et: string | null;
+  gravida: number | null;
+  para: number | null;
+  geburtsort: string | null;
+  geburtsmodus: string | null;
+  zustaendigeHebammeId: string | null;
+  notizen: string | null;
+  kinder: Kind[];
+};
+
+export type Klientin = {
+  id: string;
+  vorname: string;
+  nachname: string;
+  geburtsdatum: string | null;
+  strasse: string | null;
+  plz: string | null;
+  ort: string | null;
+  telefon: string | null;
+  email: string | null;
+  krankenkasse: string | null;
+  kassenIk: string | null;
+  versichertennummer: string | null;
+  hinweise: string | null;
+  zustaendigeHebammeId: string;
+  betreuungen: Betreuung[];
+};
+
+export type BesuchKurz = {
+  id: string;
+  datum: string;
+  von: string;
+  bis: string;
+  typ: string;
+  art: number;
+  status: "entwurf" | "abgeschlossen";
+  stamm: string | null;
+  summe: string;
+  einheiten: number;
+  einheitenAbrechenbar: number;
+  hinweise: Array<{ stufe: string; text: string }>;
+  unterschrift: { art: string };
+  hebamme: string;
+  hebammeId: string;
+};
+
+export type KontingentStand = { id: string; name: string; genutzt: number; maximum: number; einheit: string };

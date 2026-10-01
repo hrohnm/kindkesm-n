@@ -4,12 +4,14 @@ import { Laden, Seitenkopf } from "../komponenten/Formular";
 import { useAuth } from "../lib/auth";
 import { datum, inTagen } from "../lib/format";
 import type { Hinweis, RegelwerkKurz, TeamMitglied } from "../lib/typen";
+
+type HeuteBesuch = { id: string; datum: string; von: string; bis: string; status: string; unterschrift: string; art: number; name: string; ort: string | null; klientinId: string };
 import { useDaten } from "../lib/useDaten";
 
 const STUFE = {
-  dringend: "border-koralle-500 bg-koralle-100 dark:bg-koralle-500/10",
+  dringend: "border-tulpe-500 bg-tulpe-100 dark:bg-tulpe-500/10",
   warnung: "border-amber-400 bg-amber-50 dark:bg-amber-900/20",
-  info: "border-meer-200 bg-white dark:bg-meer-900/40",
+  info: "border-salbei-200 bg-white dark:bg-salbei-900/40",
 };
 
 function begruessung() {
@@ -22,6 +24,7 @@ export function Cockpit() {
   const hinweise = useDaten<Hinweis[]>("/api/hinweise");
   const team = useDaten<TeamMitglied[]>("/api/team");
   const regelwerke = useDaten<RegelwerkKurz[]>("/api/regelwerke");
+  const heute = useDaten<{ heute: HeuteBesuch[]; entwuerfe: HeuteBesuch[] }>(ich?.rolle === "hebamme" ? "/api/heute" : null);
   const vorname = ich?.name.split(" ")[0];
   const aktiv = team.daten?.filter((h) => h.status === "aktiv").length;
   const aktuell = regelwerke.daten?.at(-1);
@@ -33,27 +36,72 @@ export function Cockpit() {
         untertitel={new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="karte">
           <div className="text-sm text-slate-500">Team</div>
-          <div className="mt-1 text-3xl font-semibold text-meer-700 dark:text-meer-100">{aktiv ?? "–"} aktiv</div>
+          <div className="mt-1 text-3xl font-semibold text-salbei-700 dark:text-salbei-100">{aktiv ?? "–"} aktiv</div>
           <div className="mt-1 text-sm text-slate-500">{team.daten ? `${team.daten.length - (aktiv ?? 0)} in Babypause/abwesend` : ""}</div>
         </div>
         <div className="karte">
           <div className="text-sm text-slate-500">Regelwerk</div>
-          <div className="mt-1 text-xl font-semibold text-meer-700 dark:text-meer-100">{aktuell ? `ab ${datum(aktuell.gueltigVon)}` : "–"}</div>
+          <div className="mt-1 text-xl font-semibold text-salbei-700 dark:text-salbei-100">{aktuell ? `ab ${datum(aktuell.gueltigVon)}` : "–"}</div>
           <div className="mt-1 text-sm text-slate-500">{aktuell ? `${aktuell.anzahlPositionen} Gebührenpositionen · ${aktuell.status}` : ""}</div>
         </div>
         <div className="karte">
-          <div className="text-sm text-slate-500">Hausbesuche heute</div>
-          <div className="mt-1 text-xl font-semibold text-slate-400">kommt mit Meilenstein 2</div>
-          <div className="mt-1 text-sm text-slate-500">Akte, Besuche und Touren folgen</div>
+          <div className="text-sm text-slate-500">Besuche heute</div>
+          <div className="mt-1 text-3xl font-semibold text-salbei-700 dark:text-salbei-100">{heute.daten?.heute.length ?? "–"}</div>
+          <div className="mt-1 text-sm text-slate-500">{heute.daten ? `${heute.daten.entwuerfe.length} offene Dokumentation(en)` : ""}</div>
         </div>
       </div>
 
+      {heute.daten && (heute.daten.heute.length > 0 || heute.daten.entwuerfe.length > 0) && (
+        <section className="mt-8 grid gap-4 lg:grid-cols-2">
+          <div>
+            <h2 className="mb-3 text-lg font-semibold">Heute</h2>
+            {heute.daten.heute.length === 0 ? (
+              <p className="text-slate-500">Noch keine Besuche für heute dokumentiert.</p>
+            ) : (
+              <ul className="karte divide-y divide-sand-200 p-0 dark:divide-salbei-700">
+                {heute.daten.heute.map((b) => (
+                  <li key={b.id}>
+                    <Link to={`/besuche/${b.id}`} className="flex items-center justify-between gap-3 px-5 py-3 hover:bg-sand-50 dark:hover:bg-salbei-700/30">
+                      <span>
+                        <span className="font-medium">{b.von} {b.name}</span>
+                        <span className="block text-sm text-slate-500">{b.ort ?? ""}</span>
+                      </span>
+                      <span className={`text-sm font-medium ${b.status === "entwurf" ? "text-amber-700" : "text-salbei-600"}`}>{b.status === "entwurf" ? "Entwurf" : "✓"}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div>
+            <h2 className="mb-3 text-lg font-semibold">Offene Dokumentationen</h2>
+            {heute.daten.entwuerfe.length === 0 ? (
+              <p className="text-slate-500">Alles abgeschlossen.</p>
+            ) : (
+              <ul className="karte divide-y divide-sand-200 p-0 dark:divide-salbei-700">
+                {heute.daten.entwuerfe.map((b) => (
+                  <li key={b.id}>
+                    <Link to={`/besuche/${b.id}`} className="flex items-center justify-between gap-3 px-5 py-3 hover:bg-sand-50 dark:hover:bg-salbei-700/30">
+                      <span>
+                        <span className="font-medium">{b.name}</span>
+                        <span className="block text-sm text-slate-500">{datum(b.datum)}, {b.von} Uhr</span>
+                      </span>
+                      <span className="text-sm font-medium text-amber-700">{b.unterschrift === "keine" && b.art <= 2 ? "Unterschrift fehlt" : "Entwurf"}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
+
       <section className="mt-8">
         <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <IconGlocke className="size-5 text-meer-600" /> Fristen und Hinweise
+          <IconGlocke className="size-5 text-salbei-600" /> Fristen und Hinweise
         </h2>
         {hinweise.laedt && !hinweise.daten ? (
           <Laden />

@@ -2,19 +2,21 @@
 
 /* Ruhige Ostsee-Töne; Dunkelmodus folgt dem System */
 @theme {
-  --color-meer-50: #eef7f8;
-  --color-meer-100: #d5ecee;
-  --color-meer-200: #a9d6db;
-  --color-meer-500: #2f7f8c;
-  --color-meer-600: #1f5f6b;
-  --color-meer-700: #184c56;
-  --color-meer-900: #0e2f35;
-  --color-sand-50: #fbf9f5;
-  --color-sand-100: #f6f3ee;
-  --color-sand-200: #ebe5da;
-  --color-sand-400: #c9bda8;
-  --color-koralle-500: #d9734e;
-  --color-koralle-100: #fbe6dc;
+  /* Farben aus dem Praxislogo: Salbei (Kreis), Oliv (Linien), Tulpe (Terrakotta) */
+  --color-salbei-50: #f6f7f1;
+  --color-salbei-100: #ebeddf;
+  --color-salbei-200: #dadbc5;
+  --color-salbei-300: #c2c5a6;
+  --color-salbei-500: #6e714d;
+  --color-salbei-600: #575d3f;
+  --color-salbei-700: #4a5038;
+  --color-salbei-900: #24281b;
+  --color-sand-50: #fdfcf8;
+  --color-sand-100: #f8f6ef;
+  --color-sand-200: #e9e6da;
+  --color-sand-400: #c9c3ad;
+  --color-tulpe-500: #b85a4c;
+  --color-tulpe-100: #f6e3de;
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -29,28 +31,28 @@ body,
 }
 
 body {
-  @apply bg-sand-100 text-slate-800 antialiased dark:bg-meer-900 dark:text-slate-100;
+  @apply bg-sand-100 text-slate-800 antialiased dark:bg-salbei-900 dark:text-slate-100;
   -webkit-tap-highlight-color: transparent;
 }
 
 /* Große Touch-Ziele (mind. 44–48 px) */
 @utility feld {
-  @apply block min-h-12 w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-base focus:border-meer-500 focus:ring-2 focus:ring-meer-200 focus:outline-none dark:border-meer-700 dark:bg-meer-900/60;
+  @apply block min-h-12 w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none dark:border-salbei-700 dark:bg-salbei-900/60;
 }
 @utility knopf {
   @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-medium transition active:scale-[0.98] disabled:opacity-50;
 }
 @utility knopf-primaer {
-  @apply knopf bg-meer-600 text-white hover:bg-meer-700;
+  @apply knopf bg-salbei-600 text-white hover:bg-salbei-700;
 }
 @utility knopf-sekundaer {
-  @apply knopf border border-sand-200 bg-white text-meer-700 hover:bg-sand-50 dark:border-meer-700 dark:bg-meer-900/40 dark:text-meer-100;
+  @apply knopf border border-sand-200 bg-white text-salbei-700 hover:bg-sand-50 dark:border-salbei-700 dark:bg-salbei-900/40 dark:text-salbei-100;
 }
 @utility knopf-gefahr {
-  @apply knopf border border-koralle-500/40 bg-white text-koralle-500 hover:bg-koralle-100 dark:bg-transparent;
+  @apply knopf border border-tulpe-500/40 bg-white text-tulpe-500 hover:bg-tulpe-100 dark:bg-transparent;
 }
 @utility karte {
-  @apply rounded-2xl border border-sand-200 bg-white p-5 shadow-sm dark:border-meer-700 dark:bg-meer-900/50;
+  @apply rounded-2xl border border-sand-200 bg-white p-5 shadow-sm dark:border-salbei-700 dark:bg-salbei-900/50;
 }
 @utility etikett {
   @apply mb-1.5 block text-sm font-medium text-slate-600 dark:text-slate-300;
