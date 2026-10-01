@@ -6,6 +6,9 @@ import Fastify from "fastify";
 import { SITZUNG_COOKIE, sitzungLaden } from "./auth";
 import { config } from "./config";
 import type { Datenbank } from "./db/client";
+import { benutzer } from "./db/schema";
+import { DEMO_EMAILS, DEMO_PASSWORT } from "./demo";
+import { inArray } from "drizzle-orm";
 import { abrechnungRouten } from "./routes/abrechnung";
 import { akteRouten } from "./routes/akte";
 import { authRouten } from "./routes/auth";
@@ -15,7 +18,7 @@ import { praxisRouten } from "./routes/praxis";
 import { regelwerkRouten } from "./routes/regelwerk";
 import { teamRouten } from "./routes/team";
 
-const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit"]);
+const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
 
 export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   const app = Fastify({ logger: opts.logger ?? false, trustProxy: true, bodyLimit: 2_000_000 });
@@ -43,6 +46,17 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   });
 
   app.get("/api/gesundheit", async () => ({ ok: true }));
+
+  // Demo-Konten für die Schnellanmeldung (nur im Demo-Modus, nur vorhandene und aktive Konten)
+  app.get("/api/demo", async () => {
+    if (!config.demoModus) return { aktiv: false, konten: [] };
+    const konten = await db
+      .select({ email: benutzer.email, name: benutzer.name, status: benutzer.status, aktiv: benutzer.aktiv })
+      .from(benutzer)
+      .where(inArray(benutzer.email, DEMO_EMAILS));
+    const sortiert = DEMO_EMAILS.map((e) => konten.find((k) => k.email === e && k.aktiv)).filter((k) => k !== undefined);
+    return { aktiv: sortiert.length > 0, passwort: DEMO_PASSWORT, konten: sortiert.map(({ email, name, status }) => ({ email, name, status })) };
+  });
 
   await authRouten(app, db);
   await praxisRouten(app, db);

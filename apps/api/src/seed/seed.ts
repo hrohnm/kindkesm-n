@@ -12,7 +12,9 @@ import { abrechnungseinstellung, benutzer, ort, tourvorlage } from "../db/schema
 import { demoAktenAnlegen } from "./demo-akten";
 import { praxisAnlegen, regelwerkImportieren, selbstzahlerImportieren } from "./import";
 
-export const DEMO_PASSWORT = process.env.DEMO_PASSWORT ?? "kindkes-demo-2026";
+import { DEMO_PASSWORT } from "../demo";
+
+export { DEMO_PASSWORT };
 
 type DemoHebamme = {
   email: string;

@@ -134,3 +134,12 @@ describe("Praxis", () => {
     expect(orte.find((o: { typ: string }) => o.typ === "praxis").anschrift).toBe("Neue Reihe 46b, 18209 Bad Doberan");
   });
 });
+
+describe("Demo-Anmeldung", () => {
+  it("liefert in der Entwicklung die drei Demo-Konten ohne Anmeldung", async () => {
+    const r = (await t.app.inject({ method: "GET", url: "/api/demo" })).json();
+    expect(r.aktiv).toBe(true);
+    expect(r.konten.map((k: { name: string }) => k.name)).toEqual(["Marielena Pontus", "Johanna Mede", "Lorina Gosemann"]);
+    expect(r.konten[2].status).toBe("babypause");
+  });
+});

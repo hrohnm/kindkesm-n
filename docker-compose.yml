@@ -26,6 +26,7 @@ services:
     environment:
       DATABASE_URL: postgres://kindkes:${DB_PASSWORT}@db:5432/kindkes
       SITZUNG_STUNDEN: ${SITZUNG_STUNDEN:-12}
+      DEMO_MODUS: ${DEMO_MODUS:-nein}
 
   caddy:
     image: caddy:2-alpine

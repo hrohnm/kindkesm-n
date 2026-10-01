@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { api } from "../lib/api";
 import { Meldung } from "../komponenten/Formular";
 import { useAuth } from "../lib/auth";
 
@@ -8,6 +9,14 @@ export function Anmelden() {
   const [passwort, setPasswort] = useState("");
   const [fehler, setFehler] = useState<string>();
   const [laeuft, setLaeuft] = useState(false);
+  const [demo, setDemo] = useState<{ passwort: string; konten: Array<{ email: string; name: string; status: string }> }>();
+
+  // Schnellanmeldung mit Demo-Konten (nur in Test-Umgebungen aktiv)
+  useEffect(() => {
+    api<{ aktiv: boolean; passwort: string; konten: Array<{ email: string; name: string; status: string }> }>("/api/demo")
+      .then((d) => d.aktiv && setDemo(d))
+      .catch(() => {});
+  }, []);
 
   async function absenden(e: FormEvent) {
     e.preventDefault();
@@ -44,6 +53,28 @@ export function Anmelden() {
         <button className="knopf-primaer w-full" disabled={laeuft}>
           {laeuft ? "Anmelden …" : "Anmelden"}
         </button>
+        {demo && (
+          <div className="border-t border-sand-200 pt-4 dark:border-salbei-700">
+            <p className="mb-2 text-sm text-slate-500">Test-Umgebung – Demo-Zugang eintragen:</p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {demo.konten.map((k) => (
+                <button
+                  key={k.email}
+                  type="button"
+                  className="knopf-sekundaer flex-col gap-0 px-3 py-2 text-sm"
+                  onClick={() => {
+                    setEmail(k.email);
+                    setPasswort(demo.passwort);
+                    setFehler(undefined);
+                  }}
+                >
+                  <span>{k.name.split(" ")[0]}</span>
+                  {k.status === "babypause" && <span className="text-xs font-normal text-slate-500">Babypause</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );
