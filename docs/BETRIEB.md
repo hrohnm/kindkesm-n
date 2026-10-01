@@ -57,6 +57,7 @@ In `.env` eintragen:
 | `DOMAIN` | Hostname des VPS, z. B. `srv123456.hstgr.cloud` (später die Subdomain) |
 | `DB_PASSWORT` | Ergebnis von `openssl rand -base64 32` |
 | `SITZUNG_STUNDEN` | Anmeldedauer in Stunden (Standard 12) |
+| `DEMO_MODUS` | `ja` zeigt auf der Login-Seite Knöpfe für die Demo-Konten (nur Test-Umgebung), sonst `nein` |
 
 Starten:
 
@@ -139,7 +140,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 
 - [ ] AVV/DPA mit Hostinger abgeschlossen, Rechenzentrum in der EU
 - [ ] Firewall, SSH nur mit Schlüssel, automatische Updates aktiv
-- [ ] Produktivumgebung **ohne** `--demo` eingerichtet bzw. Demo-Konten gesperrt
+- [ ] Produktivumgebung **ohne** `--demo` eingerichtet bzw. Demo-Konten gesperrt, `DEMO_MODUS=nein`
 - [ ] Persönliche Konten angelegt, Passwörter geändert
 - [ ] Tägliches Backup mit externer Kopie eingerichtet und eine Wiederherstellung getestet
 - [ ] Regelwerk fachlich geprüft und freigegeben (Meilenstein 5)

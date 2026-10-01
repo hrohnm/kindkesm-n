@@ -25,6 +25,8 @@ export const config = {
   port: Number(process.env.PORT ?? 3000),
   host: process.env.HOST ?? "0.0.0.0",
   produktion: process.env.NODE_ENV === "production",
+  /** Schnellanmeldung mit Demo-Konten auf der Login-Seite: in der Entwicklung an, im Betrieb nur mit DEMO_MODUS=ja. */
+  demoModus: process.env.DEMO_MODUS ? process.env.DEMO_MODUS === "ja" : process.env.NODE_ENV !== "production",
   /** Ordner mit dem gebauten Frontend (wird von der API ausgeliefert). */
   webDist: process.env.WEB_DIST,
   /** Laufzeit einer Sitzung in Stunden. */
