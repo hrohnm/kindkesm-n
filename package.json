@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "description": "Praxis-App für die Hebammenpraxis Kindkesmöön",
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev:api": "npm run dev -w @kindkesmoeoen/api",
     "dev:web": "npm run dev -w @kindkesmoeoen/web",
@@ -12,7 +15,10 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "db:migrate": "npm run db:migrate -w @kindkesmoeoen/api",
-    "db:seed": "npm run db:seed -w @kindkesmoeoen/api"
+    "db:seed": "npm run db:seed -w @kindkesmoeoen/api --",
+    "db:seed:demo": "npm run db:seed -w @kindkesmoeoen/api -- --demo"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

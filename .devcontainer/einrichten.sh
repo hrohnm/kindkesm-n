@@ -7,4 +7,4 @@ for i in $(seq 1 30); do
   sleep 1
 done
 npm run db:migrate
-npm run db:seed -- --demo
+npm run db:seed:demo
