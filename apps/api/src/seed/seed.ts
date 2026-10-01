@@ -9,6 +9,7 @@ import { eq, sql } from "drizzle-orm";
 import { passwortHashen } from "../auth";
 import { verbinden } from "../db/client";
 import { abrechnungseinstellung, benutzer, ort, tourvorlage } from "../db/schema";
+import { demoAktenAnlegen } from "./demo-akten";
 import { praxisAnlegen, regelwerkImportieren, selbstzahlerImportieren } from "./import";
 
 export const DEMO_PASSWORT = process.env.DEMO_PASSWORT ?? "kindkes-demo-2026";
@@ -98,8 +99,12 @@ export async function grunddatenAnlegen(db: ReturnType<typeof verbinden>["db"], 
   const r1 = await regelwerkImportieren(db, "hhv-2025-11-01");
   const r2 = await regelwerkImportieren(db, "hhv-2026-04-01");
   const s = await selbstzahlerImportieren(db);
-  if (demo) await demoAnlegen(db);
-  return { regelwerke: [r1, r2], selbstzahler: s };
+  let familien = 0;
+  if (demo) {
+    await demoAnlegen(db);
+    familien = await demoAktenAnlegen(db, DEMO_PASSWORT);
+  }
+  return { regelwerke: [r1, r2], selbstzahler: s, demoFamilien: familien };
 }
 
 // Nur ausführen, wenn diese Datei direkt gestartet wird (nicht, wenn sie in den Server gebündelt ist)

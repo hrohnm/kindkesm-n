@@ -8,6 +8,13 @@
       "when": 1790859231724,
       "tag": "0000_grundgeruest",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790862509272,
+      "tag": "0001_akte",
+      "breakpoints": true
     }
   ]
 }

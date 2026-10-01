@@ -20,7 +20,7 @@ function PraxisFormular({ praxis }: { praxis: PraxisTyp }) {
       }}
     >
       {f.meldung && <Meldung art={f.meldung.art}>{f.meldung.text}</Meldung>}
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Feld label="Name der Praxis" fehler={f.felder.name}>
           <input className="feld" value={f.werte.name} onChange={(e) => f.setze("name", e.target.value)} />
         </Feld>

@@ -2249,6 +2249,14 @@
         "einheiten_pro_tag": 2
       },
       "kontakte_gesamt": 20,
+      "erste_tage": {
+        "bis_lebenstag": 3,
+        "auch_tag_erster_hausbesuch": true,
+        "leistungsart": "1",
+        "einheiten_pro_kontakt": 24,
+        "einheiten_pro_tag": 24
+      },
+      "mehrling_zusatz_einheiten": 2,
       "sonderregeln": [
         "301X1: an Lebenstag 1-3 sowie am Tag der ersten aufsuchenden Hilfeleistung bis 24 Einheiten (120 Min.)",
         "301X1/301X2: Mehrlinge +2 Einheiten (10 Min.) je weiterem Kind",
@@ -2294,6 +2302,7 @@
         "einheiten_pro_tag": 2
       },
       "kontakttage_gesamt": 16,
+      "mehrling_zusatz_einheiten": 2,
       "sonderregeln": [
         "303X1/303X2: Mehrlinge +2 Einheiten je weiterem Kind",
         "Nach Fehlgeburt max. 4 Kontakte"
@@ -2324,7 +2333,8 @@
         "einheiten_pro_kontakt": 2,
         "einheiten_pro_tag": 2
       },
-      "kontakte_gesamt": 20
+      "kontakte_gesamt": 20,
+      "mehrling_zusatz_einheiten": 2
     },
     {
       "id": "305",
@@ -2350,7 +2360,8 @@
         "einheiten_pro_kontakt": 2,
         "einheiten_pro_tag": 2
       },
-      "kontakttage_gesamt": 8
+      "kontakttage_gesamt": 8,
+      "mehrling_zusatz_einheiten": 2
     },
     {
       "id": "306",
@@ -2376,7 +2387,8 @@
         "einheiten_pro_kontakt": 2,
         "einheiten_pro_tag": 2
       },
-      "kontakttage_gesamt": 8
+      "kontakttage_gesamt": 8,
+      "mehrling_zusatz_einheiten": 2
     },
     {
       "id": "401",

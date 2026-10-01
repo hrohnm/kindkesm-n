@@ -19,7 +19,7 @@ export function Einstellungen() {
             key={u.to}
             to={u.to}
             end={u.ende}
-            className={({ isActive }) => `flex min-h-12 shrink-0 items-center rounded-full px-5 font-medium ${isActive ? "bg-meer-600 text-white" : "bg-white text-slate-600 dark:bg-meer-900/50 dark:text-slate-300"}`}
+            className={({ isActive }) => `flex min-h-12 shrink-0 items-center rounded-full px-5 font-medium ${isActive ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}
           >
             {u.label}
           </NavLink>

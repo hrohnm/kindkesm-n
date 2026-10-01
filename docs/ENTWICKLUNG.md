@@ -6,7 +6,7 @@
 |---|---|
 | `apps/web` | Web-App (React, TypeScript, Vite, Tailwind CSS, PWA), optimiert für iPad und Handy |
 | `apps/api` | API (Node.js, Fastify, Drizzle ORM, PostgreSQL); liefert im Betrieb auch das Frontend aus |
-| `packages/shared` | Gemeinsame Regeln: Einstellungen, Validierung (zod), Fristen |
+| `packages/shared` | Gemeinsame Regeln: Einstellungen, Validierung (zod), Fristen, Abrechnungslogik (`plausi.ts`) |
 | `regelwerk` | Regelwerk aus dem Hebammenhilfevertrag (JSON/CSV) und Generator |
 | `konfiguration` | Beispielkonfiguration und Selbstzahler-Preisliste (Dummydaten) |
 | `deploy`, `Dockerfile`, `docker-compose.yml` | Betrieb (siehe [BETRIEB.md](BETRIEB.md)) |
@@ -34,7 +34,9 @@ npm run dev:api     # http://localhost:3000
 npm run dev:web     # http://localhost:5173 (leitet /api an die API weiter)
 ```
 
-Demo-Konten: `marielena@kindkesmoeoen.test`, `johanna@kindkesmoeoen.test`, `lorina@kindkesmoeoen.test`, Passwort `kindkes-demo-2026`.
+Demo-Konten: `marielena@kindkesmoeoen.test`, `johanna@kindkesmoeoen.test`, `lorina@kindkesmoeoen.test`, Passwort `kindkes-demo-2026`. Dazu vier fiktive Familien (Schwangerschaft, frühes Wochenbett, Zwillinge im späten Wochenbett, Anfrage), deren Daten relativ zum heutigen Tag angelegt werden.
+
+Die Abrechnungslogik (`packages/shared/src/plausi.ts`) liest alle Beträge, Kontingente, Zuschlagszeiten und Feiertage aus dem Regelwerk; nur die Logik ist im Code. Änderungen daran immer mit Tests in `plausi.test.ts` absichern.
 
 ## Prüfen
 
@@ -54,3 +56,7 @@ Schema in `apps/api/src/db/schema.ts` ändern, dann `npm run db:generate -w @kin
 ## Regelwerk neu erzeugen
 
 `python3 regelwerk/tools/build_hhv.py` und anschließend `npm run db:seed` (ersetzt nur Regelwerke im Status „Entwurf“).
+
+## Logo und Icons
+
+Das Praxislogo liegt als `apps/web/public/logo.png`. Favicon und PWA-Icons daraus erzeugen: `python3 scripts/icons_erzeugen.py` (benötigt Pillow).

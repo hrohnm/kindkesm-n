@@ -156,3 +156,107 @@ export const protokoll = pgTable("protokoll", {
   details: jsonb("details").$type<Record<string, unknown>>(),
   zeit: timestamp("zeit", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ------------------------------------------------------------------ Akte (Meilenstein 2)
+
+/** Klientin (Versicherte) mit Stamm- und Versichertendaten. */
+export const klientin = pgTable("klientin", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  vorname: text("vorname").notNull(),
+  nachname: text("nachname").notNull(),
+  geburtsdatum: date("geburtsdatum"),
+  strasse: text("strasse"),
+  plz: text("plz"),
+  ort: text("ort"),
+  telefon: text("telefon"),
+  email: text("email"),
+  krankenkasse: text("krankenkasse"),
+  kassenIk: text("kassen_ik"),
+  versichertennummer: text("versichertennummer"),
+  hinweise: text("hinweise"),
+  zustaendigeHebammeId: uuid("zustaendige_hebamme_id").notNull().references(() => benutzer.id),
+  archiviert: boolean("archiviert").notNull().default(false),
+  ...zeitstempel(),
+});
+
+/** Betreuungsfall: eine Schwangerschaft mit Geburt und Wochenbett. */
+export const betreuung = pgTable("betreuung", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  klientinId: uuid("klientin_id").notNull().references(() => klientin.id, { onDelete: "cascade" }),
+  status: text("status", { enum: ["anfrage", "schwangerschaft", "wochenbett", "abgeschlossen"] }).notNull().default("schwangerschaft"),
+  et: date("et"),
+  gravida: smallint("gravida"),
+  para: smallint("para"),
+  geburtsort: text("geburtsort"),
+  geburtsmodus: text("geburtsmodus"),
+  zustaendigeHebammeId: uuid("zustaendige_hebamme_id").references(() => benutzer.id),
+  notizen: text("notizen"),
+  ...zeitstempel(),
+});
+
+export const kind = pgTable("kind", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  betreuungId: uuid("betreuung_id").notNull().references(() => betreuung.id, { onDelete: "cascade" }),
+  vorname: text("vorname").notNull(),
+  nachname: text("nachname"),
+  geburtsdatum: date("geburtsdatum").notNull(),
+  geburtszeit: text("geburtszeit"),
+  geschlecht: text("geschlecht", { enum: ["weiblich", "maennlich", "divers"] }),
+  geburtsgewicht: integer("geburtsgewicht"),
+  laenge: numeric("laenge", { precision: 4, scale: 1 }),
+  kopfumfang: numeric("kopfumfang", { precision: 4, scale: 1 }),
+  ...zeitstempel(),
+});
+
+/** Besuch bzw. Kontakt mit Dokumentation, Unterschrift und berechneten Leistungen. */
+export const besuch = pgTable("besuch", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  betreuungId: uuid("betreuung_id").notNull().references(() => betreuung.id, { onDelete: "cascade" }),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id),
+  datum: date("datum").notNull(),
+  von: text("von").notNull(),
+  bis: text("bis").notNull(),
+  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"] }).notNull(),
+  art: smallint("art").notNull(),
+  material: text("material").array().notNull().default(sql`'{}'::text[]`),
+  dokumentation: jsonb("dokumentation").$type<Record<string, unknown>>().notNull().default({}),
+  unterschrift: jsonb("unterschrift").$type<Record<string, unknown>>().notNull().default({ art: "keine" }),
+  status: text("status", { enum: ["entwurf", "abgeschlossen"] }).notNull().default("entwurf"),
+  /** Ergebnis der Abrechnungsprüfung zum Zeitpunkt des Speicherns */
+  regelwerkId: text("regelwerk_id"),
+  stamm: text("stamm"),
+  einheiten: smallint("einheiten").notNull().default(0),
+  einheitenAbrechenbar: smallint("einheiten_abrechenbar").notNull().default(0),
+  summe: numeric("summe", { precision: 10, scale: 2 }).notNull().default("0"),
+  hinweise: jsonb("hinweise").$type<Array<{ stufe: string; text: string }>>().notNull().default([]),
+  ...zeitstempel(),
+});
+
+/** Abrechenbare Leistungszeilen eines Besuchs (je GPOS und Zuschlagsabschnitt). */
+export const leistung = pgTable("leistung", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  besuchId: uuid("besuch_id").notNull().references(() => besuch.id, { onDelete: "cascade" }),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id),
+  regelwerkId: text("regelwerk_id").notNull(),
+  gpos: text("gpos").notNull(),
+  bezeichnung: text("bezeichnung").notNull(),
+  datum: date("datum").notNull(),
+  menge: smallint("menge").notNull(),
+  einheit: text("einheit").notNull(),
+  einzelbetrag: numeric("einzelbetrag", { precision: 10, scale: 2 }).notNull(),
+  betrag: numeric("betrag", { precision: 10, scale: 2 }).notNull(),
+  zuschlag: boolean("zuschlag").notNull().default(false),
+  formular: text("formular"),
+  quittierungspflichtig: boolean("quittierungspflichtig").notNull(),
+  status: text("status", { enum: ["erfasst", "versendet", "bezahlt", "gekuerzt"] }).notNull().default("erfasst"),
+  erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Versionen eines Besuchs: jede Änderung nach dem Abschluss bleibt nachvollziehbar (Dokumentationspflicht). */
+export const besuchHistorie = pgTable("besuch_historie", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  besuchId: uuid("besuch_id").notNull().references(() => besuch.id, { onDelete: "cascade" }),
+  geaendertVon: uuid("geaendert_von").references(() => benutzer.id, { onDelete: "set null" }),
+  stand: jsonb("stand").$type<Record<string, unknown>>().notNull(),
+  zeit: timestamp("zeit", { withTimezone: true }).notNull().defaultNow(),
+});
