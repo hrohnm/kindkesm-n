@@ -32,15 +32,36 @@ systemctl restart ssh
 
 ## 2. App installieren
 
+Das Repository ist privat. Der Server braucht deshalb einen **Deploy Key** (SSH-Schlüssel mit reinem Lesezugriff auf genau dieses Repository):
+
 ```bash
+# Schlüssel auf dem VPS erzeugen und den öffentlichen Teil anzeigen
+ssh-keygen -t ed25519 -f /root/.ssh/kindkes_deploy -N "" -C "hostinger-vps"
+cat /root/.ssh/kindkes_deploy.pub
+```
+
+Den angezeigten Schlüssel auf GitHub eintragen: Repository → **Settings → Deploy keys → Add deploy key**, Titel z. B. „Hostinger VPS“, **ohne** „Allow write access“.
+
+```bash
+# GitHub mitteilen, welcher Schlüssel für das Repository gilt
+cat >> /root/.ssh/config <<'CFG'
+Host github-kindkes
+  HostName github.com
+  User git
+  IdentityFile /root/.ssh/kindkes_deploy
+  IdentitiesOnly yes
+CFG
+
 mkdir -p /opt && cd /opt
-git clone https://github.com/hrohnm/kindkesm-n.git kindkesmoeoen
+git clone git@github-kindkes:hrohnm/kindkesm-n.git kindkesmoeoen
 cd kindkesmoeoen
-git checkout claude/gallant-brown-wznyqf   # bzw. main, sobald gemergt
+git checkout main   # bzw. den Branch mit dem gewünschten Stand
 
 cp .env.example .env
 nano .env
 ```
+
+> **Klonen über das Hostinger-Panel:** Wenn du das Repository über eine Git-Funktion im hPanel klonst, gilt dasselbe: Für das private Repository muss Hostinger Zugriff bekommen (meist über einen angezeigten Deploy Key, den du wie oben bei GitHub einträgst), und es muss der richtige Branch gewählt sein. Danach geht es mit `.env` und `docker compose up -d --build` per SSH im geklonten Ordner weiter. Updates holst du dann per `git pull` (oder über die Pull-Funktion im Panel) und startest anschließend `docker compose up -d --build`.
 
 In `.env` eintragen:
 
