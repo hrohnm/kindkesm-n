@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
-import { IconPlus, IconStift } from "../komponenten/Icons";
+import { IconDrucken, IconPlus, IconStift } from "../komponenten/Icons";
 import { api } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { datum, euro } from "../lib/format";
@@ -167,9 +167,14 @@ function BetreuungKarte({ betreuung: b, neuLaden }: { betreuung: Betreuung; neuL
             <dt className="text-slate-500">Geburtsort</dt><dd>{b.geburtsort ?? "–"}{b.geburtsmodus ? ` · ${b.geburtsmodus}` : ""}</dd>
           </dl>
           {b.notizen && <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{b.notizen}</p>}
-          <button type="button" className="knopf-sekundaer mt-4 min-h-11 px-3" onClick={() => setBearbeiten(true)}>
-            <IconStift className="size-5" /> Bearbeiten
-          </button>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="knopf-sekundaer min-h-11 px-3" onClick={() => setBearbeiten(true)}>
+              <IconStift className="size-5" /> Bearbeiten
+            </button>
+            <a className="knopf-sekundaer min-h-11 px-3" href={`/api/betreuungen/${b.id}/formular/${geburt ? "3.3" : "3.1"}.pdf`} target="_blank" rel="noreferrer" title="Leeres Formular mit vorausgefülltem Kopf für die Mappe der Familie">
+              <IconDrucken className="size-5" /> Formular {geburt ? "3.3" : "3.1"} drucken
+            </a>
+          </div>
         </>
       ) : (
         <form

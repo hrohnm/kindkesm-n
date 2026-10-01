@@ -249,6 +249,9 @@ export const leistung = pgTable("leistung", {
   formular: text("formular"),
   quittierungspflichtig: boolean("quittierungspflichtig").notNull(),
   status: text("status", { enum: ["erfasst", "versendet", "bezahlt", "gekuerzt"] }).notNull().default("erfasst"),
+  versandId: uuid("versand_id").references(() => versand.id, { onDelete: "set null" }),
+  kuerzungBetrag: numeric("kuerzung_betrag", { precision: 10, scale: 2 }),
+  kuerzungGrund: text("kuerzung_grund"),
   erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -259,4 +262,27 @@ export const besuchHistorie = pgTable("besuch_historie", {
   geaendertVon: uuid("geaendert_von").references(() => benutzer.id, { onDelete: "set null" }),
   stand: jsonb("stand").$type<Record<string, unknown>>().notNull(),
   zeit: timestamp("zeit", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ------------------------------------------------------------------ Abrechnung (Meilenstein 3)
+
+/** Ein Versand an die Abrechnungsstelle (je Hebamme; jede rechnet einzeln ab). */
+export const versand = pgTable("versand", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nummer: text("nummer").notNull(),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id),
+  status: text("status", { enum: ["vorbereitet", "versendet", "bezahlt"] }).notNull().default("vorbereitet"),
+  bis: date("bis").notNull(),
+  weg: text("weg").notNull(),
+  empfaengerName: text("empfaenger_name"),
+  empfaengerAnschrift: text("empfaenger_anschrift"),
+  anzahlFaelle: smallint("anzahl_faelle").notNull(),
+  anzahlLeistungen: smallint("anzahl_leistungen").notNull(),
+  summe: numeric("summe", { precision: 10, scale: 2 }).notNull(),
+  versendetAm: date("versendet_am"),
+  einschreibenNr: text("einschreiben_nr"),
+  bezahltAm: date("bezahlt_am"),
+  ausgezahlt: numeric("ausgezahlt", { precision: 10, scale: 2 }),
+  notiz: text("notiz"),
+  ...zeitstempel(),
 });

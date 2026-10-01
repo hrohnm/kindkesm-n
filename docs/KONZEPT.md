@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.6 (Entwurf)
+Stand: 01.10.2026 · Version 1.7 (Entwurf)
 
 ---
 
@@ -815,7 +815,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 |---|---|
 | **M-1 Grundgerüst** ✅ | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS ([BETRIEB.md](BETRIEB.md)) |
 | **M-2 Akte und Besuch** ✅ | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Unterschrift auf Papier oder Tablet, Leistungsberechnung mit Plausibilitätsprüfung (5-Minuten-Einheiten, Zuschläge inkl. Feiertage MV, Kontingente, Materialpauschalen) und Kontingentanzeige |
-| **M-3 Abrechnung** | Formulare 3.1/3.3/3.4 als PDF, Papier- und Tablet-Unterschrift, Durchschreibesatz-Hilfe, Abrechnungsdatenblatt, Versandmappe, Fristen und Erinnerungen |
+| **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 folgt mit dem Kursmodul |
 | **M-4 Touren** | OSRM/VROOM, Tourvorlagen mit Start/Ende, Tagesplanung, Wegegeld und Fahrtenbuch |
 | **M-5 Regelwerk-Administration** | Positionen, Kontingente, Fristen, Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe, Testrechner |
 | **M-6 Offline** | Vollständiger Offline-Betrieb mit Synchronisation |

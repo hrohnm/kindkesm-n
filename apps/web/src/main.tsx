@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { Layout } from "./komponenten/Layout";
 import "./index.css";
 import { AuthProvider, useAuth } from "./lib/auth";
+import { AbrechnungSeite } from "./seiten/AbrechnungSeite";
 import { Akte } from "./seiten/Akte";
 import { Anmelden } from "./seiten/Anmelden";
 import { Besuch } from "./seiten/Besuch";
@@ -30,6 +31,7 @@ function App() {
         <Route path="klientinnen/:id" element={<Akte />} />
         <Route path="betreuungen/:betreuungId/besuch" element={<Besuch />} />
         <Route path="besuche/:id" element={<Besuch />} />
+        <Route path="abrechnung" element={<AbrechnungSeite />} />
         <Route path="team" element={<Team />} />
         <Route path="regelwerk" element={<Regelwerk />} />
         <Route path="einstellungen" element={<Einstellungen />}>

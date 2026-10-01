@@ -13,13 +13,16 @@ const tag = (offset: number) => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
 const papier = (datum: string, bis: string) => ({ art: "papier", zeitpunkt: new Date(`${datum}T${bis}:00`).toISOString() });
+/** Fiktive Unterschrift (gezeichnete Linie) für Demo-Besuche mit Tablet-Unterschrift. */
+const DEMO_UNTERSCHRIFT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAB4CAYAAAC9x4bVAAAFIUlEQVR42u3dO3LbShBAUVHlLShRrP2viLESLQKOXLZcIgkC8+mePid+pWcOgbkY4nfZtu0FAGZ7NQQACBIACBIAggQAggSAIAGAIAEgSAAgSAAIEgAIEgCCBACCBIAgAYAgASBIACBIAAgSAAgSAIIEAIIEgCABgCABIEgAIEgACBIACBIAggQAggSAIAHAJL8MwXzvH2/bnv/u8/p1MVrAqi7bthmF4CESJ0CQCBciUQIEiRAREidAkOgao0dBafE3AARJjJpG5N7fFCVAkBgejlt/X5QAQeJuLHqFYuT/C6AXN8YuEIif/nbviygABEmMRAkQJGLGSJQAQSJMjEQJECRe3j/etv9DMPOiAlECBMkKaXqMRAkQJCEKEyNRAgSpeIwiEiVAkArEKNJ5o2ei9Hn9uogSIEiLrpCiPxnh33+fGAGCtGCIMsTo1r9TmIBIvML8ZIxW+Dyee3f++zaGcJ6Hqx6YvDP9VPfMJGtSbXPAYRxBkIZPVpknHlHqv/IVJniOc0gFY2Sy/P699voZ1jk6sEIaMrGsNKGvFtuWsdgzFl4vD4IkRj5jlxid+exeLw+CZKJu+Fn/XLix4mcdFQzn6ECQmk5cK1xRd2YSXflnyRGf02oJBMnk7HOHWq1YLcE+rrITo8NH+WK0z63/l6vwQJAeTmCVA7TS08EjrUw+r18XT16H+/xkZ3W0ezLPMBYZzttUu6oRrJDEqNxKKctFBFZKIEgPJzNHqXknzmxXtIkSCNLuSU2c8kycWS+vFiX4zjmkFz/VHZ30I4zTCudjqtyUDFZIJ46uiXs0f+uhqBkncm/zBUH68byRI9P4UVrxRlNv8wUrJOeNkkWp0lMPRAlBKrIjOW+UK0r33lu0ynf302pdlKh0wNT8ooYMKw43JvbfIFuNZ8UHlDpYIsv22XrbbBqkDBN9xad4zzxKOjq2Pd9ZJEq208rbVuQ5vusKKeIXbEefs7PvHWdvX7WKnxEhcTo+nqGDFHlnEqP4E4DJQZSibn+Vx3/UttjtxthoJ6Dt3HknBq//+DsObpqdF6Oq2+TIubPrkxqiREmMck4SviMr+5bb2J5xe3abrXYus/dn7v7ooIhv67RDx9iofTei1DtEZ8ep8jnNGfvnkGfZzYiS10ZTYQKuuD3PuhWg0pWfsw4Whz5cddSHtPMiSmK08r9hxRgND1LvnariTZSIUtXL4Gd//hXnm9nb15TXT/SIkqNHKodp5e088r69UpQiHOxMex9Sq99jrYoQpHW39ywHmtnnoSjb09QX9B25ZHPU1TWQaRJZ8R6lbL96ZI1SpIObEG+MbXlTmxBReaW0yvafeQWY6Wq8aOMc4n1IrQZAjKhmxRf7Zf858tG/Ncp3FHGcQ6yQzn5hQoRV0hr7xGrnxqKulqKOc8ggVflZAkzkNS5Mcv/UQkFq/aUIGqJkoq70ebOMc8kgtf6bAocoiVGrOajlZ8/2uCNBCkjgaLWNR70c3P2DfWOR9aGw5YIkcFTcLl1qnH/+aHH1XvRxFiSBEzhREqMC+32GcRYkG7ogFfvuZ3x/njVpfxUkuuwwJhFREqP4Yco4voIEoiRGiwQq+7gKEojS0AlUjBAkoHsohAhBAppE42g4st2AiSABSaL0KCIt758BQQK63v8iRAgSMDVMQoQgAVPDJEQIEjAlTAKEIAGwpFdDAIAgAYAgASBIACBIAAgSAAgSAIIEAIIEgCABgCABIEgAIEgACBIACBIAggQAJ/0Gkk/OXxSPtAUAAAAASUVORK5CYII=";
+const tablet = (datum: string, bis: string, name: string) => ({ art: "tablet", zeitpunkt: new Date(`${datum}T${bis}:00`).toISOString(), bild: DEMO_UNTERSCHRIFT, name });
 
 type Familie = {
   hebamme: string;
   klientin: Record<string, string | null>;
   et: string | null;
   kinder?: Array<Record<string, string | number | null>>;
-  besuche?: Array<{ datum: string; von: string; bis: string; typ: string; art: 1 | 2 | 3 | 4; material?: string[]; doku?: Record<string, unknown>; kindDoku?: Array<Record<string, unknown>>; offen?: boolean }>;
+  besuche?: Array<{ datum: string; von: string; bis: string; typ: string; art: 1 | 2 | 3 | 4; material?: string[]; doku?: Record<string, unknown>; kindDoku?: Array<Record<string, unknown>>; offen?: boolean; tablet?: boolean }>;
 };
 
 const FAMILIEN: Familie[] = [
@@ -50,8 +53,9 @@ const FAMILIEN: Familie[] = [
       { vorname: "Emma", nachname: "Hansen", geburtsdatum: tag(-20), geburtszeit: "11:21", geschlecht: "weiblich", geburtsgewicht: 2480, laenge: 46, kopfumfang: 32.5 },
     ],
     besuche: [
-      { datum: tag(-17), von: "10:00", bis: "12:10", typ: "wochenbett", art: 1, kindDoku: [{ gewicht: 2510 }, { gewicht: 2350 }] },
-      { datum: tag(-3), von: "11:00", bis: "12:00", typ: "wochenbett", art: 1, kindDoku: [{ gewicht: 2790 }, { gewicht: 2610 }] },
+      { datum: tag(-17), von: "10:00", bis: "12:10", typ: "wochenbett", art: 1, tablet: true, material: ["61400"], kindDoku: [{ gewicht: 2510 }, { gewicht: 2350 }] },
+      { datum: tag(-12), von: "15:30", bis: "15:40", typ: "wochenbett", art: 4 },
+      { datum: tag(-3), von: "11:00", bis: "12:00", typ: "wochenbett", art: 1, tablet: true, kindDoku: [{ gewicht: 2790 }, { gewicht: 2610 }] },
     ],
   },
   {
@@ -98,7 +102,7 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
         art: b.art,
         material: b.material ?? [],
         dokumentation: { mutter: b.doku ?? {}, kinder, notiz: null },
-        unterschrift: b.offen ? { art: "keine" } : papier(b.datum, b.bis),
+        unterschrift: b.offen || b.art >= 3 ? { art: "keine" } : b.tablet ? tablet(b.datum, b.bis, `${f.klientin.vorname} ${f.klientin.nachname}`) : papier(b.datum, b.bis),
         abschliessen: !b.offen,
       });
     }

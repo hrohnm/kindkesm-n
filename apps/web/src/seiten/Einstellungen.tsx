@@ -7,6 +7,7 @@ const UNTER = [
   { to: "/einstellungen/abrechnung", label: "Abrechnung" },
   { to: "/einstellungen/praxis", label: "Praxis" },
   { to: "/einstellungen/passwort", label: "Passwort" },
+  { to: "/regelwerk", label: "Regelwerk ›" },
 ];
 
 export function Einstellungen() {
