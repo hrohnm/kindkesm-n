@@ -388,6 +388,8 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 ### 8.1 Ziel
 Kein händisches Ausfüllen der Durchschreibesätze und keine Etiketten mehr. Alles, was beim Besuch ohnehin erfasst wird, landet automatisch auf dem Beleg. HebSet bekommt Belege, die **vollständig, lesbar, plausibel und sofort abrechenbar** sind. Das spart Rückfragen und Kürzungen und beschleunigt die Auszahlung.
 
+**Rückfallebene:** Sollte HebSet die PDF-Ausdrucke nicht als Ersatz für die Durchschreibesätze akzeptieren, behält der Beleg trotzdem seinen Wert: Er ist dann eine vollständige **Übersicht aller Leistungen je Betreuung auf einen Blick**, von der die Durchschreibesätze nur noch abgeschrieben werden müssen.
+
 ### 8.2 Ablauf
 
 ```
