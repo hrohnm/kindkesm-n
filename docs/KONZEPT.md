@@ -128,7 +128,7 @@ Die Formulare 3.1–3.5 sind **keine HebSet-Formulare**, sondern die amtlichen *
 
 Aufbau aller fünf Formulare:
 - **Kopf**: Rechnungsnummer, Krankenkasse, Name und Geburtsdatum der Versicherten, Krankenkassen-IK, Versichertennummer, ET, Geburtsdatum Kind
-- **Hebammentabelle** (bis 8 Zeilen): Name, Heb-Nr., IK bzw. „angestellt“. Mehrere Hebammen können auf einem Blatt quittieren lassen, praktisch für Vertretungen in der Praxis.
+- **Hebammentabelle** (bis 8 Zeilen): Name, Heb-Nr., IK bzw. „angestellt“. Mehrere Hebammen können auf einem Blatt quittieren lassen, praktisch für Vertretungen in der Praxis. Bei Kindkesmöön sind **alle drei Hebammen freiberuflich**: Jede steht mit ihrem **eigenen IK** in der Tabelle, „angestellt“ kommt nicht vor.
 - **Leistungszeilen** (15–17 je Blatt): Heb-Nr., Datum, Uhrzeit von/bis, je Leistungsart eine Spalte, in die die **Endziffer** (1 aufsuchend, 2 nicht-aufsuchend, 3 Video, 4 Telefon; bei Kursen 2/3/6) eingetragen wird; Materialspalten zum Ankreuzen; Unterschrift der Versicherten; Kreuz für Begründung
 - **Begründungen und Vermerke** (Freitext); bei 3.5 zusätzlich ein Block für die ärztliche Anordnung
 - Der **Zuschlag** wird nicht eingetragen, er ergibt sich aus Datum und Uhrzeit.
@@ -439,7 +439,7 @@ Wegen der Unterschriftspflicht direkt nach jeder Leistung (§ 12) gibt es zwei W
 - **Formularvorlage**: Die App legt die Daten **feldgenau** über die amtliche PDF-Vorlage. Für jedes Feld werden Seite, x/y-Position, Breite und Schriftgröße hinterlegt, für die Leistungstabelle Zeilenhöhe und Spaltenpositionen. Ändern die Vertragspartner ein Formular, wird die neue Vorlage in der Administration hochgeladen und die Feldzuordnung per Vorschau angepasst, ohne Programmierung.
 - **Inhalt**:
   - Kopf: Krankenkasse, Name und Geburtsdatum der Versicherten, Krankenkassen-IK, Versichertennummer, ET, Geburtsdatum Kind (ersetzt das Etikett). Die Rechnungsnummer bleibt frei (vergibt HebSet)
-  - Hebammentabelle: alle Hebammen, die bei dieser Familie Leistungen erbracht haben, mit Heb-Nr. und IK (bzw. „angestellt“ nach § 12 Abs. 6)
+  - Hebammentabelle: alle Hebammen, die bei dieser Familie Leistungen erbracht haben, jeweils mit **eigenem IK** (alle freiberuflich). Die Heb-Nr. vergibt die App je Blatt fortlaufend (1, 2, 3) in der Reihenfolge des ersten Einsatzes; dieselbe Nummer steht vor jeder Leistungszeile dieser Hebamme. Beispiel: Marielena betreut, Johanna vertritt am Wochenende, dann Zeile 1 Marielena (Heb-Nr. 1), Zeile 2 Johanna (Heb-Nr. 2)
   - Leistungszeilen: Heb-Nr., Datum, Uhrzeit von/bis, Endziffer in der richtigen Spalte, Kreuze für Material, Kreuz bei Begründung
   - Begründungen und Vermerke: automatisch aus der Leistung (z. B. Anordnung, Wegstrecke über 25 km, Mehrlinge)
 - **Folgeblatt**: Reichen die 15–17 Zeilen nicht, erzeugt die App ein weiteres Blatt mit identischem Kopf.
@@ -756,7 +756,7 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 
 ### An die Praxis
 1. Werden Haus- oder Beleggeburten betreut (Modul M4 nötig)?
-2. Wie wird heute zwischen den Hebammen aufgeteilt (Pool? Einzelabrechnung)? Sind alle freiberuflich mit eigenem IK oder ist jemand angestellt (wichtig für Heb-Nr./IK auf den Formularen)? Wer übernimmt die Administration des Regelwerks?
+2. Wie wird heute zwischen den Hebammen aufgeteilt (Pool? Einzelabrechnung)? (Geklärt: alle drei sind freiberuflich mit eigenem IK.) Gibt es für eine Pool-Abrechnung über HebSet zusätzlich ein gemeinsames IK (Anlage 2 § 1 verlangt für gemeinsam abrechnende Hebammen ein gesondertes IK)? Wer übernimmt die Administration des Regelwerks?
 3. Wann endet die Babypause von Lorina (für Belegungsplan und Lizenzen)?
 4. Welche Geräte gibt es (iPad? Stift? Android)?
 5. Welche Start- und Endpunkte sind typisch (Wohnung, Praxis, Schule, Kita)?
