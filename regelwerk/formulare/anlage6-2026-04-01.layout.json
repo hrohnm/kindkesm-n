@@ -1,0 +1,42 @@
+{
+  "_hinweis": "Feldpositionen der amtlichen Versichertenbestätigungen (Anlage 6, gültig ab 01.04.2026) in PDF-Punkten, gemessen von der linken oberen Ecke. Bei einer neuen Formularfassung neue Vorlage und neue Layout-Datei anlegen.",
+  "vorlage": "anlage6-2026-04-01.pdf",
+  "gueltig_von": "2026-04-01",
+  "seitenhoehe": 841.89,
+  "seiten": { "3.1": 0, "3.2": 1, "3.3": 2, "3.4": 3, "3.5": 4 },
+  "unterstuetzt": ["3.1", "3.3"],
+  "kopf": {
+    "krankenkasse": { "x": 40.5, "y": 104.5, "breite": 226, "groesse": 9 },
+    "name": { "x": 40.5, "y": 126, "breite": 160, "groesse": 10.5 },
+    "anschrift": { "x": 40.5, "y": 139, "breite": 160, "groesse": 8 },
+    "geburtsdatum": { "x": 210, "y": 163, "breite": 58, "groesse": 9 },
+    "kassenIk": { "x": 40.5, "y": 193, "breite": 108, "groesse": 9.5 },
+    "versichertennummer": { "x": 156.5, "y": 193, "breite": 110, "groesse": 9.5 },
+    "et": { "x": 40.5, "y": 217, "breite": 108, "groesse": 9.5 },
+    "geburtsdatumKind": { "x": 156.5, "y": 217, "breite": 110, "groesse": 9.5 }
+  },
+  "hebammen": {
+    "zeilen_oben": [101.5, 116.5, 131.5, 146.5, 161.5, 176.5, 191.5, 206.5],
+    "zeilenhoehe": 15,
+    "name": { "x": 292, "breite": 136 },
+    "nr": { "x": 431, "breite": 27 },
+    "ik": { "x": 462, "breite": 94 },
+    "groesse": 8.5
+  },
+  "tabelle": {
+    "zeilen_oben": [372.0, 394.0, 415.5, 437.5, 459.0, 481.0, 502.5, 524.5, 546.0, 568.0, 589.5, 611.5, 633.0, 655.0, 676.5],
+    "zeilenhoehe": 21.8,
+    "groesse": 9,
+    "hebnr": [36.8, 57.0],
+    "datum": [57.0, 128.0],
+    "von": [128.0, 184.5],
+    "bis": [184.5, 241.2],
+    "leistungsspalten": [[241.2, 262.5], [262.5, 284.0], [284.0, 305.2], [305.2, 326.5], [326.5, 347.5], [347.5, 369.0], [369.0, 390.0], [390.0, 411.5], [411.5, 432.8]],
+    "unterschrift": [432.8, 539.0],
+    "vermerk": [539.0, 557.8]
+  },
+  "vermerke": { "x": 40.5, "y": 726, "breite": 512, "zeilen": 5, "groesse": 7.5 },
+  "zusatz": {
+    "3.3": { "mehrlinge": { "x": 175, "y": 290, "groesse": 9 } }
+  }
+}

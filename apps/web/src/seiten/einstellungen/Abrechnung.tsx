@@ -107,6 +107,9 @@ function AbrechnungFormular({ start }: { start: AbrechnungTyp }) {
             }))}
           />
           <p className="mt-2 text-sm text-slate-500">Laut § 12 Anlage 1.1 muss die Versicherte unverzüglich nach jeder Leistung unterschreiben; nachträgliche oder gesammelte Unterschriften sind unzulässig.</p>
+          {w.unterschrift === "tablet" && w.belegart === "durchschreibesatz" && (
+            <div className="mt-3"><Meldung art="hinweis">Tablet-Unterschriften werden auf selbst gedruckte Formulare übertragen. Für diese Besuche druckt die App die amtlichen Formulare auch dann, wenn sonst Durchschreibesätze verwendet werden.</Meldung></div>
+          )}
           {w.unterschrift === "tablet" && w.weg !== "hebset" && (
             <div className="mt-3"><Meldung art="hinweis">Bitte klären, ob die gewählte Abrechnungsstelle Tablet-Unterschriften akzeptiert.</Meldung></div>
           )}

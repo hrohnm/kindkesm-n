@@ -20,3 +20,5 @@ export const IconMuell = basis(<><path d="M4 7h16" /><path d="M9 7V4h6v3" /><pat
 export const IconGlocke = basis(<><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z" /><path d="M10 20a2 2 0 0 0 4 0" /></>);
 export const IconOrt = basis(<><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>);
 export const IconFamilie = basis(<><circle cx="8" cy="7" r="2.6" /><path d="M3.5 19c.4-3.2 2.2-5 4.5-5s4.1 1.8 4.5 5" /><circle cx="16.5" cy="10.5" r="2" /><path d="M13.5 19c.3-2.3 1.5-3.6 3-3.6s2.7 1.3 3 3.6" /></>);
+export const IconAbrechnung = basis(<><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h5" /></>);
+export const IconDrucken = basis(<><path d="M7 8V3h10v5" /><rect x="3" y="8" width="18" height="9" rx="2" /><path d="M7 14h10v7H7z" /></>);

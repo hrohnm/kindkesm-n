@@ -1,12 +1,14 @@
 import { NavLink, Outlet } from "react-router";
 import { useAuth } from "../lib/auth";
-import { IconAbmelden, IconEinstellungen, IconFamilie, IconHeute, IconRegelwerk, IconTeam } from "./Icons";
+import { IconAbmelden, IconAbrechnung, IconEinstellungen, IconFamilie, IconHeute, IconRegelwerk, IconTeam } from "./Icons";
 
 const NAV = [
   { to: "/", label: "Heute", icon: IconHeute, ende: true },
   { to: "/klientinnen", label: "Klientinnen", icon: IconFamilie },
+  { to: "/abrechnung", label: "Abrechnung", icon: IconAbrechnung },
   { to: "/team", label: "Team", icon: IconTeam },
-  { to: "/regelwerk", label: "Regelwerk", icon: IconRegelwerk },
+  // Auf dem Handy über Einstellungen erreichbar (Platz in der unteren Leiste)
+  { to: "/regelwerk", label: "Regelwerk", icon: IconRegelwerk, nurGross: true },
   { to: "/einstellungen", label: "Einstellungen", icon: IconEinstellungen },
 ];
 
@@ -61,7 +63,7 @@ export function Layout() {
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-sand-200 bg-sand-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-salbei-700 dark:bg-salbei-900/95">
-        {NAV.map(({ to, label, icon: Icon, ende }) => (
+        {NAV.filter((n) => !n.nurGross).map(({ to, label, icon: Icon, ende }) => (
           <NavLink
             key={to}
             to={to}

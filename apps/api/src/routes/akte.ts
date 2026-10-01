@@ -280,7 +280,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     const gespeichert = await db.transaction(async (tx) => {
       let b: Besuch;
       if (vorhanden) {
-        const gesperrt = await tx.select({ id: leistung.id }).from(leistung).where(and(eq(leistung.besuchId, vorhanden.id), ne(leistung.status, "erfasst")));
+        const gesperrt = await tx.select({ id: leistung.id }).from(leistung).where(and(eq(leistung.besuchId, vorhanden.id), or(ne(leistung.status, "erfasst"), sql`${leistung.versandId} is not null`)));
         if (gesperrt.length) throw new Error("GESPERRT");
         if (vorhanden.status === "abgeschlossen") {
           await tx.insert(besuchHistorie).values({ besuchId: vorhanden.id, geaendertVon: request.benutzer!.id, stand: vorhanden as unknown as Record<string, unknown> });
@@ -314,7 +314,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       if (e.message === "GESPERRT") return null;
       throw e;
     });
-    if (!gespeichert) return reply.code(409).send({ fehler: "Leistungen dieses Besuchs wurden bereits versendet; Änderungen nur über eine Korrektur." });
+    if (!gespeichert) return reply.code(409).send({ fehler: "Die Leistungen dieses Besuchs sind einem Versand zugeordnet. Änderungen erst nach Auflösen des Versands bzw. über eine Korrektur." });
 
     await protokollieren(db, request.benutzer!.id, vorhanden ? "geaendert" : "angelegt", "besuch", gespeichert.id, { status: gespeichert.status });
     return { besuch: gespeichert, ergebnis };

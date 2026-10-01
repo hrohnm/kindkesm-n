@@ -6,6 +6,7 @@ import Fastify from "fastify";
 import { SITZUNG_COOKIE, sitzungLaden } from "./auth";
 import { config } from "./config";
 import type { Datenbank } from "./db/client";
+import { abrechnungRouten } from "./routes/abrechnung";
 import { akteRouten } from "./routes/akte";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
@@ -50,6 +51,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await regelwerkRouten(app, db);
   await hinweisRouten(app, db);
   await akteRouten(app, db);
+  await abrechnungRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

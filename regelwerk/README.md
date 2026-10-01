@@ -8,6 +8,7 @@ Abrechnungsregeln aus dem **Hebammenhilfevertrag nach § 134a SGB V**
 | `hhv-2026-04-01.json` | **Aktuelle Fassung ab 01.04.2026**: 129 Gebührenpositionen, 24 Kontingente, Zuschläge, Feiertage MV, Wegegeld, Pflichtangaben der Abrechnungsdaten, Fristen und Hinweise, Spaltenzuordnung der Formulare |
 | `hhv-2026-04-01-positionen.csv` | Alle Positionen der Fassung 2026 zum Prüfen in Excel (Semikolon, UTF-8) |
 | `hhv-2025-11-01.json` / `-positionen.csv` | Vorgängerfassung (01.11.2025–31.03.2026) für Nachträge |
+| `formulare/anlage6-2026-04-01.pdf` + `.layout.json` | Druckvorlage der Formulare 3.1–3.5 und Feldpositionen (PDF-Punkte) für den Beleggenerator |
 | `tools/build_hhv.py` | Erzeugt alle Dateien aus den im Skript hinterlegten Vertragswerten |
 | `../docs/hebammenhilfevertrag-ab-2026-04-01.pdf` | Vertragstext (Quelle) |
 | `../docs/vorlagen/anlage6-versichertenbestaetigungen-3.1-3.5-ab-*.pdf` | Leere amtliche Formulare je Fassung (Druckvorlagen) |
