@@ -15,7 +15,7 @@
 
 Auf GitHub: **Code → Codespaces → Create codespace on main**. Der Codespace richtet sich selbst ein (Node 22, PostgreSQL, Abhängigkeiten, Demo-Daten; beim ersten Mal einige Minuten) und startet API und Web-App. Die Web-App öffnet sich über den Tab **Ports** (Port 5173). Anmeldung: `johanna@kindkesmoeoen.test` / `kindkes-demo-2026`.
 
-Falls nichts startet: im Terminal `bash .devcontainer/starten.sh`, Logs mit `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log`.
+Falls die Anmeldung nicht klappt: im Terminal `npm run db:seed:demo` (legt die Demo-Konten an). Falls nichts startet: im Terminal `bash .devcontainer/starten.sh`, Logs mit `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log`.
 
 ## Lokal starten
 
@@ -28,7 +28,7 @@ npm install
 docker run -d --name kindkes-db -p 5432:5432 -e POSTGRES_USER=kindkes -e POSTGRES_PASSWORD=kindkes -e POSTGRES_DB=kindkes postgres:16-alpine
 
 npm run db:migrate
-npm run db:seed -- --demo
+npm run db:seed:demo
 
 npm run dev:api     # http://localhost:3000
 npm run dev:web     # http://localhost:5173 (leitet /api an die API weiter)
