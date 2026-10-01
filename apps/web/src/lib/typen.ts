@@ -9,7 +9,7 @@ import type {
 
 export type Ich = { id: string; email: string; name: string; kuerzel: string; rolle: "hebamme" | "buero"; status: HebammeStatus };
 
-export type Ort = { id: string; benutzerId: string | null; bezeichnung: string; typ: OrtTyp; anschrift: string; abholzeit: string | null };
+export type Ort = { id: string; benutzerId: string | null; bezeichnung: string; typ: OrtTyp; anschrift: string; abholzeit: string | null; lat?: string | null; lon?: string | null };
 
 export type Tourvorlage = {
   id: string;
@@ -18,6 +18,7 @@ export type Tourvorlage = {
   startOrtId: string;
   endeOrtId: string;
   endeSpaetestens: string | null;
+  startZeit: string;
   wegegeldAusgangsOrtId: string;
 };
 
@@ -114,6 +115,9 @@ export type Klientin = {
   versichertennummer: string | null;
   hinweise: string | null;
   zustaendigeHebammeId: string;
+  lat: number | null;
+  lon: number | null;
+  geoQuelle: "adresse" | "strasse" | "manuell" | null;
   betreuungen: Betreuung[];
 };
 

@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
+import { PositionKarte } from "../komponenten/PositionKarte";
 import { IconDrucken, IconPlus, IconStift } from "../komponenten/Icons";
 import { api } from "../lib/api";
 import { useAuth } from "../lib/auth";
@@ -79,6 +80,18 @@ export function Akte() {
         </section>
 
         {betreuung && <BetreuungKarte betreuung={betreuung} neuLaden={akte.laden} />}
+      </div>
+
+      <div className="mt-4">
+        <PositionKarte
+          titel="Wohnung auf der Karte"
+          position={k.lat != null && k.lon != null ? { lat: k.lat, lon: k.lon } : null}
+          quelle={k.geoQuelle}
+          speichern={async (lat, lon) => {
+            await api(`/api/klientinnen/${k.id}/position`, { method: "PUT", body: { lat, lon } });
+            await akte.laden();
+          }}
+        />
       </div>
 
       {betreuung && (

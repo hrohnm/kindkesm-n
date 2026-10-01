@@ -7,6 +7,7 @@ import {
   kontingentStand,
   lebenstag,
   neueKlientinSchema,
+  positionSchema,
   sswAusEt,
   type FruehererBesuch,
   type Leistungsart,
@@ -16,23 +17,15 @@ import {
 import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, or, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { Datenbank } from "../db/client";
-import { benutzer, besuch, besuchHistorie, betreuung, kind, klientin, leistung, regelwerk } from "../db/schema";
+import { benutzer, besuch, besuchHistorie, betreuung, kind, klientin, leistung, termin } from "../db/schema";
 import { pruefen } from "../fehler";
+import { klientinVerorten } from "../geo/positionen";
 import { protokollieren } from "../protokoll";
+import { regelwerkFuer } from "../regelwerk-laden";
+import { wegegeldFuerKlientin, wegegeldNeuBerechnen } from "../wegegeld";
 
 type Besuch = typeof besuch.$inferSelect;
 const heuteIso = () => new Date().toISOString().slice(0, 10);
-
-/** Regelwerk, das am Leistungsdatum gilt (Fassungen nach Gültigkeitszeitraum). */
-async function regelwerkFuer(db: Datenbank, datum: string): Promise<RegelwerkDaten | undefined> {
-  const [r] = await db
-    .select({ daten: regelwerk.daten })
-    .from(regelwerk)
-    .where(and(lte(regelwerk.gueltigVon, datum), or(isNull(regelwerk.gueltigBis), gte(regelwerk.gueltigBis, datum))))
-    .orderBy(desc(regelwerk.gueltigVon))
-    .limit(1);
-  return r?.daten as RegelwerkDaten | undefined;
-}
 
 /** Abrechnungskontext einer Betreuung: Geburtsdatum, ET, Kinderzahl und frühere Besuche (ohne den aktuellen). */
 async function kontextLaden(db: Datenbank, betreuungId: string, ohneBesuchId?: string) {
@@ -123,6 +116,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       await tx.insert(betreuung).values({ klientinId: k!.id, status: "schwangerschaft", et, zustaendigeHebammeId: stamm.zustaendigeHebammeId });
       return k!;
     });
+    await klientinVerorten(db, neu.id);
     await protokollieren(db, request.benutzer!.id, "angelegt", "klientin", neu.id);
     return neu;
   });
@@ -139,9 +133,30 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   app.put<{ Params: { id: string } }>("/api/klientinnen/:id", async (request, reply) => {
     const daten = pruefen(klientinSchema, request.body, reply);
     if (!daten) return;
-    const [k] = await db.update(klientin).set({ ...daten, geaendertAm: new Date() }).where(eq(klientin.id, request.params.id)).returning();
+    const [alt] = await db.select().from(klientin).where(eq(klientin.id, request.params.id));
+    if (!alt) return reply.code(404).send({ fehler: "Klientin nicht gefunden" });
+    const neueAnschrift = alt.strasse !== daten.strasse || alt.plz !== daten.plz || alt.ort !== daten.ort;
+    await db
+      .update(klientin)
+      .set({ ...daten, ...(neueAnschrift ? { lat: null, lon: null, geoQuelle: null } : {}), geaendertAm: new Date() })
+      .where(eq(klientin.id, alt.id));
+    if (neueAnschrift) {
+      await klientinVerorten(db, alt.id);
+      await wegegeldFuerKlientin(db, alt.id);
+    }
+    await protokollieren(db, request.benutzer!.id, "geaendert", "klientin", alt.id);
+    const [k] = await db.select().from(klientin).where(eq(klientin.id, alt.id));
+    return k;
+  });
+
+  /** Position der Wohnung von Hand setzen (Karte), z. B. bei Neubauten, die noch nicht im Adressverzeichnis stehen. */
+  app.put<{ Params: { id: string } }>("/api/klientinnen/:id/position", async (request, reply) => {
+    const p = pruefen(positionSchema, request.body, reply);
+    if (!p) return;
+    const [k] = await db.update(klientin).set({ lat: p.lat, lon: p.lon, geoQuelle: "manuell", geaendertAm: new Date() }).where(eq(klientin.id, request.params.id)).returning();
     if (!k) return reply.code(404).send({ fehler: "Klientin nicht gefunden" });
-    await protokollieren(db, request.benutzer!.id, "geaendert", "klientin", k.id);
+    await protokollieren(db, request.benutzer!.id, "position", "klientin", k.id);
+    await wegegeldFuerKlientin(db, k.id);
     return k;
   });
 
@@ -317,10 +332,21 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     if (!gespeichert) return reply.code(409).send({ fehler: "Die Leistungen dieses Besuchs sind einem Versand zugeordnet. Änderungen erst nach Auflösen des Versands bzw. über eine Korrektur." });
 
     await protokollieren(db, request.benutzer!.id, vorhanden ? "geaendert" : "angelegt", "besuch", gespeichert.id, { status: gespeichert.status });
+    // Termin aus der Tour mit dem dokumentierten Besuch verknüpfen
+    const terminId = (request.query as { termin?: string }).termin;
+    if (terminId && /^[0-9a-f-]{36}$/i.test(terminId)) {
+      await db
+        .update(termin)
+        .set({ besuchId: gespeichert.id, status: "erledigt", geaendertAm: new Date() })
+        .where(and(eq(termin.id, terminId), eq(termin.hebammeId, gespeichert.hebammeId), eq(termin.betreuungId, betreuungId)));
+    }
+    // Wegegeld des Tages (und ggf. des alten Datums) neu berechnen
+    await wegegeldNeuBerechnen(db, gespeichert.hebammeId, gespeichert.datum);
+    if (vorhanden && vorhanden.datum !== gespeichert.datum) await wegegeldNeuBerechnen(db, vorhanden.hebammeId, vorhanden.datum);
     return { besuch: gespeichert, ergebnis };
   }
 
-  app.post<{ Params: { id: string } }>("/api/betreuungen/:id/besuche", async (request, reply) => besuchSpeichern(request, reply, request.params.id));
+  app.post<{ Params: { id: string }; Querystring: { termin?: string } }>("/api/betreuungen/:id/besuche", async (request, reply) => besuchSpeichern(request, reply, request.params.id));
 
   async function eigenerBesuch(id: string, request: FastifyRequest, reply: FastifyReply) {
     const [b] = await db.select().from(besuch).where(eq(besuch.id, id));
@@ -354,6 +380,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     if (!b) return;
     if (b.status !== "entwurf") return reply.code(409).send({ fehler: "Abgeschlossene Besuche können nicht gelöscht werden (Dokumentationspflicht)." });
     await db.delete(besuch).where(eq(besuch.id, b.id));
+    await db.update(termin).set({ status: "geplant" }).where(eq(termin.besuchId, b.id));
     await protokollieren(db, request.benutzer!.id, "geloescht", "besuch", b.id);
     return { ok: true };
   });

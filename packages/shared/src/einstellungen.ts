@@ -126,9 +126,16 @@ export const tourvorlageSchema = z.object({
   startOrtId: z.string().uuid(),
   endeOrtId: z.string().uuid(),
   endeSpaetestens: z.preprocess(leerZuNull, uhrzeit.nullable()),
+  startZeit: uhrzeit.default("08:00"),
   wegegeldAusgangsOrtId: z.string().uuid(),
 });
 export type TourvorlageEingabe = z.infer<typeof tourvorlageSchema>;
+
+/** Von Hand gesetzte Position (Karte); Bereich grob Norddeutschland */
+export const positionSchema = z.object({
+  lat: z.number().min(47).max(56),
+  lon: z.number().min(5).max(16),
+});
 
 export const praxisSchema = z.object({
   name: z.string().trim().min(2).max(120),

@@ -33,6 +33,11 @@ export const config = {
   sitzungStunden: Number(process.env.SITZUNG_STUNDEN ?? 12),
   /** Basisordner des Repositorys (Regelwerk- und Konfigurationsdateien für den Import). */
   datenOrdner: process.env.DATEN_ORDNER ?? wurzel,
+  /** OSRM-Server für Straßenstrecken (leer = Schätzung aus der Luftlinie). */
+  osrmUrl: process.env.OSRM_URL || undefined,
+  /** Kartenkacheln für die Kartenansicht im Browser ({z}/{x}/{y}); leer = keine Karte. */
+  kartenKacheln: process.env.KARTE_KACHELN ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  kartenHinweis: process.env.KARTE_HINWEIS ?? "© OpenStreetMap-Mitwirkende",
   /** Ordner mit den SQL-Migrationen. */
   migrationsOrdner: process.env.MIGRATIONS_ORDNER ?? join(wurzel, "apps/api/drizzle"),
 };

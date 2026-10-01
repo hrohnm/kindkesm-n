@@ -51,6 +51,7 @@ export function Cockpit() {
           <div className="text-sm text-slate-500">Besuche heute</div>
           <div className="mt-1 text-3xl font-semibold text-salbei-700 dark:text-salbei-100">{heute.daten?.heute.length ?? "–"}</div>
           <div className="mt-1 text-sm text-slate-500">{heute.daten ? `${heute.daten.entwuerfe.length} offene Dokumentation(en)` : ""}</div>
+          {ich?.rolle === "hebamme" && <Link to="/tour" className="mt-2 inline-block font-medium text-salbei-600 underline">Tour für heute ›</Link>}
         </div>
       </div>
 
