@@ -484,6 +484,7 @@ def build(V):
             "gpos_anteilig": "50200",
             "satz_je_km": 0.97,
             "strecke": "kürzest mögliche Strecke zur Hilfeleistung",
+            "ausgangspunkt": "laut Routenkonfiguration der Hebamme; Standard: Wohnort der Hebamme",
             "max_km_regel": 25,
             "max_km_mit_begruendung": 50,
             "begruendungen_ueber_25km": ["geplante Hausgeburt (inkl. SS und frühes WB)", "Vertretung einer anderen Hebamme (Name angeben)",

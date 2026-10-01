@@ -10,17 +10,32 @@
       "aktiv": "hhv-2026-04-01",
       "aenderungen_freigabe": {
         "verfahren": "vier_augen",
-        "bearbeiten_duerfen": ["alle_hebammen"],
+        "bearbeiten_duerfen": [
+          "alle_hebammen"
+        ],
         "freigabe_durch": "andere_hebamme",
         "beschreibung": "Jede Hebamme darf Positionen, Kontingente usw. ändern; die Änderung wird erst wirksam, wenn eine andere Hebamme sie bestätigt."
       }
     },
     "benachrichtigungen": {
-      "kanaele": ["app", "push", "email"],
-      "ausschlussfrist_erinnerungen": ["04-01", "06-01", "06-15"],
+      "kanaele": [
+        "app",
+        "push",
+        "email"
+      ],
+      "ausschlussfrist_erinnerungen": [
+        "04-01",
+        "06-01",
+        "06-15"
+      ],
       "vorlauf_tage_lebenstag_ende": 1,
       "vorlauf_tage_betreuungsende": 7
-    }
+    },
+    "wegegeld": {
+      "standard_ausgangspunkt": "wohnort_hebamme",
+      "beschreibung": "Ausgangspunkt der abrechenbaren Strecke laut Routenkonfiguration; Standard ist der Wohnort (private Anschrift) der Hebamme. In jeder Tourvorlage und für jeden Tag überschreibbar."
+    },
+    "selbstzahler_preisliste": "konfiguration/selbstzahler-preisliste.json"
   },
   "hebammen": [
     {
@@ -30,19 +45,47 @@
       "ik": "45XXXXXXX",
       "beschaeftigung": "freiberuflich",
       "orte": [
-        { "id": "privat", "bezeichnung": "Private Anschrift", "anschrift": "<private Anschrift>" },
-        { "id": "praxis", "bezeichnung": "Praxis", "verweis": "praxis.standort" }
+        {
+          "id": "privat",
+          "bezeichnung": "Private Anschrift",
+          "anschrift": "<private Anschrift>"
+        },
+        {
+          "id": "praxis",
+          "bezeichnung": "Praxis",
+          "verweis": "praxis.standort"
+        }
       ],
       "tourvorlagen": [
-        { "name": "Normaler Tag", "wochentage": [1, 2, 3, 4, 5], "start": "privat", "ende": "privat" }
+        {
+          "name": "Normaler Tag",
+          "wochentage": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "privat",
+          "ende": "privat",
+          "wegegeld_ausgangspunkt": "privat"
+        }
       ],
       "abrechnung": {
         "weg": "hebset",
-        "abrechnungsstelle": { "name": "hebset KG", "anschrift": "Lindauer Straße 38, 86845 Großaitingen" },
+        "abrechnungsstelle": {
+          "name": "hebset KG",
+          "anschrift": "Lindauer Straße 38, 86845 Großaitingen"
+        },
         "belegart": "eigendruck_amtliches_formular",
         "unterschrift": "papier",
-        "versand": { "rhythmus": "monatlich", "tag": 1, "erinnerung_vorlauf_tage": 2 }
-      }
+        "versand": {
+          "rhythmus": "monatlich",
+          "tag": 1,
+          "erinnerung_vorlauf_tage": 2
+        }
+      },
+      "wegegeld_ausgangspunkt": "privat"
     },
     {
       "id": "johanna",
@@ -51,22 +94,70 @@
       "ik": "45XXXXXXX",
       "beschaeftigung": "freiberuflich",
       "orte": [
-        { "id": "privat", "bezeichnung": "Private Anschrift", "anschrift": "<private Anschrift>" },
-        { "id": "schule", "bezeichnung": "Schule", "anschrift": "<Anschrift Schule>", "abholzeit": "15:30" },
-        { "id": "kita", "bezeichnung": "Kita", "anschrift": "<Anschrift Kita>", "abholzeit": "16:00" },
-        { "id": "praxis", "bezeichnung": "Praxis", "verweis": "praxis.standort" }
+        {
+          "id": "privat",
+          "bezeichnung": "Private Anschrift",
+          "anschrift": "<private Anschrift>"
+        },
+        {
+          "id": "schule",
+          "bezeichnung": "Schule",
+          "anschrift": "<Anschrift Schule>",
+          "abholzeit": "15:30"
+        },
+        {
+          "id": "kita",
+          "bezeichnung": "Kita",
+          "anschrift": "<Anschrift Kita>",
+          "abholzeit": "16:00"
+        },
+        {
+          "id": "praxis",
+          "bezeichnung": "Praxis",
+          "verweis": "praxis.standort"
+        }
       ],
       "tourvorlagen": [
-        { "name": "Schultag", "wochentage": [1, 2, 3, 4, 5], "start": "privat", "ende": "schule", "ende_spaetestens": "15:30" },
-        { "name": "Praxistag", "wochentage": [3], "start": "praxis", "ende": "kita", "ende_spaetestens": "16:00" }
+        {
+          "name": "Schultag",
+          "wochentage": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "privat",
+          "ende": "schule",
+          "ende_spaetestens": "15:30",
+          "wegegeld_ausgangspunkt": "privat"
+        },
+        {
+          "name": "Praxistag",
+          "wochentage": [
+            3
+          ],
+          "start": "praxis",
+          "ende": "kita",
+          "ende_spaetestens": "16:00",
+          "wegegeld_ausgangspunkt": "privat"
+        }
       ],
       "abrechnung": {
         "weg": "hebset",
-        "abrechnungsstelle": { "name": "hebset KG", "anschrift": "Lindauer Straße 38, 86845 Großaitingen" },
+        "abrechnungsstelle": {
+          "name": "hebset KG",
+          "anschrift": "Lindauer Straße 38, 86845 Großaitingen"
+        },
         "belegart": "eigendruck_amtliches_formular",
         "unterschrift": "tablet",
-        "versand": { "rhythmus": "monatlich", "tag": 15, "erinnerung_vorlauf_tage": 2 }
-      }
+        "versand": {
+          "rhythmus": "monatlich",
+          "tag": 15,
+          "erinnerung_vorlauf_tage": 2
+        }
+      },
+      "wegegeld_ausgangspunkt": "privat"
     },
     {
       "id": "lorina",
@@ -76,20 +167,36 @@
       "ik": "45XXXXXXX",
       "beschaeftigung": "freiberuflich",
       "orte": [
-        { "id": "privat", "bezeichnung": "Private Anschrift", "anschrift": "<private Anschrift>" }
+        {
+          "id": "privat",
+          "bezeichnung": "Private Anschrift",
+          "anschrift": "<private Anschrift>"
+        }
       ],
       "tourvorlagen": [],
       "abrechnung": {
         "weg": "andere_abrechnungsstelle",
-        "abrechnungsstelle": { "name": "<Name Abrechnungsstelle>", "anschrift": "<Anschrift>" },
+        "abrechnungsstelle": {
+          "name": "<Name Abrechnungsstelle>",
+          "anschrift": "<Anschrift>"
+        },
         "belegart": "durchschreibesatz",
         "unterschrift": "papier",
-        "versand": { "rhythmus": "zweimonatlich", "tag": 1, "erinnerung_vorlauf_tage": 3 }
-      }
+        "versand": {
+          "rhythmus": "zweimonatlich",
+          "tag": 1,
+          "erinnerung_vorlauf_tage": 3
+        }
+      },
+      "wegegeld_ausgangspunkt": "privat"
     }
   ],
   "_optionen": {
-    "hebamme.status": ["aktiv", "babypause", "ausgeschieden"],
+    "hebamme.status": [
+      "aktiv",
+      "babypause",
+      "ausgeschieden"
+    ],
     "abrechnung.weg": {
       "hebset": "Abrechnung über hebset KG (Papierversand)",
       "andere_abrechnungsstelle": "Anderes Abrechnungszentrum, gleiche Unterlagen, eigene Anschrift",
@@ -109,6 +216,7 @@
       "quartalsweise": "Einmal je Quartal",
       "halbjaehrlich": "Zweimal je Jahr (vertragliches Minimum)",
       "_regel": "Vertrag (Anlage 2 § 2): höchstens einmal je Monat, mindestens zweimal je Jahr; Ausschlussfrist 30.06. für das Vorjahr"
-    }
+    },
+    "wegegeld_ausgangspunkt": "Id eines Orts der Hebamme oder 'praxis'; Standard 'privat' (Wohnort)"
   }
 }

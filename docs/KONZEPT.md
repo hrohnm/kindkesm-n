@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.3 (Entwurf)
+Stand: 01.10.2026 · Version 1.4 (Entwurf)
 
 ---
 
@@ -213,6 +213,11 @@ Die wichtigsten Regeln:
 | Babypause Lorina | Fiktives Ende **01.03.2027** als Platzhalter |
 | Kinderurkunde | Wie in Kapitel 10 beschrieben |
 | Elternportal | **Out of Scope** |
+| Eigendruck und Tablet-Unterschrift bei HebSet | Werden akzeptiert (Voreinstellung: Eigendruck) |
+| Wegegeld-Ausgangspunkt | Laut Routenkonfiguration; Standard ist der **Wohnort der Hebamme** |
+| Selbstzahler-Preise | Administrierbar; Start mit plausiblen Dummydaten ([`konfiguration/selbstzahler-preisliste.json`](../konfiguration/selbstzahler-preisliste.json)) |
+| Fortbildung | Laut Vertrag 40 Unterrichtsstunden in 3 Jahren |
+| Entwicklung und Betrieb | Entwicklung durch Claude (KI-gestützt, in diesem Repository); Betrieb durch den Auftraggeber auf einem eigenen **VPS bei Hostinger** |
 
 ---
 
@@ -429,7 +434,9 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 - Liste abrechenbarer Materialien mit Position, Preis und Einheit
 
 **7. Selbstzahler-Preisliste**
-- Akupunktur, Kinesio-Taping, Schwangerschaftsmassage, Babymassagekurs, Partnergebühren: Preis, USt-Hinweis (Steuerbefreiung prüfen), Rechnungstext (für M13)
+- Akupunktur, Kinesio-Taping, Schwangerschaftsmassage, Babymassage- und Eltern-Kind-Kurs, Partnergebühren, Ausfallgebühr: Preis, Dauer, Pakete/Varianten, Umsatzsteuer-Option (§ 4 Nr. 14 / § 19 / 19 %), Rechnungstext (für M13)
+- Praxis-Standardpreise, je Hebamme überschreibbar (jede rechnet selbst ab); Änderungen ebenfalls mit Vier-Augen-Freigabe
+- Startbelegung mit plausiblen Dummydaten: [`konfiguration/selbstzahler-preisliste.json`](../konfiguration/selbstzahler-preisliste.json)
 
 **8. Test und Sicherheit**
 - **Testrechner**: Eine Beispielbetreuung durchspielen („Geburt 20.09., Besuche an Tag 1, 2, 2, 3 …“). Die App zeigt die erzeugten Positionen, Beträge und Warnungen, bevor eine neue Version aktiviert wird.
@@ -460,8 +467,8 @@ Kein händisches Ausfüllen der Kopfdaten, keine Etiketten, keine Doppelerfassun
 | Einstellung | Optionen | Wirkung |
 |---|---|---|
 | **Abrechnungsweg** | *HebSet* · *andere Abrechnungsstelle* (Name, Anschrift) · *selbst* | Bestimmt Empfänger, Deckblatt und Versandliste. Bei *selbst* liefert die App alle Unterlagen und einen Datenexport; die vertraglich vorgeschriebene elektronische Übermittlung an die Kassen (§ 302 SGB V, sonst bis zu 5 % Kürzung) erfolgt mit einer externen zertifizierten Software. |
-| **Belegart** | *Eigendruck amtliches Formular* · *Durchschreibesatz der Abrechnungsstelle* | Eigendruck: App druckt die Formulare 3.1–3.5. Durchschreibesatz: App zeigt je Besuch die einzutragende Zeile und erstellt Kontrolllisten. |
-| **Unterschrift** | *Papier* · *Tablet* | Siehe 8.5. Pro Hebamme wählbar, damit z. B. eine Hebamme mit Stift-iPad das Tablet nutzt und eine andere auf Papier bleibt. |
+| **Belegart** | *Eigendruck amtliches Formular* (Voreinstellung, von HebSet akzeptiert) · *Durchschreibesatz der Abrechnungsstelle* | Eigendruck: App druckt die Formulare 3.1–3.5. Durchschreibesatz: App zeigt je Besuch die einzutragende Zeile und erstellt Kontrolllisten. |
+| **Unterschrift** | *Papier* · *Tablet* (von HebSet akzeptiert) | Siehe 8.5. Pro Hebamme wählbar, damit z. B. eine Hebamme mit Stift-iPad das Tablet nutzt und eine andere auf Papier bleibt. |
 | **Versandrhythmus** | *monatlich* (Stichtag frei) · *zweimonatlich* · *quartalsweise* · *halbjährlich* | Erinnerung vor dem Stichtag. Die App lässt nur vertragskonforme Rhythmen zu (siehe 8.7). |
 | **IK** | persönliches IK (beginnt mit 45) | Steht auf jedem Beleg; alle drei Hebammen sind freiberuflich mit eigenem IK. |
 
@@ -512,7 +519,7 @@ Ein Beispiel liegt in [`konfiguration/einstellungen-beispiel.json`](../konfigura
 | Verfahren | Ablauf | Hinweis |
 |---|---|---|
 | **Papier** | Formular mit fertigem Kopf liegt in der Mappe. Beim Besuch zeigt die App die Zeile genau an („12.10.2026 · 09:10–09:55 · Spalte Wochenbett: 1“), die Hebamme trägt sie ein, die Mutter unterschreibt sofort. Vor dem Versand wird das Original abfotografiert und an den Fall gehängt. | Entspricht dem Vertrag und dem heutigen Verfahren |
-| **Tablet** | Die App füllt die Zeile, die Mutter unterschreibt sofort auf dem Tablet (Stift oder Finger). Beim Versand druckt die App das komplette Formular mit den Unterschriften. | Bei persönlichen Besuchen ist die Tablet-Unterschrift vertraglich nicht ausdrücklich geregelt (nur bei Video). Beim Aktivieren zeigt die App einen Hinweis, dass die Akzeptanz mit der Abrechnungsstelle geklärt sein muss. |
+| **Tablet** | Die App füllt die Zeile, die Mutter unterschreibt sofort auf dem Tablet (Stift oder Finger). Beim Versand druckt die App das komplette Formular mit den Unterschriften. | Von HebSet akzeptiert. Vertraglich ist sie bei persönlichen Besuchen nicht ausdrücklich geregelt (nur bei Video); bei einer anderen Abrechnungsstelle weist die App beim Aktivieren darauf hin, die Akzeptanz zu klären. |
 
 **Videobetreuung:** Hier erlaubt der Vertrag die einfache elektronische Signatur auf dem PDF. Die App schickt das ausgefüllte PDF direkt nach der Videobetreuung; Rücksendung binnen zwei Wochen, die App erinnert.
 
@@ -605,7 +612,7 @@ Die Erinnerung zum persönlichen Versandstichtag kommt mit einstellbarem Vorlauf
 6. Am Ende: Tagesbilanz (km, Fahrtzeit, Betreuungszeit, Wegegeld)
 
 ### 9.4 Kilometer-Logik für Wegegeld und Fahrtenbuch
-- Abrechenbar ist laut § 11 Anlage 1.1 die **kürzest mögliche Strecke zur Hilfeleistung**, höchstens 25 km (bis 50 km nur mit Begründung). Betreut die Hebamme mehrere Frauen auf einem Weg, wird die Gesamtstrecke durch die Anzahl der Frauen geteilt (50200, Anzahl angeben). Der Ausgangspunkt ist im Regelwerk einstellbar (offen: Praxis oder Wohnung, siehe Kapitel 17).
+- Abrechenbar ist laut § 11 Anlage 1.1 die **kürzest mögliche Strecke zur Hilfeleistung**, höchstens 25 km (bis 50 km nur mit Begründung). Betreut die Hebamme mehrere Frauen auf einem Weg, wird die Gesamtstrecke durch die Anzahl der Frauen geteilt (50200, Anzahl angeben). Der **Ausgangspunkt** richtet sich nach der Routenkonfiguration: Standard ist der **Wohnort der Hebamme**, in jeder Tourvorlage und für jeden Tag änderbar (z. B. Start an der Praxis). Gemessen wird die kürzeste Strecke vom Ausgangspunkt zur Familie, nicht der tatsächlich gefahrene Umweg über andere Besuche.
 - Der private Anteil (z. B. Weg zur Schule) wird im Fahrtenbuch als privat markiert und **nicht** abgerechnet.
 
 ---
@@ -694,35 +701,47 @@ Die Erinnerung zum persönlichen Versandstichtag kommt mit einstellbarem Vorlauf
 
 ## 12. Technische Architektur
 
-### 12.1 Empfehlung: Offline-fähige Web-App (PWA) + optionale native Hülle
+### 12.1 Entscheidung: Offline-fähige Web-App (PWA)
 
-| Option | Vorteile | Nachteile | Bewertung |
-|---|---|---|---|
-| **PWA (Web) + Capacitor-Hülle** | Eine Codebasis für iPad, Android, Handy und Desktop; Updates ohne App Store; mit Capacitor Zugriff auf Kamera, Stift, Biometrie, Bluetooth (Kartenleser/Drucker), Hintergrund-Sync | Etwas weniger „nativ“ als Swift/Kotlin | ✅ **Empfohlen** |
-| Flutter | Sehr gute Tablet-UI, native Performance | Web-Version schwächer, kleineres Ökosystem für PDF/Formulare | Gute Alternative |
-| Native (Swift + Kotlin) | Beste Plattformintegration | Doppelter Aufwand | ❌ zu teuer für 3 Nutzerinnen |
+Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (mit und ohne Stift), Android, Handy und Laptop, installierbar über „Zum Home-Bildschirm“, Updates ohne App Store. Eine Capacitor-Hülle für den App Store bleibt als Option, falls später native Funktionen (z. B. Bluetooth-Kartenleser) nötig werden.
 
-### 12.2 Bausteine
+| Bereich | Technik | Begründung |
+|---|---|---|
+| Frontend | **React + TypeScript**, Vite, Tailwind CSS, PWA (Service Worker) | Verbreitet, gut testbar, responsive Tablet-/Handy-Layouts |
+| Offline-Daten | **IndexedDB** (Dexie), verschlüsselt; eigener Sync | Arbeiten im Funkloch, Abgleich bei Netz |
+| Unterschrift/Stift | Pointer Events (Apple Pencil, Finger, Maus) | Funktioniert mit und ohne Stift |
+| PDF | **pdf-lib** (Formulare 3.1–3.5 auf amtliche Vorlage, Abrechnungsdatenblatt, Kinderurkunde, Rechnungen) | Läuft im Browser, also auch offline beim Hausbesuch |
+| Backend | **Node.js + TypeScript** (Fastify), **PostgreSQL**, Prisma | Eine Sprache für alles, einfach zu betreiben |
+| Anmeldung | Passkeys bzw. Passwort + 2FA (TOTP), Sitzungen mit kurzer Laufzeit | Gesundheitsdaten |
+| Routing | **OSRM** (Straßennetz Mecklenburg-Vorpommern aus OpenStreetMap) + **VROOM** (Tourenoptimierung) | Selbst gehostet, keine Adressen an Google |
+| Karten | Leaflet mit OSM-Kacheln (bzw. selbst gehostete Kacheln) | Keine Tracking-Dienste |
+| Benachrichtigungen | Web-Push (PWA) und E-Mail (SMTP) | Fristen und Erinnerungen |
+| Tests | Vitest (Regelwerk, Plausi, Wegegeld), Playwright (Oberfläche auf iPad-Auflösung) | Abrechnungslogik muss stimmen |
+
+### 12.2 Betrieb auf dem Hostinger-VPS
 
 ```
 ┌───────────────────────── Geräte (iPad / Android / Handy / Laptop) ─────────────────────────┐
-│  PWA / Capacitor-App (React + TypeScript, responsive UI, Tailwind)                         │
-│  • Lokale verschlüsselte DB (SQLite/IndexedDB) • Offline-Sync-Engine • PDF-Erzeugung lokal │
+│  PWA (React + TypeScript) · IndexedDB verschlüsselt · Offline-Sync · PDF-Erzeugung lokal    │
 └──────────────────────────────────────────┬─────────────────────────────────────────────────┘
-                                           │ HTTPS/TLS 1.3, Ende-zu-Ende für Anhänge
-┌──────────────────────── Backend (Hosting in Deutschland, z. B. Hetzner / IONOS / STACKIT) ─┐
-│  API (Node.js/NestJS oder Supabase self-hosted) · PostgreSQL (verschlüsselt, Backups)      │
-│  • Auth (Passkeys/2FA) • Rollen & Audit-Log • Datei-Speicher (S3-kompatibel, verschlüsselt)│
-│  • Regelwerk-Service (in der App pflegbar, versioniert, M26)                                │
-│  • Routing: VROOM + OSRM/OpenRouteService (OSM-Daten Mecklenburg-Vorpommern)                │
-│  • PDF-Service (HebSet-Belege, Urkunden, Rechnungen, Briefe)                                │
-│  • Benachrichtigungen (E-Mail, SMS-Gateway DE, Push)                                        │
-└──────────────────────────────────────────┬─────────────────────────────────────────────────┘
-               ┌───────────────────────────┼───────────────────────────────┐
-               ▼                           ▼                               ▼
-       Website Kindkesmöön         HebSet (PDF → Druck → Post)      TI-Gateway (Phase 3)
-       (Anfrage-/Kursformular)     Rückkanal-Import                 eGK · KIM · ePA · eLB
+                                           │ HTTPS (TLS 1.3)
+┌──────────────────────── Hostinger VPS (Docker Compose, Rechenzentrum in der EU) ────────────┐
+│  caddy        Reverse Proxy, automatische TLS-Zertifikate (Let's Encrypt)                   │
+│  app          Frontend (statisch) + API (Node.js/Fastify)                                   │
+│  db           PostgreSQL (Volume verschlüsselt), nächtliche Dumps                           │
+│  osrm         Routing-Engine mit OSM-Extrakt Mecklenburg-Vorpommern                         │
+│  vroom        Tourenoptimierung (nutzt osrm)                                                │
+│  backup       verschlüsselte Backups (restic) auf externen Speicher in der EU               │
+│  uptime       Überwachung (z. B. Uptime Kuma), Benachrichtigung bei Ausfall                 │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+- **Größe**: Für 3 Nutzerinnen reicht ein kleiner VPS; OSRM für Mecklenburg-Vorpommern braucht beim Vorbereiten der Karte kurzzeitig ca. 2–4 GB RAM. Empfehlung: mindestens 2 vCPU, 8 GB RAM, 100 GB SSD (bei Hostinger etwa Tarif „KVM 2“).
+- **Standort**: Rechenzentrum in der EU wählen (wenn verfügbar Deutschland); Auftragsverarbeitungsvertrag (AVV/DPA) mit Hostinger abschließen.
+- **Härtung**: SSH nur mit Schlüssel, Firewall (nur 22/80/443), automatische Sicherheitsupdates, fail2ban, Datenbank nicht öffentlich erreichbar.
+- **Backups**: täglich verschlüsselt auf einen zweiten Speicherort in der EU (nicht nur Hostinger-Snapshots), Wiederherstellung vierteljährlich testen.
+- **Deployment**: Docker-Images aus diesem Repository (GitHub Actions baut und testet), Update auf dem VPS per `docker compose pull && docker compose up -d`. Eine Schritt-für-Schritt-Anleitung kommt mit dem ersten lauffähigen Stand.
+- **Umgebungen**: eine **Demo-/Testumgebung mit Dummydaten** und die **Produktivumgebung**; echte Gesundheitsdaten nie in der Testumgebung.
 
 ### 12.3 Offline-Synchronisation
 - Lokale Datenbank auf dem Gerät, Änderungen als Ereignisse mit Zeitstempel und Gerät
@@ -740,7 +759,7 @@ Die Erinnerung zum persönlichen Versandstichtag kommt mit einstellbarem Vorlauf
 
 | Maßnahme | Umsetzung |
 |---|---|
-| Hosting | Deutschland, ISO-27001-zertifizierter Anbieter, AVV abgeschlossen |
+| Hosting | Eigener VPS bei Hostinger, Rechenzentrum in der EU, AVV/DPA mit Hostinger, Server-Härtung und verschlüsselte externe Backups (Kapitel 12.2) |
 | Verschlüsselung | TLS 1.3 beim Transport; Datenbank und Dateien verschlüsselt; lokale Daten auf dem Gerät verschlüsselt (Schlüssel im Secure Enclave/Keystore) |
 | Anmeldung | Passkeys oder Passwort + 2FA; App-Sperre per Face ID/Fingerabdruck; automatische Sperre nach Inaktivität |
 | Rollen | Need-to-know: Hebammen sehen eigene und vertretene Fälle; Administration sieht alles; Büro nur Verwaltungsdaten |
@@ -785,16 +804,25 @@ Hebamme (Status aktiv/Babypause/ausgeschieden, IK, Vorlagen)
 
 ## 15. Umsetzungsplan und Roadmap
 
-### Phase 0 – Klärung (2–4 Wochen)
-- Workshop mit den drei Hebammen: typischer Tag, Schmerzpunkte, Prioritäten
-- **Gespräch mit HebSet** zu Eigendrucken, Tablet-Unterschrift und Abrechnungsdatenblatt (siehe [Kapitel 17](#17-offene-fragen))
-- Startregelwerk ([`regelwerk/hhv-2026-04-01-positionen.csv`](../regelwerk/hhv-2026-04-01-positionen.csv)) von der Praxis prüfen lassen
-- Datenexport aus Hebamio prüfen (welche Formate, wie vollständig)
-- Klickbarer Prototyp (Figma) auf dem Tablet testen
+### Phase 0 – Klärung (abgeschlossen)
+- Recherche, Konzept, Regelwerk aus dem Vertrag, Entscheidungen der Praxis (Kapitel 5.1)
+- Rest: Startregelwerk ([`regelwerk/hhv-2026-04-01-positionen.csv`](../regelwerk/hhv-2026-04-01-positionen.csv)) einmal fachlich durchsehen
+
+### Entwicklungsweise
+Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder Schritt wird auf dem Branch gepusht und kann in der Demo-Umgebung mit Dummydaten getestet werden. Rückmeldungen der Hebammen fließen in den nächsten Schritt ein.
+
+| Meilenstein | Inhalt |
+|---|---|
+| **M-1 Grundgerüst** | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS |
+| **M-2 Akte und Besuch** | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Leistungserfassung mit Plausi und Kontingentanzeige |
+| **M-3 Abrechnung** | Formulare 3.1/3.3/3.4 als PDF, Papier- und Tablet-Unterschrift, Durchschreibesatz-Hilfe, Abrechnungsdatenblatt, Versandmappe, Fristen und Erinnerungen |
+| **M-4 Touren** | OSRM/VROOM, Tourvorlagen mit Start/Ende, Tagesplanung, Wegegeld und Fahrtenbuch |
+| **M-5 Regelwerk-Administration** | Positionen, Kontingente, Fristen, Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe, Testrechner |
+| **M-6 Offline** | Vollständiger Offline-Betrieb mit Synchronisation |
 
 ### Phase 1 – MVP: „Der Hausbesuch“ (ca. 3–4 Monate)
 M1 Cockpit · M2 Akte · M3 Doku Schwangerschaft/Wochenbett · M5 Kalender · **M6 Routenplanung** · M7 Leistungen + Plausi · **M8 Abrechnungsunterlagen (Formulare 3.1, 3.3, 3.4; Papier und Tablet; Durchschreibesatz-Hilfe; Abrechnungsdatenblatt; Fristen)** · M9 Fahrtenbuch · M25 Admin inkl. Orte und Abrechnungseinstellungen · **M26 Regelwerk-Administration mit Vier-Augen-Freigabe** · Offline-Sync
-→ **Parallelbetrieb** mit Hebamio für 1–2 Monate, danach Umstieg
+→ entspricht den Meilensteinen M-1 bis M-6; danach **Parallelbetrieb** mit Hebamio für 1–2 Monate, dann Umstieg
 
 ### Phase 2 – „Die Praxis“ (ca. 3 Monate)
 **M10 Kinderurkunde** · M11 Belegungsplan + Website-Anfrage · M12 Kurse + Online-Anmeldung · M13 Selbstzahler-Rechnungen · M15 Wachstumskurven · M17 Fotos · M18 Vorlagen · M19 Vertretung · M20 Team-Nachrichten · M22 Statistik · M23 Automatisierungen
@@ -819,17 +847,18 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 ### Laufende Kosten eigene App (Schätzung)
 | Posten | Kosten/Jahr |
 |---|---|
-| Hosting Deutschland (Server, DB, Backups, Routing-Server) | ca. 300–900 € |
-| SMS/E-Mail-Dienst | ca. 50–150 € |
-| Domain, Zertifikate, Apple-Developer-Konto (falls App Store) | ca. 100 € |
-| Wartung, Updates (Regelwerk, Sicherheit): Eigenleistung bzw. Stunden | je nach Modell |
+| Hostinger VPS (z. B. KVM 2) und externer Backup-Speicher | ca. 100–200 € |
+| E-Mail-Versand (SMTP-Dienst, optional SMS) | ca. 0–100 € |
+| Domain (Zertifikate kostenlos über Let's Encrypt; kein App-Store-Konto nötig) | ca. 10–20 € |
+| Betrieb und Updates (Server, Regelwerk): Eigenleistung | – |
 
 **Bewertung:** Die Einsparung bei den Lizenzkosten ist moderat. Der eigentliche Gewinn liegt in **Zeit** (Routenplanung, keine Doppelerfassung für HebSet, weniger Kürzungen) und in **Funktionen, die es nirgends gibt** (Kinderurkunde, Routenplanung, Belegungsplan). Langfristig kann die Praxis mit sauberen digitalen Daten auch den Abrechnungsweg frei wählen.
 
 **Risiken:**
 - Verantwortung für Datenschutz, Sicherheit und Verfügbarkeit liegt bei der Praxis
 - Änderungen im Hebammenhilfevertrag muss die Praxis selbst in M26 einpflegen. Testrechner und Versionierung reduzieren das Fehlerrisiko, die fachliche Verantwortung für korrekte Werte bleibt aber bei der Praxis
-- Abhängigkeit von einer Person als Entwickler: saubere Dokumentation und Datenexport jederzeit
+- Betrieb auf eigenem VPS: Verfügbarkeit, Updates und Backups liegen beim Betreiber; daher Monitoring, automatische Updates und getestete Wiederherstellung
+- Abhängigkeit von einer Codebasis ohne Hersteller: saubere Dokumentation, Tests und Datenexport jederzeit
 - TI-Pflicht: Bis M24 umgesetzt ist, eine separate TI-Lösung eines Anbieters nutzen
 
 ---
@@ -840,11 +869,9 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 Siehe Tabelle in Kapitel 5.1. Die Frage, wie Wegegeld und Pauschalen übermittelt werden, ist über den Vertrag beantwortet (Kapitel 8.6).
 
 ### Noch offen
-1. **Abrechnungsstelle**: Akzeptiert HebSet Eigendrucke der amtlichen Formulare und Tablet-Unterschriften? (Beides ist umgesetzt; die Antwort entscheidet nur die Voreinstellung.) In welcher Form nimmt HebSet das Abrechnungsdatenblatt am liebsten (Aufbau, Sortierung)?
-2. **Wegegeld-Ausgangspunkt**: Beginnt die abrechenbare Strecke an der Praxis (Sitz zum IK) oder an der Wohnung der Hebamme? Bitte bei HebSet oder dem Berufsverband nachfragen; das Regelwerk ist für beide Varianten vorbereitet.
-3. **Selbstzahler-Preise**: Akupunktur, Taping, Schwangerschaftsmassage, Babymassagekurs (Preise, Rechnungstexte, Umsatzsteuer mit Steuerberatung klären).
-4. **Berufsordnung MV**: Regelt sie einen eigenen Fortbildungsumfang? Sonst gelten 40 Unterrichtsstunden in 3 Jahren (Anlage 3).
-5. **Entwicklung und Betrieb**: Wer entwickelt und betreibt die App (Eigenentwicklung, Freelancer, Agentur)?
+1. **VPS**: Welcher Hostinger-Tarif und welcher Standort ist vorhanden (bzw. wird gebucht)? Empfehlung siehe Kapitel 12.2.
+2. **Domain**: Unter welcher Adresse soll die App laufen (z. B. `app.hebammen-landkreisrostock.de`)?
+3. **E-Mail-Versand**: Über welches Postfach bzw. welchen SMTP-Dienst sollen Erinnerungen verschickt werden?
 
 ---
 
