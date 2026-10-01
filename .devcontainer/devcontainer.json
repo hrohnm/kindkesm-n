@@ -1,0 +1,22 @@
+{
+  "name": "Kindkesmöön",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [5173, 3000],
+  "portsAttributes": {
+    "5173": { "label": "Web-App", "onAutoForward": "openBrowser" },
+    "3000": { "label": "API", "onAutoForward": "silent" }
+  },
+  "containerEnv": {
+    "DATABASE_URL": "postgres://kindkes:kindkes@db:5432/kindkes",
+    "TEST_DATABASE_URL": "postgres://kindkes:kindkes@db:5432/kindkes_test"
+  },
+  "postCreateCommand": "bash .devcontainer/einrichten.sh",
+  "postAttachCommand": "bash .devcontainer/starten.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"]
+    }
+  }
+}

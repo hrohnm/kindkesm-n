@@ -11,6 +11,12 @@
 | `konfiguration` | Beispielkonfiguration und Selbstzahler-Preisliste (Dummydaten) |
 | `deploy`, `Dockerfile`, `docker-compose.yml` | Betrieb (siehe [BETRIEB.md](BETRIEB.md)) |
 
+## Im GitHub Codespace ansehen
+
+Auf GitHub: **Code → Codespaces → Create codespace on main**. Der Codespace richtet sich selbst ein (Node 22, PostgreSQL, Abhängigkeiten, Demo-Daten; beim ersten Mal einige Minuten) und startet API und Web-App. Die Web-App öffnet sich über den Tab **Ports** (Port 5173). Anmeldung: `johanna@kindkesmoeoen.test` / `kindkes-demo-2026`.
+
+Falls nichts startet: im Terminal `bash .devcontainer/starten.sh`, Logs mit `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log`.
+
 ## Lokal starten
 
 Voraussetzungen: Node.js 22, PostgreSQL 16 (lokal oder per Docker).

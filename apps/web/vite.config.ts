@@ -36,6 +36,8 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
+    // Zugriff über die weitergeleitete Adresse eines GitHub Codespaces erlauben
+    allowedHosts: [".app.github.dev"],
     proxy: { "/api": "http://localhost:3000" },
   },
 });
