@@ -58,6 +58,7 @@ In `.env` eintragen:
 | `DB_PASSWORT` | Ergebnis von `openssl rand -base64 32` |
 | `SITZUNG_STUNDEN` | Anmeldedauer in Stunden (Standard 12) |
 | `DEMO_MODUS` | `ja` zeigt auf der Login-Seite Knöpfe für die Demo-Konten (nur Test-Umgebung), sonst `nein` |
+| `OSRM_URL` | leer lassen; setzt `scripts/karte-einrichten.sh` (Abschnitt 5a) |
 
 Starten:
 
@@ -125,6 +126,21 @@ chmod 600 /root/.kindkes-backup-passwort
 - **Externe Kopie:** Zusätzlich auf einen zweiten Speicherort in der EU kopieren (z. B. mit `rclone`, siehe Kommentar in `scripts/backup.sh`). Hostinger-Snapshots allein reichen nicht.
 - **Wiederherstellen:** `scripts/restore.sh /var/backups/kindkesmoeoen/kindkes-JJJJ-MM-TT_HHMM.sql.gz.enc`. Die Wiederherstellung am besten vierteljährlich testen.
 
+## 5a. Kartendaten für Tourenplanung und Wegegeld
+
+Ohne Kartendaten funktioniert die Tourenplanung schon, schätzt Strecken aber aus der Luftlinie, und Anschriften der Familien müssen einmal auf der Karte gesetzt werden. Mit dem eigenen Routing-Server und dem Adressverzeichnis rechnet die App echte Straßenkilometer und findet Anschriften selbst, ohne dass Adressen den Server verlassen.
+
+```bash
+cd /opt/kindkesmoeoen
+scripts/karte-einrichten.sh
+```
+
+Das Skript lädt den OpenStreetMap-Extrakt Mecklenburg-Vorpommern (Geofabrik, ca. 100 MB), bereitet die Routing-Daten vor (einige Minuten, kurzzeitig 2–3 GB RAM), importiert rund eine halbe Million Hausnummern in die Datenbank, trägt `OSRM_URL` und `COMPOSE_PROFILES=karte` in `.env` ein und startet den Dienst `osrm`. Danach startet `docker compose up -d` ihn immer mit. Die Daten liegen im Ordner `karte/` (ca. 1 GB).
+
+- **Aktualisieren** (z. B. halbjährlich, für Neubaugebiete): das Skript erneut ausführen. Von Hand gesetzte Positionen bleiben erhalten.
+- **Prüfen:** In der App unter **Tour** steht bei Strecken kein Hinweis „geschätzt“ mehr.
+- Die Kartenansicht lädt Kartenkacheln von OpenStreetMap (`KARTE_KACHELN` in `.env` änderbar, leer = keine Karte).
+
 ## 6. Eigene Subdomain (später)
 
 1. Beim Domain-Anbieter einen DNS-Eintrag anlegen: `app.hebammen-landkreisrostock.de` → Typ **A** → IPv4-Adresse des VPS (bei IPv6 zusätzlich **AAAA**).
@@ -154,3 +170,5 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 | Zertifikatsfehler | `docker compose logs caddy`; DNS zeigt auf den VPS? Port 80 offen (für die Zertifikatsprüfung nötig)? |
 | App startet nicht | `docker compose logs app`; `DB_PASSWORT` nach dem ersten Start geändert? Dann muss es auch in der Datenbank geändert werden. |
 | Anmeldung gesperrt | Nach 10 Fehlversuchen in 15 Minuten wartet die Anmeldung 15 Minuten. |
+| Strecken „geschätzt“ trotz Kartendaten | `docker compose ps` (läuft `osrm`?), `docker compose logs osrm`; `OSRM_URL=http://osrm:5000` in `.env`? |
+| Familie ohne Position | Anschrift prüfen; sonst in der Akte „Position setzen“ und auf die Haustür tippen. |

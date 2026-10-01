@@ -6,12 +6,14 @@ import { api } from "../../lib/api";
 import type { Ort, Tourvorlage } from "../../lib/typen";
 import { useDaten } from "../../lib/useDaten";
 import { useFormular } from "../../lib/useFormular";
+import { PositionKarte } from "../../komponenten/PositionKarte";
 
 export function OrteTouren() {
   const orte = useDaten<Ort[]>("/api/ich/orte");
   const touren = useDaten<Tourvorlage[]>("/api/ich/tourvorlagen");
   const [ortBearbeiten, setOrtBearbeiten] = useState<Ort | "neu" | null>(null);
   const [tourBearbeiten, setTourBearbeiten] = useState<Tourvorlage | "neu" | null>(null);
+  const [ortKarte, setOrtKarte] = useState<string | null>(null);
   const [fehler, setFehler] = useState<string>();
 
   if (!orte.daten || !touren.daten) return <Laden />;
@@ -64,6 +66,9 @@ export function OrteTouren() {
                 <div className="font-medium">{o.bezeichnung}</div>
                 <div className="text-sm text-slate-500">{ORT_TYP_LABEL[o.typ]}{o.abholzeit ? ` · Abholung ${o.abholzeit} Uhr` : ""}</div>
                 <div className="mt-1 text-sm">{o.anschrift}</div>
+                <button type="button" className={`mt-1 text-sm underline ${o.lat ? "text-salbei-600" : "text-tulpe-500"}`} onClick={() => setOrtKarte(ortKarte === o.id ? null : o.id)}>
+                  {o.lat ? "Auf der Karte zeigen" : "Position fehlt – auf der Karte setzen"}
+                </button>
               </div>
               {o.typ === "praxis" ? (
                 <span className="text-xs text-slate-500">gemeinsam</span>
@@ -80,6 +85,23 @@ export function OrteTouren() {
             </div>
           ))}
         </div>
+        {ortKarte && (() => {
+          const o = orte.daten!.find((x) => x.id === ortKarte);
+          if (!o) return null;
+          return (
+            <div className="mt-3">
+              <PositionKarte
+                titel={o.bezeichnung}
+                position={o.lat && o.lon ? { lat: Number(o.lat), lon: Number(o.lon) } : null}
+                quelle={o.lat ? "adresse" : null}
+                speichern={async (lat, lon) => {
+                  await api(`/api/ich/orte/${o.id}/position`, { method: "PUT", body: { lat, lon } });
+                  await orte.laden();
+                }}
+              />
+            </div>
+          );
+        })()}
       </section>
 
       <section>
@@ -114,7 +136,7 @@ export function OrteTouren() {
                   ))}
                 </div>
                 <div className="mt-2 text-sm">
-                  {ortName(t.startOrtId)} → {ortName(t.endeOrtId)}
+                  ab {t.startZeit} Uhr · {ortName(t.startOrtId)} → {ortName(t.endeOrtId)}
                   {t.endeSpaetestens ? ` (spätestens ${t.endeSpaetestens} Uhr)` : ""}
                 </div>
                 <div className="text-sm text-slate-500">Wegegeld ab: {ortName(t.wegegeldAusgangsOrtId)}</div>
@@ -181,6 +203,7 @@ function TourFormular({ tour, orte, fertig }: { tour?: Tourvorlage; orte: Ort[];
     startOrtId: tour?.startOrtId ?? privat,
     endeOrtId: tour?.endeOrtId ?? privat,
     endeSpaetestens: tour?.endeSpaetestens ?? "",
+    startZeit: tour?.startZeit ?? "08:00",
     wegegeldAusgangsOrtId: tour?.wegegeldAusgangsOrtId ?? privat,
   });
   const ortAuswahl = (feld: "startOrtId" | "endeOrtId" | "wegegeldAusgangsOrtId") => (
@@ -235,6 +258,9 @@ function TourFormular({ tour, orte, fertig }: { tour?: Tourvorlage; orte: Ort[];
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Feld label="Start">{ortAuswahl("startOrtId")}</Feld>
         <Feld label="Ende">{ortAuswahl("endeOrtId")}</Feld>
+        <Feld label="Abfahrt" fehler={f.felder.startZeit}>
+          <input className="feld" type="time" value={f.werte.startZeit} onChange={(e) => f.setze("startZeit", e.target.value)} />
+        </Feld>
         <Feld label="Ende spätestens (optional)" fehler={f.felder.endeSpaetestens}>
           <input className="feld" type="time" value={f.werte.endeSpaetestens} onChange={(e) => f.setze("endeSpaetestens", e.target.value)} />
         </Feld>

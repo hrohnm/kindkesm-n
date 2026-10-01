@@ -10,6 +10,7 @@ import { Anmelden } from "./seiten/Anmelden";
 import { Besuch } from "./seiten/Besuch";
 import { Cockpit } from "./seiten/Cockpit";
 import { Einstellungen } from "./seiten/Einstellungen";
+import { Fahrtenbuch } from "./seiten/Fahrtenbuch";
 import { Abrechnung } from "./seiten/einstellungen/Abrechnung";
 import { OrteTouren } from "./seiten/einstellungen/OrteTouren";
 import { Passwort } from "./seiten/einstellungen/Passwort";
@@ -18,6 +19,7 @@ import { Profil } from "./seiten/einstellungen/Profil";
 import { Klientinnen } from "./seiten/Klientinnen";
 import { Regelwerk } from "./seiten/Regelwerk";
 import { Team } from "./seiten/Team";
+import { Tour } from "./seiten/Tour";
 
 function App() {
   const { ich } = useAuth();
@@ -31,6 +33,9 @@ function App() {
         <Route path="klientinnen/:id" element={<Akte />} />
         <Route path="betreuungen/:betreuungId/besuch" element={<Besuch />} />
         <Route path="besuche/:id" element={<Besuch />} />
+        <Route path="tour" element={<Tour />} />
+        <Route path="tour/:datum" element={<Tour />} />
+        <Route path="fahrtenbuch" element={<Fahrtenbuch />} />
         <Route path="abrechnung" element={<AbrechnungSeite />} />
         <Route path="team" element={<Team />} />
         <Route path="regelwerk" element={<Regelwerk />} />

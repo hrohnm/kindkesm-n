@@ -11,12 +11,14 @@
   "scripts": {
     "dev:api": "npm run dev -w @kindkesmoeoen/api",
     "dev:web": "npm run dev -w @kindkesmoeoen/web",
+    "dev:neustart": "bash .devcontainer/starten.sh neu",
     "build": "npm run build -w @kindkesmoeoen/web && npm run build -w @kindkesmoeoen/api",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "db:migrate": "npm run db:migrate -w @kindkesmoeoen/api",
     "db:seed": "npm run db:seed -w @kindkesmoeoen/api --",
-    "db:seed:demo": "npm run db:seed -w @kindkesmoeoen/api -- --demo"
+    "db:seed:demo": "npm run db:seed -w @kindkesmoeoen/api -- --demo",
+    "db:reset:demo": "npm run db:reset:demo -w @kindkesmoeoen/api"
   },
   "engines": {
     "node": ">=22"

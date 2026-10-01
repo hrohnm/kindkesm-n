@@ -7,6 +7,8 @@ const UNTER = [
   { to: "/einstellungen/abrechnung", label: "Abrechnung" },
   { to: "/einstellungen/praxis", label: "Praxis" },
   { to: "/einstellungen/passwort", label: "Passwort" },
+  { to: "/team", label: "Team ›" },
+  { to: "/fahrtenbuch", label: "Fahrtenbuch ›" },
   { to: "/regelwerk", label: "Regelwerk ›" },
 ];
 

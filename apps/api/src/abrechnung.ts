@@ -186,8 +186,8 @@ export async function mappeErzeugen(db: Datenbank, versandId: string): Promise<{
         datumDe(l.datum),
         l.einheit === "5min" ? `${b.von}–${b.bis}` : "",
         l.gpos,
-        `${l.bezeichnung}${l.zuschlag ? "" : ""}`,
-        l.einheit === "5min" ? `${l.menge} × 5 Min.` : l.einheit === "pauschal" ? "pauschal" : `${l.menge} ${l.einheit}`,
+        l.txt ? `${l.bezeichnung}\n${l.txt}` : l.bezeichnung,
+        l.einheit === "5min" ? `${l.menge} × 5 Min.` : l.einheit === "pauschal" ? "pauschal" : `${String(l.menge).replace(".", ",")} ${l.einheit}`,
         `${LEISTUNGSART_LABEL[b.art as Leistungsart]}\n${l.quittierungspflichtig ? beleg : "nur Datenblatt"}`,
         euro(l.betrag),
       ]);

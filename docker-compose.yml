@@ -27,6 +27,18 @@ services:
       DATABASE_URL: postgres://kindkes:${DB_PASSWORT}@db:5432/kindkes
       SITZUNG_STUNDEN: ${SITZUNG_STUNDEN:-12}
       DEMO_MODUS: ${DEMO_MODUS:-nein}
+      # Routing-Server für echte Straßenstrecken (scripts/karte-einrichten.sh); leer = Schätzung aus der Luftlinie
+      OSRM_URL: ${OSRM_URL:-}
+
+  # Routing (OpenStreetMap, Mecklenburg-Vorpommern). Einrichten mit scripts/karte-einrichten.sh,
+  # das Skript setzt COMPOSE_PROFILES=karte in .env, danach startet "docker compose up -d" ihn mit.
+  osrm:
+    image: ghcr.io/project-osrm/osrm-backend:v5.27.1
+    profiles: ["karte"]
+    restart: unless-stopped
+    command: osrm-routed --algorithm mld --max-table-size 200 /data/karte.osrm
+    volumes:
+      - ./karte:/data:ro
 
   caddy:
     image: caddy:2-alpine

@@ -5,10 +5,16 @@
  *   npm run db:seed              Grunddaten
  *   npm run db:seed -- --demo    Grunddaten + Demo-Konten
  */
+import { createReadStream } from "node:fs";
+import { join } from "node:path";
+import { createInterface } from "node:readline";
 import { eq, sql } from "drizzle-orm";
+import { config } from "../config";
 import { passwortHashen } from "../auth";
 import { verbinden } from "../db/client";
 import { abrechnungseinstellung, benutzer, ort, tourvorlage } from "../db/schema";
+import { adressenImportieren, anzahlAdressen } from "../geo/adressen";
+import { fehlendeKoordinatenErgaenzen, ortVerorten } from "../geo/positionen";
 import { demoAktenAnlegen } from "./demo-akten";
 import { praxisAnlegen, regelwerkImportieren, selbstzahlerImportieren } from "./import";
 
@@ -87,6 +93,7 @@ export async function demoAnlegen(db: ReturnType<typeof verbinden>["db"]) {
     const ids: Record<string, string> = { praxis: praxisOrt!.id };
     for (const o of h.orte) {
       const [neu] = await db.insert(ort).values({ benutzerId: b!.id, bezeichnung: o.bezeichnung, typ: o.typ, anschrift: o.anschrift, abholzeit: o.abholzeit ?? null }).returning();
+      await ortVerorten(db, neu!.id);
       ids[o.key] = neu!.id;
     }
     for (const t of h.touren) {
@@ -103,6 +110,11 @@ export async function grunddatenAnlegen(db: ReturnType<typeof verbinden>["db"], 
   const s = await selbstzahlerImportieren(db);
   let familien = 0;
   if (demo) {
+    // Kleines Demo-Adressverzeichnis, solange kein echtes importiert ist (scripts/karte-einrichten.sh)
+    if ((await anzahlAdressen(db)) === 0) {
+      await adressenImportieren(db, createInterface({ input: createReadStream(join(config.datenOrdner, "konfiguration/demo-adressen.csv")), crlfDelay: Infinity }));
+      await fehlendeKoordinatenErgaenzen(db, false);
+    }
     await demoAnlegen(db);
     familien = await demoAktenAnlegen(db, DEMO_PASSWORT);
   }

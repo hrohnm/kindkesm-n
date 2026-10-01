@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  index,
   integer,
   jsonb,
   numeric,
@@ -81,6 +82,7 @@ export const tourvorlage = pgTable("tourvorlage", {
   startOrtId: uuid("start_ort_id").notNull().references(() => ort.id),
   endeOrtId: uuid("ende_ort_id").notNull().references(() => ort.id),
   endeSpaetestens: text("ende_spaetestens"),
+  startZeit: text("start_zeit").notNull().default("08:00"),
   wegegeldAusgangsOrtId: uuid("wegegeld_ausgangs_ort_id").notNull().references(() => ort.id),
   ...zeitstempel(),
 });
@@ -174,6 +176,10 @@ export const klientin = pgTable("klientin", {
   kassenIk: text("kassen_ik"),
   versichertennummer: text("versichertennummer"),
   hinweise: text("hinweise"),
+  /** Position der Wohnung für Tourenplanung und Wegegeld (aus dem Adressverzeichnis oder von Hand gesetzt) */
+  lat: numeric("lat", { precision: 9, scale: 6, mode: "number" }),
+  lon: numeric("lon", { precision: 9, scale: 6, mode: "number" }),
+  geoQuelle: text("geo_quelle", { enum: ["adresse", "strasse", "manuell"] }),
   zustaendigeHebammeId: uuid("zustaendige_hebamme_id").notNull().references(() => benutzer.id),
   archiviert: boolean("archiviert").notNull().default(false),
   ...zeitstempel(),
@@ -241,13 +247,17 @@ export const leistung = pgTable("leistung", {
   gpos: text("gpos").notNull(),
   bezeichnung: text("bezeichnung").notNull(),
   datum: date("datum").notNull(),
-  menge: smallint("menge").notNull(),
+  menge: numeric("menge", { precision: 8, scale: 1, mode: "number" }).notNull(),
   einheit: text("einheit").notNull(),
   einzelbetrag: numeric("einzelbetrag", { precision: 10, scale: 2 }).notNull(),
   betrag: numeric("betrag", { precision: 10, scale: 2 }).notNull(),
   zuschlag: boolean("zuschlag").notNull().default(false),
   formular: text("formular"),
   quittierungspflichtig: boolean("quittierungspflichtig").notNull(),
+  /** besuch = aus der Besuchsdokumentation, wegegeld = aus der Tagesstrecke (wird bei Änderungen neu berechnet) */
+  quelle: text("quelle", { enum: ["besuch", "wegegeld"] }).notNull().default("besuch"),
+  /** Zusatzangabe für die Abrechnung, z. B. Anzahl der Versicherten bei 50200 oder Begründung */
+  txt: text("txt"),
   status: text("status", { enum: ["erfasst", "versendet", "bezahlt", "gekuerzt"] }).notNull().default("erfasst"),
   versandId: uuid("versand_id").references(() => versand.id, { onDelete: "set null" }),
   kuerzungBetrag: numeric("kuerzung_betrag", { precision: 10, scale: 2 }),
@@ -284,5 +294,103 @@ export const versand = pgTable("versand", {
   bezahltAm: date("bezahlt_am"),
   ausgezahlt: numeric("ausgezahlt", { precision: 10, scale: 2 }),
   notiz: text("notiz"),
+  ...zeitstempel(),
+});
+
+// ------------------------------------------------------------------ Touren (Meilenstein 4)
+
+/** Adressverzeichnis aus OpenStreetMap (Mecklenburg-Vorpommern) für die Geokodierung ohne externe Dienste. */
+export const adresse = pgTable(
+  "adresse",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    plz: text("plz").notNull(),
+    ort: text("ort").notNull(),
+    strasse: text("strasse").notNull(),
+    strasseNorm: text("strasse_norm").notNull(),
+    hausnummer: text("hausnummer").notNull(),
+    lat: numeric("lat", { precision: 9, scale: 6, mode: "number" }).notNull(),
+    lon: numeric("lon", { precision: 9, scale: 6, mode: "number" }).notNull(),
+  },
+  (t) => [index("adresse_suche_idx").on(t.plz, t.strasseNorm, t.hausnummer), index("adresse_ort_idx").on(t.strasseNorm, t.ort)],
+);
+
+/** Tagestour einer Hebamme. */
+export const tour = pgTable(
+  "tour",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    datum: date("datum").notNull(),
+    startOrtId: uuid("start_ort_id").notNull().references(() => ort.id),
+    endeOrtId: uuid("ende_ort_id").notNull().references(() => ort.id),
+    wegegeldAusgangsOrtId: uuid("wegegeld_ausgangs_ort_id").notNull().references(() => ort.id),
+    startZeit: text("start_zeit").notNull(),
+    endeSpaetestens: text("ende_spaetestens"),
+    pufferMin: smallint("puffer_min").notNull().default(5),
+    status: text("status", { enum: ["entwurf", "bestaetigt"] }).notNull().default("entwurf"),
+    meter: integer("meter"),
+    fahrSek: integer("fahr_sek"),
+    ankunftEnde: text("ankunft_ende"),
+    geometrie: jsonb("geometrie").$type<Array<[number, number]>>(),
+    quelle: text("quelle", { enum: ["osrm", "luftlinie"] }),
+    hinweise: jsonb("hinweise").$type<string[]>().notNull().default([]),
+    ...zeitstempel(),
+  },
+  (t) => [uniqueIndex("tour_tag_idx").on(t.hebammeId, t.datum)],
+);
+
+/** Geplanter Besuch (Termin) mit festem Zeitpunkt oder Zeitfenster. */
+export const termin = pgTable("termin", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  betreuungId: uuid("betreuung_id").notNull().references(() => betreuung.id, { onDelete: "cascade" }),
+  datum: date("datum").notNull(),
+  zeit: text("zeit", { enum: ["fix", "ganztags", "vormittags", "nachmittags", "fenster"] }).notNull(),
+  uhrzeit: text("uhrzeit"),
+  fruehestens: text("fruehestens"),
+  spaetestens: text("spaetestens"),
+  dauerMin: smallint("dauer_min").notNull(),
+  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"] }).notNull(),
+  wichtig: boolean("wichtig").notNull().default(false),
+  notiz: text("notiz"),
+  reihenfolge: smallint("reihenfolge"),
+  ankunft: text("ankunft"),
+  besuchId: uuid("besuch_id").references(() => besuch.id, { onDelete: "set null" }),
+  status: text("status", { enum: ["geplant", "erledigt", "abgesagt"] }).notNull().default("geplant"),
+  ...zeitstempel(),
+});
+
+/** Wegegeld eines Tages: Gesamtstrecke, Aufteilung und Abweichungen von Hand. */
+export const wegegeldTag = pgTable(
+  "wegegeld_tag",
+  {
+    hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    datum: date("datum").notNull(),
+    ausgangsOrtId: uuid("ausgangs_ort_id").references(() => ort.id, { onDelete: "set null" }),
+    gesamtMeter: integer("gesamt_meter"),
+    quelle: text("quelle", { enum: ["osrm", "luftlinie", "manuell"] }),
+    manuellKm: numeric("manuell_km", { precision: 7, scale: 1, mode: "number" }),
+    getrennteWege: boolean("getrennte_wege").notNull().default(false),
+    begruendungen: jsonb("begruendungen").$type<Record<string, string>>().notNull().default({}),
+    hinweise: jsonb("hinweise").$type<Array<{ stufe: string; text: string }>>().notNull().default([]),
+    berechnetAm: timestamp("berechnet_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.hebammeId, t.datum] })],
+);
+
+/** Fahrtenbuch: ein Eintrag je Fahrt bzw. Tagestour. */
+export const fahrt = pgTable("fahrt", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  datum: date("datum").notNull(),
+  tourId: uuid("tour_id").references(() => tour.id, { onDelete: "set null" }),
+  kmStandBeginn: integer("km_stand_beginn"),
+  kmStandEnde: integer("km_stand_ende"),
+  strecke: text("strecke").notNull(),
+  zweck: text("zweck").notNull(),
+  kmDienstlich: numeric("km_dienstlich", { precision: 7, scale: 1, mode: "number" }).notNull().default(0),
+  kmWohnungBetrieb: numeric("km_wohnung_betrieb", { precision: 7, scale: 1, mode: "number" }).notNull().default(0),
+  kmPrivat: numeric("km_privat", { precision: 7, scale: 1, mode: "number" }).notNull().default(0),
   ...zeitstempel(),
 });

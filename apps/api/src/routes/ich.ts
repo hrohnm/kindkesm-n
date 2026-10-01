@@ -3,13 +3,16 @@ import {
   abrechnungseinstellungSchema,
   hebammeProfilSchema,
   ortSchema,
+  positionSchema,
   tourvorlageSchema,
 } from "@kindkesmoeoen/shared";
 import { and, asc, eq, isNull, or } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply } from "fastify";
 import { nurHebamme } from "../auth";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, benutzer, ort, tourvorlage } from "../db/schema";
+import { abrechnungseinstellung, benutzer, ort, tour, tourvorlage } from "../db/schema";
+import { ortVerorten } from "../geo/positionen";
+import { wegegeldOffeneTage } from "../wegegeld";
 import { pruefen } from "../fehler";
 import { protokollieren } from "../protokoll";
 
@@ -67,8 +70,10 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
     if (!daten) return;
     if (daten.typ === "praxis") return reply.code(400).send({ fehler: "Der Praxisstandort wird in den Praxis-Einstellungen gepflegt." });
     const [neu] = await db.insert(ort).values({ ...daten, benutzerId: request.benutzer!.id }).returning();
+    await ortVerorten(db, neu!.id);
     await protokollieren(db, request.benutzer!.id, "angelegt", "ort", neu!.id);
-    return neu;
+    const [o] = await db.select().from(ort).where(eq(ort.id, neu!.id));
+    return o;
   });
 
   async function eigenerOrt(id: string, benutzerId: string, reply: FastifyReply) {
@@ -78,13 +83,35 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
   }
 
   app.put<{ Params: { id: string } }>("/api/ich/orte/:id", async (request, reply) => {
-    if (!(await eigenerOrt(request.params.id, request.benutzer!.id, reply))) return;
+    const alt = await eigenerOrt(request.params.id, request.benutzer!.id, reply);
+    if (!alt) return;
     const daten = pruefen(ortSchema, request.body, reply);
     if (!daten) return;
     if (daten.typ === "praxis") return reply.code(400).send({ fehler: "Typ „Praxis“ ist dem Praxisstandort vorbehalten." });
-    const [o] = await db.update(ort).set({ ...daten, lat: null, lon: null, geaendertAm: new Date() }).where(eq(ort.id, request.params.id)).returning();
+    const neueAnschrift = alt.anschrift !== daten.anschrift;
+    await db
+      .update(ort)
+      .set({ ...daten, ...(neueAnschrift ? { lat: null, lon: null } : {}), geaendertAm: new Date() })
+      .where(eq(ort.id, request.params.id));
+    if (neueAnschrift) {
+      await ortVerorten(db, request.params.id);
+      await wegegeldOffeneTage(db, request.benutzer!.id);
+    }
     await protokollieren(db, request.benutzer!.id, "geaendert", "ort", request.params.id);
+    const [o] = await db.select().from(ort).where(eq(ort.id, request.params.id));
     return o;
+  });
+
+  /** Position von Hand setzen (Karte), falls die Anschrift nicht im Adressverzeichnis steht. */
+  app.put<{ Params: { id: string } }>("/api/ich/orte/:id/position", async (request, reply) => {
+    const p = pruefen(positionSchema, request.body, reply);
+    if (!p) return;
+    const [o] = await db.select().from(ort).where(eq(ort.id, request.params.id));
+    if (!o || (o.benutzerId !== null && o.benutzerId !== request.benutzer!.id)) return reply.code(404).send({ fehler: "Ort nicht gefunden" });
+    const [neu] = await db.update(ort).set({ lat: p.lat.toFixed(6), lon: p.lon.toFixed(6), geaendertAm: new Date() }).where(eq(ort.id, o.id)).returning();
+    await protokollieren(db, request.benutzer!.id, "position", "ort", o.id);
+    await wegegeldOffeneTage(db, request.benutzer!.id);
+    return neu;
   });
 
   app.delete<{ Params: { id: string } }>("/api/ich/orte/:id", async (request, reply) => {
@@ -102,6 +129,12 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
     if (verwendet.length) {
       return reply.code(409).send({ fehler: `Der Ort wird in der Tourvorlage „${verwendet.map((v) => v.name).join("“, „")}“ verwendet.` });
     }
+    const inTouren = await db
+      .select({ datum: tour.datum })
+      .from(tour)
+      .where(or(eq(tour.startOrtId, request.params.id), eq(tour.endeOrtId, request.params.id), eq(tour.wegegeldAusgangsOrtId, request.params.id)))
+      .limit(1);
+    if (inTouren.length) return reply.code(409).send({ fehler: "Der Ort wird in geplanten oder gefahrenen Touren verwendet und bleibt deshalb erhalten." });
     await db.delete(ort).where(eq(ort.id, request.params.id));
     await protokollieren(db, request.benutzer!.id, "geloescht", "ort", request.params.id);
     return { ok: true };

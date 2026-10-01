@@ -11,7 +11,7 @@ import {
   type Leistungstyp,
 } from "@kindkesmoeoen/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
 import { UnterschriftFeld } from "../komponenten/Unterschrift";
 import { ApiFehler, api } from "../lib/api";
@@ -100,15 +100,19 @@ export function Besuch() {
 function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuung: BetreuungDetail; besuch?: BesuchDetail; unterschriftVerfahren: "papier" | "tablet" }) {
   const navigate = useNavigate();
   const { ich } = useAuth();
+  // Aus der Tour geöffnet: Termin verknüpfen, Datum/Typ übernehmen und danach zur Tour zurück
+  const [suche] = useSearchParams();
+  const terminId = suche.get("termin");
+  const zurueck = suche.get("zurueck")?.startsWith("/") ? suche.get("zurueck")! : null;
   const geboren = betreuung.kinder.length > 0;
   const gesperrt = besuch?.status === "abgeschlossen"; // Leistungsdaten nach Unterschrift nicht mehr ändern
   const fremd = Boolean(besuch && besuch.hebammeId !== ich?.id);
 
   const [w, setW] = useState<Werte>(() => ({
-    datum: besuch?.datum ?? heute(),
+    datum: besuch?.datum ?? (suche.get("datum") || heute()),
     von: besuch?.von ?? jetzt(),
     bis: besuch?.bis ?? "",
-    typ: besuch?.typ ?? (geboren ? "wochenbett" : "vorsorge"),
+    typ: besuch?.typ ?? ((suche.get("typ") as Leistungstyp | null) || (geboren ? "wochenbett" : "vorsorge")),
     art: besuch?.art ?? 1,
     material: besuch?.material ?? [],
     mutter: alsText(besuch?.dokumentation.mutter),
@@ -168,11 +172,11 @@ function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuun
     setSpeichert(true);
     setMeldung(undefined);
     try {
-      const r = await api<{ besuch: { id: string }; ergebnis: Ergebnis }>(besuch ? `/api/besuche/${besuch.id}` : `/api/betreuungen/${betreuung.id}/besuche`, {
+      const r = await api<{ besuch: { id: string }; ergebnis: Ergebnis }>(besuch ? `/api/besuche/${besuch.id}` : `/api/betreuungen/${betreuung.id}/besuche${terminId ? `?termin=${terminId}` : ""}`, {
         method: besuch ? "PUT" : "POST",
         body: nutzlast(abschliessen || gesperrt),
       });
-      navigate(`/klientinnen/${betreuung.klientin.id}`, { replace: true });
+      navigate(zurueck ?? `/klientinnen/${betreuung.klientin.id}`, { replace: true });
       return r;
     } catch (e) {
       setMeldung({ art: "fehler", text: e instanceof ApiFehler ? e.message : String(e) });

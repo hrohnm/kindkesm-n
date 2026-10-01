@@ -8,6 +8,7 @@
  *  - Kontingente (Kontakte/Einheiten je Kontakt, Tag und gesamt)
  *  - Materialpauschalen
  */
+import type { WegegeldRegel } from "./tour";
 
 export type Leistungstyp = "schwangerschaft" | "vorsorge" | "aufklaerung" | "stillvorbereitung" | "wochenbett";
 export type Leistungsart = 1 | 2 | 3 | 4;
@@ -76,6 +77,7 @@ export type RegelwerkDaten = {
   zuschlaege: { nacht: { von: string; bis: string }; samstag_ab: string; sonntag: boolean; feiertage: boolean };
   feiertage: Array<{ name: string; regel: string }>;
   formulare: Record<string, unknown>;
+  wegegeld?: WegegeldRegel;
 };
 
 // ------------------------------------------------------------------ Eingaben und Ergebnis

@@ -7,3 +7,6 @@ coverage/
 test-results/
 playwright-report/
 .pgdata/
+
+# Kartendaten (scripts/karte-einrichten.sh)
+/karte/

@@ -252,6 +252,9 @@
     "ausgangspunkt": "laut Routenkonfiguration der Hebamme; Standard: Wohnort der Hebamme",
     "max_km_regel": 25,
     "max_km_mit_begruendung": 50,
+    "hin_und_rueckweg": true,
+    "hin_und_rueckweg_hinweis": "Annahme der App: Hin- und Rückweg zählen (Ausgangspunkt → Familie → Ausgangspunkt); die 25-km-Grenze gilt für die einfache Strecke. Fachlich prüfen.",
+    "km_nachkommastellen": 1,
     "begruendungen_ueber_25km": [
       "geplante Hausgeburt (inkl. SS und frühes WB)",
       "Vertretung einer anderen Hebamme (Name angeben)",

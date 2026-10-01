@@ -5,7 +5,8 @@
  */
 import { appBauen } from "../app";
 import type { Datenbank } from "../db/client";
-import { klientin } from "../db/schema";
+import { and, eq } from "drizzle-orm";
+import { besuch, klientin, termin } from "../db/schema";
 
 const tag = (offset: number) => {
   const d = new Date();
@@ -65,6 +66,13 @@ const FAMILIEN: Familie[] = [
   },
 ];
 
+const DEMO_TERMINE: Array<{ hebamme: string; familie: string; termin: Record<string, unknown> }> = [
+  { hebamme: "johanna@kindkesmoeoen.test", familie: "Krüger", termin: { zeit: "fix", uhrzeit: "09:00", dauerMin: 45, typ: "wochenbett", notiz: "Gewichtskontrolle Ole" } },
+  { hebamme: "johanna@kindkesmoeoen.test", familie: "Berger", termin: { zeit: "nachmittags", dauerMin: 40, typ: "vorsorge" } },
+  { hebamme: "marielena@kindkesmoeoen.test", familie: "Hansen", termin: { zeit: "vormittags", dauerMin: 60, typ: "wochenbett", wichtig: true, notiz: "Zwillinge, Stillberatung" } },
+  { hebamme: "marielena@kindkesmoeoen.test", familie: "Wolff", termin: { zeit: "fenster", fruehestens: "13:00", spaetestens: "15:00", dauerMin: 45, typ: "schwangerschaft", notiz: "Vorgespräch" } },
+];
+
 export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
   if ((await db.select({ id: klientin.id }).from(klientin).limit(1)).length) return 0;
   const app = await appBauen(db);
@@ -82,11 +90,13 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
     return res.json();
   };
 
+  const betreuungen: Record<string, string> = {};
   for (const f of FAMILIEN) {
     const ich = await anfrage(f.hebamme, "GET", "/api/auth/ich");
     const k = await anfrage(f.hebamme, "POST", "/api/klientinnen", { ...f.klientin, zustaendigeHebammeId: ich.id, et: f.et });
     const akte = await anfrage(f.hebamme, "GET", `/api/klientinnen/${k.id}`);
     const betreuungId = akte.betreuungen[0].id as string;
+    betreuungen[f.klientin.nachname!] = betreuungId;
     if (f.klientin.vorname === "Jana") {
       await anfrage(f.hebamme, "PUT", `/api/betreuungen/${betreuungId}`, { status: "anfrage", et: f.et, gravida: 1, para: 0, geburtsort: null, geburtsmodus: null, zustaendigeHebammeId: ich.id, notizen: "Wunsch: Wochenbettbetreuung und Geburtsvorbereitungskurs" });
     }
@@ -107,6 +117,17 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
       });
     }
   }
+
+  // Tour für heute: Termine anlegen und optimieren lassen
+  const heute = tag(0);
+  for (const t of DEMO_TERMINE) {
+    const neu = await anfrage(t.hebamme, "POST", `/api/touren/${heute}/termine`, { ...t.termin, betreuungId: betreuungen[t.familie] });
+    // Der offene Besuch von heute gehört zu diesem Termin
+    const [offen] = await db.select({ id: besuch.id }).from(besuch).where(and(eq(besuch.betreuungId, betreuungen[t.familie]!), eq(besuch.datum, heute), eq(besuch.status, "entwurf")));
+    if (offen) await db.update(termin).set({ besuchId: offen.id }).where(eq(termin.id, neu.id));
+  }
+  for (const h of [...new Set(DEMO_TERMINE.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
+
   await app.close();
   return FAMILIEN.length;
 }

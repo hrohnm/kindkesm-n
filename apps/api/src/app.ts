@@ -17,6 +17,7 @@ import { ichRouten } from "./routes/ich";
 import { praxisRouten } from "./routes/praxis";
 import { regelwerkRouten } from "./routes/regelwerk";
 import { teamRouten } from "./routes/team";
+import { tourenRouten } from "./routes/touren";
 
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
 
@@ -66,6 +67,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await hinweisRouten(app, db);
   await akteRouten(app, db);
   await abrechnungRouten(app, db);
+  await tourenRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

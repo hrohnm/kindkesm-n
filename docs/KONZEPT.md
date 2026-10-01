@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.7 (Entwurf)
+Stand: 01.10.2026 · Version 1.8 (Entwurf)
 
 ---
 
@@ -596,24 +596,37 @@ Die Erinnerung zum persönlichen Versandstichtag kommt mit einstellbarem Vorlauf
 - **Neuplanung unterwegs**: Ein Besuch dauert länger → Folgezeiten werden neu berechnet, Familien optional informiert
 
 ### 9.2 Algorithmus
-- Ein **Vehicle Routing Problem mit Zeitfenstern (VRPTW)**: mehrere Fahrzeuge (= Hebammen), Start und Ende pro Fahrzeug, Zeitfenster pro Stopp, harte Termine, Service-Zeiten
-- Umsetzung mit einer bewährten Open-Source-Engine:
-  - **VROOM** (spezialisiert auf genau dieses Problem) + **OSRM** oder **OpenRouteService** für Fahrzeiten und Distanzen auf OpenStreetMap
-  - Alternativ Google OR-Tools mit eigener Distanzmatrix
-- **Datenschutz**: Self-Hosting in einem deutschen Rechenzentrum, sodass keine Adressen an Google übertragen werden. Für die Optimierung reichen Koordinaten, Namen werden nie übertragen.
-- Bei wenigen Stopps pro Tag (5–10) liegt die Rechenzeit unter einer Sekunde, auch für alle drei Hebammen zusammen.
+- Ein **Vehicle Routing Problem mit Zeitfenstern (VRPTW)** je Hebamme: Start und Ende, Zeitfenster pro Besuch, feste Termine, Besuchsdauer, Puffer, spätestes Ende (z. B. Schule 15:30).
+- **Umsetzung (Meilenstein 4):** eigener Optimierer in `packages/shared/src/tour.ts`. Bis 9 Besuche wird die beste Reihenfolge **exakt** gesucht (Branch and Bound), darüber eine lokale Suche (günstigste Einfügung, Verschieben, 2-opt). Bewertung: Verspätungen gegenüber Zeitfenstern wiegen schwer (Besuche mit „muss heute sein“ doppelt), danach zählt die Fahrzeit. Für einen Hebammen-Tag dauert das Millisekunden; ein zusätzlicher Dienst (VROOM) ist dafür nicht nötig.
+- **Fahrzeiten und Strecken:** eigener **OSRM**-Server mit dem Straßennetz Mecklenburg-Vorpommern (OpenStreetMap). Ohne OSRM (z. B. im Codespace) schätzt die App aus der Luftlinie (× 1,3, ca. 50 km/h) und kennzeichnet die Werte als geschätzt.
+- **Adressen finden (Geokodierung):** eigenes **Adressverzeichnis** aus den Hausnummern von OpenStreetMap (MV), in der App-Datenbank. Kein externer Geokodierungsdienst; nicht gefundene Anschriften (z. B. Neubau) setzt die Hebamme mit einem Tipp auf die Karte.
+- **Datenschutz**: Self-Hosting in einem deutschen Rechenzentrum, sodass keine Adressen an Google übertragen werden. An OSRM gehen nur Koordinaten, nie Namen. Die Kartenansicht lädt nur Kartenkacheln (mit der Adresse der App als Referer, ohne Pfad); erst „Navigation“ übergibt das Ziel an Apple Karten bzw. Google Maps, auf Wunsch der Hebamme.
+- **Mehrere Hebammen gemeinsam optimieren** (Verteilung flexibler Besuche bei Vertretung) bleibt eine spätere Ausbaustufe (dafür ggf. VROOM).
 
 ### 9.3 Ablauf in der App
-1. Am Vorabend oder morgens: „Tour planen“ für morgen
-2. Start und Ende wählen (Vorlage vorausgewählt: Wohnung → Schule bis 15:30)
-3. Die App schlägt die Reihenfolge vor. Per Drag & Drop anpassen, Termine fixieren
-4. „Tour bestätigen“ → Termine werden gesetzt, Familien optional benachrichtigt
-5. Unterwegs: Check-in/Check-out pro Besuch (Dauer → Leistung), km → Wegegeld/Fahrtenbuch
-6. Am Ende: Tagesbilanz (km, Fahrtzeit, Betreuungszeit, Wegegeld)
+1. **Tour** öffnen (Heute oder ein anderer Tag): Start, Ziel, Abfahrt und spätestes Ende kommen aus der Tourvorlage des Wochentags und sind für den Tag änderbar.
+2. **Besuch einplanen**: Familie, Zeitwunsch (flexibel, vormittags, nachmittags, feste Uhrzeit, Zeitfenster), Dauer, „muss heute sein“. Wochenbett-Familien, die noch nicht eingeplant sind, schlägt die App mit Lebenstag vor.
+3. **Route optimieren**: Reihenfolge, Ankunftszeiten, Strecke, Fahrzeit und Karte. Reihenfolge mit ↑/↓ von Hand ändern; Zeiten werden sofort neu berechnet.
+4. **Tour bestätigen**.
+5. Unterwegs je Besuch: **Navigation** (Apple Karten/Google Maps), Anrufen, **Dokumentieren** (öffnet den Besuch mit Datum und Leistung, verknüpft ihn mit dem Termin und führt zurück zur Tour). „Ab jetzt neu berechnen“ plant die restlichen Besuche ab der aktuellen Uhrzeit.
+6. Tagesbilanz: Strecke, Fahrzeit, Besuchszeit, **Wegegeld**; „Ins Fahrtenbuch“ erzeugt den Fahrtenbuch-Eintrag.
+
+Noch nicht umgesetzt: Benachrichtigung der Familien (kommt mit E-Mail/SMS), Pausen als eigene Stopps, Drag & Drop.
 
 ### 9.4 Kilometer-Logik für Wegegeld und Fahrtenbuch
-- Abrechenbar ist laut § 11 Anlage 1.1 die **kürzest mögliche Strecke zur Hilfeleistung**, höchstens 25 km (bis 50 km nur mit Begründung). Betreut die Hebamme mehrere Frauen auf einem Weg, wird die Gesamtstrecke durch die Anzahl der Frauen geteilt (50200, Anzahl angeben). Der **Ausgangspunkt** richtet sich nach der Routenkonfiguration: Standard ist der **Wohnort der Hebamme**, in jeder Tourvorlage und für jeden Tag änderbar (z. B. Start an der Praxis). Gemessen wird die kürzeste Strecke vom Ausgangspunkt zur Familie, nicht der tatsächlich gefahrene Umweg über andere Besuche.
-- Der private Anteil (z. B. Weg zur Schule) wird im Fahrtenbuch als privat markiert und **nicht** abgerechnet.
+**Wegegeld (§ 11 Anlage 1.1, umgesetzt in `wegegeldAufteilen`):**
+- Abrechenbar ist die **kürzest mögliche Strecke zur Hilfeleistung**. Der **Ausgangspunkt** richtet sich nach der Routenkonfiguration: Tour des Tages → Tourvorlage des Wochentags → Wohnort → Praxis.
+- **Ein Hausbesuch am Tag**: Ausgangspunkt → Familie → Ausgangspunkt, GPOS **50100**.
+- **Mehrere Familien auf einem Weg**: zurückgelegte Gesamtstrecke (Ausgangspunkt → Familien in Tour-Reihenfolge → Ausgangspunkt) geteilt durch die Anzahl der Versicherten, je Versicherte GPOS **50200** mit „Anzahl Versicherte: n“. Wer zwischendurch zum Ausgangspunkt zurückfährt, stellt „jeden Besuch einzeln abrechnen“ ein.
+- **Über 25 km** (einfache Strecke zur Familie): nur mit Begründung (Hausgeburt, Vertretung mit Name, keine Hebamme im Umkreis) und höchstens 50 km; ohne Begründung kürzt die App auf 25 km und weist darauf hin.
+- **Annahme, fachlich zu prüfen:** Hin- und Rückweg zählen; die 25-/50-km-Grenze gilt für die einfache Strecke. Im Regelwerk als `wegegeld.hin_und_rueckweg` einstellbar. Kilometer mit einer Nachkommastelle.
+- Nur **abgeschlossene aufsuchende** Besuche (Leistungsart 1) zählen; Wege zu Kursen und Sprechstunden in der Praxis nicht. Das Wegegeld wird bei jeder Änderung eines Besuchs, einer Position oder eines Ortes automatisch neu berechnet, bis der Tag einem Versand zugeordnet ist. Kilometer lassen sich je Tag von Hand überschreiben.
+- Die Wegegeld-Zeilen hängen am jeweiligen Besuch und stehen auf dem **Abrechnungsdatenblatt** (nicht auf dem Formular).
+
+**Fahrtenbuch:**
+- „Ins Fahrtenbuch“ erzeugt je Tag einen Eintrag aus der Tour: Strecke als Ortsfolge **ohne Namen** (Schweigepflicht), Zweck „Hausbesuche (n)“, Kilometer je Abschnitt aufgeteilt: Hausbesuche **dienstlich**, Wohnung ↔ Praxis **Wohnung–Betriebsstätte**, Fahrt zu Schule/Kita **privat**.
+- Kilometerstand Beginn/Ende trägt die Hebamme ein (Vorschlag: Ende der letzten Fahrt). Lücken im Kilometerstand erscheinen als Privatfahrten. Abweichungen zwischen Kilometerstand und Aufteilung werden angezeigt.
+- Änderungen und Löschungen werden mit altem Stand protokolliert. Export als PDF und CSV je Monat oder Jahr. Ob das elektronische Fahrtenbuch steuerlich anerkannt wird, klärt die Steuerberatung.
 
 ---
 
@@ -713,7 +726,7 @@ Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (m
 | PDF | **pdf-lib** (Formulare 3.1–3.5 auf amtliche Vorlage, Abrechnungsdatenblatt, Kinderurkunde, Rechnungen) | Läuft im Browser, also auch offline beim Hausbesuch |
 | Backend | **Node.js + TypeScript** (Fastify), **PostgreSQL**, Drizzle ORM | Eine Sprache für alles, einfach zu betreiben, keine Zusatz-Binärdateien |
 | Anmeldung | Passkeys bzw. Passwort + 2FA (TOTP), Sitzungen mit kurzer Laufzeit | Gesundheitsdaten |
-| Routing | **OSRM** (Straßennetz Mecklenburg-Vorpommern aus OpenStreetMap) + **VROOM** (Tourenoptimierung) | Selbst gehostet, keine Adressen an Google |
+| Routing | **OSRM** (Straßennetz Mecklenburg-Vorpommern aus OpenStreetMap), eigener Tourenoptimierer, Adressverzeichnis aus OSM | Selbst gehostet, keine Adressen an Google |
 | Karten | Leaflet mit OSM-Kacheln (bzw. selbst gehostete Kacheln) | Keine Tracking-Dienste |
 | Benachrichtigungen | Web-Push (PWA) und E-Mail (SMTP) | Fristen und Erinnerungen |
 | Tests | Vitest (Regelwerk, Plausi, Wegegeld), Playwright (Oberfläche auf iPad-Auflösung) | Abrechnungslogik muss stimmen |
@@ -729,8 +742,7 @@ Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (m
 │  caddy        Reverse Proxy, automatische TLS-Zertifikate (Let's Encrypt)                   │
 │  app          Frontend (statisch) + API (Node.js/Fastify)                                   │
 │  db           PostgreSQL (Volume verschlüsselt), nächtliche Dumps                           │
-│  osrm         Routing-Engine mit OSM-Extrakt Mecklenburg-Vorpommern                         │
-│  vroom        Tourenoptimierung (nutzt osrm)                                                │
+│  osrm         Routing-Engine mit OSM-Extrakt Mecklenburg-Vorpommern (optional, Profil karte)│
 │  backup       verschlüsselte Backups (restic) auf externen Speicher in der EU               │
 │  uptime       Überwachung (z. B. Uptime Kuma), Benachrichtigung bei Ausfall                 │
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -816,7 +828,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 | **M-1 Grundgerüst** ✅ | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS ([BETRIEB.md](BETRIEB.md)) |
 | **M-2 Akte und Besuch** ✅ | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Unterschrift auf Papier oder Tablet, Leistungsberechnung mit Plausibilitätsprüfung (5-Minuten-Einheiten, Zuschläge inkl. Feiertage MV, Kontingente, Materialpauschalen) und Kontingentanzeige |
 | **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 folgt mit dem Kursmodul |
-| **M-4 Touren** | OSRM/VROOM, Tourvorlagen mit Start/Ende, Tagesplanung, Wegegeld und Fahrtenbuch |
+| **M-4 Touren** ✅ | Tagesplanung mit Terminen (fest, Zeitfenster, flexibel), Optimierung mit Zeitfenstern, OSRM-Routing (Luftlinie als Ersatz), Adressverzeichnis aus OpenStreetMap, Karte, Navigation, Wegegeld 50100/50200 automatisch aus den Hausbesuchen, Fahrtenbuch mit Export |
 | **M-5 Regelwerk-Administration** | Positionen, Kontingente, Fristen, Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe, Testrechner |
 | **M-6 Offline** | Vollständiger Offline-Betrieb mit Synchronisation |
 
@@ -874,7 +886,9 @@ Siehe Tabelle in Kapitel 5.1. Die Frage, wie Wegegeld und Pauschalen übermittel
 - E-Mail: später über ein Postfach der eigenen Domain
 
 ### Noch offen
-- Keine offenen fachlichen Fragen; Rückmeldungen aus dem Test der Meilensteine fließen laufend ein.
+- **Wegegeld Hin- und Rückweg:** Die App rechnet Ausgangspunkt → Familie → Ausgangspunkt (bei mehreren Familien die Rundtour geteilt durch die Anzahl). Bitte mit HebSet bzw. dem Berufsverband bestätigen; sonst im Regelwerk `hin_und_rueckweg` auf `false` stellen.
+- **Papier-Unterschrift und amtliches Formular:** Sollen für papier-unterschriebene Besuche zusätzlich ausgefüllte Formulare (ohne Unterschrift) in die Versandmappe (Option A) oder bleibt es bei der Kontrollliste (Option B)?
+- **Fahrtenbuch:** steuerliche Anerkennung des elektronischen Fahrtenbuchs mit der Steuerberatung klären.
 
 ---
 
