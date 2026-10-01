@@ -1,0 +1,126 @@
+﻿GPOS;Gruppe;Bezeichnung;Kurztext;Kategorie;Leistungsart;Zuschlag;Betrag EUR;Einheit;Formular;Quittierungspflichtig;Hinweis
+10101;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;aufsuchend;nein;6,19;5min;3.1;ja;
+10111;101XX;Hilfeleistung in der Schwangerschaft mit Zuschlag;Hilfe SS Z;1;aufsuchend;ja;7,24;5min;3.1;ja;
+10102;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;
+10112;101XX;Hilfeleistung in der Schwangerschaft mit Zuschlag;Hilfe SS Z;1;nicht-aufsuchend;ja;7,24;5min;3.1;ja;
+10103;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;Videobetreuung;nein;6,19;5min;3.1;ja;
+10113;101XX;Hilfeleistung in der Schwangerschaft mit Zuschlag;Hilfe SS Z;1;Videobetreuung;ja;7,24;5min;3.1;ja;
+10104;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;Telefonkurzberatung;nein;6,19;5min;3.1;ja;
+10201;1020X;Vorsorgeuntersuchung der Schwangeren;Vorsorge;1;aufsuchend;nein;6,19;5min;3.1;ja;"Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
+10202;1020X;Vorsorgeuntersuchung der Schwangeren;Vorsorge;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;"Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
+10301;1030X;Spezifisches Aufklärungsgespräch zum gewählten Geburtsort;Aufkl. Geburtsort;1;aufsuchend;nein;6,19;5min;3.1;ja;"Nur bei geplanter Haus-, HgE- oder Begleit-Beleggeburt; geplanter Geburtsort auf Formular ankreuzen."
+10302;1030X;Spezifisches Aufklärungsgespräch zum gewählten Geburtsort;Aufkl. Geburtsort;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;"Nur bei geplanter Haus-, HgE- oder Begleit-Beleggeburt; geplanter Geburtsort auf Formular ankreuzen."
+10401;1040X;Individuelle Stillvorbereitung;Stillvorbereitung;1;aufsuchend;nein;6,19;5min;3.1;ja;
+10402;1040X;Individuelle Stillvorbereitung;Stillvorbereitung;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;
+10501;105XX;Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW;Fehlgeburt früh;1;aufsuchend;nein;6,19;5min;3.1;ja;Bis 90 Minuten nach der Geburt abrechenbar.
+10511;105XX;Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW mit Zuschlag;Fehlgeburt früh Z;1;aufsuchend;ja;7,24;5min;3.1;ja;Bis 90 Minuten nach der Geburt abrechenbar.
+10502;105XX;Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW;Fehlgeburt früh;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;Bis 90 Minuten nach der Geburt abrechenbar.
+10512;105XX;Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW mit Zuschlag;Fehlgeburt früh Z;1;nicht-aufsuchend;ja;7,24;5min;3.1;ja;Bis 90 Minuten nach der Geburt abrechenbar.
+10601;106XX;Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW;Fehlgeburt spät;1;aufsuchend;nein;6,19;5min;3.1;ja;Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt.
+10611;106XX;Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW mit Zuschlag;Fehlgeburt spät Z;1;aufsuchend;ja;7,24;5min;3.1;ja;Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt.
+10602;106XX;Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW;Fehlgeburt spät;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt.
+10612;106XX;Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW mit Zuschlag;Fehlgeburt spät Z;1;nicht-aufsuchend;ja;7,24;5min;3.1;ja;Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt.
+10705;107XX;Hilfeleistung bei einem stationären Aufenthalt als Beleghebamme;Beleg stationär;1;Beleghebamme;nein;4,95;5min;3.5;ja;
+10715;107XX;Hilfeleistung bei einem stationären Aufenthalt als Beleghebamme mit Zuschlag;Beleg stationär Z;1;Beleghebamme;ja;5,79;5min;3.5;ja;
+10805;108X5;Überwachung bei einem stationären Aufenthalt als Beleghebamme;Beleg Überw. SS;1;Beleghebamme;nein;1,86;5min;3.5;ja;
+10815;108X5;Überwachung bei einem stationären Aufenthalt als Beleghebamme mit Zuschlag;Beleg Überw. SS Z;1;Beleghebamme;ja;2,17;5min;3.5;ja;
+20101;201XX;Hilfeleistung bei Wehen und einer Geburt im häuslichen Umfeld;Wehen/Geburt;2;aufsuchend;nein;1,86;5min;3.2;ja;
+20102;201XX;Hilfeleistung bei Wehen und einer Geburt in einer von Hebammen geleiteten Einrichtung;Wehen/Geburt;2;nicht-aufsuchend;nein;1,86;5min;3.2;ja;
+20105;201XX;Hilfeleistung bei Wehen und einer Geburt im Krankenhaus als Beleghebamme;Wehen/Geburt;2;Beleghebamme;nein;4,95;5min;3.5;ja;
+20111;201XX;Hilfeleistung bei Wehen und einer Geburt im häuslichen Umfeld mit Zuschlag;Wehen/Geburt;2;aufsuchend;ja;2,17;5min;3.2;ja;
+20112;201XX;Hilfeleistung bei Wehen und einer Geburt in einer von Hebammen geleiteten Einrichtung mit Zuschlag;Wehen/Geburt;2;nicht-aufsuchend;ja;2,17;5min;3.2;ja;
+20115;201XX;Hilfeleistung bei Wehen und einer Geburt im Krankenhaus als Beleghebamme mit Zuschlag;Wehen/Geburt;2;Beleghebamme;ja;5,79;5min;3.5;ja;
+20201;202XX;Grundpauschale Geburt im häuslichen Umfeld;Grundpauschale Geburt;2;aufsuchend;nein;738,75;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20202;202XX;Grundpauschale Geburt in einer von Hebammen geleiteten Einrichtung;Grundpauschale Geburt;2;nicht-aufsuchend;nein;626,38;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20205;202XX;Grundpauschale Geburt bei einer Begleit-Beleggeburt;Grundpauschale Geburt;2;Beleghebamme;nein;237,70;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20211;202XX;Grundpauschale Geburt im häuslichen Umfeld mit Zuschlag;Grundpauschale Geburt;2;aufsuchend;ja;864,34;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20212;202XX;Grundpauschale Geburt in einer von Hebammen geleiteten Einrichtung mit Zuschlag;Grundpauschale Geburt;2;nicht-aufsuchend;ja;732,86;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20215;202XX;Grundpauschale Geburt bei einer Begleit-Beleggeburt mit Zuschlag;Grundpauschale Geburt;2;Beleghebamme;ja;278,10;pauschal;;nein;Einmal je Geburt, auch bei Mehrlingen.
+20305;203X5;Pauschale 1:1-Hilfeleistung bei einer stationären Geburt als Beleghebamme;1:1 Beleg;2;Beleghebamme;nein;103,99;pauschal;3.5;ja;
+20315;203X5;Pauschale 1:1-Hilfeleistung bei einer stationären Geburt als Beleghebamme mit Zuschlag;1:1 Beleg Z;2;Beleghebamme;ja;121,67;pauschal;3.5;ja;
+20505;205X5;Überwachung bei Wehen und einer Geburt als Beleghebamme;Beleg Überw. Geburt;2;Beleghebamme;nein;1,86;5min;3.5;ja;
+20515;205X5;Überwachung bei Wehen und einer Geburt als Beleghebamme mit Zuschlag;Beleg Überw. Geburt Z;2;Beleghebamme;ja;2,17;5min;3.5;ja;
+20601;2060X;Zuschlag für Mehrlingsgeburt im häuslichen Umfeld;Mehrlingszuschlag;2;aufsuchend;nein;89,14;pauschal;;nein;
+20602;2060X;Zuschlag für Mehrlingsgeburt in einer von Hebammen geleiteten Einrichtung;Mehrlingszuschlag;2;nicht-aufsuchend;nein;89,14;pauschal;;nein;
+20605;2060X;Zuschlag für Mehrlingsgeburt im Krankenhaus als Beleghebamme;Mehrlingszuschlag;2;Beleghebamme;nein;89,14;pauschal;;nein;
+20701;207XX;Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt;Geburt nicht vollendet;2;aufsuchend;nein;6,19;5min;3.2;ja;
+20711;207XX;Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt mit Zuschlag;Geburt nicht vollendet Z;2;aufsuchend;ja;7,24;5min;3.2;ja;
+20702;207XX;Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt;Geburt nicht vollendet;2;nicht-aufsuchend;nein;6,19;5min;3.2;ja;
+20712;207XX;Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt mit Zuschlag;Geburt nicht vollendet Z;2;nicht-aufsuchend;ja;7,24;5min;3.2;ja;
+20801;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme;2. Hebamme;2;aufsuchend;nein;6,19;5min;3.2;ja;
+20811;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag;2. Hebamme Z;2;aufsuchend;ja;7,24;5min;3.2;ja;
+20802;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme;2. Hebamme;2;nicht-aufsuchend;nein;6,19;5min;3.2;ja;
+20812;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag;2. Hebamme Z;2;nicht-aufsuchend;ja;7,24;5min;3.2;ja;
+20805;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme;2. Hebamme;2;Beleghebamme;nein;4,95;5min;3.5;ja;
+20815;208XX;Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag;2. Hebamme Z;2;Beleghebamme;ja;5,79;5min;3.5;ja;
+30101;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;aufsuchend;nein;6,19;5min;3.3;ja;
+30111;301XX;Hilfeleistung im frühen Wochenbett mit Zuschlag;WB früh Z;3;aufsuchend;ja;7,24;5min;3.3;ja;
+30102;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;
+30112;301XX;Hilfeleistung im frühen Wochenbett mit Zuschlag;WB früh Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
+30103;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;Videobetreuung;nein;6,19;5min;3.3;ja;
+30113;301XX;Hilfeleistung im frühen Wochenbett mit Zuschlag;WB früh Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
+30104;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;Telefonkurzberatung;nein;6,19;5min;3.3;ja;
+30205;302XX;Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme;WB Beleg;3;Beleghebamme;nein;4,95;5min;3.5;ja;
+30215;302XX;Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme mit Zuschlag;WB Beleg Z;3;Beleghebamme;ja;5,79;5min;3.5;ja;
+30301;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;aufsuchend;nein;6,19;5min;3.3;ja;
+30311;303XX;Hilfeleistung im späten Wochenbett mit Zuschlag;WB spät Z;3;aufsuchend;ja;7,24;5min;3.3;ja;
+30302;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;
+30312;303XX;Hilfeleistung im späten Wochenbett mit Zuschlag;WB spät Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
+30303;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;Videobetreuung;nein;6,19;5min;3.3;ja;
+30313;303XX;Hilfeleistung im späten Wochenbett mit Zuschlag;WB spät Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
+30304;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;Telefonkurzberatung;nein;6,19;5min;3.3;ja;
+30401;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30411;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30402;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30412;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30403;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;Videobetreuung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30413;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30404;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;Telefonkurzberatung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30501;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30511;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30502;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30512;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30503;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;Videobetreuung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30513;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30504;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;Telefonkurzberatung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+30601;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;aufsuchend;nein;6,19;5min;3.3;ja;
+30611;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;aufsuchend;ja;7,24;5min;3.3;ja;
+30602;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;
+30612;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
+30603;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;Videobetreuung;nein;6,19;5min;3.3;ja;
+30613;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
+30604;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;Telefonkurzberatung;nein;6,19;5min;3.3;ja;
+40102;4010X;Geburtsvorbereitung in der Gruppe (analoge Live-Kurseinheit);Geburtsvorbereitung Gruppe;4;analoge Live-Kurseinheit;nein;0,95;5min;3.4;ja;
+40103;4010X;Geburtsvorbereitung in der Gruppe (digitale Live-Kurseinheit);Geburtsvorbereitung Gruppe;4;digitale Live-Kurseinheit;nein;0,95;5min;3.4;ja;
+40106;4010X;Geburtsvorbereitung in der Gruppe (Selbstlerneinheit);Geburtsvorbereitung Gruppe;4;Selbstlerneinheit;nein;0,20;5min;3.4;ja;
+40202;4020X;Geburtsvorbereitung in Einzelunterweisung (analoge Live-Kurseinheit);Geburtsvorbereitung Einzel;4;analoge Live-Kurseinheit;nein;6,19;5min;3.4;ja;
+40203;4020X;Geburtsvorbereitung in Einzelunterweisung (digitale Live-Kurseinheit);Geburtsvorbereitung Einzel;4;digitale Live-Kurseinheit;nein;6,19;5min;3.4;ja;
+40206;4020X;Geburtsvorbereitung in Einzelunterweisung (Selbstlerneinheit);Geburtsvorbereitung Einzel;4;Selbstlerneinheit;nein;0,20;5min;3.4;ja;
+40302;4030X;Rückbildung in der Gruppe (analoge Live-Kurseinheit);Rückbildung Gruppe;4;analoge Live-Kurseinheit;nein;0,95;5min;3.4;ja;
+40303;4030X;Rückbildung in der Gruppe (digitale Live-Kurseinheit);Rückbildung Gruppe;4;digitale Live-Kurseinheit;nein;0,95;5min;3.4;ja;
+40306;4030X;Rückbildung in der Gruppe (Selbstlerneinheit);Rückbildung Gruppe;4;Selbstlerneinheit;nein;0,20;5min;3.4;ja;
+40402;4040X;Rückbildung in Einzelunterweisung (analoge Live-Kurseinheit);Rückbildung Einzel;4;analoge Live-Kurseinheit;nein;6,19;5min;3.4;ja;
+40403;4040X;Rückbildung in Einzelunterweisung (digitale Live-Kurseinheit);Rückbildung Einzel;4;digitale Live-Kurseinheit;nein;6,19;5min;3.4;ja;
+40406;4040X;Rückbildung in Einzelunterweisung (Selbstlerneinheit);Rückbildung Einzel;4;Selbstlerneinheit;nein;0,20;5min;3.4;ja;
+50100;50100;Wegegeld je km;Wegegeld;5;keine Spezifikation;nein;0,97;km;;nein;
+50200;50200;Anteiliges Wegegeld je km (mehrere Versicherte auf einem Weg);Wegegeld anteilig;5;keine Spezifikation;nein;0,97;km;;nein;Anzahl der auf der Gesamtstrecke betreuten Versicherten im Feld TXT angeben.
+50300;50300;Maut, Fähre, Begleitfahrt nach § 11 Abs. 4;Maut/Fähre;5;keine Spezifikation;nein;;tatsaechlich;;nein;Tatsächliche Kosten, Nachweise in Kopie beifügen.
+50400;50400;Benutzung öffentlicher Verkehrsmittel;ÖPNV;5;keine Spezifikation;nein;3,37;pauschal;;nein;
+60100;60100;Materialpauschale Schwangerschaft;Mat. Schwangerschaft;6;keine Spezifikation;nein;2,84;pauschal;;nein;"Einmal je Hilfeleistung in der Schwangerschaft; nicht neben 60200, 60800, 60900."
+60200;60200;Materialpauschale Vorsorgeuntersuchung;Mat. Vorsorgeuntersuchung;6;keine Spezifikation;nein;3,86;pauschal;;nein;"Einmal je Vorsorgeuntersuchung; nicht neben 60100."
+60300;60300;Materialpauschale Entnahme von Körpermaterial (Frau);Mat. Entnahme von Körpermaterial (Frau);6;keine Spezifikation;nein;2,27;pauschal;3.1;ja;Einmal je Vorsorge oder Hilfeleistung in der Schwangerschaft.
+60400;60400;Materialpauschale GDM-Screening;Mat. GDM-Screening;6;keine Spezifikation;nein;4,44;pauschal;3.1;ja;Einmalig in der Schwangerschaft.
+60500;60500;Materialpauschale CTG;Mat. CTG;6;keine Spezifikation;nein;10,33;pauschal;3.1;ja;"Einmal je Hilfeleistung/Vorsorge; bei Geburt mehrfach möglich (Formular 3.2)."
+60600;60600;Materialpauschale Individuelle Stillvorbereitung;Mat. Individuelle Stillvorbereitung;6;keine Spezifikation;nein;2,30;pauschal;;nein;Einmalig in der Schwangerschaft.
+60700;60700;Materialpauschale Abklärung Blasensprung;Mat. Abklärung Blasensprung;6;keine Spezifikation;nein;11,56;pauschal;3.1;ja;Einmalig in der Schwangerschaft.
+60800;60800;Materialpauschale Fehlgeburt;Mat. Fehlgeburt;6;keine Spezifikation;nein;35,80;pauschal;;nein;"Einmalig; nur bei Fehlgeburt; nicht neben 60100."
+60900;60900;Materialpauschale Geburt;Mat. Geburt;6;keine Spezifikation;nein;80,06;pauschal;;nein;"Einmalig; nur mit vollendeter oder nicht vollendeter Geburt; nicht neben 60100."
+61000;61000;Materialpauschale Versorgung einer Naht bei Geburtsverletzung;Mat. Versorgung einer Naht bei Geburtsverletzung;6;keine Spezifikation;nein;57,74;pauschal;3.2;ja;Einmalig, nur zusammen mit 60900.
+61100;61100;Materialpauschale Pulsoxymetrie;Mat. Pulsoxymetrie;6;keine Spezifikation;nein;7,87;pauschal;3.3;ja;Einmalig (auch auf Formular 3.2).
+61200;61200;Materialpauschale Wochenbett lang;Mat. Wochenbett lang;6;keine Spezifikation;nein;35,17;pauschal;;nein;Einmalig, wenn aufsuchende Wochenbettbetreuung bis 4 Tage nach Geburt übernommen.
+61300;61300;Materialpauschale Wochenbett kurz;Mat. Wochenbett kurz;6;keine Spezifikation;nein;21,79;pauschal;;nein;Einmalig, wenn aufsuchende Wochenbettbetreuung später als 4 Tage nach Geburt übernommen.
+61400;61400;Materialpauschale Neugeborenen-Screening;Mat. Neugeborenen-Screening;6;keine Spezifikation;nein;4,05;pauschal;3.3;ja;Einmalig (auch auf Formular 3.2).
+61500;61500;Materialpauschale Entnahme von Körpermaterial (Kind);Mat. Entnahme von Körpermaterial (Kind);6;keine Spezifikation;nein;4,05;pauschal;3.3;ja;Je Hilfeleistung im Wochenbett, nur Bilirubinkontrolle bei Verdacht auf Hyperbilirubinämie.
+61600;61600;Materialpauschale Fäden ziehen Dammnaht;Mat. Fäden ziehen Dammnaht;6;keine Spezifikation;nein;9,69;pauschal;3.3;ja;Einmalig.
+61700;61700;Materialpauschale Fäden und Klammern entfernen Sectionaht;Mat. Fäden und Klammern entfernen Sectionaht;6;keine Spezifikation;nein;7,56;pauschal;3.3;ja;Einmalig.
+61800;61800;Perinatalerhebung;Perinatalerhebung;6;keine Spezifikation;nein;12,06;pauschal;;nein;Einmalig bei außerklinischer Geburt.

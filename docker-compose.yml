@@ -1,0 +1,49 @@
+# Betrieb auf dem VPS: docker compose up -d
+# Konfiguration in .env (Vorlage: .env.example)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kindkes
+      POSTGRES_PASSWORD: ${DB_PASSWORT:?DB_PASSWORT in .env setzen}
+      POSTGRES_DB: kindkes
+    volumes:
+      - db-daten:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kindkes -d kindkes"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: kindkesmoeoen-app:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://kindkes:${DB_PASSWORT}@db:5432/kindkes
+      SITZUNG_STUNDEN: ${SITZUNG_STUNDEN:-12}
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN in .env setzen}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-daten:/data
+      - caddy-config:/config
+
+volumes:
+  db-daten:
+  caddy-daten:
+  caddy-config:

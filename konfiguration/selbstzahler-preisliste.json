@@ -1,0 +1,91 @@
+{
+  "_hinweis": "Dummydaten (plausible Marktpreise, Stand 2026) für die Selbstzahler-Preisliste. In der App administrierbar (Modul M26, Abschnitt 7); Praxis-Standardpreise, je Hebamme überschreibbar. Umsatzsteuer vor dem Echtbetrieb mit der Steuerberatung klären.",
+  "gueltig_von": "2026-04-01",
+  "waehrung": "EUR",
+  "umsatzsteuer_optionen": {
+    "steuerfrei_4_14": "Steuerfreie Heilbehandlung nach § 4 Nr. 14 UStG (medizinische Indikation)",
+    "kleinunternehmer_19": "Kein Ausweis der Umsatzsteuer nach § 19 UStG (Kleinunternehmerregelung)",
+    "regelsatz_19": "19 % Umsatzsteuer"
+  },
+  "leistungen": [
+    {
+      "id": "akupunktur",
+      "bezeichnung": "Akupunktur (z. B. Geburtsvorbereitung, Beschwerden in der Schwangerschaft)",
+      "rechnungstext": "Akupunkturbehandlung, ca. 30 Minuten",
+      "einheit": "Sitzung",
+      "dauer_minuten": 30,
+      "preis": 35.00,
+      "umsatzsteuer": "steuerfrei_4_14",
+      "paket": { "anzahl": 4, "preis": 125.00, "bezeichnung": "Geburtsvorbereitende Akupunktur ab SSW 36 (4 Sitzungen)" }
+    },
+    {
+      "id": "kinesio-taping",
+      "bezeichnung": "Kinesio-Taping inkl. Material",
+      "rechnungstext": "Kinesio-Taping inkl. Tape-Material",
+      "einheit": "Anwendung",
+      "dauer_minuten": 20,
+      "preis": 20.00,
+      "umsatzsteuer": "steuerfrei_4_14"
+    },
+    {
+      "id": "schwangerschaftsmassage",
+      "bezeichnung": "Schwangerschaftsmassage",
+      "rechnungstext": "Schwangerschaftsmassage, 60 Minuten",
+      "einheit": "Sitzung",
+      "dauer_minuten": 60,
+      "preis": 65.00,
+      "umsatzsteuer": "kleinunternehmer_19",
+      "varianten": [{ "dauer_minuten": 30, "preis": 38.00 }]
+    },
+    {
+      "id": "babymassage-kurs",
+      "bezeichnung": "Babymassagekurs (5 Termine à 60 Minuten)",
+      "rechnungstext": "Babymassagekurs, 5 × 60 Minuten, inkl. Massageöl",
+      "einheit": "Kurs",
+      "termine": 5,
+      "preis": 95.00,
+      "umsatzsteuer": "kleinunternehmer_19"
+    },
+    {
+      "id": "eltern-kind-kurs",
+      "bezeichnung": "Eltern-Kind-Kurs (8 Termine à 75 Minuten)",
+      "rechnungstext": "Eltern-Kind-Kurs, 8 × 75 Minuten",
+      "einheit": "Kurs",
+      "termine": 8,
+      "preis": 110.00,
+      "umsatzsteuer": "kleinunternehmer_19"
+    },
+    {
+      "id": "partnergebuehr-gvk",
+      "bezeichnung": "Partnergebühr Geburtsvorbereitungskurs",
+      "rechnungstext": "Teilnahme Partnerin/Partner am Geburtsvorbereitungskurs",
+      "einheit": "Kurs",
+      "preis": 90.00,
+      "umsatzsteuer": "kleinunternehmer_19",
+      "hinweis": "Die Kursteilnahme der Schwangeren wird über die Krankenkasse abgerechnet (GPOS 4010X)."
+    },
+    {
+      "id": "partnergebuehr-wochenendkurs",
+      "bezeichnung": "Partnergebühr Geburtsvorbereitung Wochenendkurs",
+      "rechnungstext": "Teilnahme Partnerin/Partner am Wochenend-Geburtsvorbereitungskurs",
+      "einheit": "Kurs",
+      "preis": 80.00,
+      "umsatzsteuer": "kleinunternehmer_19"
+    },
+    {
+      "id": "ausfallgebuehr",
+      "bezeichnung": "Ausfallgebühr bei nicht abgesagtem Selbstzahlertermin",
+      "rechnungstext": "Ausfallgebühr für nicht wahrgenommenen Termin (Absage weniger als 24 Stunden vorher)",
+      "einheit": "Termin",
+      "preis": 25.00,
+      "umsatzsteuer": "kleinunternehmer_19",
+      "hinweis": "Nur für Selbstzahlerleistungen; Kassenleistungen dürfen der Versicherten nicht in Rechnung gestellt werden (Anlage 1.1 § 1)."
+    }
+  ],
+  "rechnung": {
+    "nummernkreis": "{JJJJ}-{KUERZEL}-{LFD:4}",
+    "zahlungsziel_tage": 14,
+    "girocode": true,
+    "fusszeile": "Hebammenpraxis Kindkesmöön · Neue Reihe 46b · 18209 Bad Doberan"
+  }
+}
