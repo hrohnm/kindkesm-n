@@ -5,7 +5,7 @@
 10112;101XX;Hilfeleistung in der Schwangerschaft mit Zuschlag;Hilfe SS Z;1;nicht-aufsuchend;ja;7,24;5min;3.1;ja;
 10103;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;Videobetreuung;nein;6,19;5min;3.1;ja;
 10113;101XX;Hilfeleistung in der Schwangerschaft mit Zuschlag;Hilfe SS Z;1;Videobetreuung;ja;7,24;5min;3.1;ja;
-10104;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;Telefonkurzberatung;nein;6,19;5min;3.1;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+10104;101XX;Hilfeleistung in der Schwangerschaft;Hilfe SS;1;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 10201;1020X;Vorsorgeuntersuchung der Schwangeren;Vorsorge;1;aufsuchend;nein;6,19;5min;3.1;ja;"Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
 10202;1020X;Vorsorgeuntersuchung der Schwangeren;Vorsorge;1;nicht-aufsuchend;nein;6,19;5min;3.1;ja;"Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
 10301;1030X;Spezifisches Aufklärungsgespräch zum gewählten Geburtsort;Aufkl. Geburtsort;1;aufsuchend;nein;6,19;5min;3.1;ja;"Nur bei geplanter Haus-, HgE- oder Begleit-Beleggeburt; geplanter Geburtsort auf Formular ankreuzen."
@@ -63,7 +63,7 @@
 30112;301XX;Hilfeleistung im frühen Wochenbett mit Zuschlag;WB früh Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
 30103;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;Videobetreuung;nein;6,19;5min;3.3;ja;
 30113;301XX;Hilfeleistung im frühen Wochenbett mit Zuschlag;WB früh Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
-30104;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;Telefonkurzberatung;nein;6,19;5min;3.3;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+30104;301XX;Hilfeleistung im frühen Wochenbett;WB früh;3;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 30205;302XX;Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme;WB Beleg;3;Beleghebamme;nein;4,95;5min;3.5;ja;
 30215;302XX;Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme mit Zuschlag;WB Beleg Z;3;Beleghebamme;ja;5,79;5min;3.5;ja;
 30301;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;aufsuchend;nein;6,19;5min;3.3;ja;
@@ -72,28 +72,28 @@
 30312;303XX;Hilfeleistung im späten Wochenbett mit Zuschlag;WB spät Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
 30303;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;Videobetreuung;nein;6,19;5min;3.3;ja;
 30313;303XX;Hilfeleistung im späten Wochenbett mit Zuschlag;WB spät Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
-30304;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;Telefonkurzberatung;nein;6,19;5min;3.3;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+30304;303XX;Hilfeleistung im späten Wochenbett;WB spät;3;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 30401;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30411;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30402;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30412;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30403;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;Videobetreuung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30413;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB früh Kind Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
-30404;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;Telefonkurzberatung;nein;6,19;5min;3.3;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+30404;304XX;Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter;WB früh Kind;3;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 30501;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30511;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30502;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30512;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30503;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;Videobetreuung;nein;6,19;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
 30513;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag;WB spät Kind Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;"Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
-30504;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;Telefonkurzberatung;nein;6,19;5min;3.3;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+30504;305XX;Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter;WB spät Kind;3;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 30601;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;aufsuchend;nein;6,19;5min;3.3;ja;
 30611;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;aufsuchend;ja;7,24;5min;3.3;ja;
 30602;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;nicht-aufsuchend;nein;6,19;5min;3.3;ja;
 30612;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;nicht-aufsuchend;ja;7,24;5min;3.3;ja;
 30603;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;Videobetreuung;nein;6,19;5min;3.3;ja;
 30613;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag;Still-/Ernährung Z;3;Videobetreuung;ja;7,24;5min;3.3;ja;
-30604;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;Telefonkurzberatung;nein;6,19;5min;3.3;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
+30604;306XX;Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes;Still-/Ernährung;3;Telefonkurzberatung;nein;6,19;5min;;nein;Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen).
 40102;4010X;Geburtsvorbereitung in der Gruppe (analoge Live-Kurseinheit);Geburtsvorbereitung Gruppe;4;analoge Live-Kurseinheit;nein;0,95;5min;3.4;ja;
 40103;4010X;Geburtsvorbereitung in der Gruppe (digitale Live-Kurseinheit);Geburtsvorbereitung Gruppe;4;digitale Live-Kurseinheit;nein;0,95;5min;3.4;ja;
 40106;4010X;Geburtsvorbereitung in der Gruppe (Selbstlerneinheit);Geburtsvorbereitung Gruppe;4;Selbstlerneinheit;nein;0,20;5min;3.4;ja;

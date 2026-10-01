@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.4 (Entwurf)
+Stand: 01.10.2026 · Version 1.5 (Entwurf)
 
 ---
 
@@ -711,7 +711,7 @@ Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (m
 | Offline-Daten | **IndexedDB** (Dexie), verschlüsselt; eigener Sync | Arbeiten im Funkloch, Abgleich bei Netz |
 | Unterschrift/Stift | Pointer Events (Apple Pencil, Finger, Maus) | Funktioniert mit und ohne Stift |
 | PDF | **pdf-lib** (Formulare 3.1–3.5 auf amtliche Vorlage, Abrechnungsdatenblatt, Kinderurkunde, Rechnungen) | Läuft im Browser, also auch offline beim Hausbesuch |
-| Backend | **Node.js + TypeScript** (Fastify), **PostgreSQL**, Prisma | Eine Sprache für alles, einfach zu betreiben |
+| Backend | **Node.js + TypeScript** (Fastify), **PostgreSQL**, Drizzle ORM | Eine Sprache für alles, einfach zu betreiben, keine Zusatz-Binärdateien |
 | Anmeldung | Passkeys bzw. Passwort + 2FA (TOTP), Sitzungen mit kurzer Laufzeit | Gesundheitsdaten |
 | Routing | **OSRM** (Straßennetz Mecklenburg-Vorpommern aus OpenStreetMap) + **VROOM** (Tourenoptimierung) | Selbst gehostet, keine Adressen an Google |
 | Karten | Leaflet mit OSM-Kacheln (bzw. selbst gehostete Kacheln) | Keine Tracking-Dienste |
@@ -813,7 +813,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 
 | Meilenstein | Inhalt |
 |---|---|
-| **M-1 Grundgerüst** | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS |
+| **M-1 Grundgerüst** ✅ | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS ([BETRIEB.md](BETRIEB.md)) |
 | **M-2 Akte und Besuch** | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Leistungserfassung mit Plausi und Kontingentanzeige |
 | **M-3 Abrechnung** | Formulare 3.1/3.3/3.4 als PDF, Papier- und Tablet-Unterschrift, Durchschreibesatz-Hilfe, Abrechnungsdatenblatt, Versandmappe, Fristen und Erinnerungen |
 | **M-4 Touren** | OSRM/VROOM, Tourvorlagen mit Start/Ende, Tagesplanung, Wegegeld und Fahrtenbuch |
@@ -868,10 +868,13 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 ### Geklärt (01.10.2026)
 Siehe Tabelle in Kapitel 5.1. Die Frage, wie Wegegeld und Pauschalen übermittelt werden, ist über den Vertrag beantwortet (Kapitel 8.6).
 
+### Betrieb (geklärt)
+- VPS: Hostinger **KVM 2**
+- Adresse: zunächst der Hostinger-Hostname des VPS, später eine Subdomain
+- E-Mail: später über ein Postfach der eigenen Domain
+
 ### Noch offen
-1. **VPS**: Welcher Hostinger-Tarif und welcher Standort ist vorhanden (bzw. wird gebucht)? Empfehlung siehe Kapitel 12.2.
-2. **Domain**: Unter welcher Adresse soll die App laufen (z. B. `app.hebammen-landkreisrostock.de`)?
-3. **E-Mail-Versand**: Über welches Postfach bzw. welchen SMTP-Dienst sollen Erinnerungen verschickt werden?
+- Keine offenen fachlichen Fragen; Rückmeldungen aus dem Test der Meilensteine fließen laufend ein.
 
 ---
 

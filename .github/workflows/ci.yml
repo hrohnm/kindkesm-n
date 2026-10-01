@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kindkes
+          POSTGRES_PASSWORD: kindkes
+          POSTGRES_DB: kindkes_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U kindkes" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://kindkes:kindkes@localhost:5432/kindkes_test
+      - run: npm run build
+      - run: docker build -t kindkesmoeoen-app:ci .

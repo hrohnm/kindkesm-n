@@ -268,6 +268,7 @@ def build(V):
         for p in positionen:
             if p["kategorie"] in (1, 3) and p["gpos"].endswith("4"):
                 p["quittierungspflichtig"] = False
+                p["formular"] = None
                 p["hinweis"] = "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
 
     # ---------------------------------------------------------------- Formulare Anlage 6 (Spalten im Leistungsbereich)

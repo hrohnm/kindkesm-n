@@ -352,7 +352,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.1",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
@@ -1153,7 +1153,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.3",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
@@ -1271,7 +1271,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.3",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
@@ -1369,7 +1369,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.3",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
@@ -1467,7 +1467,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.3",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
@@ -1559,7 +1559,7 @@
       "leistungsart": "Telefonkurzberatung",
       "betrag": 6.19,
       "einheit": "5min",
-      "formular": "3.3",
+      "formular": null,
       "quittierungspflichtig": false,
       "hinweis": "Nicht quittierungspflichtig (seit 01.04.2026 nicht mehr auf den Formularen)."
     },
