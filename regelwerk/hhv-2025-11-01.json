@@ -1,0 +1,2547 @@
+{
+  "id": "hhv-2025-11-01",
+  "name": "Hebammenhilfevertrag (§ 134a SGB V) ab 01.11.2025",
+  "gueltig_von": "2025-11-01",
+  "gueltig_bis": null,
+  "status": "entwurf",
+  "quelle": {
+    "dokument": "Vertrag über die Versorgung mit Hebammenhilfe nach § 134a SGB V, Fassung 02.04.2025",
+    "url": "https://www.gkv-spitzenverband.de/media/dokumente/krankenversicherung_1/ambulante_leistungen/hebammen/25-04-02_Hebammenhilfevertrag.pdf",
+    "anlagen": [
+      "1.1 Vergütungsvereinbarung (Abschnitt 2 Vergütungsverzeichnis)",
+      "6 Formulare 3.1-3.5"
+    ],
+    "hinweis": "Startbelegung, vor Aktivierung fachlich durch die Praxis zu prüfen."
+  },
+  "allgemein": {
+    "einheit_minuten": 5,
+    "einheit_regel": "Abrechnung in zusammenhängenden abgeschlossenen 5-Minuten-Einheiten (z.B. 10:04-10:09); nacheinander, nicht parallel.",
+    "gpos_aufbau": {
+      "stelle_1": "Kategorie",
+      "stelle_2_3": "laufende Nummer",
+      "stelle_4": "Zuschlag (0/1)",
+      "stelle_5": {
+        "0": "keine Spezifikation",
+        "1": "aufsuchend",
+        "2": "nicht-aufsuchend",
+        "3": "Videobetreuung",
+        "4": "Telefonkurzberatung",
+        "5": "Beleghebamme",
+        "6": "Selbstlerneinheit"
+      }
+    },
+    "versichertenbestaetigung": [
+      "Datum, Anfangs- und Endzeit (Selbstlerneinheit: Gesamtdauer) und GPOS eintragen",
+      "Unverzüglich nach der Leistung von der Versicherten unterschreiben lassen",
+      "Unzulässig: Vordatierung, Globalbestätigung, Blankounterschrift, nachträgliche Unterschrift",
+      "Korrektur: komplette Zeile streichen, neu ausfüllen, neu unterschreiben lassen",
+      "Video: Unterschrift beim nächsten persönlichen Kontakt oder einfache elektronische Signatur auf PDF binnen 2 Wochen",
+      "Ersatzunterschrift (Angehörige/Arzt) nur bei schwerwiegendem Grund mit Begründung"
+    ],
+    "aerztliche_anordnung": "Vor Leistungsbeginn; Angaben nach § 13 Anlage 1.1; Leistungen bis Ende des Folgequartals erbringen.",
+    "abrechnungsfristen": {
+      "max_einreichungen_pro_monat": 1,
+      "min_einreichungen_pro_jahr": 2,
+      "ausschlussfrist": "30.06. für Leistungen des Vorjahres (Urbelege bis 07.07.)"
+    }
+  },
+  "zuschlaege": {
+    "nacht": {
+      "von": "21:00",
+      "bis": "06:00"
+    },
+    "samstag_ab": "12:00",
+    "sonntag": true,
+    "feiertage": true,
+    "massgeblich": "Beginn der jeweiligen 5-Minuten-Einheit; bei Pauschalen der Zeitpunkt der Geburt",
+    "abbildung": "eigene GPOS mit 4. Stelle = 1"
+  },
+  "feiertage_bundesland": "MV",
+  "feiertage": [
+    {
+      "name": "Neujahr",
+      "regel": "01-01"
+    },
+    {
+      "name": "Internationaler Frauentag",
+      "regel": "03-08"
+    },
+    {
+      "name": "Karfreitag",
+      "regel": "ostern-2"
+    },
+    {
+      "name": "Ostermontag",
+      "regel": "ostern+1"
+    },
+    {
+      "name": "Tag der Arbeit",
+      "regel": "05-01"
+    },
+    {
+      "name": "Christi Himmelfahrt",
+      "regel": "ostern+39"
+    },
+    {
+      "name": "Pfingstmontag",
+      "regel": "ostern+50"
+    },
+    {
+      "name": "Tag der Deutschen Einheit",
+      "regel": "10-03"
+    },
+    {
+      "name": "Reformationstag",
+      "regel": "10-31"
+    },
+    {
+      "name": "1. Weihnachtsfeiertag",
+      "regel": "12-25"
+    },
+    {
+      "name": "2. Weihnachtsfeiertag",
+      "regel": "12-26"
+    }
+  ],
+  "wegegeld": {
+    "gpos_einzeln": "50100",
+    "gpos_anteilig": "50200",
+    "satz_je_km": 0.97,
+    "strecke": "kürzest mögliche Strecke zur Hilfeleistung",
+    "max_km_regel": 25,
+    "max_km_mit_begruendung": 50,
+    "begruendungen_ueber_25km": [
+      "geplante Hausgeburt (inkl. SS und frühes WB)",
+      "Vertretung einer anderen Hebamme (Name angeben)",
+      "keine Hebamme im Umkreis von 25 km verfügbar"
+    ],
+    "mehrere_versicherte": "Gesamtstrecke / Anzahl betreuter Versicherter, je Versicherte mit 50200; Anzahl im Feld TXT angeben",
+    "nicht_erstattungsfaehig": [
+      "Wege zu Sprechstunden und Kursen in Einrichtungen (Praxis)",
+      "Klinikdienste/Bereitschaft"
+    ]
+  },
+  "positionen": [
+    {
+      "gpos": "10101",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft",
+      "kurztext": "Hilfe SS",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10111",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft mit Zuschlag",
+      "kurztext": "Hilfe SS Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10102",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft",
+      "kurztext": "Hilfe SS",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10112",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft mit Zuschlag",
+      "kurztext": "Hilfe SS Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10103",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft",
+      "kurztext": "Hilfe SS",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10113",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft mit Zuschlag",
+      "kurztext": "Hilfe SS Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10104",
+      "gruppe": "101XX",
+      "bezeichnung": "Hilfeleistung in der Schwangerschaft",
+      "kurztext": "Hilfe SS",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10201",
+      "gruppe": "1020X",
+      "bezeichnung": "Vorsorgeuntersuchung der Schwangeren",
+      "kurztext": "Vorsorge",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
+    },
+    {
+      "gpos": "10202",
+      "gruppe": "1020X",
+      "bezeichnung": "Vorsorgeuntersuchung der Schwangeren",
+      "kurztext": "Vorsorge",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bei pathologischem Verlauf nur auf ärztliche Anordnung; Dokumentation im Mutterpass."
+    },
+    {
+      "gpos": "10301",
+      "gruppe": "1030X",
+      "bezeichnung": "Spezifisches Aufklärungsgespräch zum gewählten Geburtsort",
+      "kurztext": "Aufkl. Geburtsort",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "bedingung": {
+        "ssw_bis_exklusiv": 38
+      },
+      "hinweis": "Nur bei geplanter Haus-, HgE- oder Begleit-Beleggeburt; geplanter Geburtsort auf Formular ankreuzen."
+    },
+    {
+      "gpos": "10302",
+      "gruppe": "1030X",
+      "bezeichnung": "Spezifisches Aufklärungsgespräch zum gewählten Geburtsort",
+      "kurztext": "Aufkl. Geburtsort",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "bedingung": {
+        "ssw_bis_exklusiv": 38
+      },
+      "hinweis": "Nur bei geplanter Haus-, HgE- oder Begleit-Beleggeburt; geplanter Geburtsort auf Formular ankreuzen."
+    },
+    {
+      "gpos": "10401",
+      "gruppe": "1040X",
+      "bezeichnung": "Individuelle Stillvorbereitung",
+      "kurztext": "Stillvorbereitung",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10402",
+      "gruppe": "1040X",
+      "bezeichnung": "Individuelle Stillvorbereitung",
+      "kurztext": "Stillvorbereitung",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10501",
+      "gruppe": "105XX",
+      "bezeichnung": "Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW",
+      "kurztext": "Fehlgeburt früh",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 90 Minuten nach der Geburt abrechenbar."
+    },
+    {
+      "gpos": "10511",
+      "gruppe": "105XX",
+      "bezeichnung": "Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW mit Zuschlag",
+      "kurztext": "Fehlgeburt früh Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 90 Minuten nach der Geburt abrechenbar."
+    },
+    {
+      "gpos": "10502",
+      "gruppe": "105XX",
+      "bezeichnung": "Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW",
+      "kurztext": "Fehlgeburt früh",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 90 Minuten nach der Geburt abrechenbar."
+    },
+    {
+      "gpos": "10512",
+      "gruppe": "105XX",
+      "bezeichnung": "Hilfeleistung bei einer frühen außerklinischen Fehlgeburt bis 11+6 SSW mit Zuschlag",
+      "kurztext": "Fehlgeburt früh Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 90 Minuten nach der Geburt abrechenbar."
+    },
+    {
+      "gpos": "10601",
+      "gruppe": "106XX",
+      "bezeichnung": "Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW",
+      "kurztext": "Fehlgeburt spät",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt."
+    },
+    {
+      "gpos": "10611",
+      "gruppe": "106XX",
+      "bezeichnung": "Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW mit Zuschlag",
+      "kurztext": "Fehlgeburt spät Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt."
+    },
+    {
+      "gpos": "10602",
+      "gruppe": "106XX",
+      "bezeichnung": "Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW",
+      "kurztext": "Fehlgeburt spät",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt."
+    },
+    {
+      "gpos": "10612",
+      "gruppe": "106XX",
+      "bezeichnung": "Hilfeleistung bei einer späten außerklinischen Fehlgeburt 12+0 bis 23+6 SSW mit Zuschlag",
+      "kurztext": "Fehlgeburt spät Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Bis 3 Stunden nach der Geburt, max. 4 Kontakte, keine Höchstdauer je Kontakt."
+    },
+    {
+      "gpos": "10705",
+      "gruppe": "107XX",
+      "bezeichnung": "Hilfeleistung bei einem stationären Aufenthalt als Beleghebamme",
+      "kurztext": "Beleg stationär",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 4.95,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10715",
+      "gruppe": "107XX",
+      "bezeichnung": "Hilfeleistung bei einem stationären Aufenthalt als Beleghebamme mit Zuschlag",
+      "kurztext": "Beleg stationär Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 5.79,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10805",
+      "gruppe": "108X5",
+      "bezeichnung": "Überwachung bei einem stationären Aufenthalt als Beleghebamme",
+      "kurztext": "Beleg Überw. SS",
+      "kategorie": 1,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 1.86,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "10815",
+      "gruppe": "108X5",
+      "bezeichnung": "Überwachung bei einem stationären Aufenthalt als Beleghebamme mit Zuschlag",
+      "kurztext": "Beleg Überw. SS Z",
+      "kategorie": 1,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 2.17,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20101",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt im häuslichen Umfeld",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 1.86,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20102",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt in einer von Hebammen geleiteten Einrichtung",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 1.86,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20105",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt im Krankenhaus als Beleghebamme",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 4.95,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20111",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt im häuslichen Umfeld mit Zuschlag",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 2.17,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20112",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt in einer von Hebammen geleiteten Einrichtung mit Zuschlag",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 2.17,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20115",
+      "gruppe": "201XX",
+      "bezeichnung": "Hilfeleistung bei Wehen und einer Geburt im Krankenhaus als Beleghebamme mit Zuschlag",
+      "kurztext": "Wehen/Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 5.79,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20201",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt im häuslichen Umfeld",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 738.75,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20202",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt in einer von Hebammen geleiteten Einrichtung",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 626.38,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20205",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt bei einer Begleit-Beleggeburt",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 237.7,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20211",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt im häuslichen Umfeld mit Zuschlag",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 864.34,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20212",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt in einer von Hebammen geleiteten Einrichtung mit Zuschlag",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 732.86,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20215",
+      "gruppe": "202XX",
+      "bezeichnung": "Grundpauschale Geburt bei einer Begleit-Beleggeburt mit Zuschlag",
+      "kurztext": "Grundpauschale Geburt",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 278.1,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Geburt, auch bei Mehrlingen."
+    },
+    {
+      "gpos": "20305",
+      "gruppe": "203X5",
+      "bezeichnung": "Pauschale 1:1-Hilfeleistung bei einer stationären Geburt als Beleghebamme",
+      "kurztext": "1:1 Beleg",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 103.99,
+      "einheit": "pauschal",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20315",
+      "gruppe": "203X5",
+      "bezeichnung": "Pauschale 1:1-Hilfeleistung bei einer stationären Geburt als Beleghebamme mit Zuschlag",
+      "kurztext": "1:1 Beleg Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 121.67,
+      "einheit": "pauschal",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20505",
+      "gruppe": "205X5",
+      "bezeichnung": "Überwachung bei Wehen und einer Geburt als Beleghebamme",
+      "kurztext": "Beleg Überw. Geburt",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 1.86,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20515",
+      "gruppe": "205X5",
+      "bezeichnung": "Überwachung bei Wehen und einer Geburt als Beleghebamme mit Zuschlag",
+      "kurztext": "Beleg Überw. Geburt Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 2.17,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20601",
+      "gruppe": "2060X",
+      "bezeichnung": "Zuschlag für Mehrlingsgeburt im häuslichen Umfeld",
+      "kurztext": "Mehrlingszuschlag",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 89.14,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false
+    },
+    {
+      "gpos": "20602",
+      "gruppe": "2060X",
+      "bezeichnung": "Zuschlag für Mehrlingsgeburt in einer von Hebammen geleiteten Einrichtung",
+      "kurztext": "Mehrlingszuschlag",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 89.14,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false
+    },
+    {
+      "gpos": "20605",
+      "gruppe": "2060X",
+      "bezeichnung": "Zuschlag für Mehrlingsgeburt im Krankenhaus als Beleghebamme",
+      "kurztext": "Mehrlingszuschlag",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 89.14,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false
+    },
+    {
+      "gpos": "20701",
+      "gruppe": "207XX",
+      "bezeichnung": "Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt",
+      "kurztext": "Geburt nicht vollendet",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20711",
+      "gruppe": "207XX",
+      "bezeichnung": "Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt mit Zuschlag",
+      "kurztext": "Geburt nicht vollendet Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20702",
+      "gruppe": "207XX",
+      "bezeichnung": "Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt",
+      "kurztext": "Geburt nicht vollendet",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20712",
+      "gruppe": "207XX",
+      "bezeichnung": "Hilfeleistung bei einer nicht vollendeten außerklinischen Geburt mit Zuschlag",
+      "kurztext": "Geburt nicht vollendet Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20801",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme",
+      "kurztext": "2. Hebamme",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20811",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag",
+      "kurztext": "2. Hebamme Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20802",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme",
+      "kurztext": "2. Hebamme",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20812",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag",
+      "kurztext": "2. Hebamme Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.2",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20805",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme",
+      "kurztext": "2. Hebamme",
+      "kategorie": 2,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 4.95,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "20815",
+      "gruppe": "208XX",
+      "bezeichnung": "Hilfeleistung bei einer Geburt durch eine zweite Hebamme mit Zuschlag",
+      "kurztext": "2. Hebamme Z",
+      "kategorie": 2,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 5.79,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30101",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett",
+      "kurztext": "WB früh",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30111",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett mit Zuschlag",
+      "kurztext": "WB früh Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30102",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett",
+      "kurztext": "WB früh",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30112",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett mit Zuschlag",
+      "kurztext": "WB früh Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30103",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett",
+      "kurztext": "WB früh",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30113",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett mit Zuschlag",
+      "kurztext": "WB früh Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30104",
+      "gruppe": "301XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett",
+      "kurztext": "WB früh",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30205",
+      "gruppe": "302XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme",
+      "kurztext": "WB Beleg",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Beleghebamme",
+      "betrag": 4.95,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30215",
+      "gruppe": "302XX",
+      "bezeichnung": "Hilfeleistung im frühen Wochenbett nach stationärer Geburt als Beleghebamme mit Zuschlag",
+      "kurztext": "WB Beleg Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Beleghebamme",
+      "betrag": 5.79,
+      "einheit": "5min",
+      "formular": "3.5",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30301",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett",
+      "kurztext": "WB spät",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30311",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett mit Zuschlag",
+      "kurztext": "WB spät Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30302",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett",
+      "kurztext": "WB spät",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30312",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett mit Zuschlag",
+      "kurztext": "WB spät Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30303",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett",
+      "kurztext": "WB spät",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30313",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett mit Zuschlag",
+      "kurztext": "WB spät Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30304",
+      "gruppe": "303XX",
+      "bezeichnung": "Hilfeleistung im späten Wochenbett",
+      "kurztext": "WB spät",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30401",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB früh Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30411",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB früh Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30402",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB früh Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30412",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB früh Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30403",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB früh Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30413",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB früh Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30404",
+      "gruppe": "304XX",
+      "bezeichnung": "Hilfeleistung beim Kind im frühen Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB früh Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30501",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB spät Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30511",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB spät Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30502",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB spät Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30512",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB spät Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30503",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB spät Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30513",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter mit Zuschlag",
+      "kurztext": "WB spät Kind Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30504",
+      "gruppe": "305XX",
+      "bezeichnung": "Hilfeleistung beim Kind im späten Wochenbett bei Abwesenheit der Mutter",
+      "kurztext": "WB spät Kind",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Abrechnung mit der Krankenkasse des Kindes; Begründung angeben."
+    },
+    {
+      "gpos": "30601",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes",
+      "kurztext": "Still-/Ernährung",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30611",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag",
+      "kurztext": "Still-/Ernährung Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30602",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes",
+      "kurztext": "Still-/Ernährung",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30612",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag",
+      "kurztext": "Still-/Ernährung Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30603",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes",
+      "kurztext": "Still-/Ernährung",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30613",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes mit Zuschlag",
+      "kurztext": "Still-/Ernährung Z",
+      "kategorie": 3,
+      "zuschlag": true,
+      "leistungsart": "Videobetreuung",
+      "betrag": 7.24,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "30604",
+      "gruppe": "306XX",
+      "bezeichnung": "Hilfeleistung bei Still- und Ernährungsschwierigkeiten des Kindes",
+      "kurztext": "Still-/Ernährung",
+      "kategorie": 3,
+      "zuschlag": false,
+      "leistungsart": "Telefonkurzberatung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.3",
+      "quittierungspflichtig": true
+    },
+    {
+      "gpos": "40102",
+      "gruppe": "4010X",
+      "bezeichnung": "Geburtsvorbereitung in der Gruppe (analoge Live-Kurseinheit)",
+      "kurztext": "Geburtsvorbereitung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 0.95,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "analoge Live-Kurseinheit"
+    },
+    {
+      "gpos": "40103",
+      "gruppe": "4010X",
+      "bezeichnung": "Geburtsvorbereitung in der Gruppe (digitale Live-Kurseinheit)",
+      "kurztext": "Geburtsvorbereitung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 0.95,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "digitale Live-Kurseinheit"
+    },
+    {
+      "gpos": "40106",
+      "gruppe": "4010X",
+      "bezeichnung": "Geburtsvorbereitung in der Gruppe (Selbstlerneinheit)",
+      "kurztext": "Geburtsvorbereitung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Selbstlerneinheit",
+      "betrag": 0.2,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "Selbstlerneinheit"
+    },
+    {
+      "gpos": "40202",
+      "gruppe": "4020X",
+      "bezeichnung": "Geburtsvorbereitung in Einzelunterweisung (analoge Live-Kurseinheit)",
+      "kurztext": "Geburtsvorbereitung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "analoge Live-Kurseinheit"
+    },
+    {
+      "gpos": "40203",
+      "gruppe": "4020X",
+      "bezeichnung": "Geburtsvorbereitung in Einzelunterweisung (digitale Live-Kurseinheit)",
+      "kurztext": "Geburtsvorbereitung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "digitale Live-Kurseinheit"
+    },
+    {
+      "gpos": "40206",
+      "gruppe": "4020X",
+      "bezeichnung": "Geburtsvorbereitung in Einzelunterweisung (Selbstlerneinheit)",
+      "kurztext": "Geburtsvorbereitung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Selbstlerneinheit",
+      "betrag": 0.2,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "Selbstlerneinheit"
+    },
+    {
+      "gpos": "40302",
+      "gruppe": "4030X",
+      "bezeichnung": "Rückbildung in der Gruppe (analoge Live-Kurseinheit)",
+      "kurztext": "Rückbildung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 0.95,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "analoge Live-Kurseinheit"
+    },
+    {
+      "gpos": "40303",
+      "gruppe": "4030X",
+      "bezeichnung": "Rückbildung in der Gruppe (digitale Live-Kurseinheit)",
+      "kurztext": "Rückbildung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 0.95,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "digitale Live-Kurseinheit"
+    },
+    {
+      "gpos": "40306",
+      "gruppe": "4030X",
+      "bezeichnung": "Rückbildung in der Gruppe (Selbstlerneinheit)",
+      "kurztext": "Rückbildung Gruppe",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Selbstlerneinheit",
+      "betrag": 0.2,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "Selbstlerneinheit"
+    },
+    {
+      "gpos": "40402",
+      "gruppe": "4040X",
+      "bezeichnung": "Rückbildung in Einzelunterweisung (analoge Live-Kurseinheit)",
+      "kurztext": "Rückbildung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "nicht-aufsuchend",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "analoge Live-Kurseinheit"
+    },
+    {
+      "gpos": "40403",
+      "gruppe": "4040X",
+      "bezeichnung": "Rückbildung in Einzelunterweisung (digitale Live-Kurseinheit)",
+      "kurztext": "Rückbildung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Videobetreuung",
+      "betrag": 6.19,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "digitale Live-Kurseinheit"
+    },
+    {
+      "gpos": "40406",
+      "gruppe": "4040X",
+      "bezeichnung": "Rückbildung in Einzelunterweisung (Selbstlerneinheit)",
+      "kurztext": "Rückbildung Einzel",
+      "kategorie": 4,
+      "zuschlag": false,
+      "leistungsart": "Selbstlerneinheit",
+      "betrag": 0.2,
+      "einheit": "5min",
+      "formular": "3.4",
+      "quittierungspflichtig": true,
+      "leistungsart_kurs": "Selbstlerneinheit"
+    },
+    {
+      "gpos": "50100",
+      "gruppe": "50100",
+      "bezeichnung": "Wegegeld je km",
+      "kurztext": "Wegegeld",
+      "kategorie": 5,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 0.97,
+      "einheit": "km",
+      "formular": null,
+      "quittierungspflichtig": false
+    },
+    {
+      "gpos": "50200",
+      "gruppe": "50200",
+      "bezeichnung": "Anteiliges Wegegeld je km (mehrere Versicherte auf einem Weg)",
+      "kurztext": "Wegegeld anteilig",
+      "kategorie": 5,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 0.97,
+      "einheit": "km",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Anzahl der auf der Gesamtstrecke betreuten Versicherten im Feld TXT angeben."
+    },
+    {
+      "gpos": "50300",
+      "gruppe": "50300",
+      "bezeichnung": "Maut, Fähre, Begleitfahrt nach § 11 Abs. 4",
+      "kurztext": "Maut/Fähre",
+      "kategorie": 5,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": null,
+      "einheit": "tatsaechlich",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Tatsächliche Kosten, Nachweise in Kopie beifügen."
+    },
+    {
+      "gpos": "50400",
+      "gruppe": "50400",
+      "bezeichnung": "Benutzung öffentlicher Verkehrsmittel",
+      "kurztext": "ÖPNV",
+      "kategorie": 5,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 3.37,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false
+    },
+    {
+      "gpos": "60100",
+      "gruppe": "60100",
+      "bezeichnung": "Materialpauschale Schwangerschaft",
+      "kurztext": "Mat. Schwangerschaft",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 2.84,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Hilfeleistung in der Schwangerschaft; nicht neben 60200, 60800, 60900."
+    },
+    {
+      "gpos": "60200",
+      "gruppe": "60200",
+      "bezeichnung": "Materialpauschale Vorsorgeuntersuchung",
+      "kurztext": "Mat. Vorsorgeuntersuchung",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 3.86,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmal je Vorsorgeuntersuchung; nicht neben 60100."
+    },
+    {
+      "gpos": "60300",
+      "gruppe": "60300",
+      "bezeichnung": "Materialpauschale Entnahme von Körpermaterial (Frau)",
+      "kurztext": "Mat. Entnahme von Körpermaterial (Frau)",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 2.27,
+      "einheit": "pauschal",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmal je Vorsorge oder Hilfeleistung in der Schwangerschaft."
+    },
+    {
+      "gpos": "60400",
+      "gruppe": "60400",
+      "bezeichnung": "Materialpauschale GDM-Screening",
+      "kurztext": "Mat. GDM-Screening",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 4.44,
+      "einheit": "pauschal",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig in der Schwangerschaft."
+    },
+    {
+      "gpos": "60500",
+      "gruppe": "60500",
+      "bezeichnung": "Materialpauschale CTG",
+      "kurztext": "Mat. CTG",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 10.33,
+      "einheit": "pauschal",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmal je Hilfeleistung/Vorsorge; bei Geburt mehrfach möglich (Formular 3.2)."
+    },
+    {
+      "gpos": "60600",
+      "gruppe": "60600",
+      "bezeichnung": "Materialpauschale Individuelle Stillvorbereitung",
+      "kurztext": "Mat. Individuelle Stillvorbereitung",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 2.3,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig in der Schwangerschaft."
+    },
+    {
+      "gpos": "60700",
+      "gruppe": "60700",
+      "bezeichnung": "Materialpauschale Abklärung Blasensprung",
+      "kurztext": "Mat. Abklärung Blasensprung",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 11.56,
+      "einheit": "pauschal",
+      "formular": "3.1",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig in der Schwangerschaft."
+    },
+    {
+      "gpos": "60800",
+      "gruppe": "60800",
+      "bezeichnung": "Materialpauschale Fehlgeburt",
+      "kurztext": "Mat. Fehlgeburt",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 35.8,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig; nur bei Fehlgeburt; nicht neben 60100."
+    },
+    {
+      "gpos": "60900",
+      "gruppe": "60900",
+      "bezeichnung": "Materialpauschale Geburt",
+      "kurztext": "Mat. Geburt",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 80.06,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig; nur mit vollendeter oder nicht vollendeter Geburt; nicht neben 60100."
+    },
+    {
+      "gpos": "61000",
+      "gruppe": "61000",
+      "bezeichnung": "Materialpauschale Versorgung einer Naht bei Geburtsverletzung",
+      "kurztext": "Mat. Versorgung einer Naht bei Geburtsverletzung",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 57.74,
+      "einheit": "pauschal",
+      "formular": "3.2",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig, nur zusammen mit 60900."
+    },
+    {
+      "gpos": "61100",
+      "gruppe": "61100",
+      "bezeichnung": "Materialpauschale Pulsoxymetrie",
+      "kurztext": "Mat. Pulsoxymetrie",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 7.87,
+      "einheit": "pauschal",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig (auch auf Formular 3.2)."
+    },
+    {
+      "gpos": "61200",
+      "gruppe": "61200",
+      "bezeichnung": "Materialpauschale Wochenbett lang",
+      "kurztext": "Mat. Wochenbett lang",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 35.17,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig, wenn aufsuchende Wochenbettbetreuung bis 4 Tage nach Geburt übernommen."
+    },
+    {
+      "gpos": "61300",
+      "gruppe": "61300",
+      "bezeichnung": "Materialpauschale Wochenbett kurz",
+      "kurztext": "Mat. Wochenbett kurz",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 21.79,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig, wenn aufsuchende Wochenbettbetreuung später als 4 Tage nach Geburt übernommen."
+    },
+    {
+      "gpos": "61400",
+      "gruppe": "61400",
+      "bezeichnung": "Materialpauschale Neugeborenen-Screening",
+      "kurztext": "Mat. Neugeborenen-Screening",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 4.05,
+      "einheit": "pauschal",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig (auch auf Formular 3.2)."
+    },
+    {
+      "gpos": "61500",
+      "gruppe": "61500",
+      "bezeichnung": "Materialpauschale Entnahme von Körpermaterial (Kind)",
+      "kurztext": "Mat. Entnahme von Körpermaterial (Kind)",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 4.05,
+      "einheit": "pauschal",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Je Hilfeleistung im Wochenbett, nur Bilirubinkontrolle bei Verdacht auf Hyperbilirubinämie."
+    },
+    {
+      "gpos": "61600",
+      "gruppe": "61600",
+      "bezeichnung": "Materialpauschale Fäden ziehen Dammnaht",
+      "kurztext": "Mat. Fäden ziehen Dammnaht",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 9.69,
+      "einheit": "pauschal",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig."
+    },
+    {
+      "gpos": "61700",
+      "gruppe": "61700",
+      "bezeichnung": "Materialpauschale Fäden und Klammern entfernen Sectionaht",
+      "kurztext": "Mat. Fäden und Klammern entfernen Sectionaht",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 7.56,
+      "einheit": "pauschal",
+      "formular": "3.3",
+      "quittierungspflichtig": true,
+      "hinweis": "Einmalig."
+    },
+    {
+      "gpos": "61800",
+      "gruppe": "61800",
+      "bezeichnung": "Perinatalerhebung",
+      "kurztext": "Perinatalerhebung",
+      "kategorie": 6,
+      "zuschlag": false,
+      "leistungsart": "keine Spezifikation",
+      "betrag": 12.06,
+      "einheit": "pauschal",
+      "formular": null,
+      "quittierungspflichtig": false,
+      "hinweis": "Einmalig bei außerklinischer Geburt."
+    }
+  ],
+  "kontingente": [
+    {
+      "id": "101-live",
+      "name": "Hilfeleistung Schwangerschaft (aufsuchend/nicht-aufsuchend/Video)",
+      "positionen": [
+        "101X1",
+        "101X2",
+        "101X3"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 2,
+      "davon_video_max": 1,
+      "einheiten_pro_kontakt": 18,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 18,
+      "kontakte_gesamt": null
+    },
+    {
+      "id": "101-tel",
+      "name": "Hilfeleistung Schwangerschaft Telefonkurzberatung",
+      "positionen": [
+        "10104"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 2,
+      "einheiten_pro_kontakt": 2,
+      "einheiten_pro_tag": 2,
+      "kontakte_gesamt": 12
+    },
+    {
+      "id": "102",
+      "name": "Vorsorgeuntersuchung",
+      "positionen": [
+        "10201",
+        "10202"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 6,
+      "einheiten_pro_tag": 6,
+      "kontakte_gesamt": "analog Mutterschaftsrichtlinie"
+    },
+    {
+      "id": "103",
+      "name": "Aufklärungsgespräch Geburtsort",
+      "positionen": [
+        "10301",
+        "10302"
+      ],
+      "zeitraum": {
+        "ssw_bis_exklusiv": 38
+      },
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 18,
+      "einheiten_gesamt": 18,
+      "kontakte_gesamt": 2
+    },
+    {
+      "id": "104",
+      "name": "Individuelle Stillvorbereitung",
+      "positionen": [
+        "10401",
+        "10402"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 9,
+      "einheiten_pro_tag": 9,
+      "kontakte_gesamt": 1
+    },
+    {
+      "id": "105",
+      "name": "Frühe Fehlgeburt",
+      "positionen": [
+        "105X1",
+        "105X2"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 2,
+      "einheiten_pro_kontakt": 54,
+      "einheiten_pro_tag": 54,
+      "kontakte_gesamt": 2
+    },
+    {
+      "id": "106",
+      "name": "Späte Fehlgeburt",
+      "positionen": [
+        "106X1",
+        "106X2"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_gesamt": 4
+    },
+    {
+      "id": "107",
+      "name": "Beleg stationär Schwangerschaft",
+      "positionen": [
+        "107X5"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "einheiten_pro_tag": 6
+    },
+    {
+      "id": "108",
+      "name": "Beleg Überwachung Schwangerschaft",
+      "positionen": [
+        "108X5"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "einheiten_pro_tag": 6
+    },
+    {
+      "id": "208-ak",
+      "name": "Zweite Hebamme außerklinisch",
+      "positionen": [
+        "208X1",
+        "208X2"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 72
+    },
+    {
+      "id": "208-beleg",
+      "name": "Zweite Hebamme Krankenhaus",
+      "positionen": [
+        "208X5"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 48
+    },
+    {
+      "id": "301",
+      "name": "Frühes Wochenbett",
+      "positionen": [
+        "301X1",
+        "301X2",
+        "301X3",
+        "30104"
+      ],
+      "zeitraum": {
+        "lebenstag_von": 1,
+        "lebenstag_bis": 10
+      },
+      "bezug": "Kind/Geburt",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 2,
+      "video_nur_zweiter_kontakt": true,
+      "einheiten_pro_kontakt": 18,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 18,
+      "telefon": {
+        "kontakte_pro_tag": 1,
+        "einheiten_pro_kontakt": 2,
+        "einheiten_pro_tag": 2
+      },
+      "kontakte_gesamt": 20,
+      "sonderregeln": [
+        "301X1: an Lebenstag 1-3 sowie am Tag der ersten aufsuchenden Hilfeleistung bis 24 Einheiten (120 Min.)",
+        "301X1/301X2: Mehrlinge +2 Einheiten (10 Min.) je weiterem Kind",
+        "Nach Fehlgeburt bis 11+6 SSW max. 6 Kontakte, bis 23+6 SSW max. 10 Kontakte"
+      ]
+    },
+    {
+      "id": "302",
+      "name": "Frühes Wochenbett Beleg",
+      "positionen": [
+        "302X5"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "einheiten_pro_tag": 6,
+      "sonderregeln": [
+        "Mehrlinge +2 Einheiten je weiterem Kind"
+      ]
+    },
+    {
+      "id": "303",
+      "name": "Spätes Wochenbett",
+      "positionen": [
+        "303X1",
+        "303X2",
+        "303X3",
+        "30304"
+      ],
+      "zeitraum": {
+        "lebenstag_von": 11,
+        "lebenswoche_bis": 12
+      },
+      "bezug": "Kind/Geburt",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 12,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 12,
+      "telefon": {
+        "kontakte_pro_tag": 1,
+        "einheiten_pro_kontakt": 2,
+        "einheiten_pro_tag": 2
+      },
+      "kontakttage_gesamt": 16,
+      "sonderregeln": [
+        "303X1/303X2: Mehrlinge +2 Einheiten je weiterem Kind",
+        "Nach Fehlgeburt max. 4 Kontakte"
+      ]
+    },
+    {
+      "id": "304",
+      "name": "Frühes Wochenbett Kind (Mutter abwesend)",
+      "positionen": [
+        "304X1",
+        "304X2",
+        "304X3",
+        "30404"
+      ],
+      "zeitraum": {
+        "lebenstag_von": 1,
+        "lebenstag_bis": 10
+      },
+      "bezug": "Kind",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 2,
+      "video_nur_zweiter_kontakt": true,
+      "einheiten_pro_kontakt": 18,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 18,
+      "telefon": {
+        "kontakte_pro_tag": 1,
+        "einheiten_pro_kontakt": 2,
+        "einheiten_pro_tag": 2
+      },
+      "kontakte_gesamt": 20
+    },
+    {
+      "id": "305",
+      "name": "Spätes Wochenbett Kind (Mutter abwesend)",
+      "positionen": [
+        "305X1",
+        "305X2",
+        "305X3",
+        "30504"
+      ],
+      "zeitraum": {
+        "lebenstag_von": 11,
+        "lebenswoche_bis": 12
+      },
+      "bezug": "Kind",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 12,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 12,
+      "telefon": {
+        "kontakte_pro_tag": 1,
+        "einheiten_pro_kontakt": 2,
+        "einheiten_pro_tag": 2
+      },
+      "kontakttage_gesamt": 8
+    },
+    {
+      "id": "306",
+      "name": "Still- und Ernährungsschwierigkeiten",
+      "positionen": [
+        "306X1",
+        "306X2",
+        "306X3",
+        "30604"
+      ],
+      "zeitraum": {
+        "lebenswoche_von": 13,
+        "bis": "Ende Abstillphase; bei Ernährungsproblemen bis Ende 9. Lebensmonat"
+      },
+      "bezug": "Kind",
+      "verhalten_bei_ueberschreitung": "anordnung",
+      "kontakte_pro_tag": 1,
+      "einheiten_pro_kontakt": 9,
+      "einheiten_pro_kontakt_video": 6,
+      "einheiten_pro_tag": 9,
+      "telefon": {
+        "kontakte_pro_tag": 1,
+        "einheiten_pro_kontakt": 2,
+        "einheiten_pro_tag": 2
+      },
+      "kontakttage_gesamt": 8
+    },
+    {
+      "id": "401",
+      "name": "Geburtsvorbereitung Gruppe",
+      "positionen": [
+        "40102",
+        "40103",
+        "40106"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 168,
+      "selbstlern_max_anteil": 0.5,
+      "sonderregeln": [
+        "Max. 10 Teilnehmerinnen; Pausen nicht abrechenbar"
+      ]
+    },
+    {
+      "id": "402",
+      "name": "Geburtsvorbereitung Einzel",
+      "positionen": [
+        "40202",
+        "40203",
+        "40206"
+      ],
+      "zeitraum": null,
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 84,
+      "selbstlern_max_anteil": 0.5,
+      "sonderregeln": [
+        "Nur mit Begründung (Gründe 1-5 laut Vertrag)"
+      ]
+    },
+    {
+      "id": "403",
+      "name": "Rückbildung Gruppe",
+      "positionen": [
+        "40302",
+        "40303",
+        "40306"
+      ],
+      "zeitraum": {
+        "bis": "Ende 9. Monat nach Geburt"
+      },
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 120,
+      "selbstlern_max_anteil": 0.5,
+      "sonderregeln": [
+        "Max. 10 Teilnehmerinnen; Pausen nicht abrechenbar"
+      ]
+    },
+    {
+      "id": "404",
+      "name": "Rückbildung Einzel",
+      "positionen": [
+        "40402",
+        "40403",
+        "40406"
+      ],
+      "zeitraum": {
+        "bis": "Ende 9. Monat nach Geburt"
+      },
+      "bezug": "Versicherte",
+      "verhalten_bei_ueberschreitung": "sperre",
+      "einheiten_gesamt": 60,
+      "selbstlern_max_anteil": 0.5,
+      "sonderregeln": [
+        "Nur mit Begründung (Gründe 1-5 laut Vertrag)"
+      ]
+    }
+  ],
+  "formulare": {
+    "gemeinsam": {
+      "kopf": [
+        "Rechnungsnummer",
+        "Krankenkasse bzw. Kostenträger",
+        "Name, Vorname der Versicherten",
+        "geb. am",
+        "Krankenkassen-IK",
+        "Versicherten-Nr.",
+        "Errechneter Termin",
+        "Geburtsdatum Kind"
+      ],
+      "hebammen_tabelle": {
+        "zeilen": 8,
+        "spalten": [
+          "Name, Vorname der Hebamme",
+          "Heb-Nr.",
+          "IK oder 'angestellt'"
+        ],
+        "regel": "Freiberufliche Hebamme: Heb-Nr. 1 + eigenes IK; angestellte Hebamme: Heb-Nr. 2 ff. + 'angestellt' (§ 12 Abs. 6 Anlage 1.1)."
+      },
+      "zeile": [
+        "Heb-Nr.",
+        "Datum (TT.MM.JJJJ)",
+        "Uhrzeit von (HH:MM)",
+        "Uhrzeit bis (HH:MM)",
+        "<Leistungsspalten>",
+        "Unterschrift der Versicherten",
+        "Begründung/Vermerk (X)"
+      ],
+      "fuss": [
+        "Begründungen und Vermerke (Freitext)"
+      ],
+      "hinweis": "Der Zuschlag (4. Stelle der GPOS) wird nicht eingetragen, er ergibt sich aus Datum und Uhrzeit (§ 3 Anlage 1.1)."
+    },
+    "3.1": {
+      "titel": "Versichertenbestätigung Schwangerschaft",
+      "zeilen": 16,
+      "kopf_zusatz": [
+        "Geplanter Geburtsort: häusliches Umfeld / HgE / Begleit-Beleggeburt"
+      ],
+      "spalten": [
+        {
+          "label": "Hilfeleistung Schwangerschaft",
+          "gruppen": [
+            "101XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "1234"
+        },
+        {
+          "label": "Vorsorgeuntersuchung",
+          "gruppen": [
+            "1020X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Aufklärungsgespräch Geburtsort",
+          "gruppen": [
+            "1030X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Individuelle Stillvorbereitung",
+          "gruppen": [
+            "1040X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Hilfeleistung Fehlgeburt",
+          "gruppen": [
+            "105XX",
+            "106XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Entnahme Körpermaterial (Frau)",
+          "gruppen": [
+            "60300"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "GDM",
+          "gruppen": [
+            "60400"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "CTG",
+          "gruppen": [
+            "60500"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Abklärung Blasensprung",
+          "gruppen": [
+            "60700"
+          ],
+          "eintrag": "kreuz"
+        }
+      ]
+    },
+    "3.2": {
+      "titel": "Versichertenbestätigung außerklinische Geburt",
+      "zeilen": 16,
+      "kopf_zusatz": [
+        "Uhrzeit der Geburt (bei Mehrlingen weitere Uhrzeiten)",
+        "Lebendgeburt / nicht vollendete Geburt (Verlegung) / Totgeburt",
+        "Ort: häusliches Umfeld = 1, HgE (Geburtshaus) = 2"
+      ],
+      "spalten": [
+        {
+          "label": "Hilfeleistung bei Wehen und Geburt",
+          "gruppen": [
+            "201XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Hilfeleistung nicht vollendete Geburt",
+          "gruppen": [
+            "207XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "Hilfeleistung durch 2. Hebamme",
+          "gruppen": [
+            "208XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "12"
+        },
+        {
+          "label": "CTG",
+          "gruppen": [
+            "60500"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Versorgung Naht",
+          "gruppen": [
+            "61000"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Pulsoxymetrie",
+          "gruppen": [
+            "61100"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Neugeborenenscreening",
+          "gruppen": [
+            "61400"
+          ],
+          "eintrag": "kreuz"
+        }
+      ]
+    },
+    "3.3": {
+      "titel": "Versichertenbestätigung Wochenbett",
+      "zeilen": 17,
+      "spalten": [
+        {
+          "label": "Wochenbett",
+          "gruppen": [
+            "301XX",
+            "303XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "1234",
+          "hinweis": "Früh/spät ergibt sich aus dem Lebenstag."
+        },
+        {
+          "label": "Wochenbett nur Kind",
+          "gruppen": [
+            "304XX",
+            "305XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "1234"
+        },
+        {
+          "label": "Still- und Ernährungsschwierigkeiten",
+          "gruppen": [
+            "306XX"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "1234"
+        },
+        {
+          "label": "Pulsoxymetrie",
+          "gruppen": [
+            "61100"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Neugeborenenscreening",
+          "gruppen": [
+            "61400"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Entnahme Körpermaterial (Kind)",
+          "gruppen": [
+            "61500"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Fäden ziehen Dammnaht",
+          "gruppen": [
+            "61600"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Fäden/Klammern ziehen Sectionaht",
+          "gruppen": [
+            "61700"
+          ],
+          "eintrag": "kreuz"
+        }
+      ]
+    },
+    "3.4": {
+      "titel": "Versichertenbestätigung Kurse",
+      "zeilen": 17,
+      "regeln": [
+        "Bei Pause in Live-Kurseinheiten jeweils eine neue Zeile verwenden; Dauer ohne Pausen",
+        "Selbstlerneinheit: Datum der Bereitstellung, keine 'Uhrzeit von', Dauer des Videos bei 'Uhrzeit bis'"
+      ],
+      "spalten": [
+        {
+          "label": "Geburtsvorbereitung Gruppe",
+          "gruppen": [
+            "4010X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "236"
+        },
+        {
+          "label": "Geburtsvorbereitung Einzeln",
+          "gruppen": [
+            "4020X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "236"
+        },
+        {
+          "label": "Rückbildung Gruppe",
+          "gruppen": [
+            "4030X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "236"
+        },
+        {
+          "label": "Rückbildung Einzeln",
+          "gruppen": [
+            "4040X"
+          ],
+          "eintrag": "ziffer",
+          "ziffern": "236"
+        }
+      ]
+    },
+    "3.5": {
+      "titel": "Versichertenbestätigung Beleghebamme",
+      "zeilen": 15,
+      "kopf_zusatz": [
+        "Uhrzeit der Geburt, Lebendgeburt / nur Plazentageburt / Fehlgeburt / Totgeburt",
+        "Block Ärztliche Anordnung (Indikation, zusätzliche Dauer, Arztangaben)"
+      ],
+      "spalten": [
+        {
+          "label": "Hilfeleistung stationär Schwangerschaft",
+          "gruppen": [
+            "107X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Überwachung stationär Schwangerschaft",
+          "gruppen": [
+            "108X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Hilfeleistung Wehen und Geburt",
+          "gruppen": [
+            "201X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "1:1-Betreuung 2 h vor bis 2 h nach Geburt",
+          "gruppen": [
+            "203X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Überwachung Wehen und Geburt",
+          "gruppen": [
+            "205X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Hilfeleistung durch 2. Hebamme",
+          "gruppen": [
+            "208X5"
+          ],
+          "eintrag": "kreuz"
+        },
+        {
+          "label": "Hilfeleistung Wochenbett",
+          "gruppen": [
+            "302X5"
+          ],
+          "eintrag": "kreuz"
+        }
+      ]
+    }
+  }
+}

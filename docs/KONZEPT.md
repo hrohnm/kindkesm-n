@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.1 (Entwurf)
+Stand: 01.10.2026 · Version 1.2 (Entwurf)
 
 ---
 
@@ -104,7 +104,7 @@ Keine Provision, jährliche Anpassung an die Inflation, 30 Tage Testzeitraum. Na
 | **Pool-Abrechnung** | Ohne Aufpreis; Aufteilung nach geleisteten Stunden, Zusatzleistungen nach individueller Vereinbarung. **Für eine Praxis mit 3 Hebammen relevant.** |
 | **Auswertungen** | Regelmäßige betriebswirtschaftliche Auswertungen und Statistiken |
 | **Einreichung** | **Papier**: Durchschreibesätze (25er-Blöcke), Original an HebSet, Durchschlag bleibt bei der Hebamme. Alternativ personalisierte Kopiervorlagen |
-| **Formulare** | 3.1 Schwangerschaft · 3.2 Außerklinische Geburt · 3.3 Wochenbett · 3.4 Kurse · 3.5 Beleghebamme · Zusatzbogen „Zusätzliche Leistungen“ |
+| **Formulare** | 3.1 Schwangerschaft · 3.2 Außerklinische Geburt · 3.3 Wochenbett · 3.4 Kurse · 3.5 Beleghebamme (das sind die amtlichen Formulare aus Anlage 6 des Hebammenhilfevertrags, siehe 3.3) · dazu ein eigener HebSet-Zusatzbogen „Zusätzliche Leistungen“ |
 | **Technik** | „HebSet Print“: mobiles Kartenlesegerät und Etikettendrucker per Bluetooth an der App (iOS/Android). Die eGK wird eingelesen (nur gesetzlich Versicherte) und Patientinnen-Etiketten werden gedruckt, die auf die Formulare geklebt werden |
 | **Schnittstellen** | **Auf der Website ist keine digitale Schnittstelle dokumentiert** (kein Upload, kein Datenformat, keine Software-Kooperation außer Qualitas QM) |
 
@@ -122,7 +122,19 @@ Aus den Formularen und dem Hebammenhilfevertrag (seit 01.11.2025) ergibt sich, w
 - **Unterschrift der Versicherten** (Versichertenbestätigung) bzw. eLB
 - **Hebamme**: Name, IK-Nummer der Hebamme, Unterschrift
 
-### 3.3 Neue Gebührenstruktur (Hebammenhilfevertrag ab 01.11.2025)
+### 3.3 Die Formulare sind Teil des Vertrags
+
+Die Formulare 3.1–3.5 sind **keine HebSet-Formulare**, sondern die amtlichen **Versichertenbestätigungen aus Anlage 6 des Hebammenhilfevertrags** (gültig ab 01.11.2025). HebSet verkauft sie lediglich als Durchschreibesätze. Die leeren Vorlagen liegen im Repository unter [`docs/vorlagen/anlage6-versichertenbestaetigungen-3.1-3.5.pdf`](vorlagen/anlage6-versichertenbestaetigungen-3.1-3.5.pdf). Damit braucht die App keine Kopiervorlage von HebSet.
+
+Aufbau aller fünf Formulare:
+- **Kopf**: Rechnungsnummer, Krankenkasse, Name und Geburtsdatum der Versicherten, Krankenkassen-IK, Versichertennummer, ET, Geburtsdatum Kind
+- **Hebammentabelle** (bis 8 Zeilen): Name, Heb-Nr., IK bzw. „angestellt“. Mehrere Hebammen können auf einem Blatt quittieren lassen, praktisch für Vertretungen in der Praxis.
+- **Leistungszeilen** (15–17 je Blatt): Heb-Nr., Datum, Uhrzeit von/bis, je Leistungsart eine Spalte, in die die **Endziffer** (1 aufsuchend, 2 nicht-aufsuchend, 3 Video, 4 Telefon; bei Kursen 2/3/6) eingetragen wird; Materialspalten zum Ankreuzen; Unterschrift der Versicherten; Kreuz für Begründung
+- **Begründungen und Vermerke** (Freitext); bei 3.5 zusätzlich ein Block für die ärztliche Anordnung
+- Der **Zuschlag** wird nicht eingetragen, er ergibt sich aus Datum und Uhrzeit.
+- **Wegegeld und einige Materialpauschalen** (z. B. Wochenbett lang/kurz 61200/61300) stehen nicht auf den Formularen. Sie sind nicht quittierungspflichtig, HebSet braucht sie aber für die Rechnung.
+
+### 3.4 Gebührenstruktur (Hebammenhilfevertrag ab 01.11.2025)
 
 Fünfstellige Gebührenpositionen (GPOS), die sich gut maschinell prüfen lassen:
 
@@ -133,13 +145,19 @@ Fünfstellige Gebührenpositionen (GPOS), die sich gut maschinell prüfen lassen
 | 4 | Zuschlag: 0 ohne · 1 mit |
 | 5 | Art: 0 keine Angabe · 1 Hausbesuch · 2 kein Hausbesuch · 3 Video · 4 Telefon · 5 Beleghebamme · 6 Selbstlerneinheit |
 
-Beispielregeln für die Plausibilitätsprüfung. Alle Positionen, Beträge und Kontingente werden in der App selbst gepflegt (Modul M26), die folgenden Werte dienen nur als Startbelegung und müssen gegen den Vertragstext geprüft werden:
-- Frühes Wochenbett (Tag 1–10): höchstens 20 Kontakte; Tag 1–3 bis zu 120 Minuten auf 2 Kontakte verteilt
-- Spätes Wochenbett (Tag 11 bis Ende 12. Woche): 16 Kontakte, höchstens 60 Minuten je Besuch
-- Mehrlingszuschlag bis zu 10 Minuten je Kind und Kontakt
-- Wegegeld laut Recherche 0,97 € je gefahrenem Kilometer (die genaue Regelung muss aus dem Vertrag übernommen werden)
+Das komplette Vergütungsverzeichnis (125 Positionen, 21 Kontingente, Zuschlags-, Feiertags- und Wegegeldregeln sowie die Spalten der Formulare) ist als Startbelegung für Modul M26 aus dem Vertrag extrahiert: [`regelwerk/hhv-2025-11-01.json`](../regelwerk/hhv-2025-11-01.json), zum Prüfen in Excel als [`regelwerk/hhv-2025-11-01-positionen.csv`](../regelwerk/hhv-2025-11-01-positionen.csv). Die wichtigsten Regeln:
+- **Vergütung in 5-Minuten-Einheiten**: 6,19 € je Einheit, mit Zuschlag 7,24 € (Beleghebamme 4,95 € / 5,79 €)
+- **Zuschlag**: nachts 21–6 Uhr, samstags ab 12 Uhr, sonn- und feiertags (MV inkl. Frauentag und Reformationstag); maßgeblich ist der Beginn der jeweiligen Einheit
+- **Frühes Wochenbett** (301XX, Lebenstag 1–10): max. 20 Kontakte, max. 2 pro Tag (nur der zweite per Video), max. 90 Min. pro Tag; an Lebenstag 1–3 und am Tag des ersten Hausbesuchs bis 120 Min.
+- **Spätes Wochenbett** (303XX, Lebenstag 11 bis Ende 12. Lebenswoche): max. 16 Kontakttage, 1 pro Tag, max. 60 Min.
+- **Mehrlinge**: je weiterem Kind bis zu 10 Min. zusätzlich
+- **Still- und Ernährungsschwierigkeiten** (306XX): ab 13. Lebenswoche, 8 Kontakttage, max. 45 Min.
+- **Kurse** je Teilnehmerin: Geburtsvorbereitung Gruppe 0,95 € je Einheit, bis 14 Std.; Rückbildung Gruppe bis 10 Std. und bis Ende 9. Monat; max. die Hälfte als Selbstlernvideo
+- **Wegegeld**: 0,97 € je km (50100), kürzeste Strecke, max. 25 km (bis 50 km nur mit Begründung); mehrere Frauen auf einem Weg: Gesamtstrecke geteilt durch Anzahl (50200); **keine** Erstattung für Wege zu Kursen und Sprechstunden in der Praxis
+- **Materialpauschalen**: z. B. Wochenbett lang 35,17 € (Betreuung bis Tag 4 übernommen) bzw. kurz 21,79 €
+- **Fristen**: höchstens einmal im Monat, mindestens zweimal im Jahr einreichen; Ausschlussfrist 30.06. für Leistungen des Vorjahres
 
-> **Fazit HebSet:** HebSet ist ein papierbasierter Dienstleister. Die App erzeugt daher vollständig **vorausgefüllte, formulargetreue PDF-Belege**, die ausgedruckt und per Post verschickt werden. Details in [Kapitel 8](#8-hebset-übertragung-konzept).
+> **Fazit HebSet:** HebSet ist ein papierbasierter Dienstleister, und die Formulare sind amtlich. Die App erzeugt daher vollständig **vorausgefüllte, formulargetreue PDF-Belege**, die ausgedruckt und per Post verschickt werden. Details in [Kapitel 8](#8-hebset-übertragung-konzept).
 
 ---
 
@@ -151,6 +169,7 @@ Beispielregeln für die Plausibilitätsprüfung. Alle Positionen, Beträge und K
 | **§ 203 StGB** | Berufsgeheimnis: Dienstleister mit Datenzugriff müssen zur Verschwiegenheit verpflichtet werden |
 | **Dokumentationspflicht** | Berufsordnung für Hebammen in Mecklenburg-Vorpommern: Dokumentation vollständig, nachvollziehbar und unveränderbar (Änderungen versioniert); Aufbewahrungsfrist mindestens 10 Jahre (genaue Frist bei Kindern prüfen) |
 | **Hebammenhilfevertrag (§ 134a SGB V)** | Gebührenpositionen, Zeitkontingente und Wegegeld. Grundlage für die Plausibilitätsprüfung |
+| **Versichertenbestätigung (§ 12 Anlage 1.1)** | Die Versicherte muss **unverzüglich nach jeder Leistung** unterschreiben. Unzulässig sind Vordatierung, Globalbestätigung, Blankounterschrift und nachträgliche Unterschrift. Korrektur nur durch Streichen der ganzen Zeile und neue Unterschrift. Elektronische Signatur auf PDF ist ausdrücklich nur bei **Videobetreuung** geregelt; abweichende digitale Verfahren können Hebammen und Kassen vereinbaren (Anlage 2) |
 | **Telematikinfrastruktur** | TI-Anbindung für Hebammen wird verpflichtend (eGK, SMC-B, eHBA, KIM, ePA, elektronischer Mutterpass). Die App sollte TI-fähig geplant werden (Phase 3) |
 | **eLB** | Elektronische Leistungsbestätigung über eleistungsbestaetigung.de bzw. die Kassen-Apps. Ersetzt langfristig die Unterschrift auf Papier |
 | **GoBD / EÜR** | Selbstzahlerrechnungen (Akupunktur, Taping, Babymassage, Schwangerschaftsmassage) fortlaufend nummeriert und unveränderbar |
@@ -243,7 +262,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - **Regelwerk Hebammenhilfevertrag**, in der App selbst pflegbar (siehe **M26**): Positionen, Beträge, Kontingente und Zuschläge mit Gültigkeitszeiträumen
 - Prüfungen: Kontingente, Zeitfenster (Lebenstag des Kindes), Zuschläge (Nacht/Wochenende/Feiertag MV), doppelte Leistungen, fehlende Anordnung, Mehrlinge
 - Status: *erfasst → geprüft → unterschrieben → übergabebereit → an HebSet versendet → bezahlt / gekürzt*
-- **Digitale Unterschrift der Versicherten** auf dem Tablet (pro Besuch oder gesammelt am Ende)
+- **Unterschrift der Versicherten unmittelbar nach jeder Leistung** (Vertragspflicht, siehe Kapitel 8.5); die App erinnert beim Beenden des Besuchs daran
 
 ### M9 – Fahrtenbuch und Wegegeld
 - Kilometer **automatisch aus der geplanten bzw. gefahrenen Route** (M6), nicht mehr nachträglich eingetragen
@@ -318,6 +337,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - „Betreuung endet in 7 Tagen → Kinderurkunde vorbereiten“
 - „Übergabebereite Belege vorhanden → HebSet-Versand vorbereiten (1. und 15.)“
 - „U-Untersuchung fällig“ (Hinweis für die Eltern)
+- „Ausschlussfrist 30.06.: Leistungen aus dem Vorjahr noch nicht versendet“
 
 ### M24 – TI und eLB (Phase 3)
 - eGK-Einlesen über ein zugelassenes Kartenterminal bzw. TI-Gateway (Anbieter wie CGM, telekonnekt). Ersetzt dann das HebSet-Print-Lesegerät
@@ -361,7 +381,7 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 - Anzeige im Besuch: „Frühes Wochenbett: 14 von 20 Kontakten“
 
 **4. Zuschläge und Kalender**
-- Zuschlagsregeln: Uhrzeiten (z. B. 20–8 Uhr), Wochenende, **Feiertage Mecklenburg-Vorpommern** (Feiertagskalender, pflegbar und automatisch vorbelegt)
+- Zuschlagsregeln: Uhrzeiten (laut Vertrag 21–6 Uhr), Samstag ab 12 Uhr, Sonntag, **Feiertage Mecklenburg-Vorpommern** (Feiertagskalender, pflegbar und automatisch vorbelegt)
 - Regel, ob ein Zuschlag über eine eigene Position oder über eine Positionsvariante (4. Stelle = 1) abgebildet wird
 
 **5. Wegegeld**
@@ -376,14 +396,15 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 **8. Test und Sicherheit**
 - **Testrechner**: Eine Beispielbetreuung durchspielen („Geburt 20.09., Besuche an Tag 1, 2, 2, 3 …“). Die App zeigt die erzeugten Positionen, Beträge und Warnungen, bevor eine neue Version aktiviert wird.
 - **Änderungsprotokoll**: wer hat wann welchen Wert geändert (alt → neu)
-- **Vorbelegung**: Die App wird mit einem Startregelwerk ausgeliefert, das aus dem Vertrag übernommen und von der Praxis geprüft wird. Danach liegt die Pflege vollständig bei der Praxis.
+- **Vorbelegung**: Das Startregelwerk ist bereits aus dem Vertrag extrahiert ([`regelwerk/hhv-2025-11-01.json`](../regelwerk/hhv-2025-11-01.json), Status „Entwurf“). Die Praxis prüft es einmal (z. B. in der CSV-Fassung) und aktiviert es. Danach liegt die Pflege vollständig bei der Praxis.
+- **Formularspalten**: Welche Positionsgruppe in welche Spalte von Formular 3.1–3.5 gehört und ob eine Ziffer oder ein Kreuz eingetragen wird, ist ebenfalls Teil des Regelwerks.
 
 
 ---
 
 ## 8. HebSet-Übertragung: Konzept
 
-> **Entscheidung (Version 1.1):** Die App erzeugt **vorausgefüllte PDF-Belege**. Diese werden ausgedruckt, falls nötig unterschrieben und **per Post an HebSet geschickt**. Eine digitale Schnittstelle ist nicht vorgesehen.
+> **Entscheidung (Version 1.1):** Die App erzeugt **vorausgefüllte PDF-Belege** auf Basis der amtlichen Formulare 3.1–3.5. Diese werden ausgedruckt und **per Post an HebSet geschickt**. Eine digitale Schnittstelle ist nicht vorgesehen.
 
 ### 8.1 Ziel
 Kein händisches Ausfüllen der Durchschreibesätze und keine Etiketten mehr. Alles, was beim Besuch ohnehin erfasst wird, landet automatisch auf dem Beleg. HebSet bekommt Belege, die **vollständig, lesbar, plausibel und sofort abrechenbar** sind. Das spart Rückfragen und Kürzungen und beschleunigt die Auszahlung.
@@ -392,57 +413,63 @@ Kein händisches Ausfüllen der Durchschreibesätze und keine Etiketten mehr. Al
 
 ### 8.2 Ablauf
 
+Wegen der Unterschriftspflicht direkt nach jeder Leistung (§ 12) gibt es zwei Wege. Welcher genutzt wird, hängt von der Antwort von HebSet ab (siehe 8.5).
+
 ```
- Besuch dokumentiert ─► Leistung (GPOS, Zeit, km) ─► Plausi-Prüfung (Regelwerk M26)
-        │                                                  │
-        ▼                                                  ▼
- Unterschrift der Versicherten                   Beleg „übergabebereit“
- (auf Papier oder Tablet, siehe 8.5)                      │
-                                                          ▼
-                                       „HebSet-Versand vorbereiten“ (z. B. halbmonatlich)
-                                                          │
-                                       Sammel-PDF: Deckblatt + Belege je Fall/Formular
-                                                          │
-                                       Drucken ─► ggf. unterschreiben ─► Umschlag ─► Post
-                                                          │
-                                       Status „versendet“ (Datum, Versand-Nr.) ─► „bezahlt“ abhaken
+ Betreuung beginnt
+   │
+   ├─ Weg A (Papier):  App druckt Formular mit fertigem Kopf ─► Blatt in der Familienmappe
+   │                   Besuch: App zeigt die Zeile an ─► Zeile von Hand eintragen ─► Mutter unterschreibt sofort
+   │
+   └─ Weg B (Tablet):  Besuch: App füllt die Zeile ─► Mutter unterschreibt sofort auf dem Tablet
+                       App erzeugt das komplette Formular als PDF (mit Unterschriften)
+   │
+   ▼
+ Plausi-Prüfung (Regelwerk M26) ─► „HebSet-Versand vorbereiten“ (höchstens 1× im Monat je Abrechnung)
+   │
+   ▼
+ Versandliste + Zusatzblatt (Wegegeld, Materialpauschalen) + Formulare (A: Originale aus der Mappe, B: Ausdruck)
+   │
+   ▼
+ Umschlag ─► Post ─► Status „versendet“ ─► „bezahlt“ abhaken
 ```
 
 ### 8.3 PDF-Beleggenerator
-- **Formulare**: 3.1 Schwangerschaft · 3.2 Außerklinische Geburt · 3.3 Wochenbett · 3.4 Kurse · 3.5 Beleghebamme · Zusatzbogen „Zusätzliche Leistungen“. Die Zuordnung Leistung → Formular steht im Regelwerk (M26), sodass neue Formulare ohne Programmierung ergänzt werden können.
-- **Formularvorlage**:
-  - Bevorzugt: HebSet stellt die **personalisierte Kopiervorlage** als PDF bereit (laut Website gibt es sie). Die App legt die Daten **feldgenau** darüber: Für jedes Feld werden Seite, x/y-Position, Breite, Schriftgröße und Zeilenanzahl hinterlegt.
-  - Alternativ: Ein eigenes Formular mit **identischem Aufbau und identischen Feldern**, einmalig von HebSet freigeben lassen.
-  - Die Vorlagen und Feldpositionen sind in der Administration hinterlegt (Upload der Vorlage, Feldzuordnung per Vorschau), damit eine neue Formularversion von HebSet ohne Programmierung eingepflegt werden kann.
-- **Inhalt je Beleg**:
-  - Kopf: Hebamme (Name, IK-Nummer, Anschrift), Versicherte (Name, Geburtsdatum, Anschrift, Kasse mit IK, Versichertennummer, Status; ersetzt das Etikett), Kind(er), ET bzw. Geburtsdatum
-  - Leistungszeilen: Datum, Uhrzeit von–bis, Dauer, **GPOS**, Bezeichnung (Kurztext), Hausbesuch-Kennzeichen, Zuschlag, Kilometer/Wegegeld, Material, Hinweis auf ärztliche Anordnung
-  - Fuß: Summen (Anzahl Kontakte, km), Unterschriftsfelder Versicherte und Hebamme, Seitenzahl „Blatt 1/2“, Beleg-ID und Druckdatum
-- **Seitenumbruch**: Reichen die Zeilen eines Formulars nicht, erzeugt die App automatisch ein Folgeblatt mit wiederholtem Kopf.
-- **Lesbarkeit**: Maschinenschrift und eine klare Schrift in der Größe der Formularfelder. Lange Texte werden gekürzt, die volle Bezeichnung steht im Regelwerk.
-- **Nachdruck und Korrektur**: Jeder erzeugte Beleg wird als PDF in der Akte archiviert. Änderungen nach dem Versand erzeugen einen **Korrekturbeleg** (mit Verweis auf den Ursprungsbeleg); das Original bleibt unverändert.
+- **Formulare**: die amtlichen Versichertenbestätigungen 3.1 Schwangerschaft · 3.2 Außerklinische Geburt · 3.3 Wochenbett · 3.4 Kurse · 3.5 Beleghebamme (Anlage 6, Vorlage im Repository). Die Zuordnung Positionsgruppe → Formular und Spalte steht im Regelwerk (M26).
+- **Formularvorlage**: Die App legt die Daten **feldgenau** über die amtliche PDF-Vorlage. Für jedes Feld werden Seite, x/y-Position, Breite und Schriftgröße hinterlegt, für die Leistungstabelle Zeilenhöhe und Spaltenpositionen. Ändern die Vertragspartner ein Formular, wird die neue Vorlage in der Administration hochgeladen und die Feldzuordnung per Vorschau angepasst, ohne Programmierung.
+- **Inhalt**:
+  - Kopf: Krankenkasse, Name und Geburtsdatum der Versicherten, Krankenkassen-IK, Versichertennummer, ET, Geburtsdatum Kind (ersetzt das Etikett). Die Rechnungsnummer bleibt frei (vergibt HebSet)
+  - Hebammentabelle: alle Hebammen, die bei dieser Familie Leistungen erbracht haben, mit Heb-Nr. und IK (bzw. „angestellt“ nach § 12 Abs. 6)
+  - Leistungszeilen: Heb-Nr., Datum, Uhrzeit von/bis, Endziffer in der richtigen Spalte, Kreuze für Material, Kreuz bei Begründung
+  - Begründungen und Vermerke: automatisch aus der Leistung (z. B. Anordnung, Wegstrecke über 25 km, Mehrlinge)
+- **Folgeblatt**: Reichen die 15–17 Zeilen nicht, erzeugt die App ein weiteres Blatt mit identischem Kopf.
+- **Zusatzblatt je Fall**: Wegegeld (km je Besuch, bei mehreren Frauen auf einem Weg anteilig und mit Anzahl) und nicht quittierungspflichtige Pauschalen (z. B. 61200/61300 Materialpauschale Wochenbett). Entspricht dem HebSet-Zusatzbogen, die genaue Form mit HebSet abstimmen.
+- **Nachdruck und Korrektur**: Jeder erzeugte Beleg wird als PDF in der Akte archiviert. Korrekturen folgen der Vertragsregel: ganze Zeile streichen, neue Zeile, neue Unterschrift.
 
 ### 8.4 Versand an HebSet („HebSet-Versand vorbereiten“)
 - Ein Knopf sammelt alle übergabebereiten Belege, filterbar nach Hebamme und Zeitraum. Ein Rhythmus passend zu den Auszahlungen ist voreingestellt (z. B. zum 1. und 15.).
-- **Vorabprüfung**: Fehlen Pflichtangaben (Versichertennummer, Unterschrift, Anordnung), wird der Beleg rot markiert und nicht in den Versand übernommen. Die Hebamme sieht eine Liste „Das fehlt noch“.
+- **Vorabprüfung**: Fehlen Pflichtangaben (Versichertennummer, Unterschrift, Anordnung, Begründung), wird der Beleg rot markiert und nicht in den Versand übernommen. Die Hebamme sieht eine Liste „Das fehlt noch“.
 - **Sammel-PDF** zum Drucken in einem Rutsch:
   1. **Deckblatt bzw. Versandliste**: Absender, Datum, Anzahl Belege und Blätter, Liste der Fälle (Versicherte, Formular, Zeitraum, Anzahl Leistungen, erwarteter Betrag)
   2. Optional: **Stundenübersicht je Hebamme** für die Pool-Aufteilung bei HebSet
-  3. Die Belege, sortiert nach Hebamme → Formular → Versicherte
+  3. Je Fall: Zusatzblatt (Wegegeld, Pauschalen) und Kontrollliste
+  4. Die Formulare (Weg A: Originale aus der Mappe einlegen, Weg B: Ausdruck), sortiert nach Hebamme → Formular → Versicherte
 - Optional ein **Adressetikett bzw. Anschreiben** für den Umschlag (DIN-lang-Fenster)
 - Nach dem Druck: Status **„versendet“** mit Datum (optional Einschreiben-Nummer). Danach sind die Belege gesperrt.
-- **Eigene Kopie**: Statt des Durchschlags bleibt das archivierte PDF in der App. Der ausgedruckte Stapel kann zusätzlich eingescannt werden, falls eine Kopie mit Unterschrift gebraucht wird.
+- **Eigene Kopie**: Statt des Durchschlags bleibt das archivierte PDF in der App. Bei Weg A wird das unterschriebene Original vor dem Versand mit dem Tablet abfotografiert und an den Fall gehängt.
 - **Zahlungsstatus (einfach)**: Wenn die HebSet-Auszahlung kommt, werden die Belege der Versandliste als **„bezahlt“** bzw. einzelne als **„gekürzt / abgelehnt“** (mit Grund) abgehakt. Daraus entsteht eine kleine Übersicht offener Beträge, ganz ohne Schnittstelle.
 
 ### 8.5 Unterschrift der Versicherten
-Zwei Varianten, pro Praxis einstellbar (mit HebSet abstimmen, welche akzeptiert wird):
+§ 12 Anlage 1.1 verlangt die Unterschrift **unverzüglich nach jeder Leistung**; nachträgliche oder gesammelte Unterschriften sind unzulässig. Daraus ergeben sich zwei Wege:
 
-| Variante | Ablauf | Vorteil | Nachteil |
+| Weg | Ablauf | Vorteil | Nachteil |
 |---|---|---|---|
-| **A: Papier** | Beleg ausdrucken (zu Hause oder in der Praxis), die Versicherte unterschreibt beim nächsten oder letzten Besuch, dann geht er in den Versand | Entspricht dem heutigen Verfahren, sicher akzeptiert | Ausdruck muss mitgenommen werden |
-| **B: Tablet** | Unterschrift pro Besuch oder gesammelt am Ende auf dem Tablet, wird ins PDF übernommen | Kein Papier beim Hausbesuch | Akzeptanz durch HebSet und die Kassen ist offen |
+| **A: Papier (sicher)** | Zu Beginn der Betreuung druckt die App das Formular mit fertigem Kopf und Hebammentabelle. Das Blatt bleibt in der Mappe der Familie bzw. der Hebamme. Beim Besuch zeigt die App die Zeile genau an („12.10.2026 · 09:10–09:55 · Spalte Wochenbett: 1“), die Hebamme trägt sie ein, die Mutter unterschreibt sofort. | Entspricht dem Vertrag und dem heutigen Verfahren | Zeile wird von Hand geschrieben |
+| **B: Tablet (nach Klärung)** | Die App füllt die Zeile, die Mutter unterschreibt sofort auf dem Tablet. Beim Versand druckt die App das komplette Formular mit den Unterschriften. | Kein Papier beim Hausbesuch, keine Schreibfehler | Ob eine Tablet-Unterschrift bei persönlichen Besuchen anerkannt wird, ist offen (vertraglich nur bei Video geregelt) |
 
-In beiden Fällen zeigt die App, welche Belege noch auf eine Unterschrift warten („3 Belege warten auf Unterschrift, nächster Besuch bei Familie Muster am Do.“).
+**Empfehlung:** Mit Weg A starten. Weg B erst einschalten, wenn HebSet bestätigt, dass die Kassen ihn akzeptieren. In beiden Fällen prüft die App vor dem Versand, ob die Zeilen auf dem Papier zu den Daten in der App passen (**Kontrollliste je Formular**), sodass Tippfehler vor dem Versand auffallen.
+
+**Videobetreuung:** Hier erlaubt der Vertrag ausdrücklich die einfache elektronische Signatur auf dem PDF. Die App schickt der Versicherten das ausgefüllte PDF direkt nach der Videobetreuung (z. B. über das Elternportal); sie unterschreibt binnen zwei Wochen.
 
 ### 8.6 Versichertendaten ohne Etiketten
 - Die Versichertendaten werden **einmal** erfasst: abtippen, aus HebSet Print übernehmen oder ein Foto der eGK auf dem Gerät per Texterkennung (OCR) auslesen. Danach stehen sie automatisch auf jedem Beleg.
@@ -453,7 +480,7 @@ In beiden Fällen zeigt die App, welche Belege noch auf eine Unterschrift warten
 - Eigene Direktabrechnung nach § 302 SGB V: Zertifizierung, Kostenträgerdateien und Pflege sind für eine Eigenentwicklung unverhältnismäßig.
 
 ### 8.8 Zeitersparnis (Schätzung)
-Bei etwa 8 Wochenbett-Kontakten pro Woche und aktiver Hebamme mit je 2–3 Minuten Formular- und Etikettenarbeit sind das bei zwei aktiven Hebammen rund 45–60 Minuten pro Woche. Dazu kommen weniger Rückfragen und Kürzungen durch die Plausibilitätsprüfung.
+Weg A spart vor allem Etiketten, Kopfdaten, Zusatzbogen und Fehler (Plausi und Kontrollliste), Weg B zusätzlich das Schreiben der Zeilen. Bei etwa 8 Wochenbett-Kontakten pro Woche und aktiver Hebamme sind das grob 20–60 Minuten pro Woche für die Praxis, plus weniger Rückfragen und Kürzungen.
 
 ---
 
@@ -670,8 +697,8 @@ Hebamme (Status aktiv/Babypause/ausgeschieden, IK, Vorlagen)
 
 ### Phase 0 – Klärung (2–4 Wochen)
 - Workshop mit den drei Hebammen: typischer Tag, Schmerzpunkte, Prioritäten
-- **Gespräch mit HebSet** zu Formularvorlagen und Unterschrift (siehe [Kapitel 17](#17-offene-fragen))
-- Startregelwerk aus dem Hebammenhilfevertrag zusammenstellen und von der Praxis prüfen lassen
+- **Gespräch mit HebSet** zu Ausdrucken, Unterschrift und Zusatzbogen (siehe [Kapitel 17](#17-offene-fragen))
+- Startregelwerk ([`regelwerk/hhv-2025-11-01-positionen.csv`](../regelwerk/hhv-2025-11-01-positionen.csv)) von der Praxis prüfen lassen
 - Datenexport aus Hebamio prüfen (welche Formate, wie vollständig)
 - Klickbarer Prototyp (Figma) auf dem Tablet testen
 
@@ -720,16 +747,16 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 ## 17. Offene Fragen
 
 ### An HebSet (Gesprächsleitfaden)
-1. Akzeptiert HebSet **selbst erzeugte, vorausgefüllte PDF-Ausdrucke** statt der Durchschreibesätze? Gibt es die **personalisierte Kopiervorlage als PDF** (für feldgenaues Ausfüllen)?
-2. Werden **auf dem Tablet erfasste Unterschriften** der Versicherten auf dem Ausdruck akzeptiert, oder muss auf Papier unterschrieben werden?
-3. Ersetzt der Ausdruck mit vollständigen Versichertendaten das **Etikett**?
-4. Wünscht HebSet ein **Deckblatt bzw. eine Versandliste** in bestimmter Form, und welche Angaben braucht es für die **Pool-Aufteilung**?
-5. Gibt es **Fristen** oder bevorzugte Versandrhythmen?
-6. Wie werden **Korrekturen** an bereits eingereichten Belegen gewünscht?
+1. Akzeptiert HebSet **selbst ausgedruckte amtliche Formulare 3.1–3.5** (Anlage 6) mit maschinell ausgefülltem Kopf statt der Durchschreibesätze?
+2. Werden **auf dem Tablet geleistete Unterschriften** der Versicherten bei persönlichen Besuchen anerkannt (ausgedruckt auf dem Formular)? Gibt es dazu Vereinbarungen mit den Kassen nach Anlage 2?
+3. Wie sollen **Wegegeld** und **nicht quittierungspflichtige Pauschalen** (z. B. 61200/61300) übermittelt werden? Gibt es den Zusatzbogen als Vorlage?
+4. Ersetzt der Ausdruck mit vollständigen Versichertendaten das **Etikett**?
+5. Wünscht HebSet ein **Deckblatt bzw. eine Versandliste** in bestimmter Form, und welche Angaben braucht es für die **Pool-Aufteilung**?
+6. Bevorzugter **Versandrhythmus** (Vertrag: höchstens einmal im Monat je Abrechnung)?
 
 ### An die Praxis
 1. Werden Haus- oder Beleggeburten betreut (Modul M4 nötig)?
-2. Wie wird heute zwischen den Hebammen aufgeteilt (Pool? Einzelabrechnung)? Wer übernimmt die Administration des Regelwerks?
+2. Wie wird heute zwischen den Hebammen aufgeteilt (Pool? Einzelabrechnung)? Sind alle freiberuflich mit eigenem IK oder ist jemand angestellt (wichtig für Heb-Nr./IK auf den Formularen)? Wer übernimmt die Administration des Regelwerks?
 3. Wann endet die Babypause von Lorina (für Belegungsplan und Lizenzen)?
 4. Welche Geräte gibt es (iPad? Stift? Android)?
 5. Welche Start- und Endpunkte sind typisch (Wohnung, Praxis, Schule, Kita)?
@@ -753,7 +780,7 @@ Erst nach erfolgreichem Parallelbetrieb und **vollständigem Datenexport** künd
 - HebSet – Kooperationen: https://www.hebset.de/kooperationen/
 - HebSet Print – Kurzanleitung: https://www.hebset.de/wp-content/uploads/2024/11/hebset_anleitung.pdf
 - Hebammenpraxis Kindkesmöön: https://www.hebammen-landkreisrostock.de/
-- GKV-Spitzenverband – Hebammenhilfevertrag (ab 01.11.2025): https://www.gkv-spitzenverband.de/media/dokumente/krankenversicherung_1/ambulante_leistungen/hebammen/25-04-02_Hebammenhilfevertrag.pdf
+- GKV-Spitzenverband – Hebammenhilfevertrag (ab 01.11.2025, inkl. Anlage 1.1 Vergütungsverzeichnis und Anlage 6 Formulare): https://www.gkv-spitzenverband.de/media/dokumente/krankenversicherung_1/ambulante_leistungen/hebammen/25-04-02_Hebammenhilfevertrag.pdf
 - BfHD – FAQ zum neuen Hebammenhilfevertrag: https://bfhd.de/wp-content/uploads/2025/04/FAQs-Hebammenhilfevertrag-ab-01.11.25.pdf
 - Deutscher Hebammenverband – Neuer Hebammenhilfevertrag: https://hebammenverband.de/neuer-hebammenhilfevertrag-festgesetzt-bfhd-und-netzwerk-der-geburtshaeuser-stimmen-im-schiedsstellenverfahren-mit-dem-gkv-spitzenverband
 - TK – Elektronische Leistungsbestätigung: https://www.tk.de/presse/themen/medizinische-versorgung/ambulante-versorgung/elektronische-leistungsbestaetigung-2177186
