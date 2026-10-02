@@ -98,6 +98,10 @@ export function OrteTouren() {
                   await api(`/api/ich/orte/${o.id}/position`, { method: "PUT", body: { lat, lon } });
                   await orte.laden();
                 }}
+                ausAdresse={async () => {
+                  await api(`/api/ich/orte/${o.id}/verorten`, { method: "POST" });
+                  await orte.laden();
+                }}
               />
             </div>
           );

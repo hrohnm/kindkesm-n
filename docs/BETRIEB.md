@@ -59,6 +59,8 @@ In `.env` eintragen:
 | `SITZUNG_STUNDEN` | Anmeldedauer in Stunden (Standard 12) |
 | `DEMO_MODUS` | `ja` zeigt auf der Login-Seite Knöpfe für die Demo-Konten (nur Test-Umgebung), sonst `nein` |
 | `OSRM_URL` | leer lassen; setzt `scripts/karte-einrichten.sh` (Abschnitt 5a) |
+| `GEOCODER_URL` | leer = Online-Adresssuche über nominatim.openstreetmap.org, wenn das eigene Adressverzeichnis eine Anschrift nicht kennt (nur Straße, PLZ, Ort – keine Namen); `aus` = abschalten |
+| `GEOCODER_KONTAKT` | E-Mail der Praxis (Kennung gegenüber Nominatim laut Nutzungsregeln) |
 
 Starten:
 
@@ -165,6 +167,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 - [ ] Tägliches Backup mit externer Kopie eingerichtet und eine Wiederherstellung getestet
 - [ ] Regelwerk fachlich geprüft und in der App freigegeben (Regelwerk → „Fassung freigeben“, zweite Hebamme bestätigt)
 - [ ] Tablets/Handys: Bildschirmsperre mit PIN bzw. Face ID, Geräteverschlüsselung aktiv (Offline-Daten liegen verschlüsselt auf dem Gerät, beim Abmelden werden sie gelöscht)
+- [ ] Adresssuche entschieden: Adressverzeichnis importieren (Abschnitt 5a, Anschriften bleiben auf dem Server) und/oder Online-Adresssuche (`GEOCODER_URL`, im Verzeichnis der Verarbeitungstätigkeiten erwähnen)
 - [ ] Datenschutz-Dokumente (Verzeichnis der Verarbeitungstätigkeiten, TOMs, Datenschutzinformation für Familien) erstellt
 
 ## Fehlersuche
