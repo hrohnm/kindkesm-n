@@ -45,6 +45,7 @@ export const betreuungSchema = z.object({
   geburtsort: optText(120),
   geburtsmodus: optText(80),
   zustaendigeHebammeId: z.preprocess(leerZuNull, z.string().uuid().nullable()),
+  vertretungHebammeId: z.preprocess(leerZuNull, z.string().uuid().nullable()).optional(),
   notizen: optText(2000),
 });
 export type BetreuungEingabe = z.infer<typeof betreuungSchema>;
@@ -142,3 +143,60 @@ export const AUSWAHL = {
   stillen: ["voll gestillt", "teilgestillt", "Flasche", "Saugen gut", "Anlegeprobleme"],
   ausscheidung: ["Urin unauffällig", "Mekonium", "Übergangsstuhl", "Muttermilchstuhl"],
 } as const;
+
+// ------------------------------------------------------------------ Merkmale, Kontakte, Einwilligungen (M2)
+export const FLAGGEN = {
+  risiko: "Risiko",
+  sozialdienst: "Sozialdienst / Jugendamt",
+  dolmetscherin: "Dolmetscherin nötig",
+  psyche: "Psychische Belastung",
+  erstgebaerend: "Erstgebärend",
+} as const;
+export type Flagge = keyof typeof FLAGGEN;
+
+export const merkmaleSchema = z.object({
+  flaggen: z.array(z.enum(Object.keys(FLAGGEN) as [Flagge, ...Flagge[]])).max(10),
+  sprache: optText(80),
+  allergien: optText(300),
+});
+
+export const KONTAKT_ARTEN = {
+  partner: "Partner/in, Begleitperson",
+  gynaekologin: "Gynäkologin/Gynäkologe",
+  kinderaerztin: "Kinderärztin/Kinderarzt",
+  klinik: "Klinik",
+  notfall: "Notfallkontakt",
+  sonstige: "Sonstige",
+} as const;
+export type KontaktArt = keyof typeof KONTAKT_ARTEN;
+
+export const kontaktSchema = z.object({
+  art: z.enum(Object.keys(KONTAKT_ARTEN) as [KontaktArt, ...KontaktArt[]]),
+  name: z.string().trim().min(2, "Bitte Namen angeben.").max(120),
+  telefon: optText(40),
+  email: z.preprocess(leerZuNull, z.email("Ungültige E-Mail-Adresse").nullable()),
+  anschrift: optText(200),
+  notiz: optText(300),
+});
+
+export const EINWILLIGUNG_ARTEN = {
+  foto: { titel: "Fotos zur Dokumentation", text: "Fotos (z. B. Nabel, Naht, Haut) dürfen zur Dokumentation in der Akte gespeichert werden." },
+  urkunde: { titel: "Kinderurkunde", text: "Daten aus der Betreuung (Geburtsdaten, Gewichtsverlauf) und ggf. ein Foto dürfen für die Kinderurkunde verwendet werden." },
+  email: { titel: "Kontakt per E-Mail", text: "Die Hebamme darf per E-Mail Kontakt aufnehmen und Unterlagen (z. B. die Kinderurkunde) senden." },
+  austausch: { titel: "Austausch mit Ärztinnen", text: "Die Hebamme darf sich mit der Gynäkologin bzw. Kinderärztin über die Betreuung austauschen." },
+} as const;
+export type EinwilligungArt = keyof typeof EINWILLIGUNG_ARTEN;
+export const EINWILLIGUNG_FORM = { papier: "schriftlich (Papier)", muendlich: "mündlich", tablet: "auf dem Tablet unterschrieben" } as const;
+
+export const einwilligungSchema = z
+  .object({
+    erteilt: z.boolean(),
+    form: z.enum(["papier", "muendlich", "tablet"]),
+    datum: z.iso.date(),
+    unterschrift: z
+      .object({ bild: z.string().startsWith("data:image/png;base64,").max(400_000, "Unterschrift zu groß"), zeitpunkt: z.iso.datetime() })
+      .nullable()
+      .default(null),
+    notiz: optText(300),
+  })
+  .refine((e) => !e.erteilt || e.form !== "tablet" || e.unterschrift, { message: "Bitte auf dem Tablet unterschreiben lassen.", path: ["unterschrift"] });

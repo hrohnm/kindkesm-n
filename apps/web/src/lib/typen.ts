@@ -72,7 +72,8 @@ export type KlientinListe = {
   telefon: string | null;
   zustaendig: string;
   zustaendigeHebammeId: string;
-  betreuung: { id: string; status: string; et: string | null; geburtsdatum: string | null; lebenstag: number | null; ssw: string | null; kinder: string[] } | null;
+  flaggen: string[];
+  betreuung: { id: string; status: string; et: string | null; vertretungHebammeId: string | null; geburtsdatum: string | null; lebenstag: number | null; ssw: string | null; kinder: string[] } | null;
 };
 
 export type Kind = {
@@ -98,6 +99,7 @@ export type Betreuung = {
   geburtsort: string | null;
   geburtsmodus: string | null;
   zustaendigeHebammeId: string | null;
+  vertretungHebammeId: string | null;
   notizen: string | null;
   kinder: Kind[];
 };
@@ -120,7 +122,24 @@ export type Klientin = {
   lat: number | null;
   lon: number | null;
   geoQuelle: "adresse" | "strasse" | "manuell" | null;
+  flaggen: string[];
+  sprache: string | null;
+  allergien: string | null;
+  kontakte: Kontakt[];
+  einwilligungen: Einwilligung[];
   betreuungen: Betreuung[];
+};
+
+export type Kontakt = { id: string; art: string; name: string; telefon: string | null; email: string | null; anschrift: string | null; notiz: string | null };
+export type Einwilligung = {
+  art: string;
+  erteilt: boolean;
+  form: "papier" | "muendlich" | "tablet";
+  datum: string;
+  widerrufenAm: string | null;
+  unterschrift: { bild: string; zeitpunkt: string } | null;
+  notiz: string | null;
+  geaendertAm: string;
 };
 
 export type BesuchKurz = {

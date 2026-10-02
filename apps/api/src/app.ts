@@ -13,6 +13,7 @@ import { abrechnungRouten } from "./routes/abrechnung";
 import { aenderungRouten } from "./routes/aenderungen";
 import { akteRouten } from "./routes/akte";
 import { urkundeRouten } from "./routes/urkunde";
+import { kontaktRouten } from "./routes/kontakte";
 import { kursRouten } from "./routes/kurse";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
@@ -71,6 +72,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await hinweisRouten(app, db);
   await akteRouten(app, db);
   await urkundeRouten(app, db);
+  await kontaktRouten(app, db);
   await kursRouten(app, db);
   await abrechnungRouten(app, db);
   await tourenRouten(app, db);

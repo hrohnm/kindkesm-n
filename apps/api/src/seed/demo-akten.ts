@@ -210,6 +210,7 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweiter
   }
   for (const h of [...new Set(termine.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
 
+  await demoAktenErgaenzen(db, anfrage, erweitert);
   if (erweitert) await demoKurseAnlegen(db, anfrage, async (email, method, url, payload) => {
     const res = await app.inject({ method, url, payload: payload as object, headers: email ? { cookie: await anmelden(email) } : {} });
     if (res.statusCode >= 300) throw new Error(`${method} ${url}: ${res.body}`);
@@ -270,4 +271,32 @@ async function demoKurseAnlegen(db: Datenbank, anfrage: Anfrage, offen: OffeneAn
   await anfrage(M, "POST", `/api/kurse/${bm.id}/termine`, { datum: tag(5), von: "10:00", bis: "11:00", format: 2, hebammeId: marielena, wiederholungen: 5, abstandTage: 7 });
   await anfrage(M, "POST", `/api/kurse/${bm.id}/teilnahmen`, { klientinId: await kid("Becker"), name: "Laura Becker", stichtag: tag(-40), bezahlt: true });
   await anfrage(M, "POST", `/api/kurse/${bm.id}/teilnahmen`, { name: "Sarah Muster", email: "sarah@example.org", telefon: "0170 0000199", stichtag: tag(-50) });
+}
+
+/** Demo: Kontakte, Merkmale und Einwilligungen (M2) */
+async function demoAktenErgaenzen(db: Datenbank, anfrage: Anfrage, erweitert: boolean) {
+  const kid = async (nachname: string) => (await db.select({ id: klientin.id }).from(klientin).where(eq(klientin.nachname, nachname)))[0]?.id;
+  const J = "johanna@kindkesmoeoen.test";
+  const M = "marielena@kindkesmoeoen.test";
+  const heute = tag(0);
+  const krueger = (await kid("Krüger"))!;
+  await anfrage(J, "POST", `/api/klientinnen/${krueger}/kontakte`, { art: "partner", name: "Tom Krüger", telefon: "0170 0000201" });
+  await anfrage(J, "POST", `/api/klientinnen/${krueger}/kontakte`, { art: "kinderaerztin", name: "Dr. Anna Beispiel (Kinderarztpraxis am Markt)", telefon: "038203 0000", anschrift: "Am Markt 3, 18209 Bad Doberan" });
+  await anfrage(J, "POST", `/api/klientinnen/${krueger}/kontakte`, { art: "gynaekologin", name: "Frauenarztpraxis Dr. Muster", telefon: "038203 0001" });
+  await anfrage(J, "PUT", `/api/klientinnen/${krueger}/einwilligungen/email`, { erteilt: true, form: "papier", datum: tag(-3) });
+  await anfrage(J, "PUT", `/api/klientinnen/${krueger}/einwilligungen/austausch`, { erteilt: true, form: "muendlich", datum: tag(-3), notiz: "Kinderärztin und Gynäkologin" });
+  const hansen = await kid("Hansen");
+  if (hansen) {
+    await anfrage(M, "PUT", `/api/klientinnen/${hansen}/merkmale`, { flaggen: ["risiko"], sprache: null, allergien: "Latex" });
+    await anfrage(M, "POST", `/api/klientinnen/${hansen}/kontakte`, { art: "klinik", name: "Universitätsfrauenklinik Rostock", telefon: "0381 0000" });
+    await anfrage(M, "PUT", `/api/klientinnen/${hansen}/einwilligungen/urkunde`, { erteilt: true, form: "papier", datum: heute });
+  }
+  if (!erweitert) return;
+  const koch = await kid("Koch");
+  if (koch) await anfrage(M, "PUT", `/api/klientinnen/${koch}/merkmale`, { flaggen: ["erstgebaerend", "dolmetscherin"], sprache: "Englisch", allergien: null });
+  const becker = await kid("Becker");
+  if (becker) {
+    await anfrage(M, "PUT", `/api/klientinnen/${becker}/einwilligungen/urkunde`, { erteilt: true, form: "papier", datum: tag(-30) });
+    await anfrage(M, "PUT", `/api/klientinnen/${becker}/einwilligungen/foto`, { erteilt: false, form: "muendlich", datum: tag(-30), notiz: "Keine Fotos gewünscht" });
+  }
 }
