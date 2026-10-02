@@ -334,7 +334,8 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - Gewicht, Länge und Kopfumfang als Kurve mit WHO-Perzentilen (Datensätze offen verfügbar)
 - Automatisch: Gewichtsverlust in % vom Geburtsgewicht und Tag des Wiedererreichens des Geburtsgewichts
 - Nur Anzeige ohne Diagnose (siehe MDR-Hinweis)
-- **Umgesetzt (Gewicht):** eigene Seite je Kind mit Perzentilkurve nach Lebenstag (WHO weight-for-age, LMS-Werte je Tag 0–365 aus den offiziellen WHO-Tabellen, P3/P15/P50/P85/P97), Tabelle aller Gewichtswerte mit Lebenstag, Veränderung zum Vorwert, g/Tag, % zum Geburtsgewicht und Perzentile; Kennzahlen tiefster Wert und Wiedererreichen des Geburtsgewichts. Länge und Kopfumfang folgen.
+- **Umgesetzt (Gewicht):** eigene Seite je Kind mit Perzentilkurve nach Lebenstag (WHO weight-for-age, LMS-Werte je Tag 0–365 aus den offiziellen WHO-Tabellen, P3/P15/P50/P85/P97), Tabelle aller Gewichtswerte mit Lebenstag, Veränderung zum Vorwert, g/Tag, % zum Geburtsgewicht und Perzentile; Kennzahlen tiefster Wert und Wiedererreichen des Geburtsgewichts.
+- **Umgesetzt (Länge und Kopfumfang):** Reiter Gewicht/Länge/Kopfumfang auf der Wachstumsseite und im Fenster aus dem Besuch, WHO length-for-age und head-circumference-for-age (LMS je Tag 0–365), Geburtswerte aus der Kinderakte, Werte aus der Besuchsdokumentation, Tabelle mit Veränderung zum Vorwert, seit Geburt und Perzentile.
 
 ### M16 – Spracheingabe ⭐ (Phase 3)
 - Diktat → Text in der Besuchsdokumentation, möglichst **auf dem Gerät** (iOS/Android-Spracherkennung offline), damit keine Gesundheitsdaten in Cloud-Dienste fließen

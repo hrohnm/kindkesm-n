@@ -26,7 +26,8 @@ test("Eigene Ansicht, Felder einblenden, Kacheln zuklappen und Gewichtsverlauf",
   await expect(page.getByLabel("Puls (/min)")).toHaveCount(0);
   await page.getByRole("button", { name: /Weitere Felder einblenden \(Puls\)/ }).click();
   await expect(page.getByLabel("Puls (/min)")).toBeVisible();
-  await expect(page.getByText(/Zuletzt .*: 3\.270 g|Zuletzt .*: 3270 g/).first()).toBeVisible();
+  // je nach Uhrzeit ist der Entwurf von heute 9:00 (3.310 g) oder der Besuch von gestern (3.270 g) der letzte
+  await expect(page.getByText(/Zuletzt .*: 3\.?(270|310) g/).first()).toBeVisible();
 
   // Kachel Mutter zuklappen
   await page.getByRole("button", { name: "Mutter", exact: true }).click();
@@ -40,9 +41,15 @@ test("Eigene Ansicht, Felder einblenden, Kacheln zuklappen und Gewichtsverlauf",
   // Gewichtsseite
   await page.goto("/klientinnen");
   await page.getByText("Lena Krüger").click();
-  await page.getByRole("link", { name: /Gewichtsverlauf und Perzentilen/ }).click();
-  await expect(page.getByRole("heading", { name: "Gewicht Ole" })).toBeVisible();
+  await page.getByRole("link", { name: /Wachstum und Perzentilen/ }).click();
+  await expect(page.getByRole("heading", { name: "Wachstum Ole" })).toBeVisible();
   await expect(page.getByRole("img", { name: /Gewichtskurve/ })).toBeVisible();
   await expect(page.getByRole("cell", { name: "3.480 g" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "Geburt" })).toBeVisible();
+  // Länge und Kopfumfang (WHO)
+  await page.getByRole("tab", { name: "Länge" }).click();
+  await expect(page.getByRole("img", { name: /Längenkurve/ })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "52 cm" })).toBeVisible();
+  await page.getByRole("tab", { name: "Kopfumfang" }).click();
+  await expect(page.getByRole("img", { name: /Kopfumfangskurve/ })).toBeVisible();
 });

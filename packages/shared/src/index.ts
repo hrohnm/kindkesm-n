@@ -8,3 +8,4 @@ export * from "./who-gewicht";
 export * from "./aenderung";
 export * from "./csv";
 export * from "./abgleich";
+export * from "./who-wachstum";

@@ -6,6 +6,7 @@
 import { z } from "zod";
 import { AUSWAHL } from "./akte";
 import { WHO_GEWICHT_JUNGEN, WHO_GEWICHT_MAEDCHEN } from "./who-gewicht";
+import { WHO_KOPF_JUNGEN, WHO_KOPF_MAEDCHEN, WHO_LAENGE_JUNGEN, WHO_LAENGE_MAEDCHEN } from "./who-wachstum";
 
 export type DokuFeld = {
   id: string;
@@ -84,22 +85,39 @@ function normalVerteilung(z: number): number {
   return z > 0 ? 1 - p : p;
 }
 
-const tabelle = (geschlecht: string | null | undefined) => (geschlecht === "maennlich" ? WHO_GEWICHT_JUNGEN : WHO_GEWICHT_MAEDCHEN);
 export const WHO_MAX_TAG = 365;
 
-/** Gewicht (g) zur Perzentile p (0–100) am Lebenstag (Tag 0 = Geburtstag). */
-export function gewichtFuerPerzentile(tag: number, p: number, geschlecht: string | null | undefined): number {
-  const [l, m, s] = tabelle(geschlecht)[Math.min(Math.max(0, Math.round(tag)), WHO_MAX_TAG)]!;
-  const z = zAusPerzentile(p / 100);
-  return 1000 * m * Math.pow(1 + l * s * z, 1 / l);
+/** Messgrößen mit WHO-Referenz: Gewicht in Gramm, Länge und Kopfumfang in Zentimetern. */
+export type Messgroesse = "gewicht" | "laenge" | "kopfumfang";
+type Lms = ReadonlyArray<readonly [number, number, number]>;
+const TABELLEN: Record<Messgroesse, { jungen: Lms; maedchen: Lms; faktor: number }> = {
+  gewicht: { jungen: WHO_GEWICHT_JUNGEN, maedchen: WHO_GEWICHT_MAEDCHEN, faktor: 1000 }, // Tabelle in kg
+  laenge: { jungen: WHO_LAENGE_JUNGEN, maedchen: WHO_LAENGE_MAEDCHEN, faktor: 1 },
+  kopfumfang: { jungen: WHO_KOPF_JUNGEN, maedchen: WHO_KOPF_MAEDCHEN, faktor: 1 },
+};
+function lms(groesse: Messgroesse, tag: number, geschlecht: string | null | undefined) {
+  const t = TABELLEN[groesse];
+  const liste = geschlecht === "maennlich" ? t.jungen : t.maedchen;
+  const [l, m, s] = liste[Math.min(Math.max(0, Math.round(tag)), WHO_MAX_TAG)]!;
+  return { l, m: m * t.faktor, s };
 }
 
-/** Perzentile (0–100) eines Gewichts (g) am Lebenstag. */
-export function perzentileFuerGewicht(tag: number, gramm: number, geschlecht: string | null | undefined): number {
-  const [l, m, s] = tabelle(geschlecht)[Math.min(Math.max(0, Math.round(tag)), WHO_MAX_TAG)]!;
-  const z = (Math.pow(gramm / 1000 / m, l) - 1) / (l * s);
-  return 100 * normalVerteilung(z);
+/** Messwert zur Perzentile p (0–100) im Alter `tag` (Tag 0 = Geburtstag). */
+export function wertFuerPerzentile(groesse: Messgroesse, tag: number, p: number, geschlecht: string | null | undefined): number {
+  const { l, m, s } = lms(groesse, tag, geschlecht);
+  return m * Math.pow(1 + l * s * zAusPerzentile(p / 100), 1 / l);
 }
+
+/** Perzentile (0–100) eines Messwerts im Alter `tag`. */
+export function perzentileFuerWert(groesse: Messgroesse, tag: number, wert: number, geschlecht: string | null | undefined): number {
+  const { l, m, s } = lms(groesse, tag, geschlecht);
+  return 100 * normalVerteilung((Math.pow(wert / m, l) - 1) / (l * s));
+}
+
+/** Gewicht (g) zur Perzentile p (0–100) im Alter in Tagen (Tag 0 = Geburtstag). */
+export const gewichtFuerPerzentile = (tag: number, p: number, geschlecht: string | null | undefined) => wertFuerPerzentile("gewicht", tag, p, geschlecht);
+/** Perzentile (0–100) eines Gewichts (g) im Alter in Tagen. */
+export const perzentileFuerGewicht = (tag: number, gramm: number, geschlecht: string | null | undefined) => perzentileFuerWert("gewicht", tag, gramm, geschlecht);
 
 /** Umkehrfunktion der Normalverteilung (Acklam, ausreichend genau für Kurven) */
 function zAusPerzentile(p: number): number {
@@ -138,6 +156,25 @@ export function gewichtsverlauf(geburtsdatum: string, werte: Gewichtswert[]) {
       diffVorwert: vor ? w.gramm - vor.gramm : null,
       grammProTag: vor && tage > 0 ? (w.gramm - vor.gramm) / tage : null,
       prozentGeburt: geburt ? ((w.gramm - geburt) / geburt) * 100 : null,
+    };
+  });
+}
+
+export type Messwert = { datum: string; wert: number; quelle: "geburt" | "besuch"; besuchId?: string };
+
+/** Wie `gewichtsverlauf`, für beliebige Messgrößen (Länge, Kopfumfang): Lebenstag, Veränderung zum Vorwert und zur Geburt. */
+export function messverlauf(geburtsdatum: string, werte: Messwert[]) {
+  const tagNr = (iso: string) => Math.round(Date.parse(`${iso}T12:00:00Z`) / 86_400_000);
+  const sortiert = [...werte].sort((a, b) => a.datum.localeCompare(b.datum) || (a.quelle === "geburt" ? -1 : 1));
+  const geburt = sortiert.find((w) => w.quelle === "geburt")?.wert ?? null;
+  return sortiert.map((w, i) => {
+    const vor = sortiert[i - 1];
+    return {
+      ...w,
+      alterTage: tagNr(w.datum) - tagNr(geburtsdatum),
+      lebenstag: tagNr(w.datum) - tagNr(geburtsdatum) + 1,
+      diffVorwert: vor ? w.wert - vor.wert : null,
+      diffGeburt: geburt != null ? w.wert - geburt : null,
     };
   });
 }
