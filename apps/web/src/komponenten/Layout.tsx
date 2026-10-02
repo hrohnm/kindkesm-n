@@ -58,7 +58,7 @@ export function Layout() {
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 px-4 pt-6 pb-28 sm:px-6 md:px-8 md:pb-10 lg:px-12">
+      <main className="min-w-0 flex-1 overflow-x-clip px-4 pt-6 pb-28 sm:px-6 md:px-8 md:pb-10 lg:px-12">
         <div className="mx-auto max-w-5xl">
           <Outlet />
         </div>

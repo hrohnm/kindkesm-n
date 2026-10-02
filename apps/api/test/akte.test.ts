@@ -127,13 +127,13 @@ describe("Persönliche Ansicht der Dokumentation", () => {
   it("liefert Standardwerte und speichert je Hebamme", async () => {
     const a = (await req("GET", "/api/ich/ansicht")).json();
     expect(a.mutter.rrSys).toEqual({ sichtbar: true, vergleich: true });
-    expect(a.mutterOffen).toBe(true);
-    const neu = { ...a, mutter: { ...a.mutter, puls: { sichtbar: false, vergleich: false } }, kindOffen: false };
+    expect(a.mutterOffen).toBe(false);
+    const neu = { ...a, mutter: { ...a.mutter, puls: { sichtbar: false, vergleich: false } }, kindOffen: true };
     const r = (await req("PUT", "/api/ich/ansicht", neu)).json();
     expect(r.mutter.puls).toEqual({ sichtbar: false, vergleich: false });
-    expect((await req("GET", "/api/ich/ansicht")).json().kindOffen).toBe(false);
+    expect((await req("GET", "/api/ich/ansicht")).json().kindOffen).toBe(true);
     // andere Hebamme unverändert
-    expect((await req("GET", "/api/ich/ansicht", undefined, marielena)).json().kindOffen).toBe(true);
+    expect((await req("GET", "/api/ich/ansicht", undefined, marielena)).json().kindOffen).toBe(false);
   });
   it("prüft die Eingaben", async () => {
     expect((await req("PUT", "/api/ich/ansicht", { mutter: { puls: { sichtbar: "ja" } } })).statusCode).toBe(400);
