@@ -2,7 +2,7 @@ import { URKUNDE_TEXTE, urkundeSchema, urkundeText, urkundeZeilenVorschlag, type
 import { and, asc, eq, ne } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply } from "fastify";
 import type { Datenbank } from "../db/client";
-import { benutzer, besuch, betreuung, kind, klientin, praxis, urkunde } from "../db/schema";
+import { benutzer, besuch, betreuung, einwilligung, kind, klientin, praxis, urkunde } from "../db/schema";
 import { pruefen } from "../fehler";
 import { urkundePdf } from "../pdf/urkunde";
 import { protokollieren } from "../protokoll";
@@ -106,6 +106,8 @@ export async function urkundeRouten(app: FastifyInstance, db: Datenbank) {
       vorschlag: vorschlag(x, hebamme),
       /** Alle Zeilen (zum Auswählen) und die Texte der Vorlagen mit eingesetzten Angaben */
       alleZeilen: urkundeZeilenVorschlag(geburt(x), x.messungen, x.letzterBesuch),
+      /** Einwilligung der Eltern für die Kinderurkunde (null = nicht erfasst) */
+      einwilligung: (await db.select({ erteilt: einwilligung.erteilt }).from(einwilligung).where(and(eq(einwilligung.klientinId, x.kl.id), eq(einwilligung.art, "urkunde"))))[0]?.erteilt ?? null,
       texte: URKUNDE_TEXTE.map((t) => ({ id: t.id, name: t.name, text: urkundeText(t.text, werte) })),
     };
   });

@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
+import { EinwilligungenKarte, FlaggenAbzeichen, KontakteKarte, MerkmaleKarte } from "../komponenten/AkteZusatz";
 import { PositionKarte } from "../komponenten/PositionKarte";
 import { IconDrucken, IconPlus, IconStift } from "../komponenten/Icons";
 import { api } from "../lib/api";
@@ -45,7 +46,9 @@ export function Akte() {
           </h1>
           <p className="mt-1 text-slate-600 dark:text-slate-300">
             {[k.strasse, [k.plz, k.ort].filter(Boolean).join(" ")].filter(Boolean).join(", ") || "Keine Anschrift"} · zuständig {zustaendig?.name ?? "–"}
+            {betreuung?.vertretungHebammeId ? ` · Vertretung ${team.daten?.find((h) => h.id === betreuung.vertretungHebammeId)?.name ?? ""}` : ""}
           </p>
+          <div className="mt-2"><FlaggenAbzeichen flaggen={k.flaggen} sprache={k.sprache} /></div>
         </div>
         {betreuung && (
           <Link to={`/betreuungen/${betreuung.id}/besuch`} className="knopf-primaer">
@@ -54,6 +57,7 @@ export function Akte() {
         )}
       </div>
 
+      {k.allergien && <div className="mb-4"><Meldung art="fehler"><strong>Allergien:</strong> {k.allergien}</Meldung></div>}
       {k.hinweise && <div className="mb-4"><Meldung art="hinweis">{k.hinweise}</Meldung></div>}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -77,7 +81,12 @@ export function Akte() {
           )}
         </section>
 
-        {betreuung && <BetreuungKarte betreuung={betreuung} neuLaden={akte.laden} />}
+        {betreuung && <BetreuungKarte betreuung={betreuung} team={team.daten ?? []} neuLaden={akte.laden} />}
+        <MerkmaleKarte key={`m-${k.flaggen.join()}-${k.sprache}-${k.allergien}`} klientin={k} neuLaden={akte.laden} />
+        <KontakteKarte klientin={k} neuLaden={akte.laden} />
+      </div>
+      <div className="mt-4">
+        <EinwilligungenKarte klientin={k} neuLaden={akte.laden} />
       </div>
 
       <div className="mt-4">
@@ -104,7 +113,7 @@ export function Akte() {
 }
 
 function StammdatenFormular({ klientin, team, fertig }: { klientin: Klientin; team: TeamMitglied[]; fertig: () => void }) {
-  const { betreuungen: _b, id, ...rest } = klientin;
+  const { betreuungen: _b, kontakte: _k, einwilligungen: _e, flaggen: _f, sprache: _s, allergien: _a, id, ...rest } = klientin;
   const leer = Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, v ?? ""])) as Record<keyof typeof rest, string>;
   const f = useFormular(leer);
   const feld = (name: keyof typeof rest, label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
@@ -149,7 +158,7 @@ function StammdatenFormular({ klientin, team, fertig }: { klientin: Klientin; te
   );
 }
 
-function BetreuungKarte({ betreuung: b, neuLaden }: { betreuung: Betreuung; neuLaden: () => Promise<void> }) {
+function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung; team: TeamMitglied[]; neuLaden: () => Promise<void> }) {
   const [bearbeiten, setBearbeiten] = useState(false);
   const geburt = b.kinder[0]?.geburtsdatum;
   const f = useFormular({
@@ -160,6 +169,7 @@ function BetreuungKarte({ betreuung: b, neuLaden }: { betreuung: Betreuung; neuL
     geburtsort: b.geburtsort ?? "",
     geburtsmodus: b.geburtsmodus ?? "",
     zustaendigeHebammeId: b.zustaendigeHebammeId ?? "",
+    vertretungHebammeId: b.vertretungHebammeId ?? "",
     notizen: b.notizen ?? "",
   });
   return (
@@ -176,6 +186,7 @@ function BetreuungKarte({ betreuung: b, neuLaden }: { betreuung: Betreuung; neuL
             {geburt && (<><dt className="text-slate-500">Geburt</dt><dd>{datum(geburt)} · heute {lebenstag(geburt, heute())}. Lebenstag</dd></>)}
             <dt className="text-slate-500">Gravida/Para</dt><dd>{b.gravida ?? "–"} / {b.para ?? "–"}</dd>
             <dt className="text-slate-500">Geburtsort</dt><dd>{b.geburtsort ?? "–"}{b.geburtsmodus ? ` · ${b.geburtsmodus}` : ""}</dd>
+            <dt className="text-slate-500">Vertretung</dt><dd>{team.find((h) => h.id === b.vertretungHebammeId)?.name ?? "–"}</dd>
           </dl>
           {b.notizen && <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{b.notizen}</p>}
           <div className="mt-4 flex flex-wrap gap-2">
@@ -212,6 +223,12 @@ function BetreuungKarte({ betreuung: b, neuLaden }: { betreuung: Betreuung; neuL
             <Feld label="Para" fehler={f.felder.para}><input className="feld" inputMode="numeric" value={f.werte.para} onChange={(e) => f.setze("para", e.target.value)} /></Feld>
             <Feld label="Geburtsort"><input className="feld" value={f.werte.geburtsort} onChange={(e) => f.setze("geburtsort", e.target.value)} placeholder="z. B. Klinikum Südstadt Rostock" /></Feld>
             <Feld label="Geburtsmodus"><input className="feld" value={f.werte.geburtsmodus} onChange={(e) => f.setze("geburtsmodus", e.target.value)} placeholder="spontan, Sectio, …" /></Feld>
+            <Feld label="Vertretung" hilfe="Sieht den Fall unter „Meine“, z. B. bei Urlaub der zuständigen Hebamme">
+              <select className="feld" value={f.werte.vertretungHebammeId} onChange={(e) => f.setze("vertretungHebammeId", e.target.value)}>
+                <option value="">– keine –</option>
+                {team.filter((h) => h.rolle === "hebamme").map((h) => <option key={h.id} value={h.id}>{h.name}{h.status === "babypause" ? " (Babypause)" : ""}</option>)}
+              </select>
+            </Feld>
           </div>
           <Feld label="Notizen"><textarea className="feld min-h-20" value={f.werte.notizen} onChange={(e) => f.setze("notizen", e.target.value)} /></Feld>
           <div className="flex gap-2">

@@ -2,6 +2,7 @@ import { BETREUUNG_STATUS_LABEL, type BetreuungStatus } from "@kindkesmoeoen/sha
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Feld, Laden, Meldung, Seitenkopf } from "../komponenten/Formular";
+import { FlaggenAbzeichen } from "../komponenten/AkteZusatz";
 import { IconPlus } from "../komponenten/Icons";
 import { api } from "../lib/api";
 import { useAuth } from "../lib/auth";
@@ -17,10 +18,16 @@ export const STATUS_FARBE: Record<string, string> = {
   abgeschlossen: "bg-sand-200 text-slate-600",
 };
 
+/** Statusfilter: „Laufend“ = alles außer abgeschlossen */
+const gefiltert = (liste: KlientinListe[], status: string) =>
+  status === "alle" ? liste : status === "aktiv" ? liste.filter((k) => k.betreuung?.status !== "abgeschlossen") : liste.filter((k) => k.betreuung?.status === status);
+
 export function Klientinnen() {
   const [suche, setSuche] = useState("");
   const [nur, setNur] = useState<"meine" | "alle">("alle");
   const [neu, setNeu] = useState(false);
+  const [status, setStatus] = useState<string>("aktiv");
+  const { ich } = useAuth();
   const liste = useDaten<KlientinListe[]>(`/api/klientinnen?nur=${nur}${suche ? `&q=${encodeURIComponent(suche)}` : ""}`);
 
   return (
@@ -46,14 +53,19 @@ export function Klientinnen() {
           ))}
         </div>
       </div>
+      <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Status">
+        {[["aktiv", "Laufend"], ["anfrage", "Anfrage"], ["schwangerschaft", "Schwangerschaft"], ["wochenbett", "Wochenbett"], ["abgeschlossen", "Abgeschlossen"], ["alle", "Alle"]].map(([w, l]) => (
+          <button key={w} type="button" aria-pressed={status === w} onClick={() => setStatus(w!)} className={`min-h-10 rounded-full px-4 text-sm font-medium ${status === w ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}>{l}</button>
+        ))}
+      </div>
 
       {!liste.daten ? (
         <Laden />
-      ) : liste.daten.length === 0 ? (
+      ) : gefiltert(liste.daten, status).length === 0 ? (
         <p className="text-slate-500">Keine Klientinnen gefunden.</p>
       ) : (
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          {liste.daten.map((k) => (
+          {gefiltert(liste.daten, status).map((k) => (
             <Link key={k.id} to={`/klientinnen/${k.id}`} className="karte flex items-center gap-4 transition hover:border-salbei-300 active:scale-[0.99]">
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-salbei-100 font-semibold text-salbei-700">
                 {k.vorname[0]}
@@ -66,7 +78,9 @@ export function Klientinnen() {
                 <div className="truncate text-sm text-slate-500">
                   {k.ort ?? "–"} · zuständig {k.zustaendig}
                   {k.betreuung?.kinder.length ? ` · ${k.betreuung.kinder.join(" & ")}` : ""}
+                  {k.betreuung?.vertretungHebammeId === ich?.id ? " · Vertretung durch mich" : ""}
                 </div>
+                {k.flaggen.length > 0 && <div className="mt-1"><FlaggenAbzeichen flaggen={k.flaggen} /></div>}
               </div>
               {k.betreuung && (
                 <div className="shrink-0 text-right">

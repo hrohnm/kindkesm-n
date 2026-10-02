@@ -11,6 +11,7 @@ Praxis-App für die Hebammenpraxis Kindkesmöön (Bad Doberan): Tablet-optimiert
 - Meilenstein 6: Offline-Betrieb – Tour, Akten, frühere Besuche, Gewichtsverläufe und Regelwerk für heute und morgen verschlüsselt auf dem Gerät (automatisch und per „Für unterwegs laden“), Besuche ohne Netz dokumentieren und abschließen inkl. vorläufiger Abrechnung, Warteschlange mit automatischer Übertragung, feldweises Zusammenführen bei Änderungen auf zwei Geräten, Statusanzeige und Abgleich-Seite (Einstellungen → Offline)
 - Kinderurkunde (M10): Gestaltung, Textvorlagen inkl. Plattdeutsch, Tabelle aus der Hebammenzeit, Gewichtskurve, Meilensteine, PDF zum Drucken, Erinnerung im Cockpit
 - Kurse (M12): Kurse mit Terminen und Kursleitung zu zweit, Teilnehmerinnen mit Warteliste, Anwesenheit mit Unterschrift auf dem Tablet, Kassenabrechnung auf Formular 3.4, öffentliche Online-Anmeldung unter `/anmeldung`
+- Akte (M2-Ergänzung): Kontakte, Merkmale (Flaggen, Sprache, Allergien), Einwilligungen mit Widerruf und Protokoll, Vertretung je Betreuung, Statusfilter
 - Ergänzungen: Tour-Übersicht auf der Startseite, persönliche Ansicht der Besuchsdokumentation (Felder ein-/ausblenden, Vergleich mit dem letzten Besuch, aufklappbare Kacheln), Wachstumsseite je Kind (Gewicht, Länge, Kopfumfang) mit WHO-Perzentilkurven und Tabellen, erweiterte Demo-Daten
 
 | Meilenstein | Status |

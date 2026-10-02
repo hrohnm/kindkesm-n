@@ -18,7 +18,7 @@ import {
 import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, notInArray, or, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { Datenbank } from "../db/client";
-import { benutzer, besuch, besuchHistorie, betreuung, kind, klientin, leistung, termin } from "../db/schema";
+import { benutzer, besuch, besuchHistorie, betreuung, einwilligung, kind, klientin, kontakt, leistung, termin } from "../db/schema";
 import { pruefen } from "../fehler";
 import { klientinVerorten } from "../geo/positionen";
 import { protokollieren } from "../protokoll";
@@ -66,14 +66,23 @@ function nurHebammen(request: FastifyRequest, reply: FastifyReply) {
 
 export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   app.addHook("preHandler", async (request, reply) => {
-    if (/^\/api\/(klientinnen|betreuungen|besuche|kinder|heute)/.test(request.url) && !nurHebammen(request, reply)) return reply;
+    if (/^\/api\/(klientinnen|betreuungen|besuche|kinder|heute|kontakte)/.test(request.url) && !nurHebammen(request, reply)) return reply;
   });
 
   // ------------------------------------------------------------ Klientinnen
   app.get<{ Querystring: { q?: string; nur?: "meine" | "alle"; archiv?: string } }>("/api/klientinnen", async (request) => {
     const { q, nur, archiv } = request.query;
     const bedingungen = [eq(klientin.archiviert, archiv === "1")];
-    if (nur === "meine") bedingungen.push(eq(klientin.zustaendigeHebammeId, request.benutzer!.id));
+    // „Meine“: zuständig für die Klientin oder für eine ihrer Betreuungen, oder als Vertretung eingetragen
+    if (nur === "meine") {
+      const ich = request.benutzer!.id;
+      bedingungen.push(
+        or(
+          eq(klientin.zustaendigeHebammeId, ich),
+          sql`exists (select 1 from ${betreuung} where ${betreuung.klientinId} = ${klientin.id} and ${betreuung.status} <> 'abgeschlossen' and (${betreuung.zustaendigeHebammeId} = ${ich} or ${betreuung.vertretungHebammeId} = ${ich}))`,
+        )!,
+      );
+    }
     if (q) bedingungen.push(sql`(${klientin.vorname} || ' ' || ${klientin.nachname} || ' ' || coalesce(${klientin.ort}, '')) ilike ${`%${q}%`}`);
     const liste = await db
       .select({
@@ -84,6 +93,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
         telefon: klientin.telefon,
         zustaendig: benutzer.kuerzel,
         zustaendigeHebammeId: klientin.zustaendigeHebammeId,
+        flaggen: klientin.flaggen,
       })
       .from(klientin)
       .innerJoin(benutzer, eq(benutzer.id, klientin.zustaendigeHebammeId))
@@ -103,7 +113,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       const geburt = ks.map((x) => x.geburtsdatum).sort()[0] ?? null;
       return {
         ...k,
-        betreuung: b ? { id: b.id, status: b.status, et: b.et, geburtsdatum: geburt, lebenstag: geburt ? lebenstag(geburt, heute) : null, ssw: !geburt && b.et ? sswAusEt(b.et, heute).text : null, kinder: ks.map((x) => x.vorname) } : null,
+        betreuung: b ? { id: b.id, status: b.status, et: b.et, vertretungHebammeId: b.vertretungHebammeId, geburtsdatum: geburt, lebenstag: geburt ? lebenstag(geburt, heute) : null, ssw: !geburt && b.et ? sswAusEt(b.et, heute).text : null, kinder: ks.map((x) => x.vorname) } : null,
       };
     });
   });
@@ -127,8 +137,10 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     if (!k) return reply.code(404).send({ fehler: "Klientin nicht gefunden" });
     const betreuungen = await db.select().from(betreuung).where(eq(betreuung.klientinId, k.id)).orderBy(desc(betreuung.erstelltAm));
     const kinder = betreuungen.length ? await db.select().from(kind).where(inArray(kind.betreuungId, betreuungen.map((b) => b.id))).orderBy(asc(kind.geburtsdatum)) : [];
+    const kontakte = await db.select().from(kontakt).where(eq(kontakt.klientinId, k.id)).orderBy(asc(kontakt.art), asc(kontakt.name));
+    const einwilligungen = await db.select().from(einwilligung).where(eq(einwilligung.klientinId, k.id));
     await protokollieren(db, request.benutzer!.id, "angesehen", "klientin", k.id);
-    return { ...k, betreuungen: betreuungen.map((b) => ({ ...b, kinder: kinder.filter((x) => x.betreuungId === b.id) })) };
+    return { ...k, kontakte, einwilligungen, betreuungen: betreuungen.map((b) => ({ ...b, kinder: kinder.filter((x) => x.betreuungId === b.id) })) };
   });
 
   app.put<{ Params: { id: string } }>("/api/klientinnen/:id", async (request, reply) => {
@@ -234,7 +246,10 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   app.get<{ Params: { id: string } }>("/api/betreuungen/:id", async (request, reply) => {
     const [b] = await db.select().from(betreuung).where(eq(betreuung.id, request.params.id));
     if (!b) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
-    const [k] = await db.select({ id: klientin.id, vorname: klientin.vorname, nachname: klientin.nachname, ort: klientin.ort, hinweise: klientin.hinweise }).from(klientin).where(eq(klientin.id, b.klientinId));
+    const [k] = await db
+      .select({ id: klientin.id, vorname: klientin.vorname, nachname: klientin.nachname, ort: klientin.ort, hinweise: klientin.hinweise, flaggen: klientin.flaggen, sprache: klientin.sprache, allergien: klientin.allergien })
+      .from(klientin)
+      .where(eq(klientin.id, b.klientinId));
     const kinder = await db.select().from(kind).where(eq(kind.betreuungId, b.id)).orderBy(asc(kind.geburtsdatum));
     return { ...b, klientin: k, kinder };
   });

@@ -178,6 +178,10 @@ export const klientin = pgTable("klientin", {
   kassenIk: text("kassen_ik"),
   versichertennummer: text("versichertennummer"),
   hinweise: text("hinweise"),
+  /** Merkmale (M2): Flaggen wie Risiko oder Dolmetscherin, Sprache, Allergien */
+  flaggen: text("flaggen").array().notNull().default(sql`'{}'::text[]`),
+  sprache: text("sprache"),
+  allergien: text("allergien"),
   /** Position der Wohnung für Tourenplanung und Wegegeld (aus dem Adressverzeichnis oder von Hand gesetzt) */
   lat: numeric("lat", { precision: 9, scale: 6, mode: "number" }),
   lon: numeric("lon", { precision: 9, scale: 6, mode: "number" }),
@@ -198,6 +202,8 @@ export const betreuung = pgTable("betreuung", {
   geburtsort: text("geburtsort"),
   geburtsmodus: text("geburtsmodus"),
   zustaendigeHebammeId: uuid("zustaendige_hebamme_id").references(() => benutzer.id),
+  /** Vertretung für diesen Fall (sieht ihn unter „Meine“) */
+  vertretungHebammeId: uuid("vertretung_hebamme_id").references(() => benutzer.id),
   notizen: text("notizen"),
   ...zeitstempel(),
 });
@@ -511,4 +517,37 @@ export const kursAnwesenheit = pgTable(
     geaendertAm: timestamp("geaendert_am", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.terminId, t.teilnahmeId] })],
+);
+
+// ------------------------------------------------------------------ Akte: Kontakte und Einwilligungen (M2)
+
+/** Kontaktpersonen und Behandelnde einer Klientin (Partner, Gynäkologin, Kinderärztin, Klinik …). */
+export const kontakt = pgTable("kontakt", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  klientinId: uuid("klientin_id").notNull().references(() => klientin.id, { onDelete: "cascade" }),
+  art: text("art", { enum: ["partner", "gynaekologin", "kinderaerztin", "klinik", "notfall", "sonstige"] }).notNull(),
+  name: text("name").notNull(),
+  telefon: text("telefon"),
+  email: text("email"),
+  anschrift: text("anschrift"),
+  notiz: text("notiz"),
+  ...zeitstempel(),
+});
+
+/** Einwilligung je Art (erteilt oder widerrufen); jede Änderung steht zusätzlich im Protokoll. */
+export const einwilligung = pgTable(
+  "einwilligung",
+  {
+    klientinId: uuid("klientin_id").notNull().references(() => klientin.id, { onDelete: "cascade" }),
+    art: text("art", { enum: ["foto", "urkunde", "email", "austausch"] }).notNull(),
+    erteilt: boolean("erteilt").notNull(),
+    form: text("form", { enum: ["papier", "muendlich", "tablet"] }).notNull(),
+    datum: date("datum").notNull(),
+    widerrufenAm: date("widerrufen_am"),
+    unterschrift: jsonb("unterschrift").$type<Record<string, unknown>>(),
+    notiz: text("notiz"),
+    erfasstVon: uuid("erfasst_von").references(() => benutzer.id),
+    geaendertAm: timestamp("geaendert_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.klientinId, t.art] })],
 );

@@ -64,6 +64,13 @@
       "when": 1790936152692,
       "tag": "0008_kurse",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790944238552,
+      "tag": "0009_akte_m2",
+      "breakpoints": true
     }
   ]
 }

@@ -273,6 +273,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - Zuständige Hebamme und Vertretung
 - Volltextsuche, Filter (Status, Hebamme, Ort, Entbindungstermin)
 - Import der Bestandsdaten aus Hebamio (CSV-Export, falls verfügbar, oder einmalige Übernahme)
+- **Umgesetzt (M2-Ergänzung):** Kontakte je Klientin (Partner/Begleitperson, Gynäkologin, Kinderärztin, Klinik, Notfallkontakt), Merkmale (Flaggen Risiko, Sozialdienst/Jugendamt, Dolmetscherin, psychische Belastung, erstgebärend; Sprache; Allergien – deutlich in Akte und Besuch), Einwilligungen (Fotos, Kinderurkunde, E-Mail, Austausch mit Ärztinnen) mit Form (Papier, mündlich, Tablet-Unterschrift), Datum und Widerruf, protokolliert; Vertretung je Betreuung (Fall erscheint bei der Vertretung unter „Meine“); Statusfilter und Flaggen in der Klientinnenliste; Hinweis in der Kinderurkunde, wenn die Einwilligung fehlt. Offen: Hebamio-Import (Phase 3)
 
 ### M3 – Dokumentation Schwangerschaft / Wochenbett
 - **Besuchsdokumentation als schnelle Maske**: Vitalwerte Mutter (RR, Puls, Temperatur), Fundus/Lochien, Brust/Stillen, Wunde/Naht, Psyche (z. B. EPDS-Fragebogen); Kind: Gewicht, Temperatur, Hautfarbe/Ikterus, Nabel, Ausscheidung, Trinkverhalten

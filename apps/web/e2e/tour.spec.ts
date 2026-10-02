@@ -11,7 +11,9 @@ test("Tour planen, Besuch einplanen und Fahrtenbuch", async ({ page }, info) => 
 
   // Demo-Tour von heute
   await page.getByRole("link", { name: "Tour für heute ›" }).click();
-  await expect(page.getByRole("heading", { name: "Tour" })).toBeVisible();
+  // Erst warten, bis die Tour-Seite da ist (die Startseite enthält ebenfalls „Tour heute“ und Lena Krüger)
+  await expect(page).toHaveURL(/\/tour$/);
+  await expect(page.getByRole("heading", { name: "Tour", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Lena Krüger" })).toBeVisible();
   await expect(page.getByText("Ziel: Schule der Tochter")).toBeVisible();
   await expect(page.getByText("Strecke", { exact: true })).toBeVisible();

@@ -16,6 +16,7 @@ import {
 } from "@kindkesmoeoen/shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import { FlaggenAbzeichen } from "../komponenten/AkteZusatz";
 import { DokuKachel, type FruehererWert } from "../komponenten/DokuKachel";
 import { GewichtFenster } from "./Gewicht";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
@@ -32,7 +33,7 @@ type BetreuungDetail = {
   id: string;
   status: string;
   et: string | null;
-  klientin: { id: string; vorname: string; nachname: string; ort: string | null; hinweise: string | null };
+  klientin: { id: string; vorname: string; nachname: string; ort: string | null; hinweise: string | null; flaggen?: string[]; sprache?: string | null; allergien?: string | null };
   kinder: Kind[];
 };
 type DokuMutter = Record<string, string>;
@@ -380,6 +381,8 @@ function BesuchFormular({
         </div>
       </div>
 
+      {betreuung.klientin.allergien && <div className="mb-4"><Meldung art="fehler"><strong>Allergien:</strong> {betreuung.klientin.allergien}</Meldung></div>}
+      {(betreuung.klientin.flaggen?.length || betreuung.klientin.sprache) ? <div className="mb-4"><FlaggenAbzeichen flaggen={betreuung.klientin.flaggen ?? []} sprache={betreuung.klientin.sprache} /></div> : null}
       {betreuung.klientin.hinweise && <div className="mb-4"><Meldung art="hinweis">{betreuung.klientin.hinweise}</Meldung></div>}
       {fremd && <div className="mb-4"><Meldung art="hinweis">Dieser Besuch wurde von einer Kollegin dokumentiert und kann nur von ihr geändert werden.</Meldung></div>}
       {meldung && <div className="mb-4"><Meldung art={meldung.art}>{meldung.text}</Meldung></div>}

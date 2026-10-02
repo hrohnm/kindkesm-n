@@ -13,6 +13,7 @@ type Antwort = {
   vorschlag: UrkundeDaten;
   alleZeilen: UrkundeZeile[];
   texte: Array<{ id: string; name: string; text: string }>;
+  einwilligung: boolean | null;
 };
 
 const OPTIONEN: Array<[keyof UrkundeDaten["optionen"], string]> = [
@@ -112,6 +113,14 @@ function UrkundeFormular({ d, neuLaden, meldung, setMeldung }: { d: Antwort; neu
           </div>
         }
       />
+      {d.einwilligung !== true && (
+        <div className="mb-4">
+          <Meldung art="hinweis">
+            {d.einwilligung === false ? "Die Eltern haben der Kinderurkunde nicht zugestimmt bzw. widersprochen." : "Die Einwilligung der Eltern zur Kinderurkunde ist noch nicht erfasst."}{" "}
+            <Link className="underline" to={`/klientinnen/${d.klientin.id}`}>In der Akte unter „Einwilligungen“ erfassen</Link>
+          </Meldung>
+        </div>
+      )}
       {meldung && <div className="mb-4"><Meldung art={meldung.art}>{meldung.text}</Meldung></div>}
 
       <div className="grid gap-5 lg:grid-cols-2">
