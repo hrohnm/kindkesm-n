@@ -66,6 +66,86 @@ const FAMILIEN: Familie[] = [
   },
 ];
 
+/**
+ * Zusätzliche Familien für die Test-Umgebung (Codespace, VPS mit DEMO_MODUS):
+ * längere Gewichtsverläufe, eine frische Geburt (heute wichtig), eine Schwangere, volle Touren.
+ * Die automatischen Tests verwenden nur den Grunddatensatz oben.
+ */
+const papierBesuch = (offset: number, von: string, bis: string, gewicht: number, mutter: Record<string, unknown> = {}, kind: Record<string, unknown> = {}) => ({
+  datum: tag(offset), von, bis, typ: "wochenbett", art: 1 as const, doku: mutter, kindDoku: [{ gewicht, ...kind }],
+});
+const tabletBesuch = (offset: number, von: string, bis: string, gewicht: number, mutter: Record<string, unknown> = {}, kind: Record<string, unknown> = {}) => ({
+  ...papierBesuch(offset, von, bis, gewicht, mutter, kind), tablet: true,
+});
+
+const FAMILIEN_ERWEITERT: Familie[] = [
+  {
+    hebamme: "johanna@kindkesmoeoen.test",
+    klientin: { vorname: "Anna", nachname: "Schulz", geburtsdatum: "1993-08-21", strasse: "Am Kamp 5", plz: "18209", ort: "Bad Doberan", telefon: "0170 0000105", email: null, krankenkasse: "Musterkasse Nord", kassenIk: "109900001", versichertennummer: "S246813579", hinweise: "Zweites Kind, große Schwester Lotta (4)." },
+    et: tag(-13),
+    kinder: [{ vorname: "Mats", nachname: "Schulz", geburtsdatum: tag(-12), geburtszeit: "22:40", geschlecht: "maennlich", geburtsgewicht: 3620, laenge: 53, kopfumfang: 35.5 }],
+    besuche: [
+      papierBesuch(-11, "10:30", "11:50", 3480, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 124, rrDia: 78 }, { temperatur: 37.1, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }),
+      { ...papierBesuch(-10, "11:00", "11:50", 3390, { temperatur: 36.9, fundus: "1 QF unter Nabel", lochien: "rubra", brust: "Milcheinschuss" }, { haut: "rosig", stillen: "Saugen gut" }), material: ["61400"] },
+      papierBesuch(-9, "10:15", "11:00", 3350, { temperatur: 36.8, fundus: "2 QF unter Nabel", lochien: "fusca", brust: "gefüllt" }, { haut: "leicht ikterisch", nabel: "trocken" }),
+      papierBesuch(-7, "14:00", "14:40", 3420, { fundus: "3 QF unter Nabel", lochien: "fusca", brust: "weich", befinden: "gut erholt" }, { haut: "leicht ikterisch", nabel: "abgefallen", ausscheidung: "Muttermilchstuhl" }),
+      papierBesuch(-5, "09:30", "10:10", 3530, { fundus: "Symphyse", lochien: "flava" }, { haut: "rosig", stillen: "voll gestillt" }),
+      papierBesuch(-2, "15:00", "15:40", 3660, { fundus: "nicht tastbar", lochien: "flava", befinden: "gut" }, { haut: "rosig", stillen: "voll gestillt", ausscheidung: "Muttermilchstuhl" }),
+    ],
+  },
+  {
+    hebamme: "johanna@kindkesmoeoen.test",
+    klientin: { vorname: "Katrin", nachname: "Lange", geburtsdatum: "1996-03-14", strasse: "Haffstraße 3", plz: "18230", ort: "Rerik", telefon: "0170 0000106", email: null, krankenkasse: "Musterkasse Ost", kassenIk: "109900002", versichertennummer: "L135792468", hinweise: "Ambulante Geburt, Erstgebärende." },
+    et: tag(1),
+    kinder: [{ vorname: "Ella", nachname: "Lange", geburtsdatum: tag(-2), geburtszeit: "06:15", geschlecht: "weiblich", geburtsgewicht: 3150, laenge: 50, kopfumfang: 34 }],
+    besuche: [papierBesuch(-1, "16:00", "17:30", 3010, { temperatur: 37.2, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 118, rrDia: 72 }, { temperatur: 36.9, haut: "rosig", nabel: "feucht", stillen: "Anlegeprobleme" })],
+  },
+  {
+    hebamme: "johanna@kindkesmoeoen.test",
+    klientin: { vorname: "Mia", nachname: "Neumann", geburtsdatum: "1998-12-02", strasse: "Bahnhofstraße 12", plz: "18236", ort: "Kröpelin", telefon: "0170 0000107", email: "mia.neumann@example.org", krankenkasse: "Musterkasse West", kassenIk: "109900003", versichertennummer: "N975318642", hinweise: null },
+    et: tag(28),
+    besuche: [{ datum: tag(-14), von: "09:00", bis: "09:30", typ: "vorsorge", art: 2, material: ["60200"], doku: { rrSys: 112, rrDia: 70, puls: 82, befinden: "gut, Sodbrennen" } }],
+  },
+  {
+    hebamme: "marielena@kindkesmoeoen.test",
+    klientin: { vorname: "Laura", nachname: "Becker", geburtsdatum: "1990-06-30", strasse: "Ostseeallee 14", plz: "18225", ort: "Kühlungsborn", telefon: "0170 0000108", email: null, krankenkasse: "Musterkasse Nord", kassenIk: "109900001", versichertennummer: "B864209753", hinweise: "Sectio, Hausaufgang über Hof." },
+    et: tag(-38),
+    kinder: [{ vorname: "Frieda", nachname: "Becker", geburtsdatum: tag(-40), geburtszeit: "13:02", geschlecht: "weiblich", geburtsgewicht: 3300, laenge: 51, kopfumfang: 34.5 }],
+    besuche: [
+      tabletBesuch(-38, "10:00", "11:30", 3150, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", wunde: "Sectio reizlos" }, { haut: "rosig", stillen: "teilgestillt" }),
+      tabletBesuch(-37, "11:15", "12:00", 3080, { fundus: "1 QF unter Nabel", lochien: "rubra", wunde: "Sectio reizlos", brust: "Milcheinschuss" }),
+      tabletBesuch(-36, "10:45", "11:30", 3060, { fundus: "2 QF unter Nabel", lochien: "fusca", wunde: "Sectio reizlos" }, { haut: "leicht ikterisch" }),
+      tabletBesuch(-34, "14:30", "15:10", 3120, { fundus: "3 QF unter Nabel", lochien: "fusca" }, { haut: "leicht ikterisch", nabel: "abgefallen" }),
+      { ...tabletBesuch(-31, "09:30", "10:10", 3250, { lochien: "flava" }), material: ["61700"] },
+      tabletBesuch(-27, "15:00", "15:40", 3390, { lochien: "flava", befinden: "gut" }, { stillen: "voll gestillt" }),
+      tabletBesuch(-23, "10:00", "10:40", 3560, { lochien: "alba" }),
+      tabletBesuch(-16, "11:00", "11:40", 3820, { lochien: "alba" }, { stillen: "voll gestillt" }),
+      tabletBesuch(-9, "14:00", "14:40", 4050, {}, { stillen: "voll gestillt" }),
+      tabletBesuch(-2, "10:00", "10:40", 4290, { befinden: "sehr gut" }, { stillen: "voll gestillt", ausscheidung: "Muttermilchstuhl" }),
+    ],
+  },
+  {
+    hebamme: "marielena@kindkesmoeoen.test",
+    klientin: { vorname: "Svenja", nachname: "Koch", geburtsdatum: "1995-01-17", strasse: "Neue Reihe 40", plz: "18209", ort: "Bad Doberan", telefon: "0170 0000109", email: null, krankenkasse: "Musterkasse Ost", kassenIk: "109900002", versichertennummer: "K112233445", hinweise: null },
+    et: tag(-6),
+    kinder: [{ vorname: "Jonas", nachname: "Koch", geburtsdatum: tag(-8), geburtszeit: "03:50", geschlecht: "maennlich", geburtsgewicht: 3900, laenge: 54, kopfumfang: 36 }],
+    besuche: [
+      tabletBesuch(-7, "14:00", "15:30", 3760, { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", rrSys: 130, rrDia: 82 }, { haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }),
+      tabletBesuch(-6, "15:00", "15:50", 3650, { fundus: "1 QF unter Nabel", lochien: "rubra", brust: "Milcheinschuss" }, { haut: "rosig" }),
+      tabletBesuch(-5, "14:30", "15:15", 3620, { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "wunde Mamillen" }, { haut: "leicht ikterisch", stillen: "Anlegeprobleme" }),
+      tabletBesuch(-4, "16:00", "16:40", 3680, { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "gefüllt" }, { haut: "leicht ikterisch", stillen: "Saugen gut" }),
+      tabletBesuch(-2, "15:30", "16:10", 3790, { fundus: "3 QF unter Nabel", lochien: "fusca", brust: "weich" }, { haut: "rosig", nabel: "abgefallen", stillen: "voll gestillt" }),
+    ],
+  },
+];
+
+const DEMO_TERMINE_ERWEITERT: Array<{ hebamme: string; familie: string; termin: Record<string, unknown> }> = [
+  { hebamme: "johanna@kindkesmoeoen.test", familie: "Schulz", termin: { zeit: "vormittags", dauerMin: 45, typ: "wochenbett", notiz: "Gewicht, Rückbildung" } },
+  { hebamme: "johanna@kindkesmoeoen.test", familie: "Neumann", termin: { zeit: "fix", uhrzeit: "13:30", dauerMin: 40, typ: "vorsorge", notiz: "Vorsorge 36. SSW" } },
+  { hebamme: "marielena@kindkesmoeoen.test", familie: "Koch", termin: { zeit: "fix", uhrzeit: "10:30", dauerMin: 45, typ: "wochenbett", notiz: "Stillberatung (wunde Mamillen)" } },
+  { hebamme: "marielena@kindkesmoeoen.test", familie: "Becker", termin: { zeit: "nachmittags", dauerMin: 40, typ: "wochenbett" } },
+];
+
 const DEMO_TERMINE: Array<{ hebamme: string; familie: string; termin: Record<string, unknown> }> = [
   { hebamme: "johanna@kindkesmoeoen.test", familie: "Krüger", termin: { zeit: "fix", uhrzeit: "09:00", dauerMin: 45, typ: "wochenbett", notiz: "Gewichtskontrolle Ole" } },
   { hebamme: "johanna@kindkesmoeoen.test", familie: "Berger", termin: { zeit: "nachmittags", dauerMin: 40, typ: "vorsorge" } },
@@ -73,7 +153,9 @@ const DEMO_TERMINE: Array<{ hebamme: string; familie: string; termin: Record<str
   { hebamme: "marielena@kindkesmoeoen.test", familie: "Wolff", termin: { zeit: "fenster", fruehestens: "13:00", spaetestens: "15:00", dauerMin: 45, typ: "schwangerschaft", notiz: "Vorgespräch" } },
 ];
 
-export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
+export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweitert = true) {
+  const familien = erweitert ? [...FAMILIEN, ...FAMILIEN_ERWEITERT] : FAMILIEN;
+  const termine = erweitert ? [...DEMO_TERMINE, ...DEMO_TERMINE_ERWEITERT] : DEMO_TERMINE;
   if ((await db.select({ id: klientin.id }).from(klientin).limit(1)).length) return 0;
   const app = await appBauen(db);
   const cookies: Record<string, string> = {};
@@ -91,7 +173,7 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
   };
 
   const betreuungen: Record<string, string> = {};
-  for (const f of FAMILIEN) {
+  for (const f of familien) {
     const ich = await anfrage(f.hebamme, "GET", "/api/auth/ich");
     const k = await anfrage(f.hebamme, "POST", "/api/klientinnen", { ...f.klientin, zustaendigeHebammeId: ich.id, et: f.et });
     const akte = await anfrage(f.hebamme, "GET", `/api/klientinnen/${k.id}`);
@@ -120,14 +202,14 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string) {
 
   // Tour für heute: Termine anlegen und optimieren lassen
   const heute = tag(0);
-  for (const t of DEMO_TERMINE) {
+  for (const t of termine) {
     const neu = await anfrage(t.hebamme, "POST", `/api/touren/${heute}/termine`, { ...t.termin, betreuungId: betreuungen[t.familie] });
     // Der offene Besuch von heute gehört zu diesem Termin
     const [offen] = await db.select({ id: besuch.id }).from(besuch).where(and(eq(besuch.betreuungId, betreuungen[t.familie]!), eq(besuch.datum, heute), eq(besuch.status, "entwurf")));
     if (offen) await db.update(termin).set({ besuchId: offen.id }).where(eq(termin.id, neu.id));
   }
-  for (const h of [...new Set(DEMO_TERMINE.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
+  for (const h of [...new Set(termine.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
 
   await app.close();
-  return FAMILIEN.length;
+  return familien.length;
 }

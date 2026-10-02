@@ -44,7 +44,7 @@ npm run dev:api     # http://localhost:3000
 npm run dev:web     # http://localhost:5173 (leitet /api an die API weiter)
 ```
 
-Demo-Konten: `marielena@kindkesmoeoen.test`, `johanna@kindkesmoeoen.test`, `lorina@kindkesmoeoen.test`, Passwort `kindkes-demo-2026`. Dazu vier fiktive Familien (Schwangerschaft, frühes Wochenbett, Zwillinge im späten Wochenbett, Anfrage), deren Daten relativ zum heutigen Tag angelegt werden.
+Demo-Konten: `marielena@kindkesmoeoen.test`, `johanna@kindkesmoeoen.test`, `lorina@kindkesmoeoen.test`, Passwort `kindkes-demo-2026`. Dazu neun fiktive Familien (Schwangerschaften, frühes und spätes Wochenbett mit Gewichtsverläufen, Zwillinge, eine frische Geburt, eine Anfrage) und volle Touren für heute; alle Daten werden relativ zum heutigen Tag angelegt. Die automatischen Tests nutzen nur die ersten vier Familien.
 
 Die Abrechnungslogik (`packages/shared/src/plausi.ts`) liest alle Beträge, Kontingente, Zuschlagszeiten und Feiertage aus dem Regelwerk; nur die Logik ist im Code. Änderungen daran immer mit Tests in `plausi.test.ts` absichern.
 

@@ -103,7 +103,8 @@ export async function demoAnlegen(db: ReturnType<typeof verbinden>["db"]) {
   }
 }
 
-export async function grunddatenAnlegen(db: ReturnType<typeof verbinden>["db"], demo: boolean) {
+/** demo: Demo-Konten und -Familien anlegen; erweitert: zusätzliche Familien (nicht in den automatischen Tests). */
+export async function grunddatenAnlegen(db: ReturnType<typeof verbinden>["db"], demo: boolean, erweitert = true) {
   await praxisAnlegen(db);
   const r1 = await regelwerkImportieren(db, "hhv-2025-11-01");
   const r2 = await regelwerkImportieren(db, "hhv-2026-04-01");
@@ -116,7 +117,7 @@ export async function grunddatenAnlegen(db: ReturnType<typeof verbinden>["db"], 
       await fehlendeKoordinatenErgaenzen(db, false);
     }
     await demoAnlegen(db);
-    familien = await demoAktenAnlegen(db, DEMO_PASSWORT);
+    familien = await demoAktenAnlegen(db, DEMO_PASSWORT, erweitert);
   }
   return { regelwerke: [r1, r2], selbstzahler: s, demoFamilien: familien };
 }
