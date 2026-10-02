@@ -160,6 +160,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 - [ ] Persönliche Konten angelegt, Passwörter geändert
 - [ ] Tägliches Backup mit externer Kopie eingerichtet und eine Wiederherstellung getestet
 - [ ] Regelwerk fachlich geprüft und in der App freigegeben (Regelwerk → „Fassung freigeben“, zweite Hebamme bestätigt)
+- [ ] Tablets/Handys: Bildschirmsperre mit PIN bzw. Face ID, Geräteverschlüsselung aktiv (Offline-Daten liegen verschlüsselt auf dem Gerät, beim Abmelden werden sie gelöscht)
 - [ ] Datenschutz-Dokumente (Verzeichnis der Verarbeitungstätigkeiten, TOMs, Datenschutzinformation für Familien) erstellt
 
 ## Fehlersuche
@@ -171,4 +172,6 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 | App startet nicht | `docker compose logs app`; `DB_PASSWORT` nach dem ersten Start geändert? Dann muss es auch in der Datenbank geändert werden. |
 | Anmeldung gesperrt | Nach 10 Fehlversuchen in 15 Minuten wartet die Anmeldung 15 Minuten. |
 | Strecken „geschätzt“ trotz Kartendaten | `docker compose ps` (läuft `osrm`?), `docker compose logs osrm`; `OSRM_URL=http://osrm:5000` in `.env`? |
+| „Offline“ obwohl Netz da ist | Einstellungen → Offline → „Jetzt abgleichen“; Server erreichbar (`/api/gesundheit`)? Offline-Speicher braucht HTTPS. |
+| Änderung „mit Fehler“ in der Warteschlange | Einstellungen → Offline zeigt die Meldung des Servers (z. B. Besuch inzwischen versendet); öffnen, korrigieren oder verwerfen. |
 | Familie ohne Position | Anschrift prüfen; sonst in der Akte „Position setzen“ und auf die Haustür tippen. |

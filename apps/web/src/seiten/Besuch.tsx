@@ -3,8 +3,12 @@ import {
   LEISTUNGSART_LABEL,
   LEISTUNGSTYPEN,
   LEISTUNGSTYP_LABEL,
+  besuchAbrechnen,
   lebenstag,
+  materialFuer,
   sswAusEt,
+  type Kontext,
+  type RegelwerkDaten,
   type Ansicht,
   type Ergebnis,
   type Leistungsart,
@@ -16,7 +20,9 @@ import { DokuKachel, type FruehererWert } from "../komponenten/DokuKachel";
 import { GewichtFenster } from "./Gewicht";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
 import { UnterschriftFeld } from "../komponenten/Unterschrift";
-import { ApiFehler, api } from "../lib/api";
+import { ApiFehler, api, istOffline, wurdeEingereiht } from "../lib/api";
+import { eigeneEintraege, eintragLesen, verwerfen, type AusgangEintrag } from "../lib/offline/ausgang";
+import { hinweisZeigen } from "../lib/offline/zustand";
 import { useAuth } from "../lib/auth";
 import { datum as datumFormat, euro } from "../lib/format";
 import type { Abrechnung, Kind } from "../lib/typen";
@@ -55,6 +61,7 @@ type BesuchDetail = {
   art: Leistungsart;
   material: string[];
   status: "entwurf" | "abgeschlossen";
+  geaendertAm: string;
   dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>>; notiz?: string | null };
   unterschrift: Unterschrift;
   versionen: Array<{ id: string; zeit: string }>;
@@ -83,11 +90,32 @@ const heute = () => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
+/** Kennung für offline angelegte Besuche */
+const neueKennung = () =>
+  typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (Number(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0]! & (15 >> (Number(c) / 4)))).toString(16));
 const alsText = (o: Record<string, unknown> | undefined) => Object.fromEntries(Object.entries(o ?? {}).map(([k, v]) => [k, v === null || v === undefined ? "" : String(v)]));
 
 /** Neuer Besuch (/betreuungen/:betreuungId/besuch) oder bestehender (/besuche/:id). */
 export function Besuch() {
   const { betreuungId, id } = useParams();
+  const [suche] = useSearchParams();
+  // Noch nicht übertragene Fassung aus der Warteschlange (offline gespeichert) – dort weitermachen
+  const [entwurf, setEntwurf] = useState<AusgangEintrag | null>();
+  const ausgangId = suche.get("ausgang") ?? id ?? null;
+  const terminParam = suche.get("termin");
+  useEffect(() => {
+    let aktiv = true;
+    (async () => {
+      let e = ausgangId ? await eintragLesen(ausgangId).catch(() => undefined) : undefined;
+      if (!e && terminParam) e = (await eigeneEintraege().catch(() => [])).find((x) => x.terminId === terminParam);
+      if (aktiv) setEntwurf(e ?? null);
+    })();
+    return () => {
+      aktiv = false;
+    };
+  }, [ausgangId, terminParam]);
   const vorhanden = useDaten<BesuchDetail>(id ? `/api/besuche/${id}` : null);
   const bid = betreuungId ?? vorhanden.daten?.betreuungId;
   const betreuung = useDaten<BetreuungDetail>(bid ? `/api/betreuungen/${bid}` : null);
@@ -95,10 +123,10 @@ export function Besuch() {
   const ansicht = useDaten<Ansicht>("/api/ich/ansicht");
   const alle = useDaten<FruehererBesuch[]>(bid ? `/api/betreuungen/${bid}/besuche` : null);
 
-  if ((id && !vorhanden.daten) || !betreuung.daten || einstellung.daten === undefined || !ansicht.daten || !alle.daten) {
+  if ((id && !vorhanden.daten) || !betreuung.daten || einstellung.daten === undefined || !ansicht.daten || !alle.daten || entwurf === undefined) {
     return vorhanden.fehler || betreuung.fehler ? <Meldung art="fehler">{vorhanden.fehler ?? betreuung.fehler}</Meldung> : <Laden />;
   }
-  return <BesuchFormular betreuung={betreuung.daten} besuch={vorhanden.daten} unterschriftVerfahren={einstellung.daten?.unterschrift ?? "papier"} ansicht={ansicht.daten} alleBesuche={alle.daten} />;
+  return <BesuchFormular betreuung={betreuung.daten} besuch={vorhanden.daten} unterschriftVerfahren={einstellung.daten?.unterschrift ?? "papier"} ansicht={ansicht.daten} alleBesuche={alle.daten} entwurf={entwurf ?? undefined} />;
 }
 
 type FruehererBesuch = { id: string; datum: string; von: string; dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>> } };
@@ -109,12 +137,14 @@ function BesuchFormular({
   unterschriftVerfahren,
   ansicht,
   alleBesuche,
+  entwurf,
 }: {
   betreuung: BetreuungDetail;
   besuch?: BesuchDetail;
   unterschriftVerfahren: "papier" | "tablet";
   ansicht: Ansicht;
   alleBesuche: FruehererBesuch[];
+  entwurf?: AusgangEintrag;
 }) {
   const navigate = useNavigate();
   const { ich } = useAuth();
@@ -126,18 +156,24 @@ function BesuchFormular({
   const gesperrt = besuch?.status === "abgeschlossen"; // Leistungsdaten nach Unterschrift nicht mehr ändern
   const fremd = Boolean(besuch && besuch.hebammeId !== ich?.id);
 
+  // Offline gespeicherte Fassung hat Vorrang vor dem (älteren) Stand des Servers
+  const q = (entwurf?.body as Partial<BesuchDetail> | undefined) ?? besuch;
   const [w, setW] = useState<Werte>(() => ({
-    datum: besuch?.datum ?? (suche.get("datum") || heute()),
-    von: besuch?.von ?? jetzt(),
-    bis: besuch?.bis ?? "",
-    typ: besuch?.typ ?? ((suche.get("typ") as Leistungstyp | null) || (geboren ? "wochenbett" : "vorsorge")),
-    art: besuch?.art ?? 1,
-    material: besuch?.material ?? [],
-    mutter: alsText(besuch?.dokumentation.mutter),
-    kinder: Object.fromEntries(betreuung.kinder.map((k) => [k.id, alsText(besuch?.dokumentation.kinder?.[k.id])])),
-    notiz: besuch?.dokumentation.notiz ?? "",
-    unterschrift: besuch?.unterschrift ?? { art: "keine" },
+    datum: q?.datum ?? (suche.get("datum") || heute()),
+    von: q?.von ?? jetzt(),
+    bis: q?.bis ?? "",
+    typ: q?.typ ?? ((suche.get("typ") as Leistungstyp | null) || (geboren ? "wochenbett" : "vorsorge")),
+    art: q?.art ?? 1,
+    material: q?.material ?? [],
+    mutter: alsText(q?.dokumentation?.mutter),
+    kinder: Object.fromEntries(betreuung.kinder.map((k) => [k.id, alsText(q?.dokumentation?.kinder?.[k.id])])),
+    notiz: q?.dokumentation?.notiz ?? "",
+    unterschrift: q?.unterschrift ?? { art: "keine" },
   }));
+  // Neue Besuche bekommen ihre Kennung schon auf dem Gerät: doppeltes Senden legt keinen zweiten Besuch an
+  const [kennung] = useState(() => besuch?.id ?? entwurf?.id ?? neueKennung());
+  const offlineTermin = entwurf?.terminId ?? terminId;
+  const [vorschauLokal, setVorschauLokal] = useState(false);
   const [verfahren, setVerfahren] = useState<"papier" | "tablet">(besuch?.unterschrift.art === "tablet" ? "tablet" : besuch?.unterschrift.art === "papier" ? "papier" : unterschriftVerfahren);
   const [vorschau, setVorschau] = useState<Ergebnis>();
   const [meldung, setMeldung] = useState<{ art: "ok" | "fehler" | "hinweis"; text: string }>();
@@ -160,7 +196,24 @@ function BesuchFormular({
     dokumentation: { mutter: w.mutter, kinder: w.kinder, notiz: w.notiz },
     unterschrift: w.unterschrift,
     abschliessen,
+    // Neu: Kennung vom Gerät; Änderung: Stand, auf dem sie beruht (Konflikterkennung zwischen Geräten)
+    ...(besuch ? { stand: (entwurf?.body.stand as string | undefined) ?? besuch.geaendertAm } : { id: kennung }),
   });
+
+  /** Abrechnung auf dem Gerät berechnen (ohne Verbindung; frühere Besuche nur, soweit gespeichert). */
+  async function lokaleVorschau(): Promise<Ergebnis | null> {
+    try {
+      const [rw, k] = await Promise.all([api<RegelwerkDaten>(`/api/regelwerk-fuer?datum=${w.datum}`), api<Kontext>(`/api/betreuungen/${betreuung.id}/abrechnungskontext`)]);
+      const n = nutzlast(false);
+      return besuchAbrechnen(
+        { datum: n.datum, von: n.von, bis: n.bis, typ: n.typ, art: n.art, material: n.material },
+        { ...k, fruehereBesuche: k.fruehereBesuche.filter((b) => b.id !== kennung) },
+        rw,
+      );
+    } catch {
+      return null;
+    }
+  }
 
   // Live-Vorschau der Abrechnung (verzögert, damit nicht bei jedem Tastendruck gerechnet wird)
   const vorschauSchluessel = `${w.datum}|${w.von}|${w.bis}|${w.typ}|${w.art}|${w.material.join(",")}`;
@@ -174,9 +227,17 @@ function BesuchFormular({
     const t = setTimeout(async () => {
       try {
         const e = await api<Ergebnis>(`/api/betreuungen/${betreuung.id}/besuche/vorschau${besuch ? `?besuchId=${besuch.id}` : ""}`, { method: "POST", body: nutzlast(false) });
-        if (nr === zaehler.current) setVorschau(e);
-      } catch {
-        /* Eingaben noch unvollständig */
+        if (nr === zaehler.current) {
+          setVorschau(e);
+          setVorschauLokal(false);
+        }
+      } catch (err) {
+        if (!istOffline(err)) return; // Eingaben noch unvollständig
+        const e = await lokaleVorschau();
+        if (e && nr === zaehler.current) {
+          setVorschau(e);
+          setVorschauLokal(true);
+        }
       }
     }, 350);
     return () => clearTimeout(t);
@@ -194,9 +255,19 @@ function BesuchFormular({
   const lt = geboren ? lebenstag(betreuung.kinder[0]!.geburtsdatum, w.datum) : null;
   const ssw = !geboren && betreuung.et ? sswAusEt(betreuung.et, w.datum).text : null;
   // Material aus dem am Besuchstag gültigen Regelwerk (inkl. dort neu angelegter Materialpauschalen)
-  const materialListe = useDaten<Array<{ gpos: string; bezeichnung: string }>>(`/api/material?datum=${w.datum}&typ=${w.typ}`);
-  const materialOptionen = (materialListe.daten ?? []).map((m) => m.gpos);
-  const materialName = (g: string) => MATERIAL_LABEL[g] ?? materialListe.daten?.find((m) => m.gpos === g)?.bezeichnung ?? g;
+  const materialServer = useDaten<Array<{ gpos: string; bezeichnung: string }>>(`/api/material?datum=${w.datum}&typ=${w.typ}`);
+  // Ohne Verbindung und ohne gespeicherte Liste: aus dem gespeicherten Regelwerk ermitteln
+  const [materialLokal, setMaterialLokal] = useState<Array<{ gpos: string; bezeichnung: string }>>();
+  useEffect(() => {
+    if (!materialServer.fehler) return setMaterialLokal(undefined);
+    api<RegelwerkDaten>(`/api/regelwerk-fuer?datum=${w.datum}`).then(
+      (rw) => setMaterialLokal(materialFuer(rw, w.typ).map((gpos) => ({ gpos, bezeichnung: rw.positionen.find((p) => p.gpos === gpos)?.kurztext ?? gpos }))),
+      () => setMaterialLokal(undefined),
+    );
+  }, [materialServer.fehler, w.datum, w.typ]);
+  const materialListe = materialServer.daten ?? materialLokal ?? [];
+  const materialOptionen = materialListe.map((m) => m.gpos);
+  const materialName = (g: string) => MATERIAL_LABEL[g] ?? materialListe.find((m) => m.gpos === g)?.bezeichnung ?? g;
   const typen = useMemo(() => LEISTUNGSTYPEN.filter((t) => (geboren ? t === "wochenbett" : t !== "wochenbett")), [geboren]);
   const brauchtUnterschrift = w.art === 1 || w.art === 2;
 
@@ -204,14 +275,25 @@ function BesuchFormular({
     setSpeichert(true);
     setMeldung(undefined);
     try {
-      const r = await api<{ besuch: { id: string }; ergebnis: Ergebnis }>(besuch ? `/api/besuche/${besuch.id}` : `/api/betreuungen/${betreuung.id}/besuche${terminId ? `?termin=${terminId}` : ""}`, {
+      const r = await api<{ besuch: { id: string }; ergebnis: Ergebnis }>(besuch ? `/api/besuche/${besuch.id}` : `/api/betreuungen/${betreuung.id}/besuche${offlineTermin ? `?termin=${offlineTermin}` : ""}`, {
         method: besuch ? "PUT" : "POST",
         body: nutzlast(abschliessen || gesperrt),
+        // Ohne Verbindung in die Warteschlange; übertragen wird automatisch, sobald wieder Netz da ist
+        offline: {
+          id: kennung,
+          titel: `${betreuung.klientin.vorname} ${betreuung.klientin.nachname} · ${datumFormat(w.datum)} ${w.von}`,
+          betreuungId: betreuung.id,
+          terminId: offlineTermin,
+          basis: besuch ? { datum: besuch.datum, von: besuch.von, bis: besuch.bis, typ: besuch.typ, art: besuch.art, material: besuch.material, dokumentation: besuch.dokumentation, unterschrift: besuch.unterschrift, status: besuch.status } : null,
+        },
       });
+      if (wurdeEingereiht(r)) hinweisZeigen("Ohne Verbindung auf dem Gerät gespeichert – wird übertragen, sobald wieder Netz da ist.");
+      else if (entwurf) await verwerfen(entwurf.id); // die ältere Fassung in der Warteschlange ist überholt
       navigate(zurueck ?? `/klientinnen/${betreuung.klientin.id}`, { replace: true });
       return r;
     } catch (e) {
-      setMeldung({ art: "fehler", text: e instanceof ApiFehler ? e.message : String(e) });
+      const konflikt = e instanceof ApiFehler && e.status === 409 && besuch;
+      setMeldung({ art: "fehler", text: e instanceof ApiFehler ? `${e.message}${konflikt ? " Bitte die Seite neu laden und die Änderung erneut eintragen." : ""}` : String(e) });
     } finally {
       setSpeichert(false);
     }
@@ -219,8 +301,12 @@ function BesuchFormular({
 
   async function loeschen() {
     if (!besuch || !confirm("Entwurf löschen?")) return;
-    await api(`/api/besuche/${besuch.id}`, { method: "DELETE" });
-    navigate(`/klientinnen/${betreuung.klientin.id}`, { replace: true });
+    try {
+      await api(`/api/besuche/${besuch.id}`, { method: "DELETE" });
+      navigate(`/klientinnen/${betreuung.klientin.id}`, { replace: true });
+    } catch (e) {
+      setMeldung({ art: "fehler", text: (e as Error).message });
+    }
   }
 
   return (
@@ -260,6 +346,7 @@ function BesuchFormular({
               <>
                 <span>{vorschau.einheitenAbrechenbar * 5} von {vorschau.einheiten * 5} Min.{vorschau.stamm ? ` · ${vorschau.stamm}XX` : ""}</span>
                 <span className="font-semibold">{euro(vorschau.summe)}</span>
+                {vorschauLokal && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-800" title="Auf dem Gerät berechnet; Besuche anderer Geräte seit dem letzten Laden fehlen">vorläufig (offline)</span>}
                 {vorschau.hinweise.some((h) => h.stufe === "fehler") && <span className="rounded-full bg-tulpe-100 px-2 py-0.5 font-medium text-tulpe-500">{vorschau.hinweise.filter((h) => h.stufe === "fehler").length} Fehler</span>}
                 {vorschau.hinweise.some((h) => h.stufe === "warnung") && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-800">{vorschau.hinweise.filter((h) => h.stufe === "warnung").length} Hinweis(e)</span>}
               </>
@@ -296,6 +383,7 @@ function BesuchFormular({
       {betreuung.klientin.hinweise && <div className="mb-4"><Meldung art="hinweis">{betreuung.klientin.hinweise}</Meldung></div>}
       {fremd && <div className="mb-4"><Meldung art="hinweis">Dieser Besuch wurde von einer Kollegin dokumentiert und kann nur von ihr geändert werden.</Meldung></div>}
       {meldung && <div className="mb-4"><Meldung art={meldung.art}>{meldung.text}</Meldung></div>}
+      {entwurf && <div className="mb-4"><Meldung art="hinweis">Diese Fassung wurde ohne Verbindung gespeichert und ist noch nicht übertragen.</Meldung></div>}
 
       <div className="space-y-5">
         <div className="space-y-5">

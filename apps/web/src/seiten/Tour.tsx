@@ -16,6 +16,8 @@ import { Karte, navigationsLinks, useGeoStatus, type KartenPunkt } from "../komp
 import { ApiFehler, api } from "../lib/api";
 import { datum as datumDe, euro } from "../lib/format";
 import type { Ort } from "../lib/typen";
+import { useAusgang } from "../lib/offline/hooks";
+import type { AusgangEintrag } from "../lib/offline/ausgang";
 import { useDaten } from "../lib/useDaten";
 
 type Termin = {
@@ -115,6 +117,7 @@ export function Tour() {
   const heute = isoDatum(new Date());
   const datum = param && /^\d{4}-\d{2}-\d{2}$/.test(param) ? param : heute;
   const tag = useDaten<TagDaten>(`/api/touren/${datum}`);
+  const ausgang = useAusgang();
   const geo = useGeoStatus();
   const [meldung, setMeldung] = useState<{ art: "ok" | "fehler" | "hinweis"; text: string }>();
   const [arbeitet, setArbeitet] = useState(false);
@@ -230,6 +233,7 @@ export function Tour() {
                   nr={i + 1}
                   t={t}
                   datum={datum}
+                  offline={ausgang.find((x) => x.terminId === t.id || x.id === t.besuchId)}
                   erster={i === 0}
                   letzter={i === aktiv.length - 1}
                   arbeitet={arbeitet}
@@ -361,10 +365,13 @@ function TerminKarte({
   bearbeiten,
   absagen,
   loeschen,
+  offline,
 }: {
   nr: number;
   t: Termin;
   datum: string;
+  /** Ohne Verbindung dokumentiert, noch nicht übertragen */
+  offline?: AusgangEintrag;
   erster: boolean;
   letzter: boolean;
   arbeitet: boolean;
@@ -377,8 +384,10 @@ function TerminKarte({
   const anschrift = [k.strasse, [k.plz, k.ort].filter(Boolean).join(" ")].filter(Boolean).join(", ");
   const nav = navigationsLinks({ lat: k.lat, lon: k.lon, anschrift });
   const zurueck = encodeURIComponent(`/tour/${datum}`);
-  const dokuLink = t.besuchId ? `/besuche/${t.besuchId}?zurueck=${zurueck}` : `/betreuungen/${t.betreuungId}/besuch?termin=${t.id}&datum=${datum}&typ=${t.typ}&zurueck=${zurueck}`;
-  const erledigt = t.status === "erledigt";
+  const dokuLink = t.besuchId
+    ? `/besuche/${t.besuchId}?zurueck=${zurueck}`
+    : `/betreuungen/${t.betreuungId}/besuch?termin=${t.id}&datum=${datum}&typ=${t.typ}&zurueck=${zurueck}${offline ? `&ausgang=${offline.id}` : ""}`;
+  const erledigt = t.status === "erledigt" || Boolean(offline?.body.abschliessen);
   return (
     <li className={`karte p-4 ${erledigt ? "opacity-70" : ""}`}>
       <div className="flex items-start gap-3">
@@ -389,6 +398,7 @@ function TerminKarte({
             <Link to={`/klientinnen/${k.klientinId}`} className="font-semibold hover:underline">{k.name}</Link>
             {k.lebenstag != null && k.lebenstag >= 0 && <span className="rounded-full bg-salbei-100 px-2 py-0.5 text-xs font-medium text-salbei-700">LT {k.lebenstag}</span>}
             {t.wichtig && <span className="rounded-full bg-tulpe-100 px-2 py-0.5 text-xs font-medium text-tulpe-500">muss heute</span>}
+            {offline && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800" data-testid="offline-dokumentiert">offline dokumentiert – wird übertragen</span>}
           </div>
           <div className="truncate text-sm text-slate-500">{anschrift || "Anschrift fehlt"}</div>
           <div className="mt-1 text-sm">
@@ -399,7 +409,7 @@ function TerminKarte({
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
-        <Link to={dokuLink} className={erledigt ? "knopf-sekundaer" : "knopf-primaer"}>{t.besuchId ? (k.besuchStatus === "abgeschlossen" ? "Besuch ansehen" : "Weiter dokumentieren") : "Dokumentieren"}</Link>
+        <Link to={dokuLink} className={erledigt ? "knopf-sekundaer" : "knopf-primaer"}>{offline ? "Weiter dokumentieren" : t.besuchId ? (k.besuchStatus === "abgeschlossen" ? "Besuch ansehen" : "Weiter dokumentieren") : "Dokumentieren"}</Link>
         <a href={nav.apple} target="_blank" rel="noreferrer" className="knopf-sekundaer"><IconOrt className="size-5" /> Apple Karten</a>
         <a href={nav.google} target="_blank" rel="noreferrer" className="knopf-sekundaer">Google Maps</a>
         {k.telefon && <a href={`tel:${k.telefon.replace(/\s/g, "")}`} className="knopf-sekundaer">Anrufen</a>}

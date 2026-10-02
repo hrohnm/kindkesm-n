@@ -774,6 +774,13 @@ Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (m
 - Konflikte (selten, da meist eine Hebamme pro Fall): Feldweise zusammenführen, bei echten Konflikten nachfragen
 - Werkzeuge: z. B. PowerSync, ElectricSQL, RxDB oder ein eigener Sync auf Postgres
 
+**Umsetzung (M-6, eigener schlanker Sync):**
+- **Lesen:** Antworten der für Hausbesuche nötigen Schnittstellen (Tour, Heute, Akte, Betreuung, Besuche, Gewicht, Material, gültiges Regelwerk, Abrechnungskontext, eigene Ansicht) werden je Hebamme in der IndexedDB abgelegt, AES-256-GCM-verschlüsselt mit einem nicht exportierbaren Schlüssel des Browsers, höchstens 14 Tage. Vorladen für heute und morgen automatisch beim Start, stündlich und per Knopf „Für unterwegs laden“.
+- **Schreiben:** Besuche (neu und geändert) gehen ohne Verbindung in eine Warteschlange – je Besuch ein Eintrag, der bei erneutem Speichern ersetzt wird. Neue Besuche bekommen ihre Kennung auf dem Gerät (UUID), dadurch ist die Übertragung idempotent. Andere Änderungen (Akte, Tour planen, Abrechnung, Regelwerk) melden „nur mit Verbindung möglich“.
+- **Abrechnung offline:** Die Plausibilitätsprüfung läuft mit demselben Code auf dem Gerät (gespeichertes Regelwerk + Abrechnungskontext) und wird als „vorläufig (offline)“ markiert; verbindlich rechnet der Server beim Übertragen.
+- **Konflikte:** Jede Änderung trägt den Stand (`geaendertAm`), auf dem sie beruht. Weicht der Server ab, antwortet er mit 409 und seiner Fassung; das Gerät führt feldweise zusammen (Ausgangsfassung / eigene / fremde). Nur wenn dasselbe Feld auf beiden Geräten verschieden geändert wurde, entscheidet die Hebamme auf der Abgleich-Seite.
+- **Anmeldung:** bleibt ohne Netz erhalten (die App startet aus dem Service Worker). Beim Abmelden werden alle Gerätedaten samt Schlüssel gelöscht, mit Warnung bei noch nicht übertragenen Änderungen.
+
 ### 12.4 Qualität
 - Automatisierte Tests vor allem für das **Abrechnungsregelwerk** (Kontingente, Zuschläge, Wegegeld) und die **PDF-Formulare** (Snapshot-Tests)
 - Testgeräte: iPad (aktuelles iPadOS), ein Android-Tablet, iPhone, Android-Handy
@@ -844,7 +851,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 | **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 folgt mit dem Kursmodul |
 | **M-4 Touren** ✅ | Tagesplanung mit Terminen (fest, Zeitfenster, flexibel), Optimierung mit Zeitfenstern, OSRM-Routing (Luftlinie als Ersatz), Adressverzeichnis aus OpenStreetMap, Karte, Navigation, Wegegeld 50100/50200 automatisch aus den Hausbesuchen, Fahrtenbuch mit Export |
 | **M-5 Regelwerk-Administration** ✅ | Positionen, Kontingente, Zuschläge, Wegegeld, Feiertage, Fristen und Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe mit Konfliktprüfung, Fassung freigeben, neue Fassung, Testrechner mit Vorher/Nachher, Verlauf |
-| **M-6 Offline** | Vollständiger Offline-Betrieb mit Synchronisation |
+| **M-6 Offline** ✅ | Tour und Akten für heute/morgen verschlüsselt auf dem Gerät, Besuche ohne Netz dokumentieren und abschließen (vorläufige Abrechnung auf dem Gerät), Warteschlange mit automatischer Übertragung, idempotente Übertragung, Konflikterkennung mit feldweisem Zusammenführen, Statusanzeige und Abgleich-Seite (Kapitel 12.3) |
 
 ### Phase 1 – MVP: „Der Hausbesuch“ (ca. 3–4 Monate)
 M1 Cockpit · M2 Akte · M3 Doku Schwangerschaft/Wochenbett · M5 Kalender · **M6 Routenplanung** · M7 Leistungen + Plausi · **M8 Abrechnungsunterlagen (Formulare 3.1, 3.3, 3.4; Papier und Tablet; Durchschreibesatz-Hilfe; Abrechnungsdatenblatt; Fristen)** · M9 Fahrtenbuch · M25 Admin inkl. Orte und Abrechnungseinstellungen · **M26 Regelwerk-Administration mit Vier-Augen-Freigabe** · Offline-Sync

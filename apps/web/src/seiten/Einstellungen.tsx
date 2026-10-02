@@ -7,6 +7,7 @@ const UNTER = [
   { to: "/einstellungen/dokumentation", label: "Dokumentation" },
   { to: "/einstellungen/abrechnung", label: "Abrechnung" },
   { to: "/einstellungen/praxis", label: "Praxis" },
+  { to: "/einstellungen/offline", label: "Offline" },
   { to: "/einstellungen/passwort", label: "Passwort" },
   // Auf dem Handy fehlen diese in der unteren Leiste, daher nur dort hier verlinkt
   { to: "/team", label: "Team ›", nurHandy: true },

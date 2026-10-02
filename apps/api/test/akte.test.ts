@@ -151,3 +151,51 @@ describe("Gewichtsverlauf", () => {
     expect((await req("GET", "/api/kinder/00000000-0000-0000-0000-000000000000/gewicht")).statusCode).toBe(404);
   });
 });
+
+describe("Offline-Abgleich", () => {
+  it("legt einen offline erfassten Besuch bei wiederholter Übertragung nur einmal an", async () => {
+    const b = await kruegerBetreuung();
+    const id = "7b0f7e2c-3a8e-4f51-9b0a-0c2d4e6f8a10";
+    const daten = besuchDaten({ id, datum: "2026-09-01", von: "08:00", bis: "08:30", dokumentation: { mutter: {}, kinder: {}, notiz: "offline" } });
+    const r1 = await req("POST", `/api/betreuungen/${b.id}/besuche`, daten);
+    expect(r1.statusCode).toBe(200);
+    expect(r1.json().besuch.id).toBe(id);
+    const r2 = await req("POST", `/api/betreuungen/${b.id}/besuche`, { ...daten, dokumentation: { mutter: {}, kinder: {}, notiz: "offline, zweite Übertragung" } });
+    expect(r2.statusCode).toBe(200);
+    const liste = (await req("GET", `/api/betreuungen/${b.id}/besuche`)).json();
+    expect(liste.filter((x: { id: string }) => x.id === id)).toHaveLength(1);
+    expect((await req("GET", `/api/besuche/${id}`)).json().dokumentation.notiz).toBe("offline, zweite Übertragung");
+    // fremde Hebamme darf die Kennung nicht kapern
+    expect((await req("POST", `/api/betreuungen/${b.id}/besuche`, daten, marielena)).statusCode).toBe(409);
+  });
+
+  it("erkennt Konflikte zwischen zwei Geräten über den Stand", async () => {
+    const b = await kruegerBetreuung();
+    const neu = (await req("POST", `/api/betreuungen/${b.id}/besuche`, besuchDaten({ datum: "2026-09-02", von: "08:00", bis: "08:30" }))).json().besuch;
+    // Gerät A speichert mit aktuellem Stand
+    const a = await req("PUT", `/api/besuche/${neu.id}`, besuchDaten({ datum: "2026-09-02", von: "08:00", bis: "08:35", stand: neu.geaendertAm }));
+    expect(a.statusCode).toBe(200);
+    // Gerät B hat noch den alten Stand
+    const k = await req("PUT", `/api/besuche/${neu.id}`, besuchDaten({ datum: "2026-09-02", von: "08:00", bis: "08:40", stand: neu.geaendertAm }));
+    expect(k.statusCode).toBe(409);
+    expect(k.json()).toMatchObject({ konflikt: true, aktuell: { bis: "08:35" } });
+    // ohne Stand (bewusst überschreiben) geht es
+    expect((await req("PUT", `/api/besuche/${neu.id}`, besuchDaten({ datum: "2026-09-02", von: "08:00", bis: "08:40" }))).statusCode).toBe(200);
+  });
+
+  it("liefert den Abrechnungskontext für die Vorschau auf dem Gerät", async () => {
+    const b = await kruegerBetreuung();
+    const k = (await req("GET", `/api/betreuungen/${b.id}/abrechnungskontext`)).json();
+    expect(k.geburtsdatum).toBe(b.kinder[0].geburtsdatum);
+    expect(k.anzahlKinder).toBe(Math.max(1, b.kinder.length));
+    expect(k.fruehereBesuche.length).toBeGreaterThan(0);
+    expect(k.fruehereBesuche[0]).toHaveProperty("stamm");
+  });
+
+  it("liefert das am Datum gültige Regelwerk vollständig", async () => {
+    const rw = (await req("GET", "/api/regelwerk-fuer?datum=2026-10-01")).json();
+    expect(rw.id).toBe("hhv-2026-04-01");
+    expect(rw.positionen.length).toBeGreaterThan(100);
+    expect((await req("GET", "/api/regelwerk-fuer?datum=2026-01-10")).json().id).toBe("hhv-2025-11-01");
+  });
+});

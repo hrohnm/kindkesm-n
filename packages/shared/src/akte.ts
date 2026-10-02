@@ -124,6 +124,10 @@ export const besuchSchema = z.object({
   dokumentation: dokumentationSchema,
   unterschrift: unterschriftSchema.default({ art: "keine" }),
   abschliessen: z.boolean().default(false),
+  /** Vom Gerät vergebene Kennung (offline angelegte Besuche): eine wiederholte Übertragung legt keinen zweiten Besuch an */
+  id: z.string().uuid().optional(),
+  /** Stand (geaendertAm), auf dem die Änderung beruht: Konflikterkennung zwischen zwei Geräten */
+  stand: z.iso.datetime({ offset: true }).optional(),
 });
 export type BesuchFormular = z.infer<typeof besuchSchema>;
 
