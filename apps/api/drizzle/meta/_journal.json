@@ -43,6 +43,13 @@
       "when": 1790920562329,
       "tag": "0005_aenderung",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790921919468,
+      "tag": "0006_selbstzahler_preis",
+      "breakpoints": true
     }
   ]
 }

@@ -45,8 +45,44 @@ export const operationSchema = z.discriminatedUnion("art", [
         formular: optText(10),
         quittierungspflichtig: z.boolean(),
         hinweis: optText(500),
+        material_fuer: z.array(z.enum(["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"])),
+        einmalig: z.boolean(),
       })
       .partial(),
+  }),
+  /** Neue Gebührenposition (z. B. neue Variante oder Materialpauschale aus einem Vertragsnachtrag) */
+  z.object({
+    art: z.literal("position_neu"),
+    position: z.object({
+      gpos: z.string().regex(/^\d{5}$/, "5-stellige GPOS"),
+      bezeichnung: z.string().trim().min(3).max(300),
+      kurztext: z.string().trim().min(1).max(60),
+      leistungsart: z.enum(["keine Spezifikation", "aufsuchend", "nicht-aufsuchend", "Videobetreuung", "Telefonkurzberatung", "Beleghebamme", "Selbstlerneinheit"]),
+      betrag: z.number().min(0).max(5000).nullable(),
+      einheit: z.enum(["5min", "pauschal", "km", "tatsaechlich"]),
+      formular: optText(10),
+      quittierungspflichtig: z.boolean(),
+      hinweis: optText(500),
+      material_fuer: z.array(z.enum(["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"])).optional(),
+      einmalig: z.boolean().optional(),
+    }),
+  }),
+  /** Neues Kontingent; die Abrechnung findet es über die Kennung = GPOS-Stamm (z. B. 107) */
+  z.object({
+    art: z.literal("kontingent_neu"),
+    kontingent: z.object({
+      id: z.string().regex(/^[0-9a-z-]{2,20}$/, "z. B. 107 oder 101-tel"),
+      name: z.string().trim().min(3).max(200),
+      positionen: z.array(z.string().trim().min(3).max(10)).min(1).max(30),
+      verhalten_bei_ueberschreitung: z.enum(["anordnung", "sperre", "hinweis"]),
+      kontakte_pro_tag: grenze.optional(),
+      einheiten_pro_kontakt: grenze.optional(),
+      einheiten_pro_tag: grenze.optional(),
+      kontakte_gesamt: grenze.optional(),
+      kontakttage_gesamt: grenze.optional(),
+      einheiten_gesamt: grenze.optional(),
+      mehrling_zusatz_einheiten: grenze.optional(),
+    }),
   }),
   z.object({
     art: z.literal("kontingent"),
@@ -89,6 +125,8 @@ export const operationSchema = z.discriminatedUnion("art", [
       .object({ preis: z.number().min(0).max(5000), bezeichnung: z.string().trim().min(2).max(120), rechnungstext: z.string().trim().min(2).max(300), aktiv: z.boolean() })
       .partial(),
   }),
+  /** Eigener Preis einer Hebamme für eine Selbstzahler-Leistung (null = Praxispreis) */
+  z.object({ art: z.literal("selbstzahler_eigen"), id: z.string().min(1).max(60), hebammeId: z.string().uuid(), preis: z.number().min(0).max(5000).nullable() }),
   z.object({
     art: z.literal("selbstzahler_neu"),
     id: z.string().regex(/^[a-z0-9-]{3,60}$/, "nur Kleinbuchstaben, Ziffern und Bindestrich"),
@@ -109,7 +147,7 @@ export const aenderungSchema = z
     operationen: z.array(operationSchema).min(1).max(50),
   })
   .superRefine((a, ctx) => {
-    const nurSelbstzahler = a.operationen.every((o) => o.art === "selbstzahler" || o.art === "selbstzahler_neu");
+    const nurSelbstzahler = a.operationen.every((o) => o.art.startsWith("selbstzahler"));
     if (!nurSelbstzahler && !a.regelwerkId) ctx.addIssue({ code: "custom", path: ["regelwerkId"], message: "Regelwerk fehlt." });
   });
 export type AenderungEingabe = z.infer<typeof aenderungSchema>;
@@ -155,6 +193,17 @@ export function vorherWerte(daten: Daten | null, op: Operation, selbstzahler?: R
       const f = (daten!.fristen_und_hinweise as Array<Record<string, unknown>> | undefined)?.find((x) => x.id === op.id);
       if (!f) throw new AenderungFehler(`Frist ${op.id} gibt es in diesem Regelwerk nicht.`);
       return auswahl(f, Object.keys(op.felder));
+    }
+    case "position_neu":
+      if (daten?.positionen.some((x) => x.gpos === op.position.gpos)) throw new AenderungFehler(`Position ${op.position.gpos} gibt es schon.`);
+      return {};
+    case "kontingent_neu":
+      if (daten?.kontingente.some((x) => x.id === op.kontingent.id)) throw new AenderungFehler(`Kontingent ${op.kontingent.id} gibt es schon.`);
+      return {};
+    case "selbstzahler_eigen": {
+      if (!selbstzahler?.[op.id]) throw new AenderungFehler(`Selbstzahler-Leistung ${op.id} gibt es nicht.`);
+      const eigene = (selbstzahler[op.id]!.eigenePreise ?? {}) as Record<string, unknown>;
+      return { preis: eigene[op.hebammeId] ?? null };
     }
     case "status":
       return {};
@@ -204,6 +253,22 @@ export function operationenAnwenden<T extends Daten>(daten: T, ops: Operation[])
       case "feiertage":
         d.feiertage = op.liste;
         break;
+      case "position_neu": {
+        if (d.positionen.some((x) => x.gpos === op.position.gpos)) throw new AenderungFehler(`Position ${op.position.gpos} gibt es schon.`);
+        const g = op.position.gpos;
+        (d.positionen as unknown as Array<Record<string, unknown>>).push({
+          ...op.position,
+          gruppe: `${g.slice(0, 3)}${g[3] === "1" ? "1" : "0"}X`,
+          kategorie: Number(g[0]),
+          zuschlag: g[3] === "1",
+        });
+        d.positionen.sort((a, b) => a.gpos.localeCompare(b.gpos));
+        break;
+      }
+      case "kontingent_neu":
+        if (d.kontingente.some((x) => x.id === op.kontingent.id)) throw new AenderungFehler(`Kontingent ${op.kontingent.id} gibt es schon.`);
+        d.kontingente.push({ zeitraum: null, bezug: "Versicherte", ...op.kontingent } as unknown as (typeof d.kontingente)[number]);
+        break;
       case "frist": {
         const f = (d.fristen_und_hinweise as Array<Record<string, unknown>> | undefined)?.find((x) => x.id === op.id);
         if (!f) throw new AenderungFehler(`Frist ${op.id} gibt es in diesem Regelwerk nicht.`);
@@ -234,6 +299,12 @@ export function operationBeschreiben(op: Operation, vorher: Record<string, unkno
       return felder(op.felder, (k) => `Wegegeld ${k.replace(/_/g, " ")}`);
     case "feiertage":
       return [`Feiertage: ${op.liste.map((f) => f.name).join(", ")}`];
+    case "position_neu":
+      return [`Neue Position ${op.position.gpos} „${op.position.bezeichnung}“: ${wert(op.position.betrag)} € ${op.position.einheit === "5min" ? "je 5 Min." : op.position.einheit}`];
+    case "kontingent_neu":
+      return [`Neues Kontingent ${op.kontingent.id} „${op.kontingent.name}“ für ${op.kontingent.positionen.join(", ")}`];
+    case "selbstzahler_eigen":
+      return [`Eigener Preis für ${op.id}: ${wert(vorher.preis ?? "Praxispreis")} → ${op.preis === null ? "Praxispreis" : `${wert(op.preis)} €`}`];
     case "frist":
       return felder(op.felder, (k) => `Frist ${op.id} ${k}`);
     case "status":
@@ -246,6 +317,9 @@ export function operationBeschreiben(op: Operation, vorher: Record<string, unkno
       return [`Neue Selbstzahler-Leistung „${op.bezeichnung}“ für ${wert(op.preis)} € je ${op.einheit}`];
   }
 }
+
+/** Operationen, die nicht den Inhalt des Regelwerk-JSON ändern */
+export const OHNE_REGELWERK_INHALT = new Set<Operation["art"]>(["status", "neue_fassung", "selbstzahler", "selbstzahler_neu", "selbstzahler_eigen"]);
 
 /** Ist ein festgehaltener Vorher-Wert noch aktuell? */
 export function gleich(a: unknown, b: unknown): boolean {

@@ -416,3 +416,15 @@ export const aenderung = pgTable("aenderung", {
   entschiedenAm: timestamp("entschieden_am", { withTimezone: true }),
   kommentar: text("kommentar"),
 });
+
+/** Eigener Preis einer Hebamme für eine Selbstzahler-Leistung (überschreibt den Praxispreis; jede rechnet selbst ab). */
+export const selbstzahlerPreis = pgTable(
+  "selbstzahler_preis",
+  {
+    benutzerId: uuid("benutzer_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    leistungId: text("leistung_id").notNull().references(() => selbstzahlerLeistung.id, { onDelete: "cascade" }),
+    preis: numeric("preis", { precision: 10, scale: 2 }).notNull(),
+    geaendertAm: timestamp("geaendert_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.benutzerId, t.leistungId] })],
+);

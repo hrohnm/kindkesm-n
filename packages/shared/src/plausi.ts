@@ -41,6 +41,13 @@ export const MATERIAL_JE_TYP: Record<Leistungstyp, string[]> = {
 /** Material, das je Betreuung nur einmal abgerechnet werden darf. */
 const MATERIAL_EINMALIG = new Set(["60400", "60600", "60700", "61100", "61200", "61300", "61400", "61600", "61700"]);
 
+/** Auswählbares Material je Leistung: fest hinterlegte Liste plus im Regelwerk angelegte Materialpositionen. */
+export function materialFuer(rw: Pick<RegelwerkDaten, "positionen">, typ: Leistungstyp): string[] {
+  const zusatz = rw.positionen.filter((p) => p.material_fuer?.includes(typ)).map((p) => p.gpos);
+  return [...new Set([...MATERIAL_JE_TYP[typ], ...zusatz])];
+}
+const materialEinmalig = (rw: RegelwerkDaten, gpos: string) => MATERIAL_EINMALIG.has(gpos) || rw.positionen.some((p) => p.gpos === gpos && p.einmalig);
+
 // ------------------------------------------------------------------ Regelwerk-Typen (Ausschnitt)
 export type RwPosition = {
   gpos: string;
@@ -52,6 +59,10 @@ export type RwPosition = {
   formular: string | null;
   quittierungspflichtig: boolean;
   befristung?: { gueltig_von: string; gueltig_bis: string };
+  /** Materialpauschale: bei welchen Leistungen sie auswählbar ist (ergänzt die fest hinterlegte Liste) */
+  material_fuer?: Leistungstyp[];
+  /** Materialpauschale nur einmal je Betreuung */
+  einmalig?: boolean;
 };
 type Grenzen = { kontakte_pro_tag?: number; einheiten_pro_kontakt?: number; einheiten_pro_tag?: number };
 export type RwKontingent = Grenzen & {
@@ -363,14 +374,14 @@ export function besuchAbrechnen(e: BesuchEingabe, k: Kontext, rw: RegelwerkDaten
   }
 
   // Material
-  const erlaubt = new Set(MATERIAL_JE_TYP[e.typ]);
+  const erlaubt = new Set(materialFuer(rw, e.typ));
   const bisherMaterial = new Set(k.fruehereBesuche.flatMap((b) => b.material));
   const material = [...new Set(e.material)].filter((g) => {
     if (!erlaubt.has(g)) {
       hinweise.push({ stufe: "warnung", text: `Material ${g} passt nicht zu dieser Leistung und wird nicht abgerechnet.` });
       return false;
     }
-    if (MATERIAL_EINMALIG.has(g) && bisherMaterial.has(g)) {
+    if (materialEinmalig(rw, g) && bisherMaterial.has(g)) {
       hinweise.push({ stufe: "warnung", text: `Materialpauschale ${g} wurde in dieser Betreuung bereits abgerechnet (nur einmalig).` });
       return false;
     }

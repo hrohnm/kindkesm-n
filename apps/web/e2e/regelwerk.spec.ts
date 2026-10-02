@@ -43,3 +43,45 @@ test("Regelwerk: Änderung vorschlagen, im Testrechner prüfen und durch zweite 
   await marielena.getByPlaceholder("GPOS oder Bezeichnung suchen").fill("30401");
   await expect(marielena.getByText("9,99 €")).toBeVisible();
 });
+
+test("Eigener Selbstzahler-Preis und neue Position mit Freigabe", async ({ browser }, info) => {
+  test.skip(info.project.name !== "ipad-quer", "ändert gemeinsame Daten – ein Durchlauf genügt");
+  const johanna = await (await browser.newContext()).newPage();
+  await anmelden(johanna, "johanna@kindkesmoeoen.test");
+  await johanna.goto("/regelwerk");
+  await johanna.getByRole("button", { name: "Selbstzahler" }).click();
+  await johanna.getByRole("button", { name: "Eigenen Preis festlegen" }).first().click();
+  await johanna.getByLabel("Mein Preis (€)").fill("61");
+  await johanna.getByRole("button", { name: "Weiter" }).click();
+  await johanna.getByLabel("Begründung / Quelle").fill("Eigene Kalkulation");
+  await johanna.getByRole("button", { name: "Zur Freigabe vorschlagen" }).click();
+  await expect(johanna.getByText(/Vorschlag gespeichert/)).toBeVisible();
+
+  await johanna.getByRole("button", { name: /ab 01\.11\.2025/ }).click();
+  await johanna.getByRole("button", { name: "Positionen" }).click();
+  await johanna.getByRole("button", { name: "Neue Position" }).click();
+  await johanna.getByLabel("GPOS", { exact: true }).fill("69700");
+  await johanna.getByLabel("Betrag (€)").fill("2,50");
+  await johanna.getByLabel("Bezeichnung", { exact: true }).fill("Material Test E2E");
+  await johanna.getByRole("checkbox", { name: "Wochenbett" }).check();
+  await johanna.getByRole("button", { name: "Weiter" }).click();
+  await expect(johanna.getByText(/Neue Position 69700 „Material Test E2E“/)).toBeVisible();
+  await johanna.getByLabel("Begründung / Quelle").fill("E2E");
+  await johanna.getByRole("button", { name: "Zur Freigabe vorschlagen" }).click();
+  await expect(johanna.getByText(/Vorschlag gespeichert/)).toBeVisible();
+  await expect(johanna.getByRole("link", { name: "CSV exportieren" })).toBeVisible();
+
+  const marielena = await (await browser.newContext()).newPage();
+  await anmelden(marielena, "marielena@kindkesmoeoen.test");
+  await marielena.goto("/regelwerk");
+  await marielena.getByRole("button", { name: /^Änderungen/ }).click();
+  for (const titel of [/Eigener Preis/, /Neue Position 69700/]) {
+    const karte = marielena.locator("li", { hasText: titel }).first();
+    marielena.once("dialog", (d) => d.accept());
+    await karte.getByRole("button", { name: "Freigeben", exact: true }).click();
+    await expect(marielena.getByText(/Freigegeben – die Änderung ist jetzt wirksam/)).toBeVisible();
+  }
+  await johanna.reload();
+  await johanna.getByRole("button", { name: "Selbstzahler" }).click();
+  await expect(johanna.getByText(/Mein Preis: 61,00/)).toBeVisible();
+});

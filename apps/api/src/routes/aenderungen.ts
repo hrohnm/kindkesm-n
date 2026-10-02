@@ -4,6 +4,11 @@
  */
 import {
   AenderungFehler,
+  OHNE_REGELWERK_INHALT,
+  positionenAusCsv,
+  positionenCsv,
+  selbstzahlerAusCsv,
+  selbstzahlerCsv,
   aenderungSchema,
   besuchAbrechnen,
   gleich,
@@ -21,7 +26,7 @@ import { alias } from "drizzle-orm/pg-core";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import type { Datenbank } from "../db/client";
-import { aenderung, benutzer, gebuehrenposition, leistung, regelwerk, selbstzahlerLeistung } from "../db/schema";
+import { aenderung, benutzer, gebuehrenposition, leistung, regelwerk, selbstzahlerLeistung, selbstzahlerPreis } from "../db/schema";
 import { pruefen } from "../fehler";
 import { protokollieren } from "../protokoll";
 import { positionZeile, type RegelwerkPosition } from "../seed/import";
@@ -33,7 +38,13 @@ class Konflikt extends Error {}
 
 async function selbstzahlerKarte(db: Datenbank | Tx) {
   const liste = await db.select().from(selbstzahlerLeistung);
-  return Object.fromEntries(liste.map((s) => [s.id, { ...s, preis: Number(s.preis) } as Record<string, unknown>]));
+  const eigene = await db.select().from(selbstzahlerPreis);
+  return Object.fromEntries(
+    liste.map((s) => [
+      s.id,
+      { ...s, preis: Number(s.preis), eigenePreise: Object.fromEntries(eigene.filter((e) => e.leistungId === s.id).map((e) => [e.benutzerId, Number(e.preis)])) } as Record<string, unknown>,
+    ]),
+  );
 }
 
 /** Positionstabelle aus dem JSON neu aufbauen (für Suche und Anzeige). */
@@ -82,13 +93,15 @@ export async function aenderungRouten(app: FastifyInstance, db: Datenbank) {
     if (!nurHebamme(request, reply)) return;
     const daten = pruefen(aenderungSchema, request.body, reply);
     if (!daten) return;
+    // Eigene Preise gelten immer für die vorschlagende Hebamme selbst
+    for (const op of daten.operationen) if (op.art === "selbstzahler_eigen") op.hebammeId = request.benutzer!.id;
     let rw: typeof regelwerk.$inferSelect | undefined;
     if (daten.regelwerkId) {
       [rw] = await db.select().from(regelwerk).where(eq(regelwerk.id, daten.regelwerkId));
       if (!rw) return reply.code(404).send({ fehler: "Regelwerk nicht gefunden" });
       if (rw.status === "archiviert") return reply.code(409).send({ fehler: "Archivierte Fassungen können nicht mehr geändert werden." });
       // Nach dieser Fassung wurden schon Belege versendet → Inhalte nur noch über eine neue Fassung ändern
-      const inhalt = daten.operationen.some((o) => !["status", "neue_fassung", "selbstzahler", "selbstzahler_neu"].includes(o.art));
+      const inhalt = daten.operationen.some((o) => !OHNE_REGELWERK_INHALT.has(o.art));
       if (inhalt) {
         const [versendet] = await db.select({ id: leistung.id }).from(leistung).where(and(eq(leistung.regelwerkId, rw.id), isNotNull(leistung.versandId))).limit(1);
         if (versendet) return reply.code(409).send({ fehler: "Nach dieser Fassung wurden bereits Abrechnungen versendet. Änderungen bitte über „Neue Fassung“ mit späterem Gültigkeitsbeginn vornehmen." });
@@ -145,7 +158,7 @@ export async function aenderungRouten(app: FastifyInstance, db: Datenbank) {
         });
         if (rw) {
           const daten = operationenAnwenden(rw.daten as Daten, ops);
-          if (ops.some((o) => !["status", "neue_fassung", "selbstzahler", "selbstzahler_neu"].includes(o.art))) {
+          if (ops.some((o) => !OHNE_REGELWERK_INHALT.has(o.art))) {
             await tx.update(regelwerk).set({ daten }).where(eq(regelwerk.id, rw.id));
             await positionenSynchronisieren(tx, rw.id, daten);
           }
@@ -167,6 +180,14 @@ export async function aenderungRouten(app: FastifyInstance, db: Datenbank) {
               .update(selbstzahlerLeistung)
               .set({ ...rest, ...(preis !== undefined ? { preis: preis.toFixed(2) } : {}), geaendertAm: new Date() })
               .where(eq(selbstzahlerLeistung.id, op.id));
+          }
+          if (op.art === "selbstzahler_eigen") {
+            if (op.preis === null) await tx.delete(selbstzahlerPreis).where(and(eq(selbstzahlerPreis.benutzerId, op.hebammeId), eq(selbstzahlerPreis.leistungId, op.id)));
+            else
+              await tx
+                .insert(selbstzahlerPreis)
+                .values({ benutzerId: op.hebammeId, leistungId: op.id, preis: op.preis.toFixed(2) })
+                .onConflictDoUpdate({ target: [selbstzahlerPreis.benutzerId, selbstzahlerPreis.leistungId], set: { preis: op.preis.toFixed(2), geaendertAm: new Date() } });
           }
           if (op.art === "selbstzahler_neu") {
             await tx.insert(selbstzahlerLeistung).values({ id: op.id, bezeichnung: op.bezeichnung, rechnungstext: op.rechnungstext, einheit: op.einheit, preis: op.preis.toFixed(2), umsatzsteuer: op.umsatzsteuer });
@@ -252,6 +273,38 @@ export async function aenderungRouten(app: FastifyInstance, db: Datenbank) {
       if (e instanceof AenderungFehler) return reply.code(400).send({ fehler: e.message });
       throw e;
     }
+  });
+
+  // ------------------------------------------------------------ CSV-Austausch
+  const csvAntwort = (reply: FastifyReply, name: string, text: string) =>
+    reply.header("content-type", "text/csv; charset=utf-8").header("content-disposition", `attachment; filename="${name}"`).send(text);
+
+  app.get<{ Params: { id: string } }>("/api/regelwerke/:id/positionen.csv", async (request, reply) => {
+    const [rw] = await db.select().from(regelwerk).where(eq(regelwerk.id, request.params.id));
+    if (!rw) return reply.code(404).send({ fehler: "Regelwerk nicht gefunden" });
+    return csvAntwort(reply, `${rw.id}-positionen.csv`, positionenCsv((rw.daten as Daten).positionen as never));
+  });
+
+  app.get("/api/selbstzahler.csv", async (_request, reply) => {
+    const liste = await db.select().from(selbstzahlerLeistung);
+    return csvAntwort(reply, "selbstzahler-preisliste.csv", selbstzahlerCsv(liste));
+  });
+
+  /** Liest eine CSV und liefert die daraus folgenden Operationen (Vorschau); vorgeschlagen wird über POST /api/aenderungen. */
+  app.post<{ Params: { id: string } }>("/api/regelwerke/:id/import", async (request, reply) => {
+    if (!nurHebamme(request, reply)) return;
+    const daten = pruefen(z.object({ csv: z.string().min(1).max(2_000_000) }), request.body, reply);
+    if (!daten) return;
+    const [rw] = await db.select().from(regelwerk).where(eq(regelwerk.id, request.params.id));
+    if (!rw) return reply.code(404).send({ fehler: "Regelwerk nicht gefunden" });
+    return positionenAusCsv(daten.csv, rw.daten as Daten);
+  });
+
+  app.post("/api/selbstzahler/import", async (request, reply) => {
+    if (!nurHebamme(request, reply)) return;
+    const daten = pruefen(z.object({ csv: z.string().min(1).max(500_000) }), request.body, reply);
+    if (!daten) return;
+    return selbstzahlerAusCsv(daten.csv, await selbstzahlerKarte(db));
   });
 
   /** Anzahl offener Änderungen, die die angemeldete Hebamme freigeben könnte, und ob überhaupt eine zweite aktive Hebamme da ist */
