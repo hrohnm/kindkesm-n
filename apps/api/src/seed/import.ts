@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { and, eq, isNull } from "drizzle-orm";
 import { config } from "../config";
 import type { Datenbank } from "../db/client";
-import { gebuehrenposition, ort, praxis, regelwerk, selbstzahlerLeistung } from "../db/schema";
+import { aenderung, gebuehrenposition, ort, praxis, regelwerk, selbstzahlerLeistung } from "../db/schema";
 
 type Position = {
   gpos: string;
@@ -22,6 +22,28 @@ type Position = {
   befristung?: { gueltig_von: string; gueltig_bis: string };
 };
 
+/** Zeile der Tabelle gebuehrenposition aus einer Position des Regelwerk-JSON. */
+export function positionZeile(regelwerkId: string, p: Position) {
+  return {
+    regelwerkId,
+    gpos: p.gpos,
+    gruppe: p.gruppe,
+    bezeichnung: p.bezeichnung,
+    kurztext: p.kurztext,
+    kategorie: p.kategorie,
+    leistungsart: p.leistungsart_kurs ?? p.leistungsart,
+    zuschlag: p.zuschlag,
+    betrag: p.betrag === null ? null : p.betrag.toFixed(2),
+    einheit: p.einheit,
+    formular: p.formular,
+    quittierungspflichtig: p.quittierungspflichtig,
+    hinweis: p.hinweis ?? null,
+    befristetVon: p.befristung?.gueltig_von ?? null,
+    befristetBis: p.befristung?.gueltig_bis ?? null,
+  };
+}
+export type { Position as RegelwerkPosition };
+
 const lesen = (relativ: string) => JSON.parse(readFileSync(join(config.datenOrdner, relativ), "utf8"));
 
 /**
@@ -32,6 +54,9 @@ export async function regelwerkImportieren(db: Datenbank, id: string) {
   const daten = lesen(`regelwerk/${id}.json`);
   const [vorhanden] = await db.select({ status: regelwerk.status }).from(regelwerk).where(eq(regelwerk.id, id));
   if (vorhanden && vorhanden.status !== "entwurf") return { id, uebersprungen: true };
+  // In der App freigegebene Änderungen nicht durch die Datei überschreiben
+  const [geaendert] = await db.select({ id: aenderung.id }).from(aenderung).where(and(eq(aenderung.regelwerkId, id), eq(aenderung.status, "freigegeben"))).limit(1);
+  if (geaendert) return { id, uebersprungen: true };
 
   await db.transaction(async (tx) => {
     await tx.delete(regelwerk).where(eq(regelwerk.id, id));
@@ -43,26 +68,7 @@ export async function regelwerkImportieren(db: Datenbank, id: string) {
       status: "entwurf",
       daten,
     });
-    const positionen: Position[] = daten.positionen;
-    await tx.insert(gebuehrenposition).values(
-      positionen.map((p) => ({
-        regelwerkId: id,
-        gpos: p.gpos,
-        gruppe: p.gruppe,
-        bezeichnung: p.bezeichnung,
-        kurztext: p.kurztext,
-        kategorie: p.kategorie,
-        leistungsart: p.leistungsart_kurs ?? p.leistungsart,
-        zuschlag: p.zuschlag,
-        betrag: p.betrag === null ? null : p.betrag.toFixed(2),
-        einheit: p.einheit,
-        formular: p.formular,
-        quittierungspflichtig: p.quittierungspflichtig,
-        hinweis: p.hinweis ?? null,
-        befristetVon: p.befristung?.gueltig_von ?? null,
-        befristetBis: p.befristung?.gueltig_bis ?? null,
-      })),
-    );
+    await tx.insert(gebuehrenposition).values((daten.positionen as Position[]).map((p) => positionZeile(id, p)));
   });
   return { id, positionen: daten.positionen.length };
 }

@@ -1,5 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Laden, Meldung, Seitenkopf } from "../komponenten/Formular";
+import { IconPlus, IconStift } from "../komponenten/Icons";
+import { Aenderungen } from "../komponenten/regelwerk/Aenderungen";
+import { FassungFreigeben, FeiertageBearbeiten, FristBearbeiten, KontingentBearbeiten, NeueFassung, PositionBearbeiten, SelbstzahlerBearbeiten, SelbstzahlerNeu, ZuschlaegeWegegeldBearbeiten } from "../komponenten/regelwerk/Bearbeiten";
+import { Testrechner } from "../komponenten/regelwerk/Testrechner";
+import { useAuth } from "../lib/auth";
 import { datum, euro } from "../lib/format";
 import type { Position, RegelwerkKurz, Selbstzahler } from "../lib/typen";
 import { useDaten } from "../lib/useDaten";
@@ -14,13 +19,26 @@ const KATEGORIEN = [
   { wert: "6", label: "Material" },
 ];
 const EINHEIT: Record<string, string> = { "5min": "je 5 Min.", pauschal: "pauschal", km: "je km", tatsaechlich: "tatsächlich" };
-const TABS = ["Positionen", "Kontingente", "Fristen", "Formulare", "Selbstzahler"] as const;
+const TABS = ["Positionen", "Kontingente", "Zuschläge & Wegegeld", "Feiertage", "Fristen", "Formulare", "Selbstzahler", "Änderungen", "Testrechner"] as const;
 type Tab = (typeof TABS)[number];
 
 type Kontingent = { id: string; name: string; positionen: string[]; verhalten_bei_ueberschreitung: string; sonderregeln?: string[]; [k: string]: unknown };
 type Frist = { id: string; regel: string; quelle: string; app: string };
 type Formular = { titel: string; zeilen: number; spalten: Array<{ label: string; gruppen: string[]; eintrag: string; ziffern?: string }> };
-type RegelwerkDetail = { id: string; name: string; status: string; daten: { kontingente: Kontingent[]; fristen_und_hinweise: Frist[]; formulare: Record<string, Formular>; quelle: { hinweis: string } } };
+type RegelwerkDetail = {
+  id: string;
+  name: string;
+  status: string;
+  daten: {
+    kontingente: Kontingent[];
+    fristen_und_hinweise: Frist[];
+    formulare: Record<string, Formular>;
+    quelle: { hinweis: string };
+    zuschlaege: { nacht: { von: string; bis: string }; samstag_ab: string; sonntag: boolean; feiertage: boolean };
+    wegegeld: { satz_je_km: number; max_km_regel: number; max_km_mit_begruendung: number; hin_und_rueckweg?: boolean };
+    feiertage: Array<{ name: string; regel: string }>;
+  };
+};
 
 const GRENZEN: Array<[string, string]> = [
   ["kontakte_pro_tag", "Kontakte/Tag"],
@@ -37,6 +55,25 @@ export function Regelwerk() {
   const [tab, setTab] = useState<Tab>("Positionen");
   const [suche, setSuche] = useState("");
   const [kategorie, setKategorie] = useState("");
+  const { ich } = useAuth();
+  const darf = ich?.rolle === "hebamme";
+  /** gerade bearbeitetes Element (Schlüssel) bzw. Aktion in der Kopfzeile */
+  const [bearbeiten, setBearbeiten] = useState<string | null>(null);
+  const [meldung, setMeldung] = useState<string>();
+  const [testAenderung, setTestAenderung] = useState<string | null>(null);
+  const offen = useDaten<{ anzahl: number; aktiveHebammen: number }>("/api/aenderungen/offen/anzahl");
+  const vorgeschlagen = () => {
+    setBearbeiten(null);
+    setMeldung("Vorschlag gespeichert. Er wird wirksam, sobald eine Kollegin ihn unter „Änderungen“ freigibt.");
+    void offen.laden();
+  };
+  const basis = (schluessel: string) => ({ regelwerkId: id ?? null, abbrechen: () => setBearbeiten(null), fertig: vorgeschlagen, offen: bearbeiten === schluessel });
+  const stift = (schluessel: string, label: string) =>
+    darf && (
+      <button type="button" aria-label={label} className="knopf-sekundaer min-h-11 shrink-0 px-3" onClick={() => { setMeldung(undefined); setBearbeiten(bearbeiten === schluessel ? null : schluessel); }}>
+        <IconStift className="size-5" />
+      </button>
+    );
 
   useEffect(() => {
     if (!id && liste.daten?.length) setId(liste.daten.at(-1)!.id);
@@ -49,7 +86,7 @@ export function Regelwerk() {
 
   return (
     <>
-      <Seitenkopf titel="Regelwerk" untertitel="Gebührenpositionen, Kontingente und Fristen aus dem Hebammenhilfevertrag. Bearbeiten mit Vier-Augen-Freigabe folgt in Meilenstein 5." />
+      <Seitenkopf titel="Regelwerk" untertitel="Gebührenpositionen, Kontingente, Zuschläge, Wegegeld und Fristen aus dem Hebammenhilfevertrag. Änderungen werden erst nach Freigabe durch eine zweite Hebamme wirksam." />
 
       <div className="mb-4 flex flex-wrap gap-2">
         {liste.daten?.map((r) => (
@@ -60,17 +97,30 @@ export function Regelwerk() {
         ))}
       </div>
       {detail.daten && (
-        <div className="mb-4">
-          <Meldung art="hinweis">
-            <strong>Status: {detail.daten.status}.</strong> {detail.daten.daten.quelle.hinweis}
+        <div className="mb-4 space-y-3">
+          <Meldung art={detail.daten.status === "aktiv" ? "ok" : "hinweis"}>
+            <strong>{detail.daten.status === "aktiv" ? "Fachlich geprüft und freigegeben." : detail.daten.status === "entwurf" ? "Entwurf – noch nicht fachlich freigegeben." : "Archiviert."}</strong> {detail.daten.daten.quelle.hinweis}
           </Meldung>
+          {darf && detail.daten.status !== "archiviert" && (
+            <div className="flex flex-wrap gap-2">
+              {detail.daten.status === "entwurf" && <button type="button" className="knopf-primaer" onClick={() => setBearbeiten("fassung-freigeben")}>Fassung freigeben</button>}
+              <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten("neue-fassung")}><IconPlus className="size-5" /> Neue Fassung</button>
+            </div>
+          )}
+          {bearbeiten === "fassung-freigeben" && <FassungFreigeben {...basis("fassung-freigeben")} name={detail.daten.name} />}
+          {bearbeiten === "neue-fassung" && <NeueFassung {...basis("neue-fassung")} name={detail.daten.name} />}
         </div>
+      )}
+      {meldung && <div className="mb-4"><Meldung art="ok">{meldung}</Meldung></div>}
+      {offen.daten && offen.daten.aktiveHebammen < 2 && (
+        <div className="mb-4"><Meldung art="hinweis">Zurzeit ist nur eine Hebamme aktiv. Änderungen können vorgeschlagen, aber erst freigegeben werden, wenn eine zweite Hebamme aktiv ist.</Meldung></div>
       )}
 
       <div className="mb-5 flex gap-1 overflow-x-auto border-b border-sand-200 dark:border-salbei-700">
         {TABS.map((t) => (
           <button key={t} type="button" onClick={() => setTab(t)} className={`min-h-12 shrink-0 border-b-2 px-4 font-medium ${tab === t ? "border-salbei-600 text-salbei-700 dark:text-salbei-100" : "border-transparent text-slate-500"}`}>
             {t}
+            {t === "Änderungen" && offen.daten?.anzahl ? <span className="ml-2 rounded-full bg-amber-500 px-2 py-0.5 text-xs text-white">{offen.daten.anzahl}</span> : null}
           </button>
         ))}
       </div>
@@ -98,11 +148,13 @@ export function Regelwerk() {
                     <th className="px-4 py-3">Bezeichnung</th>
                     <th className="px-4 py-3 text-right">Betrag</th>
                     <th className="px-4 py-3">Formular</th>
+                    {darf && <th className="px-2 py-3" />}
                   </tr>
                 </thead>
                 <tbody>
                   {positionen.daten.map((p) => (
-                    <tr key={p.gpos} className="border-t border-sand-200 align-top dark:border-salbei-700">
+                    <Fragment key={p.gpos}>
+                    <tr className="border-t border-sand-200 align-top dark:border-salbei-700">
                       <td className="px-4 py-3 font-mono font-medium">{p.gpos}</td>
                       <td className="px-4 py-3">
                         <div>{p.bezeichnung}</div>
@@ -117,7 +169,16 @@ export function Regelwerk() {
                         <div className="text-slate-500">{EINHEIT[p.einheit] ?? p.einheit}</div>
                       </td>
                       <td className="px-4 py-3">{p.formular ?? (p.quittierungspflichtig ? "–" : <span className="text-slate-500">Datenblatt</span>)}</td>
+                      {darf && <td className="px-2 py-2">{stift(`pos-${p.gpos}`, `GPOS ${p.gpos} bearbeiten`)}</td>}
                     </tr>
+                    {bearbeiten === `pos-${p.gpos}` && (
+                      <tr>
+                        <td colSpan={5} className="px-4 pb-4">
+                          <PositionBearbeiten {...basis(`pos-${p.gpos}`)} p={p} fertig={() => { vorgeschlagen(); }} />
+                        </td>
+                      </tr>
+                    )}
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
@@ -131,7 +192,10 @@ export function Regelwerk() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {detail.daten.daten.kontingente.map((k) => (
             <div key={k.id} className="karte">
-              <div className="font-semibold">{k.name}</div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-semibold">{k.name}</div>
+                {stift(`k-${k.id}`, `Kontingent ${k.id} bearbeiten`)}
+              </div>
               <div className="mt-1 font-mono text-sm text-slate-500">{k.positionen.join(", ")}</div>
               <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                 {GRENZEN.filter(([f]) => k[f] !== undefined && k[f] !== null).map(([f, l]) => (
@@ -144,6 +208,7 @@ export function Regelwerk() {
                 <dd>{k.verhalten_bei_ueberschreitung === "anordnung" ? "ärztliche Anordnung" : k.verhalten_bei_ueberschreitung}</dd>
               </dl>
               {k.sonderregeln && <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">{k.sonderregeln.map((s) => <li key={s}>{s}</li>)}</ul>}
+              {bearbeiten === `k-${k.id}` && <div className="mt-3"><KontingentBearbeiten {...basis(`k-${k.id}`)} k={k} /></div>}
             </div>
           ))}
         </div>
@@ -153,9 +218,13 @@ export function Regelwerk() {
         <ul className="space-y-3">
           {detail.daten.daten.fristen_und_hinweise.map((f) => (
             <li key={f.id} className="karte">
-              <div className="font-medium">{f.regel}</div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-medium">{f.regel}</div>
+                {stift(`f-${f.id}`, "Frist bearbeiten")}
+              </div>
               <div className="mt-1 text-sm text-slate-500">{f.quelle}</div>
               <div className="mt-2 text-sm"><span className="text-slate-500">In der App: </span>{f.app}</div>
+              {bearbeiten === `f-${f.id}` && <div className="mt-3"><FristBearbeiten {...basis(`f-${f.id}`)} f={f} /></div>}
             </li>
           ))}
         </ul>
@@ -187,21 +256,72 @@ export function Regelwerk() {
           <Laden />
         ) : (
           <>
-            <div className="mb-4"><Meldung art="hinweis">Beispielpreise (Dummydaten). Umsatzsteuer vor dem Echtbetrieb mit der Steuerberatung klären.</Meldung></div>
+            <div className="mb-4"><Meldung art="hinweis">Beispielpreise (Dummydaten). Umsatzsteuer vor dem Echtbetrieb mit der Steuerberatung klären. Preisänderungen gelten nach Freigabe durch eine zweite Hebamme für die ganze Praxis.</Meldung></div>
+            {darf && (
+              <div className="mb-4">
+                {bearbeiten === "sz-neu" ? <SelbstzahlerNeu {...basis("sz-neu")} regelwerkId={null} /> : <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten("sz-neu")}><IconPlus className="size-5" /> Neue Leistung</button>}
+              </div>
+            )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {selbstzahler.daten.map((s) => (
-                <div key={s.id} className="karte">
+                <div key={s.id} className={`karte ${s.aktiv ? "" : "opacity-60"}`}>
                   <div className="flex items-start justify-between gap-3">
-                    <div className="font-semibold">{s.bezeichnung}</div>
-                    <div className="text-lg font-semibold text-salbei-700 dark:text-salbei-100">{euro(s.preis)}</div>
+                    <div className="font-semibold">{s.bezeichnung}{s.aktiv ? "" : " (nicht angeboten)"}</div>
+                    <div className="flex shrink-0 items-start gap-2">
+                      <div className="text-lg font-semibold text-salbei-700 dark:text-salbei-100">{euro(s.preis)}</div>
+                      {stift(`sz-${s.id}`, `${s.bezeichnung} bearbeiten`)}
+                    </div>
                   </div>
                   <div className="mt-1 text-sm text-slate-500">je {s.einheit} · {s.umsatzsteuer.replace(/_/g, " ")}</div>
                   <div className="mt-2 text-sm">{s.rechnungstext}</div>
+                  {bearbeiten === `sz-${s.id}` && <div className="mt-3"><SelbstzahlerBearbeiten {...basis(`sz-${s.id}`)} regelwerkId={null} s={s} /></div>}
                 </div>
               ))}
             </div>
           </>
         ))}
+      {tab === "Zuschläge & Wegegeld" && detail.daten && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="karte">
+              <div className="flex items-start justify-between gap-2"><h3 className="font-semibold">Zuschläge</h3>{stift("zw", "Zuschläge und Wegegeld bearbeiten")}</div>
+              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                <dt className="text-slate-500">Nacht</dt><dd>{detail.daten.daten.zuschlaege.nacht.von}–{detail.daten.daten.zuschlaege.nacht.bis} Uhr</dd>
+                <dt className="text-slate-500">Samstag ab</dt><dd>{detail.daten.daten.zuschlaege.samstag_ab} Uhr</dd>
+                <dt className="text-slate-500">Sonntag</dt><dd>{detail.daten.daten.zuschlaege.sonntag ? "ja" : "nein"}</dd>
+                <dt className="text-slate-500">Feiertage</dt><dd>{detail.daten.daten.zuschlaege.feiertage ? "ja (MV)" : "nein"}</dd>
+              </dl>
+            </div>
+            <div className="karte">
+              <h3 className="font-semibold">Wegegeld (§ 11 Anlage 1.1)</h3>
+              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                <dt className="text-slate-500">Satz</dt><dd>{euro(detail.daten.daten.wegegeld.satz_je_km)} je km</dd>
+                <dt className="text-slate-500">Höchstens</dt><dd>{detail.daten.daten.wegegeld.max_km_regel} km, mit Begründung {detail.daten.daten.wegegeld.max_km_mit_begruendung} km</dd>
+                <dt className="text-slate-500">Hin- und Rückweg</dt><dd>{detail.daten.daten.wegegeld.hin_und_rueckweg === false ? "nein (nur Hinweg)" : "ja"}</dd>
+              </dl>
+            </div>
+          </div>
+          {bearbeiten === "zw" && <ZuschlaegeWegegeldBearbeiten {...basis("zw")} z={detail.daten.daten.zuschlaege} wg={detail.daten.daten.wegegeld} />}
+        </div>
+      )}
+
+      {tab === "Feiertage" && detail.daten && (
+        <div className="space-y-4">
+          <div className="karte">
+            <div className="flex items-start justify-between gap-2"><h3 className="font-semibold">Feiertage Mecklenburg-Vorpommern (für Zuschläge)</h3>{stift("ft", "Feiertage bearbeiten")}</div>
+            <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+              {detail.daten.daten.feiertage.map((f) => <li key={f.name} className="flex justify-between gap-3"><span>{f.name}</span><span className="font-mono text-slate-500">{f.regel}</span></li>)}
+            </ul>
+          </div>
+          {bearbeiten === "ft" && <FeiertageBearbeiten {...basis("ft")} liste={detail.daten.daten.feiertage} />}
+        </div>
+      )}
+
+      {tab === "Änderungen" && id && (
+        <Aenderungen regelwerkId={id} testen={(a) => { setTestAenderung(a); setTab("Testrechner"); }} geaendert={() => { void offen.laden(); void detail.laden(); void positionen.laden(); void liste.laden(); }} />
+      )}
+
+      {tab === "Testrechner" && id && <Testrechner regelwerkId={id} aenderungId={testAenderung} />}
     </>
   );
 }

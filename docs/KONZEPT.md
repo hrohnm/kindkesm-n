@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.9 (Entwurf)
+Stand: 01.10.2026 · Version 2.0 (Entwurf)
 
 ---
 
@@ -440,6 +440,16 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 - Praxis-Standardpreise, je Hebamme überschreibbar (jede rechnet selbst ab); Änderungen ebenfalls mit Vier-Augen-Freigabe
 - Startbelegung mit plausiblen Dummydaten: [`konfiguration/selbstzahler-preisliste.json`](../konfiguration/selbstzahler-preisliste.json)
 
+**Umgesetzt in Meilenstein 5:**
+- Bearbeiten im Regelwerk (je Tab mit Stift): Gebührenpositionen (Betrag, Bezeichnung, Kurztext, Formular, quittierungspflichtig, Hinweis), Kontingente (Grenzen), Zuschläge, Wegegeld (Satz, Höchstgrenzen, Hin- und Rückweg), Feiertage, Fristentexte, Selbstzahler-Preise (ändern, nicht mehr anbieten, neue Leistung).
+- Jede Bearbeitung wird ein **Vorschlag** mit Kurzbeschreibung und Begründung/Quelle; die App hält die bisherigen Werte fest und zeigt Vorher → Nachher. Offene Vorschläge erscheinen bei den anderen Hebammen auf der Startseite und im Tab „Änderungen“ (mit Zähler).
+- **Freigeben** nur durch eine andere, aktive Hebamme (nicht in der Babypause), **Ablehnen** nur mit Begründung, **Zurückziehen** nur durch die Vorschlagende. Haben sich die Werte seit dem Vorschlag geändert, verweigert die App die Freigabe (neu vorschlagen).
+- **Fassung freigeben** (Entwurf → fachlich geprüft) und **Neue Fassung** (Kopie mit neuem „gültig ab“) laufen ebenfalls über die Vier-Augen-Freigabe. Nach einer Fassung, mit der schon Abrechnungen versendet wurden, sind Inhaltsänderungen gesperrt; Korrekturen über eine neue Fassung.
+- **Testrechner**: erfundener Besuch (Datum, Uhrzeit, Art, Leistung, Lebenstag bzw. SSW, Kinderzahl) mit dem aktuellen Regelwerk und – direkt aus dem Vorschlag – mit der offenen Änderung im Vergleich.
+- **Verlauf**: alle Vorschläge mit Status, wer vorgeschlagen und wer entschieden hat; zusätzlich im Protokoll.
+- Schon gespeicherte Besuche behalten ihre berechneten Beträge; neue Werte gelten für neu gespeicherte bzw. geänderte Besuche. Beim Einspielen von Updates (`seed`) werden in der App geänderte Regelwerke nicht durch die Datei überschrieben.
+- Noch offen aus diesem Abschnitt: neue Positionen und Kontingente anlegen, Import/Export als CSV, Selbstzahler-Preise je Hebamme überschreiben.
+
 **8. Test und Sicherheit**
 - **Testrechner**: Eine Beispielbetreuung durchspielen („Geburt 20.09., Besuche an Tag 1, 2, 2, 3 …“). Die App zeigt die erzeugten Positionen, Beträge und Warnungen, bevor eine neue Version aktiviert wird.
 - **Änderungsprotokoll**: wer hat wann welchen Wert geändert (alt → neu)
@@ -831,7 +841,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 | **M-2 Akte und Besuch** ✅ | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Unterschrift auf Papier oder Tablet, Leistungsberechnung mit Plausibilitätsprüfung (5-Minuten-Einheiten, Zuschläge inkl. Feiertage MV, Kontingente, Materialpauschalen) und Kontingentanzeige |
 | **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 folgt mit dem Kursmodul |
 | **M-4 Touren** ✅ | Tagesplanung mit Terminen (fest, Zeitfenster, flexibel), Optimierung mit Zeitfenstern, OSRM-Routing (Luftlinie als Ersatz), Adressverzeichnis aus OpenStreetMap, Karte, Navigation, Wegegeld 50100/50200 automatisch aus den Hausbesuchen, Fahrtenbuch mit Export |
-| **M-5 Regelwerk-Administration** | Positionen, Kontingente, Fristen, Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe, Testrechner |
+| **M-5 Regelwerk-Administration** ✅ | Positionen, Kontingente, Zuschläge, Wegegeld, Feiertage, Fristen und Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe mit Konfliktprüfung, Fassung freigeben, neue Fassung, Testrechner mit Vorher/Nachher, Verlauf |
 | **M-6 Offline** | Vollständiger Offline-Betrieb mit Synchronisation |
 
 ### Phase 1 – MVP: „Der Hausbesuch“ (ca. 3–4 Monate)

@@ -58,7 +58,7 @@ npm test            # API-Tests brauchen eine Testdatenbank: TEST_DATABASE_URL (
 (cd apps/api && OSRM_TEST_URL=http://localhost:5000 npx vitest run test/osrm.test.ts)
 
 # Browser-Rundgang (iPad quer und Handy) gegen eine laufende Instanz mit Demo-Daten
-npm run build && WEB_DIST=$PWD/apps/web/dist node apps/api/dist/server.js &
+npm run build && ANMELDUNG_MAX=1000 WEB_DIST=$PWD/apps/web/dist node apps/api/dist/server.js &
 cd apps/web && npx playwright test
 ```
 

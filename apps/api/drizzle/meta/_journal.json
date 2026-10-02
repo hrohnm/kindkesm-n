@@ -36,6 +36,13 @@
       "when": 1790919250949,
       "tag": "0004_ansicht",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790920562329,
+      "tag": "0005_aenderung",
+      "breakpoints": true
     }
   ]
 }

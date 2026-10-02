@@ -59,7 +59,7 @@ export type Position = {
   befristetBis: string | null;
 };
 
-export type Selbstzahler = { id: string; bezeichnung: string; rechnungstext: string; einheit: string; preis: string; umsatzsteuer: string; details: Record<string, unknown> };
+export type Selbstzahler = { id: string; bezeichnung: string; rechnungstext: string; einheit: string; preis: string; umsatzsteuer: string; aktiv: boolean; details: Record<string, unknown> };
 
 // ------------------------------------------------------------------ Akte
 export type KlientinListe = {

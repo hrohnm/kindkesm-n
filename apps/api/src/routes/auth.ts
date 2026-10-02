@@ -2,6 +2,7 @@ import { passwortAendernSchema } from "@kindkesmoeoen/shared";
 import { eq, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { config } from "../config";
 import { SITZUNG_COOKIE, cookieSetzen, passwortHashen, passwortPruefen, sitzungAnlegen, sitzungBeenden } from "../auth";
 import type { Datenbank } from "../db/client";
 import { benutzer, sitzung } from "../db/schema";
@@ -13,7 +14,7 @@ const anmeldenSchema = z.object({ email: z.string().trim().min(3), passwort: z.s
 export async function authRouten(app: FastifyInstance, db: Datenbank) {
   app.post(
     "/api/auth/anmelden",
-    { config: { rateLimit: { max: 10, timeWindow: "15 minutes" } } },
+    { config: { rateLimit: { max: config.anmeldungMax, timeWindow: "15 minutes" } } },
     async (request, reply) => {
       const daten = pruefen(anmeldenSchema, request.body, reply);
       if (!daten) return;
