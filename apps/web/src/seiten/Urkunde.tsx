@@ -17,7 +17,9 @@ type Antwort = {
 
 const OPTIONEN: Array<[keyof UrkundeDaten["optionen"], string]> = [
   ["kurve", "Gewichtskurve"],
-  ["perzentilen", "WHO-Perzentilen in der Kurve"],
+  ["kurveLaenge", "Kurve der Größe (Länge)"],
+  ["kurveKopfumfang", "Kurve des Kopfumfangs"],
+  ["perzentilen", "WHO-Perzentilen in den Kurven"],
   ["sternzeichen", "Sternzeichen"],
   ["unterschrift", "Name der Hebamme als Unterschrift"],
   ["kursHinweis", "Hinweis auf Rückbildungs- und Babymassagekurse"],
@@ -199,7 +201,7 @@ function UrkundeFormular({ d, neuLaden, meldung, setMeldung }: { d: Antwort; neu
             <h2 className="text-lg font-semibold">Weitere Angaben</h2>
             {OPTIONEN.map(([k, label]) => (
               <label key={k} className="flex min-h-11 cursor-pointer items-center gap-3">
-                <input type="checkbox" className="size-6 accent-salbei-600" checked={u.optionen[k]} disabled={k === "perzentilen" && !u.optionen.kurve} onChange={(e) => setze("optionen", { ...u.optionen, [k]: e.target.checked })} />
+                <input type="checkbox" className="size-6 accent-salbei-600" checked={Boolean(u.optionen[k])} disabled={k === "perzentilen" && !u.optionen.kurve && !u.optionen.kurveLaenge && !u.optionen.kurveKopfumfang} onChange={(e) => setze("optionen", { ...u.optionen, [k]: e.target.checked })} />
                 {label}
               </label>
             ))}

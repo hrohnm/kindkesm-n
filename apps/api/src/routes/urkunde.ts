@@ -62,16 +62,17 @@ export async function urkundeRouten(app: FastifyInstance, db: Datenbank) {
       }),
       zeilen: urkundeZeilenVorschlag(geburt(x), x.messungen, x.letzterBesuch),
       meilensteine: [],
-      optionen: { kurve: true, perzentilen: false, sternzeichen: true, unterschrift: true, kursHinweis: true },
+      optionen: { kurve: true, kurveLaenge: true, kurveKopfumfang: true, perzentilen: false, sternzeichen: true, unterschrift: true, kursHinweis: true },
       status: "entwurf",
     };
   }
 
   async function pdfSenden(x: Geladen, u: Urkunde, ichId: string, reply: FastifyReply) {
     const g = geburt(x);
-    const gewichte = [
-      ...(g.gewicht ? [{ lebenstag: 1, gramm: g.gewicht }] : []),
-      ...x.messungen.filter((m) => m.gewicht && m.datum >= g.datum).map((m) => ({ lebenstag: Math.round((Date.parse(m.datum) - Date.parse(g.datum)) / 86_400_000) + 1, gramm: m.gewicht! })),
+    const lt = (datum: string) => Math.round((Date.parse(datum) - Date.parse(g.datum)) / 86_400_000) + 1;
+    const reihe = (feld: "gewicht" | "laenge" | "kopfumfang") => [
+      ...(g[feld] ? [{ lebenstag: 1, wert: g[feld]! }] : []),
+      ...x.messungen.filter((m) => m[feld] && m.datum > g.datum).map((m) => ({ lebenstag: lt(m.datum), wert: m[feld]! })),
     ];
     const pdf = await urkundePdf({
       urkunde: u,
@@ -79,7 +80,7 @@ export async function urkundeRouten(app: FastifyInstance, db: Datenbank) {
       geburtsort: x.b.geburtsort,
       hebamme: await hebammeName(x, ichId),
       praxis: { name: x.praxis?.name ?? "Hebammenpraxis", anschrift: x.praxis?.anschrift ?? "", telefon: x.praxis?.telefon ?? null, email: x.praxis?.email ?? null },
-      gewichte,
+      reihen: { gewicht: reihe("gewicht"), laenge: reihe("laenge"), kopfumfang: reihe("kopfumfang") },
     });
     return reply.header("Content-Type", "application/pdf").header("Content-Disposition", `inline; filename="${dateiname(u.titel) || "Urkunde"}.pdf"`).send(Buffer.from(pdf));
   }

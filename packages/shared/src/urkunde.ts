@@ -107,6 +107,9 @@ export const urkundeSchema = z.object({
   meilensteine: z.array(z.object({ datum: z.iso.date().nullable().optional(), text: z.string().trim().min(1).max(80) })).max(10),
   optionen: z.object({
     kurve: z.boolean(),
+    /** Kurven für Länge und Kopfumfang (ältere Urkunden ohne diese Angabe: aus) */
+    kurveLaenge: z.boolean().default(false),
+    kurveKopfumfang: z.boolean().default(false),
     perzentilen: z.boolean(),
     sternzeichen: z.boolean(),
     unterschrift: z.boolean(),

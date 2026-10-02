@@ -32,6 +32,7 @@ describe("Kinderurkunde", () => {
     expect(r.vorschlag.zeilen[0]).toMatchObject({ lebenstag: 1, gewicht: 3480, laenge: 52, besonderes: "Geburt" });
     expect(r.vorschlag.zeilen.map((z: { gewicht: number }) => z.gewicht)).toEqual(expect.arrayContaining([3290, 3240, 3270]));
     expect(r.texte.length).toBeGreaterThanOrEqual(5);
+    expect(r.vorschlag.optionen).toMatchObject({ kurve: true, kurveLaenge: true, kurveKopfumfang: true });
     expect(r.texte.find((x: { id: string }) => x.id === "platt").text).toContain("lütt Ole");
   });
 
