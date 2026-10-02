@@ -396,3 +396,23 @@ export const fahrt = pgTable("fahrt", {
   kmPrivat: numeric("km_privat", { precision: 7, scale: 1, mode: "number" }).notNull().default(0),
   ...zeitstempel(),
 });
+
+// ------------------------------------------------------------------ Regelwerk-Administration (Meilenstein 5)
+
+/** Vorgeschlagene Änderung am Regelwerk bzw. an der Selbstzahler-Preisliste (Vier-Augen-Freigabe). */
+export const aenderung = pgTable("aenderung", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nummer: integer("nummer").generatedAlwaysAsIdentity(),
+  regelwerkId: text("regelwerk_id").references(() => regelwerk.id, { onDelete: "cascade" }),
+  titel: text("titel").notNull(),
+  begruendung: text("begruendung").notNull(),
+  operationen: jsonb("operationen").$type<Array<Record<string, unknown>>>().notNull(),
+  /** bisherige Werte je Operation zum Zeitpunkt des Vorschlags */
+  vorher: jsonb("vorher").$type<Array<Record<string, unknown>>>().notNull(),
+  status: text("status", { enum: ["offen", "freigegeben", "abgelehnt", "zurueckgezogen"] }).notNull().default("offen"),
+  erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id),
+  erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
+  entschiedenVon: uuid("entschieden_von").references(() => benutzer.id),
+  entschiedenAm: timestamp("entschieden_am", { withTimezone: true }),
+  kommentar: text("kommentar"),
+});

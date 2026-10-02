@@ -1,8 +1,8 @@
 import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@kindkesmoeoen/shared";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, benutzer, besuch, leistung, praxis, regelwerk, versand } from "../db/schema";
+import { abrechnungseinstellung, aenderung, benutzer, besuch, leistung, praxis, regelwerk, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -19,7 +19,18 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
     if (p?.aktivesRegelwerkId) {
       const [r] = await db.select({ status: regelwerk.status, name: regelwerk.name }).from(regelwerk).where(eq(regelwerk.id, p.aktivesRegelwerkId));
       if (r?.status === "entwurf") {
-        hinweise.push({ id: "regelwerk-entwurf", titel: `${r.name}: Startbelegung noch nicht fachlich geprüft und freigegeben`, datum: isoDatum(heute), tage: 0, stufe: "info", quelle: "Regelwerk (Vier-Augen-Freigabe ab Meilenstein 5)" });
+        hinweise.push({ id: "regelwerk-entwurf", titel: `${r.name}: Startbelegung noch nicht fachlich geprüft und freigegeben`, datum: isoDatum(heute), tage: 0, stufe: "info", quelle: "Regelwerk → „Fassung freigeben“ (Vier-Augen-Prinzip)" });
+      }
+    }
+
+    if (request.benutzer!.rolle === "hebamme") {
+      // Vier-Augen-Freigabe: Vorschläge der Kolleginnen, die auf mich warten
+      const offen = await db
+        .select({ id: aenderung.id, titel: aenderung.titel, erstelltAm: aenderung.erstelltAm })
+        .from(aenderung)
+        .where(and(eq(aenderung.status, "offen"), ne(aenderung.erstelltVon, request.benutzer!.id)));
+      for (const a of offen) {
+        hinweise.unshift({ id: `aenderung-${a.id}`, titel: `Regelwerk: „${a.titel}“ wartet auf deine Freigabe`, datum: isoDatum(a.erstelltAm), tage: 0, stufe: "warnung", quelle: "Regelwerk → Änderungen" });
       }
     }
 

@@ -29,6 +29,8 @@ export const config = {
   demoModus: process.env.DEMO_MODUS ? process.env.DEMO_MODUS === "ja" : process.env.NODE_ENV !== "production",
   /** Ordner mit dem gebauten Frontend (wird von der API ausgeliefert). */
   webDist: process.env.WEB_DIST,
+  /** Anmeldeversuche je IP-Adresse in 15 Minuten (Schutz vor Passwort-Raten; für automatische Tests höher setzbar). */
+  anmeldungMax: Number(process.env.ANMELDUNG_MAX ?? 10),
   /** Laufzeit einer Sitzung in Stunden. */
   sitzungStunden: Number(process.env.SITZUNG_STUNDEN ?? 12),
   /** Basisordner des Repositorys (Regelwerk- und Konfigurationsdateien für den Import). */

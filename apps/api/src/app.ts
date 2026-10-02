@@ -10,6 +10,7 @@ import { benutzer } from "./db/schema";
 import { DEMO_EMAILS, DEMO_PASSWORT } from "./demo";
 import { inArray } from "drizzle-orm";
 import { abrechnungRouten } from "./routes/abrechnung";
+import { aenderungRouten } from "./routes/aenderungen";
 import { akteRouten } from "./routes/akte";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
@@ -68,6 +69,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await akteRouten(app, db);
   await abrechnungRouten(app, db);
   await tourenRouten(app, db);
+  await aenderungRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

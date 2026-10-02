@@ -102,7 +102,7 @@ cd /opt/kindkesmoeoen
 scripts/backup.sh            # vorher sichern
 git pull
 docker compose up -d --build
-docker compose exec app node apps/api/dist/seed/seed.js   # neue Regelwerk-Entwürfe/Preise übernehmen (vorhandene Daten bleiben)
+docker compose exec app node apps/api/dist/seed/seed.js   # neue Regelwerk-Entwürfe/Preise übernehmen (vorhandene Daten und in der App geänderte bzw. freigegebene Regelwerke bleiben)
 ```
 
 Datenbank-Änderungen (Migrationen) laufen beim Start der App automatisch.
@@ -159,7 +159,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 - [ ] Produktivumgebung **ohne** `--demo` eingerichtet bzw. Demo-Konten gesperrt, `DEMO_MODUS=nein`
 - [ ] Persönliche Konten angelegt, Passwörter geändert
 - [ ] Tägliches Backup mit externer Kopie eingerichtet und eine Wiederherstellung getestet
-- [ ] Regelwerk fachlich geprüft und freigegeben (Meilenstein 5)
+- [ ] Regelwerk fachlich geprüft und in der App freigegeben (Regelwerk → „Fassung freigeben“, zweite Hebamme bestätigt)
 - [ ] Datenschutz-Dokumente (Verzeichnis der Verarbeitungstätigkeiten, TOMs, Datenschutzinformation für Familien) erstellt
 
 ## Fehlersuche
