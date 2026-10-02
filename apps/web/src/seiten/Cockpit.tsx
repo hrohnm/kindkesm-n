@@ -25,7 +25,7 @@ export function Cockpit() {
   const hinweise = useDaten<Hinweis[]>("/api/hinweise");
   const team = useDaten<TeamMitglied[]>("/api/team");
   const regelwerke = useDaten<RegelwerkKurz[]>("/api/regelwerke");
-  const heute = useDaten<{ heute: HeuteBesuch[]; entwuerfe: HeuteBesuch[] }>(ich?.rolle === "hebamme" ? "/api/heute" : null);
+  const heute = useDaten<{ heute: HeuteBesuch[]; entwuerfe: HeuteBesuch[]; geplant: number; erledigt: number }>(ich?.rolle === "hebamme" ? "/api/heute" : null);
   const vorname = ich?.name.split(" ")[0];
   const aktiv = team.daten?.filter((h) => h.status === "aktiv").length;
   const aktuell = regelwerke.daten?.at(-1);
@@ -50,8 +50,10 @@ export function Cockpit() {
         </div>
         <div className="karte">
           <div className="text-sm text-slate-500">Besuche heute</div>
-          <div className="mt-1 text-3xl font-semibold text-salbei-700 dark:text-salbei-100">{heute.daten?.heute.length ?? "–"}</div>
-          <div className="mt-1 text-sm text-slate-500">{heute.daten ? `${heute.daten.entwuerfe.length} offene Dokumentation(en)` : ""}</div>
+          <div className="mt-1 text-3xl font-semibold text-salbei-700 dark:text-salbei-100">{heute.daten ? Math.max(heute.daten.geplant, heute.daten.heute.length) : "–"}</div>
+          <div className="mt-1 text-sm text-slate-500">
+            {heute.daten ? `${heute.daten.heute.filter((b) => b.status === "abgeschlossen").length} dokumentiert · ${heute.daten.entwuerfe.length} offene Dokumentation(en)` : ""}
+          </div>
           {ich?.rolle === "hebamme" && <Link to="/tour" className="mt-2 inline-block font-medium text-salbei-600 underline">Tour für heute ›</Link>}
         </div>
       </div>

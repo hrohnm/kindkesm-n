@@ -33,7 +33,7 @@ test("Hausbesuch dokumentieren mit Tablet-Unterschrift", async ({ page }, info) 
   await page.getByLabel("Gewicht (g)").first().fill("2950");
   await expect(page.getByText(/\+11,3 % zum Geburtsgewicht/)).toBeVisible();
   // Zwillinge im späten Wochenbett: 60 + 10 Minuten -> alle 50 Minuten abrechenbar
-  await expect(page.getByText(/50 Min\. abrechenbar/)).toBeVisible();
+  await expect(page.getByText(/50 von 50 Min\./)).toBeVisible();
 
   await page.getByRole("button", { name: /Stattdessen auf dem Tablet|Stattdessen auf Papier/ }).click().catch(() => {});
   const feld = page.getByLabel("Unterschriftenfeld");

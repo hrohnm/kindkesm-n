@@ -8,22 +8,23 @@ const UNTER = [
   { to: "/einstellungen/abrechnung", label: "Abrechnung" },
   { to: "/einstellungen/praxis", label: "Praxis" },
   { to: "/einstellungen/passwort", label: "Passwort" },
-  { to: "/team", label: "Team ›" },
-  { to: "/fahrtenbuch", label: "Fahrtenbuch ›" },
-  { to: "/regelwerk", label: "Regelwerk ›" },
+  // Auf dem Handy fehlen diese in der unteren Leiste, daher nur dort hier verlinkt
+  { to: "/team", label: "Team ›", nurHandy: true },
+  { to: "/fahrtenbuch", label: "Fahrtenbuch ›", nurHandy: true },
+  { to: "/regelwerk", label: "Regelwerk ›", nurHandy: true },
 ];
 
 export function Einstellungen() {
   return (
     <>
       <Seitenkopf titel="Einstellungen" />
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-1">
+      <div className="mb-6 flex flex-wrap gap-2">
         {UNTER.map((u) => (
           <NavLink
             key={u.to}
             to={u.to}
             end={u.ende}
-            className={({ isActive }) => `flex min-h-12 shrink-0 items-center rounded-full px-5 font-medium ${isActive ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}
+            className={({ isActive }) => `${"nurHandy" in u && u.nurHandy ? "md:hidden " : ""}flex min-h-12 shrink-0 items-center rounded-full px-5 font-medium ${isActive ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}
           >
             {u.label}
           </NavLink>

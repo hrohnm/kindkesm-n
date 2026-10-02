@@ -10,9 +10,10 @@ import {
   type Leistungsart,
   type Leistungstyp,
 } from "@kindkesmoeoen/shared";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { DokuKachel, type FruehererWert } from "../komponenten/DokuKachel";
+import { GewichtFenster } from "./Gewicht";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
 import { UnterschriftFeld } from "../komponenten/Unterschrift";
 import { ApiFehler, api } from "../lib/api";
@@ -141,6 +142,9 @@ function BesuchFormular({
   const [vorschau, setVorschau] = useState<Ergebnis>();
   const [meldung, setMeldung] = useState<{ art: "ok" | "fehler" | "hinweis"; text: string }>();
   const [speichert, setSpeichert] = useState(false);
+  const [abrechnungOffen, setAbrechnungOffen] = useState(false);
+  const [gewichtKind, setGewichtKind] = useState<string | null>(null);
+  const schliessenGewicht = useCallback(() => setGewichtKind(null), []);
 
   const setze = <K extends keyof Werte>(k: K, v: Werte[K]) => setW((alt) => ({ ...alt, [k]: v }));
   const setzeMutter = (k: string, v: string) => setW((alt) => ({ ...alt, mutter: { ...alt.mutter, [k]: v } }));
@@ -221,22 +225,78 @@ function BesuchFormular({
 
   return (
     <>
-      <Link to={`/klientinnen/${betreuung.klientin.id}`} className="mb-3 inline-flex min-h-11 items-center text-salbei-600">‹ {betreuung.klientin.vorname} {betreuung.klientin.nachname}</Link>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-salbei-700 dark:text-salbei-100">{besuch ? (gesperrt ? "Besuch (abgeschlossen)" : "Besuch bearbeiten") : "Besuch dokumentieren"}</h1>
-          <p className="text-slate-600 dark:text-slate-300">
-            {lt !== null ? `${lt}. Lebenstag` : ssw ? `SSW ${ssw}` : ""}
-            {betreuung.kinder.length ? ` · ${betreuung.kinder.map((k) => k.vorname).join(" & ")}` : ""}
-            {betreuung.klientin.ort ? ` · ${betreuung.klientin.ort}` : ""}
-          </p>
+      {/* ---------------------------------------------------- Kopfzeile (bleibt beim Scrollen stehen) mit Abrechnung */}
+      <div className="sticky top-0 z-30 -mx-4 -mt-6 mb-5 border-b border-sand-200 bg-sand-50 px-4 pt-3 pb-3 shadow-sm sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:-mx-12 lg:px-12 dark:border-salbei-700 dark:bg-salbei-900">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <Link to={zurueck ?? `/klientinnen/${betreuung.klientin.id}`} className="inline-flex min-h-9 items-center text-sm text-salbei-600">‹ {zurueck?.startsWith("/tour") ? "Tour" : zurueck === "/" ? "Heute" : `${betreuung.klientin.vorname} ${betreuung.klientin.nachname}`}</Link>
+              <h1 className="truncate text-xl font-semibold text-salbei-700 sm:text-2xl dark:text-salbei-100">
+                {betreuung.klientin.vorname} {betreuung.klientin.nachname} · {besuch ? (gesperrt ? "Besuch (abgeschlossen)" : "Besuch bearbeiten") : "Besuch dokumentieren"}
+              </h1>
+              <p className="truncate text-sm text-slate-600 dark:text-slate-300">
+                {lt !== null ? `${lt}. Lebenstag` : ssw ? `SSW ${ssw}` : ""}
+                {betreuung.kinder.length ? ` · ${betreuung.kinder.map((k) => k.vorname).join(" & ")}` : ""}
+                {betreuung.klientin.ort ? ` · ${betreuung.klientin.ort}` : ""}
+              </p>
+            </div>
+            {!fremd && (
+              <div className="flex flex-wrap items-center gap-2">
+                {besuch && !gesperrt && <button type="button" className="knopf-gefahr min-h-11 px-3 text-sm" onClick={loeschen}>Löschen</button>}
+                {!gesperrt && <button type="button" className="knopf-sekundaer min-h-11 px-4" disabled={speichert} onClick={() => speichern(false)}>Entwurf</button>}
+                <button type="button" className="knopf-primaer min-h-11 px-5" disabled={speichert || !w.bis} onClick={() => speichern(true)}>{gesperrt ? "Änderungen speichern" : "Abschließen"}</button>
+              </div>
+            )}
+          </div>
+          {/* Abrechnung kompakt; Einzelheiten aufklappbar */}
+          <button type="button" aria-expanded={abrechnungOffen} onClick={() => setAbrechnungOffen((x) => !x)} className="mt-2 flex w-full flex-wrap items-center gap-x-4 gap-y-1 rounded-xl bg-white px-3 py-2 text-left text-sm shadow-sm dark:bg-salbei-900/60">
+            <span className="font-semibold">Abrechnung</span>
+            {!w.bis ? (
+              <span className="text-slate-500">Ende eintragen, um die Leistungen zu berechnen</span>
+            ) : !vorschau ? (
+              <span className="text-slate-500">wird berechnet …</span>
+            ) : (
+              <>
+                <span>{vorschau.einheitenAbrechenbar * 5} von {vorschau.einheiten * 5} Min.{vorschau.stamm ? ` · ${vorschau.stamm}XX` : ""}</span>
+                <span className="font-semibold">{euro(vorschau.summe)}</span>
+                {vorschau.hinweise.some((h) => h.stufe === "fehler") && <span className="rounded-full bg-tulpe-100 px-2 py-0.5 font-medium text-tulpe-500">{vorschau.hinweise.filter((h) => h.stufe === "fehler").length} Fehler</span>}
+                {vorschau.hinweise.some((h) => h.stufe === "warnung") && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-800">{vorschau.hinweise.filter((h) => h.stufe === "warnung").length} Hinweis(e)</span>}
+              </>
+            )}
+            <span className="ml-auto text-salbei-600">{abrechnungOffen ? "▲ weniger" : "▼ Einzelheiten"}</span>
+          </button>
+          {abrechnungOffen && vorschau && w.bis && (
+            <div className="mt-2 max-h-[45vh] space-y-2 overflow-y-auto rounded-xl bg-white p-3 text-sm shadow-sm dark:bg-salbei-900/60">
+              {vorschau.zeilen.length > 0 && (
+                <table className="w-full">
+                  <tbody>
+                    {vorschau.zeilen.map((z) => (
+                      <tr key={z.gpos} className="border-t border-sand-200 first:border-0 dark:border-salbei-700">
+                        <td className="py-1.5 pr-2 font-mono">{z.gpos}</td>
+                        <td className="py-1.5 pr-2">{z.einheit === "5min" ? `${z.menge} × 5 Min.` : z.automatisch ? "automatisch" : materialName(z.gpos)}{z.zuschlag ? " · Zuschlag" : ""}</td>
+                        <td className="py-1.5 text-right font-medium">{euro(z.betrag)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              {vorschau.hinweise.map((h) => (
+                <Meldung key={h.text} art={h.stufe === "fehler" ? "fehler" : h.stufe === "warnung" ? "hinweis" : "ok"}>
+                  <span className="text-sm">{h.text}</span>
+                </Meldung>
+              ))}
+            </div>
+          )}
+          {/* Fehler immer sichtbar, auch zugeklappt */}
+          {!abrechnungOffen && vorschau?.hinweise.filter((h) => h.stufe === "fehler").map((h) => <p key={h.text} className="mt-1 text-sm text-tulpe-500">{h.text}</p>)}
         </div>
       </div>
+
       {betreuung.klientin.hinweise && <div className="mb-4"><Meldung art="hinweis">{betreuung.klientin.hinweise}</Meldung></div>}
       {fremd && <div className="mb-4"><Meldung art="hinweis">Dieser Besuch wurde von einer Kollegin dokumentiert und kann nur von ihr geändert werden.</Meldung></div>}
       {meldung && <div className="mb-4"><Meldung art={meldung.art}>{meldung.text}</Meldung></div>}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="space-y-5">
         <div className="space-y-5">
           {/* ---------------------------------------------------- Leistung */}
           <section className="karte space-y-4">
@@ -318,9 +378,9 @@ function BesuchFormular({
               offenStandard={ansicht.kindOffen}
               gesperrt={fremd}
               kopfZusatz={
-                <a href={`/kinder/${k.id}/gewicht`} target="_blank" rel="noreferrer" className="knopf-sekundaer shrink-0 px-3 text-sm">
-                  Gewichtsverlauf ↗
-                </a>
+                <button type="button" className="knopf-sekundaer shrink-0 px-3 text-sm" onClick={() => setGewichtKind(k.id)}>
+                  Gewichtsverlauf
+                </button>
               }
               feldHilfe={(f, wert) => {
                 if (f.id !== "gewicht" || !k.geburtsgewicht) return null;
@@ -382,61 +442,18 @@ function BesuchFormular({
           )}
         </div>
 
-        {/* ---------------------------------------------------- Abrechnungsvorschau */}
-        <aside className="xl:sticky xl:top-6 xl:self-start">
-          <section className="karte space-y-3">
-            <h2 className="text-lg font-semibold">Abrechnung</h2>
-            {!w.bis ? (
-              <p className="text-sm text-slate-500">Ende eintragen, um die Leistungen zu berechnen.</p>
-            ) : !vorschau ? (
-              <p className="text-sm text-slate-500">Wird berechnet …</p>
-            ) : (
-              <>
-                <div className="text-sm text-slate-500">
-                  {vorschau.einheiten * 5} Min. · {vorschau.einheitenAbrechenbar * 5} Min. abrechenbar{vorschau.stamm ? ` · GPOS ${vorschau.stamm}XX` : ""}
-                </div>
-                {vorschau.zeilen.length > 0 && (
-                  <table className="w-full text-sm">
-                    <tbody>
-                      {vorschau.zeilen.map((z) => (
-                        <tr key={z.gpos} className="border-t border-sand-200 dark:border-salbei-700">
-                          <td className="py-2 pr-2 font-mono">{z.gpos}</td>
-                          <td className="py-2 pr-2">{z.einheit === "5min" ? `${z.menge} × 5 Min.` : z.automatisch ? "automatisch" : "Material"}{z.zuschlag ? " · Zuschlag" : ""}</td>
-                          <td className="py-2 text-right font-medium">{euro(z.betrag)}</td>
-                        </tr>
-                      ))}
-                      <tr className="border-t-2 border-sand-400">
-                        <td colSpan={2} className="py-2 font-semibold">Summe</td>
-                        <td className="py-2 text-right font-semibold">{euro(vorschau.summe)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                )}
-                {vorschau.hinweise.map((h) => (
-                  <Meldung key={h.text} art={h.stufe === "fehler" ? "fehler" : h.stufe === "warnung" ? "hinweis" : "ok"}>
-                    <span className="text-sm">{h.text}</span>
-                  </Meldung>
-                ))}
-              </>
-            )}
-            {!fremd && (
-              <div className="flex flex-col gap-2 pt-2">
-                <button type="button" className="knopf-primaer" disabled={speichert || !w.bis} onClick={() => speichern(true)}>
-                  {gesperrt ? "Änderungen speichern" : "Abschließen"}
-                </button>
-                {!gesperrt && (
-                  <button type="button" className="knopf-sekundaer" disabled={speichert} onClick={() => speichern(false)}>
-                    Als Entwurf speichern
-                  </button>
-                )}
-                {besuch && !gesperrt && (
-                  <button type="button" className="knopf-gefahr" onClick={loeschen}>Entwurf löschen</button>
-                )}
-              </div>
-            )}
-            {besuch?.versionen.length ? <p className="text-xs text-slate-500">{besuch.versionen.length} frühere Version(en) gespeichert.</p> : null}
-          </section>
-        </aside>
+        {besuch?.versionen.length ? <p className="text-xs text-slate-500">{besuch.versionen.length} frühere Version(en) gespeichert.</p> : null}
+        {gewichtKind && (
+          <GewichtFenster
+            kindId={gewichtKind}
+            besuchId={besuch?.id}
+            aktuell={(() => {
+              const g = Number(String(w.kinder[gewichtKind]?.gewicht ?? "").replace(",", "."));
+              return g > 0 ? { datum: w.datum, gramm: g } : null;
+            })()}
+            schliessen={schliessenGewicht}
+          />
+        )}
       </div>
     </>
   );

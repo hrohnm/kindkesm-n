@@ -29,7 +29,7 @@ test("Rundgang: Cockpit, Team, Regelwerk, Einstellungen", async ({ page }, info)
   await page.getByPlaceholder("GPOS oder Bezeichnung suchen").fill("109");
   await expect(page.getByText("10905")).toBeVisible();
   await page.getByPlaceholder("GPOS oder Bezeichnung suchen").fill("");
-  await page.getByRole("button", { name: "Wochenbett" }).click();
+  await page.getByLabel("Kategorie").selectOption({ label: "Wochenbett" });
   await expect(page.getByText("30111")).toBeVisible();
   await bild(page, "3-regelwerk", info);
 

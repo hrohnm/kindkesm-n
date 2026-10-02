@@ -117,7 +117,7 @@ export function Regelwerk() {
         <div className="mb-4"><Meldung art="hinweis">Zurzeit ist nur eine Hebamme aktiv. Änderungen können vorgeschlagen, aber erst freigegeben werden, wenn eine zweite Hebamme aktiv ist.</Meldung></div>
       )}
 
-      <div className="mb-5 flex gap-1 overflow-x-auto border-b border-sand-200 dark:border-salbei-700">
+      <div className="mb-5 flex flex-wrap gap-x-1 border-b border-sand-200 dark:border-salbei-700">
         {TABS.map((t) => (
           <button key={t} type="button" onClick={() => setTab(t)} className={`min-h-12 shrink-0 border-b-2 px-4 font-medium ${tab === t ? "border-salbei-600 text-salbei-700 dark:text-salbei-100" : "border-transparent text-slate-500"}`}>
             {t}
@@ -130,13 +130,9 @@ export function Regelwerk() {
         <>
           <div className="mb-4 flex flex-col gap-3 sm:flex-row">
             <input className="feld sm:max-w-xs" placeholder="GPOS oder Bezeichnung suchen" value={suche} onChange={(e) => setSuche(e.target.value)} />
-            <div className="flex flex-wrap gap-2">
-              {KATEGORIEN.map((k) => (
-                <button key={k.wert} type="button" onClick={() => setKategorie(k.wert)} className={`min-h-12 rounded-full px-4 text-sm font-medium ${kategorie === k.wert ? "bg-salbei-600 text-white" : "bg-white text-slate-600 dark:bg-salbei-900/50 dark:text-slate-300"}`}>
-                  {k.label}
-                </button>
-              ))}
-            </div>
+            <select className="feld sm:max-w-xs" aria-label="Kategorie" value={kategorie} onChange={(e) => setKategorie(e.target.value)}>
+              {KATEGORIEN.map((k) => <option key={k.wert} value={k.wert}>{k.wert ? k.label : "Alle Kategorien"}</option>)}
+            </select>
           </div>
           <div className="mb-4 flex flex-wrap gap-2">
             {darf && <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(bearbeiten === "pos-neu" ? null : "pos-neu")}><IconPlus className="size-5" /> Neue Position</button>}

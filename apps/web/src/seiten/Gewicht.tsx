@@ -1,5 +1,5 @@
 import { WHO_MAX_TAG, gewichtFuerPerzentile, gewichtsverlauf, perzentileFuerGewicht } from "@kindkesmoeoen/shared";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router";
 import { Laden, Meldung, Seitenkopf } from "../komponenten/Formular";
 import { datum as datumDe } from "../lib/format";
@@ -17,30 +17,76 @@ const PERZENTILEN = [3, 15, 50, 85, 97] as const;
 const g = (x: number) => Math.round(x).toLocaleString("de-DE");
 const vorzeichen = (x: number) => (x > 0 ? "+" : x < 0 ? "−" : "±");
 
-/** Gewichtsverlauf eines Kindes: WHO-Perzentilkurve nach Lebenstag und Tabelle aller Werte. */
+/** Gewichtsverlauf eines Kindes als eigene Seite. */
 export function Gewicht() {
   const { id } = useParams();
   const daten = useDaten<Daten>(`/api/kinder/${id}/gewicht`);
   if (!daten.daten) return daten.fehler ? <Meldung art="fehler">{daten.fehler}</Meldung> : <Laden />;
-  const { kind, klientin, werte } = daten.daten;
-
-  const verlauf = gewichtsverlauf(kind.geburtsdatum, [
-    ...(kind.geburtsgewicht ? [{ datum: kind.geburtsdatum, gramm: kind.geburtsgewicht, quelle: "geburt" as const }] : []),
-    ...werte.map((w) => ({ datum: w.datum, gramm: w.gramm, quelle: "besuch" as const, besuchId: w.besuchId })),
-  ]).map((v) => ({ ...v, info: werte.find((w) => w.besuchId === v.besuchId), perzentile: v.lebenstag <= WHO_MAX_TAG ? perzentileFuerGewicht(v.lebenstag, v.gramm, kind.geschlecht) : null }));
-
-  // Tiefster Punkt und Wiedererreichen des Geburtsgewichts
-  const tiefst = verlauf.length > 1 ? verlauf.reduce((a, b) => (b.gramm < a.gramm ? b : a)) : null;
-  const wieder = kind.geburtsgewicht ? verlauf.find((v) => v.quelle === "besuch" && v.lebenstag > 0 && v.gramm >= kind.geburtsgewicht!) : null;
-
+  const { kind, klientin } = daten.daten;
   return (
     <>
       <Link to={`/klientinnen/${klientin.id}`} className="mb-3 inline-flex min-h-11 items-center text-salbei-600">‹ {klientin.vorname} {klientin.nachname}</Link>
-      <Seitenkopf
-        titel={`Gewicht ${kind.vorname}`}
-        untertitel={`geboren ${datumDe(kind.geburtsdatum)}${kind.geburtsgewicht ? ` mit ${g(kind.geburtsgewicht)} g` : ""} · WHO-Perzentilen ${kind.geschlecht === "maennlich" ? "Jungen" : kind.geschlecht === "weiblich" ? "Mädchen" : "Mädchen (Geschlecht nicht erfasst)"}`}
-      />
+      <Seitenkopf titel={`Gewicht ${kind.vorname}`} untertitel={untertitel(kind)} />
+      <GewichtInhalt daten={daten.daten} />
+    </>
+  );
+}
 
+const untertitel = (kind: Kind) =>
+  `geboren ${datumDe(kind.geburtsdatum)}${kind.geburtsgewicht ? ` mit ${g(kind.geburtsgewicht)} g` : ""} · WHO-Perzentilen ${kind.geschlecht === "maennlich" ? "Jungen" : kind.geschlecht === "weiblich" ? "Mädchen" : "Mädchen (Geschlecht nicht erfasst)"}`;
+
+/**
+ * Gewichtsverlauf als großes Fenster über der Besuchsmaske. Das gerade eingetragene (noch nicht gespeicherte)
+ * Gewicht erscheint als „dieser Besuch“.
+ */
+export function GewichtFenster({ kindId, besuchId, aktuell, schliessen }: { kindId: string; besuchId?: string; aktuell?: { datum: string; gramm: number } | null; schliessen: () => void }) {
+  const daten = useDaten<Daten>(`/api/kinder/${kindId}/gewicht`);
+  useEffect(() => {
+    const taste = (e: KeyboardEvent) => e.key === "Escape" && schliessen();
+    window.addEventListener("keydown", taste);
+    const alt = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", taste);
+      document.body.style.overflow = alt;
+    };
+  }, [schliessen]);
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-2 sm:p-6" role="dialog" aria-modal="true" aria-label="Gewichtsverlauf" onClick={schliessen}>
+      <div className="max-h-full w-full max-w-5xl overflow-y-auto rounded-2xl bg-sand-50 p-4 shadow-xl sm:p-6 dark:bg-salbei-900" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-semibold text-salbei-700 sm:text-2xl dark:text-salbei-100">Gewicht {daten.daten?.kind.vorname ?? ""}</h2>
+            {daten.daten && <p className="text-sm text-slate-600 dark:text-slate-300">{untertitel(daten.daten.kind)}</p>}
+          </div>
+          <button type="button" className="knopf-sekundaer shrink-0 px-4" onClick={schliessen} autoFocus>Schließen ✕</button>
+        </div>
+        {!daten.daten ? (
+          daten.fehler ? <Meldung art="fehler">{daten.fehler}</Meldung> : <Laden />
+        ) : (
+          <GewichtInhalt daten={daten.daten} besuchId={besuchId} aktuell={aktuell} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GewichtInhalt({ daten, besuchId, aktuell }: { daten: Daten; besuchId?: string; aktuell?: { datum: string; gramm: number } | null }) {
+  const { kind } = daten;
+  // Gespeicherten Wert dieses Besuchs durch den aktuell eingetragenen ersetzen
+  const werte = aktuell ? daten.werte.filter((w) => w.besuchId !== besuchId) : daten.werte;
+  const verlauf = gewichtsverlauf(kind.geburtsdatum, [
+    ...(kind.geburtsgewicht ? [{ datum: kind.geburtsdatum, gramm: kind.geburtsgewicht, quelle: "geburt" as const }] : []),
+    ...werte.map((w) => ({ datum: w.datum, gramm: w.gramm, quelle: "besuch" as const, besuchId: w.besuchId })),
+    ...(aktuell ? [{ datum: aktuell.datum, gramm: aktuell.gramm, quelle: "besuch" as const, besuchId: "aktuell" }] : []),
+  ]).map((v) => ({ ...v, info: werte.find((w) => w.besuchId === v.besuchId), perzentile: v.alterTage <= WHO_MAX_TAG ? perzentileFuerGewicht(v.alterTage, v.gramm, kind.geschlecht) : null }));
+
+  // Tiefster Punkt und Wiedererreichen des Geburtsgewichts
+  const tiefst = verlauf.length > 1 ? verlauf.reduce((a, b) => (b.gramm < a.gramm ? b : a)) : null;
+  const wieder = kind.geburtsgewicht ? verlauf.find((v) => v.quelle === "besuch" && v.lebenstag > 1 && v.gramm >= kind.geburtsgewicht!) : null;
+
+  return (
+    <>
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Kennzahl titel="Aktuell" wert={verlauf.length ? `${g(verlauf.at(-1)!.gramm)} g` : "–"} unten={verlauf.length ? `${verlauf.at(-1)!.lebenstag}. Lebenstag` : ""} />
         <Kennzahl titel="Tiefster Wert" wert={tiefst ? `${g(tiefst.gramm)} g` : "–"} unten={tiefst?.prozentGeburt != null ? `${vorzeichen(tiefst.prozentGeburt)}${Math.abs(tiefst.prozentGeburt).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % am ${tiefst.lebenstag}. LT` : ""} warn={tiefst?.prozentGeburt != null && tiefst.prozentGeburt <= -10} />
@@ -87,6 +133,8 @@ export function Gewicht() {
                     <td className="px-4 py-2">
                       {v.quelle === "geburt" ? (
                         "Geburt"
+                      ) : v.besuchId === "aktuell" ? (
+                        <span className="font-medium text-orange-700">dieser Besuch (noch nicht gespeichert)</span>
                       ) : (
                         <Link className="text-salbei-600 underline" to={`/besuche/${v.besuchId}`}>
                           Besuch {v.info?.hebamme}{v.info?.status === "entwurf" ? " (Entwurf)" : ""}
@@ -121,15 +169,16 @@ type Punkt = { lebenstag: number; gramm: number; datum: string; perzentile: numb
 function Kurve({ punkte, geschlecht }: { punkte: Punkt[]; geschlecht: string | null }) {
   const [aktiv, setAktiv] = useState<number | null>(null);
   const B = 720, H = 360, L = 56, R = 44, O = 16, U = 40;
-  const maxTag = Math.min(WHO_MAX_TAG, Math.max(28, Math.ceil((Math.max(...punkte.map((p) => p.lebenstag)) + 7) / 7) * 7));
+  // x-Achse in Lebenstagen (Geburtstag = 1); die WHO-Werte gelten für das Alter in Tagen (= Lebenstag − 1)
+  const maxTag = Math.min(WHO_MAX_TAG + 1, Math.max(28, Math.ceil((Math.max(...punkte.map((p) => p.lebenstag)) + 7) / 7) * 7));
   const kurven = useMemo(
-    () => PERZENTILEN.map((p) => ({ p, werte: Array.from({ length: maxTag + 1 }, (_, t) => gewichtFuerPerzentile(t, p, geschlecht)) })),
+    () => PERZENTILEN.map((p) => ({ p, werte: Array.from({ length: maxTag + 1 }, (_, t) => (t === 0 ? Number.NaN : gewichtFuerPerzentile(t - 1, p, geschlecht))) })),
     [maxTag, geschlecht],
   );
-  const alle = [...kurven.flatMap((k) => k.werte), ...punkte.map((p) => p.gramm)];
+  const alle = [...kurven.flatMap((k) => k.werte.slice(1)), ...punkte.map((p) => p.gramm)];
   const yMin = Math.floor((Math.min(...alle) - 100) / 250) * 250;
   const yMax = Math.ceil((Math.max(...alle) + 100) / 250) * 250;
-  const x = (t: number) => L + (t / maxTag) * (B - L - R);
+  const x = (t: number) => L + ((t - 1) / (maxTag - 1)) * (B - L - R);
   const y = (gr: number) => O + (1 - (gr - yMin) / (yMax - yMin)) * (H - O - U);
   const yStufe = yMax - yMin > 3000 ? 1000 : 500;
   const xStufe = maxTag <= 42 ? 7 : maxTag <= 120 ? 14 : 28;
@@ -147,7 +196,7 @@ function Kurve({ punkte, geschlecht }: { punkte: Punkt[]; geschlecht: string | n
               <text x={L - 8} y={y(v) + 4} textAnchor="end" className="fill-slate-500 text-[12px]">{(v / 1000).toLocaleString("de-DE")} kg</text>
             </g>
           ))}
-        {Array.from({ length: Math.floor(maxTag / xStufe) + 1 }, (_, i) => i * xStufe).map((t) => (
+        {[1, ...Array.from({ length: Math.floor(maxTag / xStufe) }, (_, i) => (i + 1) * xStufe)].map((t) => (
           <text key={t} x={x(t)} y={H - U + 18} textAnchor="middle" className="fill-slate-500 text-[12px]">{t}</text>
         ))}
         <text x={(L + B - R) / 2} y={H - 6} textAnchor="middle" className="fill-slate-500 text-[12px]">Lebenstag</text>
@@ -155,7 +204,7 @@ function Kurve({ punkte, geschlecht }: { punkte: Punkt[]; geschlecht: string | n
         {/* WHO-Perzentilen */}
         {kurven.map((k) => (
           <g key={k.p}>
-            <path d={pfad(k.werte.map((v, t) => [t, v]))} fill="none" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth={k.p === 50 ? 1.5 : 1} strokeDasharray={k.p === 50 ? undefined : "4 4"} />
+            <path d={pfad(k.werte.map((v, t) => [t, v] as [number, number]).slice(1))} fill="none" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth={k.p === 50 ? 1.5 : 1} strokeDasharray={k.p === 50 ? undefined : "4 4"} />
             <text x={B - R + 4} y={y(k.werte[maxTag]!) + 4} className="fill-slate-500 text-[11px]">P{k.p}</text>
           </g>
         ))}
