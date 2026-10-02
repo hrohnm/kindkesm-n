@@ -1,7 +1,7 @@
 # Konzept: Praxis-App „Kindkesmöön“
 
 **Eigene Software für die Hebammenpraxis Kindkesmöön, Bad Doberan**
-Stand: 01.10.2026 · Version 1.8 (Entwurf)
+Stand: 01.10.2026 · Version 1.9 (Entwurf)
 
 ---
 
@@ -276,6 +276,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 
 ### M3 – Dokumentation Schwangerschaft / Wochenbett
 - **Besuchsdokumentation als schnelle Maske**: Vitalwerte Mutter (RR, Puls, Temperatur), Fundus/Lochien, Brust/Stillen, Wunde/Naht, Psyche (z. B. EPDS-Fragebogen); Kind: Gewicht, Temperatur, Hautfarbe/Ikterus, Nabel, Ausscheidung, Trinkverhalten
+- **Persönliche Ansicht** (umgesetzt): jede Hebamme legt unter Einstellungen → Dokumentation fest, welche Felder sichtbar sind und bei welchen der Wert des letzten Besuchs zum Vergleich erscheint (bei Zahlen mit Differenz). Ausgeblendete Felder lassen sich im Besuch mit „Weitere Felder“ einblenden, Felder mit Wert erscheinen immer. Die Kacheln Mutter und Kind sind auf- und zuklappbar (Standard je Hebamme einstellbar); zugeklappt zeigen sie eine Kurzfassung der eingetragenen Werte.
 - **Textbausteine** und „wie letztes Mal“-Übernahme
 - **Stift-Eingabe** (Apple Pencil / S Pen): Handschrift → Text, Skizzen
 - Vorsorge: Mutterpass-relevante Werte, CTG-Notiz, Beschwerden, Beratungsthemen (Checkliste)
@@ -333,6 +334,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - Gewicht, Länge und Kopfumfang als Kurve mit WHO-Perzentilen (Datensätze offen verfügbar)
 - Automatisch: Gewichtsverlust in % vom Geburtsgewicht und Tag des Wiedererreichens des Geburtsgewichts
 - Nur Anzeige ohne Diagnose (siehe MDR-Hinweis)
+- **Umgesetzt (Gewicht):** eigene Seite je Kind mit Perzentilkurve nach Lebenstag (WHO weight-for-age, LMS-Werte je Tag 0–365 aus den offiziellen WHO-Tabellen, P3/P15/P50/P85/P97), Tabelle aller Gewichtswerte mit Lebenstag, Veränderung zum Vorwert, g/Tag, % zum Geburtsgewicht und Perzentile; Kennzahlen tiefster Wert und Wiedererreichen des Geburtsgewichts. Länge und Kopfumfang folgen.
 
 ### M16 – Spracheingabe ⭐ (Phase 3)
 - Diktat → Text in der Besuchsdokumentation, möglichst **auf dem Gerät** (iOS/Android-Spracherkennung offline), damit keine Gesundheitsdaten in Cloud-Dienste fließen

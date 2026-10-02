@@ -3,3 +3,5 @@ export * from "./fristen";
 export * from "./plausi";
 export * from "./akte";
 export * from "./tour";
+export * from "./doku";
+export * from "./who-gewicht";

@@ -13,7 +13,7 @@ export async function testAppStarten() {
   await roh.end();
   await migrieren(TEST_DB);
   const { db, sql } = verbinden(TEST_DB);
-  await grunddatenAnlegen(db, true);
+  await grunddatenAnlegen(db, true, false);
   const app = await appBauen(db);
   return { app, db, schliessen: async () => { await app.close(); await sql.end(); } };
 }

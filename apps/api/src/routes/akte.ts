@@ -206,6 +206,28 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     return k;
   });
 
+  /** Gewichtsverlauf eines Kindes: Geburtsgewicht und alle dokumentierten Gewichte (auch Entwürfe, gekennzeichnet). */
+  app.get<{ Params: { id: string } }>("/api/kinder/:id/gewicht", async (request, reply) => {
+    const [k] = await db.select().from(kind).where(eq(kind.id, request.params.id));
+    if (!k) return reply.code(404).send({ fehler: "Kind nicht gefunden" });
+    const [b] = await db.select().from(betreuung).where(eq(betreuung.id, k.betreuungId));
+    const [kl] = await db.select({ id: klientin.id, vorname: klientin.vorname, nachname: klientin.nachname }).from(klientin).where(eq(klientin.id, b!.klientinId));
+    const besuche = await db
+      .select({ id: besuch.id, datum: besuch.datum, von: besuch.von, status: besuch.status, dokumentation: besuch.dokumentation, hebamme: benutzer.kuerzel })
+      .from(besuch)
+      .innerJoin(benutzer, eq(benutzer.id, besuch.hebammeId))
+      .where(eq(besuch.betreuungId, k.betreuungId))
+      .orderBy(asc(besuch.datum), asc(besuch.von));
+    const werte = besuche
+      .map((x) => {
+        const roh = (x.dokumentation as { kinder?: Record<string, { gewicht?: unknown }> }).kinder?.[k.id]?.gewicht;
+        const gramm = Number(String(roh ?? "").replace(",", "."));
+        return roh != null && roh !== "" && Number.isFinite(gramm) && gramm > 0 ? { datum: x.datum, von: x.von, gramm, besuchId: x.id, status: x.status, hebamme: x.hebamme } : null;
+      })
+      .filter((x) => x !== null);
+    return { kind: k, klientin: kl, betreuungId: k.betreuungId, werte };
+  });
+
   app.get<{ Params: { id: string } }>("/api/betreuungen/:id", async (request, reply) => {
     const [b] = await db.select().from(betreuung).where(eq(betreuung.id, request.params.id));
     if (!b) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });

@@ -1,6 +1,8 @@
 import {
   HEBSET_ANSCHRIFT,
   abrechnungseinstellungSchema,
+  ansichtSchema,
+  ansichtVervollstaendigen,
   hebammeProfilSchema,
   ortSchema,
   positionSchema,
@@ -53,6 +55,19 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
       // Anlage 2 § 1: Änderungen der IK-Daten unverzüglich an SVI und Verband melden
       hinweis: alt && alt.ik !== daten.ik ? "IK geändert: Bitte Änderungen der IK-Daten unverzüglich der SVI und dem Berufsverband melden (Anlage 2 § 1)." : undefined,
     };
+  });
+
+  // ------------------------------------------------------------ Ansicht der Besuchsdokumentation
+  app.get("/api/ich/ansicht", async (request) => {
+    const [b] = await db.select({ ansicht: benutzer.ansicht }).from(benutzer).where(eq(benutzer.id, request.benutzer!.id));
+    return ansichtVervollstaendigen(b?.ansicht);
+  });
+
+  app.put("/api/ich/ansicht", async (request, reply) => {
+    const daten = pruefen(ansichtSchema, request.body, reply);
+    if (!daten) return;
+    await db.update(benutzer).set({ ansicht: daten, geaendertAm: new Date() }).where(eq(benutzer.id, request.benutzer!.id));
+    return ansichtVervollstaendigen(daten);
   });
 
   // ------------------------------------------------------------ Orte

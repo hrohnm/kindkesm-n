@@ -11,7 +11,9 @@ import { Besuch } from "./seiten/Besuch";
 import { Cockpit } from "./seiten/Cockpit";
 import { Einstellungen } from "./seiten/Einstellungen";
 import { Fahrtenbuch } from "./seiten/Fahrtenbuch";
+import { Gewicht } from "./seiten/Gewicht";
 import { Abrechnung } from "./seiten/einstellungen/Abrechnung";
+import { Ansicht } from "./seiten/einstellungen/Ansicht";
 import { OrteTouren } from "./seiten/einstellungen/OrteTouren";
 import { Passwort } from "./seiten/einstellungen/Passwort";
 import { Praxis } from "./seiten/einstellungen/Praxis";
@@ -36,12 +38,14 @@ function App() {
         <Route path="tour" element={<Tour />} />
         <Route path="tour/:datum" element={<Tour />} />
         <Route path="fahrtenbuch" element={<Fahrtenbuch />} />
+        <Route path="kinder/:id/gewicht" element={<Gewicht />} />
         <Route path="abrechnung" element={<AbrechnungSeite />} />
         <Route path="team" element={<Team />} />
         <Route path="regelwerk" element={<Regelwerk />} />
         <Route path="einstellungen" element={<Einstellungen />}>
           <Route index element={<Profil />} />
           <Route path="orte" element={<OrteTouren />} />
+          <Route path="dokumentation" element={<Ansicht />} />
           <Route path="abrechnung" element={<Abrechnung />} />
           <Route path="praxis" element={<Praxis />} />
           <Route path="passwort" element={<Passwort />} />

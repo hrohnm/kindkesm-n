@@ -20,7 +20,8 @@ export async function api<T = unknown>(pfad: string, opts: { method?: string; bo
   const daten = text ? JSON.parse(text) : null;
   if (!res.ok) {
     if (res.status === 401 && !pfad.endsWith("/anmelden")) window.dispatchEvent(new Event("kk:abgemeldet"));
-    throw new ApiFehler(res.status, daten?.fehler ?? `Fehler ${res.status}`, daten?.felder ?? {});
+    const text = res.status === 429 ? "Zu viele Versuche in kurzer Zeit. Bitte einige Minuten warten und dann erneut versuchen." : `Fehler ${res.status}`;
+    throw new ApiFehler(res.status, daten?.fehler ?? text, daten?.felder ?? {});
   }
   return daten as T;
 }

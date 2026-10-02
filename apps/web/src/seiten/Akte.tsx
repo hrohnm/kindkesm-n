@@ -242,15 +242,21 @@ function KinderKarte({ betreuung, neuLaden }: { betreuung: Betreuung; neuLaden: 
       {betreuung.kinder.length === 0 && !bearbeiten && <p className="text-slate-500">Noch nicht geboren.</p>}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {betreuung.kinder.map((k) => (
-          <button type="button" key={k.id} onClick={() => setBearbeiten(k)} className="karte text-left transition hover:border-salbei-300">
-            <div className="font-semibold">{k.vorname} {k.nachname ?? ""}</div>
-            <div className="text-sm text-slate-500">
-              geboren {datum(k.geburtsdatum)}{k.geburtszeit ? `, ${k.geburtszeit} Uhr` : ""} · {lebenstag(k.geburtsdatum, heute())}. Lebenstag
+          <div key={k.id} className="karte">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <div className="font-semibold">{k.vorname} {k.nachname ?? ""}</div>
+                <div className="text-sm text-slate-500">
+                  geboren {datum(k.geburtsdatum)}{k.geburtszeit ? `, ${k.geburtszeit} Uhr` : ""} · {lebenstag(k.geburtsdatum, heute())}. Lebenstag
+                </div>
+              </div>
+              <button type="button" aria-label={`${k.vorname} bearbeiten`} className="knopf-sekundaer min-h-11 shrink-0 px-3" onClick={() => setBearbeiten(k)}><IconStift className="size-5" /></button>
             </div>
             <div className="mt-2 text-sm">
               {k.geburtsgewicht ? `${k.geburtsgewicht.toLocaleString("de-DE")} g` : "– g"} · {k.laenge ? `${Number(k.laenge).toLocaleString("de-DE")} cm` : "– cm"} · KU {k.kopfumfang ? `${Number(k.kopfumfang).toLocaleString("de-DE")} cm` : "–"}
             </div>
-          </button>
+            <Link to={`/kinder/${k.id}/gewicht`} className="mt-2 inline-flex min-h-11 items-center font-medium text-salbei-600 underline">Gewichtsverlauf und Perzentilen ›</Link>
+          </div>
         ))}
       </div>
     </section>
