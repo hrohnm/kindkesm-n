@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { IconGlocke } from "../komponenten/Icons";
+import { TourUebersicht } from "../komponenten/TourUebersicht";
 import { Laden, Seitenkopf } from "../komponenten/Formular";
 import { useAuth } from "../lib/auth";
 import { datum, inTagen } from "../lib/format";
@@ -54,6 +55,8 @@ export function Cockpit() {
           {ich?.rolle === "hebamme" && <Link to="/tour" className="mt-2 inline-block font-medium text-salbei-600 underline">Tour für heute ›</Link>}
         </div>
       </div>
+
+      {ich?.rolle === "hebamme" && <TourUebersicht />}
 
       {heute.daten && (heute.daten.heute.length > 0 || heute.daten.entwuerfe.length > 0) && (
         <section className="mt-8 grid gap-4 lg:grid-cols-2">

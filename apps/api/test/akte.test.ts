@@ -122,3 +122,32 @@ describe("Besuche", () => {
     expect(h.entwuerfe.some((e: { name: string }) => e.name === "Lena Krüger")).toBe(true);
   });
 });
+
+describe("Persönliche Ansicht der Dokumentation", () => {
+  it("liefert Standardwerte und speichert je Hebamme", async () => {
+    const a = (await req("GET", "/api/ich/ansicht")).json();
+    expect(a.mutter.rrSys).toEqual({ sichtbar: true, vergleich: true });
+    expect(a.mutterOffen).toBe(true);
+    const neu = { ...a, mutter: { ...a.mutter, puls: { sichtbar: false, vergleich: false } }, kindOffen: false };
+    const r = (await req("PUT", "/api/ich/ansicht", neu)).json();
+    expect(r.mutter.puls).toEqual({ sichtbar: false, vergleich: false });
+    expect((await req("GET", "/api/ich/ansicht")).json().kindOffen).toBe(false);
+    // andere Hebamme unverändert
+    expect((await req("GET", "/api/ich/ansicht", undefined, marielena)).json().kindOffen).toBe(true);
+  });
+  it("prüft die Eingaben", async () => {
+    expect((await req("PUT", "/api/ich/ansicht", { mutter: { puls: { sichtbar: "ja" } } })).statusCode).toBe(400);
+  });
+});
+
+describe("Gewichtsverlauf", () => {
+  it("listet Geburtsgewicht-Grundlage und alle dokumentierten Gewichte", async () => {
+    const b = await kruegerBetreuung();
+    const kindId = b.kinder[0].id;
+    const r = (await req("GET", `/api/kinder/${kindId}/gewicht`)).json();
+    expect(r.kind).toMatchObject({ vorname: "Ole", geburtsgewicht: 3480 });
+    expect(r.werte.map((w: { gramm: number }) => w.gramm)).toEqual(expect.arrayContaining([3290, 3240, 3270, 3310]));
+    expect(r.werte.find((w: { gramm: number }) => w.gramm === 3310).status).toBe("entwurf");
+    expect((await req("GET", "/api/kinder/00000000-0000-0000-0000-000000000000/gewicht")).statusCode).toBe(404);
+  });
+});

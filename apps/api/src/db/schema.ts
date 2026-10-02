@@ -48,6 +48,8 @@ export const benutzer = pgTable(
     babypauseBis: date("babypause_bis"),
     aktiv: boolean("aktiv").notNull().default(true),
     letzteAnmeldung: timestamp("letzte_anmeldung", { withTimezone: true }),
+    /** Persönliche Ansicht der Besuchsdokumentation (sichtbare Felder, Vergleich, Kacheln) */
+    ansicht: jsonb("ansicht").$type<Record<string, unknown>>().notNull().default({}),
     ...zeitstempel(),
   },
   (t) => [uniqueIndex("benutzer_email_idx").on(sql`lower(${t.email})`)],

@@ -1,17 +1,19 @@
 import {
-  AUSWAHL,
+  DOKU_FELDER,
   LEISTUNGSART_LABEL,
   LEISTUNGSTYPEN,
   LEISTUNGSTYP_LABEL,
   MATERIAL_JE_TYP,
   lebenstag,
   sswAusEt,
+  type Ansicht,
   type Ergebnis,
   type Leistungsart,
   type Leistungstyp,
 } from "@kindkesmoeoen/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import { DokuKachel, type FruehererWert } from "../komponenten/DokuKachel";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
 import { UnterschriftFeld } from "../komponenten/Unterschrift";
 import { ApiFehler, api } from "../lib/api";
@@ -90,14 +92,30 @@ export function Besuch() {
   const bid = betreuungId ?? vorhanden.daten?.betreuungId;
   const betreuung = useDaten<BetreuungDetail>(bid ? `/api/betreuungen/${bid}` : null);
   const einstellung = useDaten<Abrechnung | null>("/api/ich/abrechnung");
+  const ansicht = useDaten<Ansicht>("/api/ich/ansicht");
+  const alle = useDaten<FruehererBesuch[]>(bid ? `/api/betreuungen/${bid}/besuche` : null);
 
-  if ((id && !vorhanden.daten) || !betreuung.daten || einstellung.daten === undefined) {
+  if ((id && !vorhanden.daten) || !betreuung.daten || einstellung.daten === undefined || !ansicht.daten || !alle.daten) {
     return vorhanden.fehler || betreuung.fehler ? <Meldung art="fehler">{vorhanden.fehler ?? betreuung.fehler}</Meldung> : <Laden />;
   }
-  return <BesuchFormular betreuung={betreuung.daten} besuch={vorhanden.daten} unterschriftVerfahren={einstellung.daten?.unterschrift ?? "papier"} />;
+  return <BesuchFormular betreuung={betreuung.daten} besuch={vorhanden.daten} unterschriftVerfahren={einstellung.daten?.unterschrift ?? "papier"} ansicht={ansicht.daten} alleBesuche={alle.daten} />;
 }
 
-function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuung: BetreuungDetail; besuch?: BesuchDetail; unterschriftVerfahren: "papier" | "tablet" }) {
+type FruehererBesuch = { id: string; datum: string; von: string; dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>> } };
+
+function BesuchFormular({
+  betreuung,
+  besuch,
+  unterschriftVerfahren,
+  ansicht,
+  alleBesuche,
+}: {
+  betreuung: BetreuungDetail;
+  besuch?: BesuchDetail;
+  unterschriftVerfahren: "papier" | "tablet";
+  ansicht: Ansicht;
+  alleBesuche: FruehererBesuch[];
+}) {
   const navigate = useNavigate();
   const { ich } = useAuth();
   // Aus der Tour geöffnet: Termin verknüpfen, Datum/Typ übernehmen und danach zur Tour zurück
@@ -162,6 +180,14 @@ function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuun
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vorschauSchluessel]);
 
+  // Frühere Besuche (vor diesem), neueste zuerst – für „Zuletzt …“ an den Feldern
+  const frueher = useMemo(
+    () =>
+      alleBesuche
+        .filter((b) => b.id !== besuch?.id && `${b.datum} ${b.von}` < `${w.datum} ${w.von}`)
+        .sort((a, b) => `${b.datum} ${b.von}`.localeCompare(`${a.datum} ${a.von}`)),
+    [alleBesuche, besuch?.id, w.datum, w.von],
+  );
   const lt = geboren ? lebenstag(betreuung.kinder[0]!.geburtsdatum, w.datum) : null;
   const ssw = !geboren && betreuung.et ? sswAusEt(betreuung.et, w.datum).text : null;
   const materialOptionen = MATERIAL_JE_TYP[w.typ];
@@ -266,48 +292,43 @@ function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuun
           </section>
 
           {/* ---------------------------------------------------- Dokumentation Mutter */}
-          <fieldset disabled={fremd} className="karte space-y-4">
-            <h2 className="text-lg font-semibold">Mutter</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Feld label="RR systolisch"><input className="feld" inputMode="numeric" value={w.mutter.rrSys ?? ""} onChange={(e) => setzeMutter("rrSys", e.target.value)} /></Feld>
-              <Feld label="RR diastolisch"><input className="feld" inputMode="numeric" value={w.mutter.rrDia ?? ""} onChange={(e) => setzeMutter("rrDia", e.target.value)} /></Feld>
-              <Feld label="Puls"><input className="feld" inputMode="numeric" value={w.mutter.puls ?? ""} onChange={(e) => setzeMutter("puls", e.target.value)} /></Feld>
-              <Feld label="Temperatur °C"><input className="feld" inputMode="decimal" value={w.mutter.temperatur ?? ""} onChange={(e) => setzeMutter("temperatur", e.target.value)} /></Feld>
-            </div>
-            {geboren ? (
-              <>
-                <Chips label="Fundus" werte={AUSWAHL.fundus} wert={w.mutter.fundus ?? ""} aendern={(v) => setzeMutter("fundus", v)} />
-                <Chips label="Lochien" werte={AUSWAHL.lochien} wert={w.mutter.lochien ?? ""} aendern={(v) => setzeMutter("lochien", v)} />
-                <Chips label="Brust" werte={AUSWAHL.brust} wert={w.mutter.brust ?? ""} aendern={(v) => setzeMutter("brust", v)} />
-                <Chips label="Wunde / Naht" werte={AUSWAHL.wunde} wert={w.mutter.wunde ?? ""} aendern={(v) => setzeMutter("wunde", v)} />
-              </>
-            ) : null}
-            <Feld label="Befinden"><input className="feld" value={w.mutter.befinden ?? ""} onChange={(e) => setzeMutter("befinden", e.target.value)} /></Feld>
-          </fieldset>
+          <DokuKachel
+            titel="Mutter"
+            felder={DOKU_FELDER.mutter.filter((f) => geboren || !f.nachGeburt)}
+            werte={w.mutter}
+            setze={setzeMutter}
+            einstellungen={ansicht.mutter}
+            frueher={frueher.map((b) => ({ datum: b.datum, werte: b.dokumentation.mutter ?? {} }))}
+            offenStandard={ansicht.mutterOffen}
+            gesperrt={fremd}
+          />
 
           {/* ---------------------------------------------------- Dokumentation Kinder */}
-          {betreuung.kinder.map((k) => {
-            const d = w.kinder[k.id] ?? {};
-            const gewicht = Number(String(d.gewicht ?? "").replace(",", "."));
-            const differenz = k.geburtsgewicht && gewicht ? ((gewicht - k.geburtsgewicht) / k.geburtsgewicht) * 100 : null;
-            return (
-              <fieldset key={k.id} disabled={fremd} className="karte space-y-4">
-                <h2 className="text-lg font-semibold">{k.vorname}</h2>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <Feld label="Gewicht (g)" hilfe={differenz !== null ? <span className={differenz <= -10 ? "font-medium text-tulpe-500" : ""}>{differenz > 0 ? "+" : ""}{differenz.toLocaleString("de-DE", { maximumFractionDigits: 1 })} % zum Geburtsgewicht</span> : undefined}>
-                    <input className="feld" inputMode="numeric" value={d.gewicht ?? ""} onChange={(e) => setzeKind(k.id, "gewicht", e.target.value)} />
-                  </Feld>
-                  <Feld label="Temperatur °C"><input className="feld" inputMode="decimal" value={d.temperatur ?? ""} onChange={(e) => setzeKind(k.id, "temperatur", e.target.value)} /></Feld>
-                  <Feld label="Länge (cm)"><input className="feld" inputMode="decimal" value={d.laenge ?? ""} onChange={(e) => setzeKind(k.id, "laenge", e.target.value)} /></Feld>
-                  <Feld label="Kopfumfang (cm)"><input className="feld" inputMode="decimal" value={d.kopfumfang ?? ""} onChange={(e) => setzeKind(k.id, "kopfumfang", e.target.value)} /></Feld>
-                </div>
-                <Chips label="Haut" werte={AUSWAHL.haut} wert={d.haut ?? ""} aendern={(v) => setzeKind(k.id, "haut", v)} />
-                <Chips label="Nabel" werte={AUSWAHL.nabel} wert={d.nabel ?? ""} aendern={(v) => setzeKind(k.id, "nabel", v)} />
-                <Chips label="Ernährung" werte={AUSWAHL.stillen} wert={d.stillen ?? ""} aendern={(v) => setzeKind(k.id, "stillen", v)} />
-                <Chips label="Ausscheidung" werte={AUSWAHL.ausscheidung} wert={d.ausscheidung ?? ""} aendern={(v) => setzeKind(k.id, "ausscheidung", v)} />
-              </fieldset>
-            );
-          })}
+          {betreuung.kinder.map((k) => (
+            <DokuKachel
+              key={k.id}
+              titel={k.vorname}
+              felder={DOKU_FELDER.kind}
+              werte={w.kinder[k.id] ?? {}}
+              setze={(f, v) => setzeKind(k.id, f, v)}
+              einstellungen={ansicht.kind}
+              frueher={frueher.map((b): FruehererWert => ({ datum: b.datum, werte: b.dokumentation.kinder?.[k.id] ?? {} }))}
+              offenStandard={ansicht.kindOffen}
+              gesperrt={fremd}
+              kopfZusatz={
+                <a href={`/kinder/${k.id}/gewicht`} target="_blank" rel="noreferrer" className="knopf-sekundaer shrink-0 px-3 text-sm">
+                  Gewichtsverlauf ↗
+                </a>
+              }
+              feldHilfe={(f, wert) => {
+                if (f.id !== "gewicht" || !k.geburtsgewicht) return null;
+                const g = Number(String(wert).replace(",", "."));
+                if (!g) return null;
+                const differenz = ((g - k.geburtsgewicht) / k.geburtsgewicht) * 100;
+                return <span className={`block ${differenz <= -10 ? "font-medium text-tulpe-500" : ""}`}>{differenz > 0 ? "+" : ""}{differenz.toLocaleString("de-DE", { maximumFractionDigits: 1 })} % zum Geburtsgewicht</span>;
+              }}
+            />
+          ))}
 
           <fieldset disabled={fremd} className="karte">
             <Feld label="Notiz / Beratung">
@@ -416,22 +437,5 @@ function BesuchFormular({ betreuung, besuch, unterschriftVerfahren }: { betreuun
         </aside>
       </div>
     </>
-  );
-}
-
-/** Schnellauswahl per Antippen; freier Text bleibt möglich. */
-function Chips({ label, werte, wert, aendern }: { label: string; werte: readonly string[]; wert: string; aendern: (v: string) => void }) {
-  return (
-    <div>
-      <span className="etikett">{label}</span>
-      <div className="flex flex-wrap gap-2">
-        {werte.map((v) => (
-          <button key={v} type="button" aria-pressed={wert === v} onClick={() => aendern(wert === v ? "" : v)} className={`min-h-11 rounded-full px-4 text-sm font-medium ${wert === v ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}>
-            {v}
-          </button>
-        ))}
-        {wert && !werte.includes(wert) && <span className="rounded-full bg-salbei-100 px-4 py-2 text-sm">{wert}</span>}
-      </div>
-    </div>
   );
 }

@@ -79,6 +79,7 @@ export function Karte({
 
   useEffect(
     () => () => {
+      karte.current?.map.off();
       karte.current?.map.remove();
       karte.current = null;
     },
@@ -106,8 +107,8 @@ export function Karte({
       if (p.titel) m.bindTooltip(p.titel);
       grenzen.push([p.lat, p.lon]);
     }
-    if (grenzen.length === 1) k.map.setView(grenzen[0]!, 15);
-    else if (grenzen.length > 1) k.map.fitBounds(grenzen, { padding: [30, 30], maxZoom: 15 });
+    if (grenzen.length === 1) k.map.setView(grenzen[0]!, 15, { animate: false });
+    else if (grenzen.length > 1) k.map.fitBounds(grenzen, { padding: [30, 30], maxZoom: 15, animate: false });
   }
 
   useEffect(zeichnen, [punkte, linie]);
