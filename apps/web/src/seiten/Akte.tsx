@@ -87,10 +87,18 @@ export function Akte() {
         <MerkmaleKarte key={`m-${k.flaggen.join()}-${k.sprache}-${k.allergien}`} klientin={k} neuLaden={akte.laden} />
         <KontakteKarte klientin={k} neuLaden={akte.laden} />
       </div>
-      <div className="mt-4">
+
+
+      {betreuung && (
+        <>
+          <KinderKarte betreuung={betreuung} neuLaden={akte.laden} />
+          <Kontingente betreuungId={betreuung.id} />
+          <Besuche betreuungId={betreuung.id} />
+        </>
+      )}
+      <div className="mt-6">
         <EinwilligungenKarte klientin={k} neuLaden={akte.laden} />
       </div>
-
       <div className="mt-4">
         <PositionKarte
           titel="Wohnung auf der Karte"
@@ -100,16 +108,12 @@ export function Akte() {
             await api(`/api/klientinnen/${k.id}/position`, { method: "PUT", body: { lat, lon } });
             await akte.laden();
           }}
+          ausAdresse={async () => {
+            await api(`/api/klientinnen/${k.id}/verorten`, { method: "POST" });
+            await akte.laden();
+          }}
         />
       </div>
-
-      {betreuung && (
-        <>
-          <KinderKarte betreuung={betreuung} neuLaden={akte.laden} />
-          <Kontingente betreuungId={betreuung.id} />
-          <Besuche betreuungId={betreuung.id} />
-        </>
-      )}
     </>
   );
 }

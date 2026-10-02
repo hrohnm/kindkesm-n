@@ -1,8 +1,10 @@
 /**
- * Geokodierung über das eigene Adressverzeichnis (Tabelle "adresse", Hausnummern aus OpenStreetMap).
- * Adressen der Familien verlassen dadurch nie den Server. Import: scripts/karte-einrichten.sh.
+ * Geokodierung zuerst über das eigene Adressverzeichnis (Tabelle "adresse", Hausnummern aus OpenStreetMap;
+ * Import: scripts/karte-einrichten.sh). Nur wenn dort nichts gefunden wird und GEOCODER_URL nicht "aus" ist,
+ * wird die Online-Adresssuche (Nominatim) gefragt – mit Straße, PLZ und Ort, ohne Namen.
  */
 import { and, eq, sql } from "drizzle-orm";
+import { config } from "../config";
 import type { Datenbank } from "../db/client";
 import { adresse } from "../db/schema";
 
@@ -38,6 +40,40 @@ export function anschriftZerlegen(a: string): { strasse: string; plz: string | n
 }
 
 export async function geokodieren(db: Datenbank, eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }): Promise<Treffer | null> {
+  return (await imVerzeichnis(db, eingabe)) ?? (await online(eingabe));
+}
+
+// ------------------------------------------------------------------ Online-Adresssuche (Nominatim)
+const zwischenspeicher = new Map<string, Treffer | null>();
+let letzteAnfrage = 0;
+
+async function online(eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }): Promise<Treffer | null> {
+  if (!config.geocoderUrl || !eingabe.strasse || (!eingabe.plz && !eingabe.ort)) return null;
+  const schluessel = [eingabe.strasse, eingabe.plz, eingabe.ort].map((x) => (x ?? "").trim().toLowerCase()).join("|");
+  if (zwischenspeicher.has(schluessel)) return zwischenspeicher.get(schluessel)!;
+  // Nutzungsregeln: höchstens eine Anfrage je Sekunde
+  const warten = letzteAnfrage + 1100 - Date.now();
+  if (warten > 0) await new Promise((r) => setTimeout(r, warten));
+  letzteAnfrage = Date.now();
+  const url = new URL(`${config.geocoderUrl}/search`);
+  url.search = new URLSearchParams({ format: "jsonv2", limit: "1", countrycodes: "de", addressdetails: "1", street: eingabe.strasse.trim(), ...(eingabe.plz ? { postalcode: eingabe.plz } : {}), ...(eingabe.ort ? { city: eingabe.ort.trim() } : {}) }).toString();
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": `Kindkesmoeoen-Praxis-App/1.0${config.geocoderKontakt ? ` (${config.geocoderKontakt})` : ""}`, "Accept-Language": "de" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null; // z. B. Limit erreicht – nicht zwischenspeichern
+    const daten = (await res.json()) as Array<{ lat: string; lon: string; address?: { house_number?: string } }>;
+    const t = daten[0];
+    const treffer: Treffer | null = t ? { lat: Number(t.lat), lon: Number(t.lon), quelle: t.address?.house_number ? "adresse" : "strasse" } : null;
+    zwischenspeicher.set(schluessel, treffer);
+    return treffer;
+  } catch {
+    return null;
+  }
+}
+
+async function imVerzeichnis(db: Datenbank, eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }): Promise<Treffer | null> {
   if (!eingabe.strasse) return null;
   const { strasse, hausnummer } = strasseZerlegen(eingabe.strasse);
   const norm = strasseNormieren(strasse);

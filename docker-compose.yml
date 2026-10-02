@@ -29,6 +29,9 @@ services:
       DEMO_MODUS: ${DEMO_MODUS:-nein}
       # Routing-Server für echte Straßenstrecken (scripts/karte-einrichten.sh); leer = Schätzung aus der Luftlinie
       OSRM_URL: ${OSRM_URL:-}
+      # Online-Adresssuche, falls das eigene Adressverzeichnis nichts findet ("aus" = abgeschaltet)
+      GEOCODER_URL: ${GEOCODER_URL:-}
+      GEOCODER_KONTAKT: ${GEOCODER_KONTAKT:-}
 
   # Routing (OpenStreetMap, Mecklenburg-Vorpommern). Einrichten mit scripts/karte-einrichten.sh,
   # das Skript setzt COMPOSE_PROFILES=karte in .env, danach startet "docker compose up -d" ihn mit.

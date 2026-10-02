@@ -162,6 +162,22 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     return k;
   });
 
+  /** Position der Wohnung neu aus der Anschrift bestimmen (auch nach einer Korrektur von Hand). */
+  app.post<{ Params: { id: string } }>("/api/klientinnen/:id/verorten", async (request, reply) => {
+    const [alt] = await db.update(klientin).set({ geoQuelle: null }).where(eq(klientin.id, request.params.id)).returning({ id: klientin.id, lat: klientin.lat, lon: klientin.lon });
+    if (!alt) return reply.code(404).send({ fehler: "Klientin nicht gefunden" });
+    await klientinVerorten(db, alt.id);
+    const [k] = await db.select().from(klientin).where(eq(klientin.id, alt.id));
+    if (k!.lat == null) {
+      // nichts gefunden: bisherige Position behalten
+      if (alt.lat != null) await db.update(klientin).set({ lat: alt.lat, lon: alt.lon, geoQuelle: "manuell" }).where(eq(klientin.id, alt.id));
+      return reply.code(422).send({ fehler: "Die Anschrift wurde nicht gefunden. Bitte Straße, Hausnummer und PLZ prüfen oder die Position auf der Karte setzen." });
+    }
+    await wegegeldFuerKlientin(db, k!.id);
+    await protokollieren(db, request.benutzer!.id, "position", "klientin", k!.id, { quelle: k!.geoQuelle });
+    return k;
+  });
+
   /** Position der Wohnung von Hand setzen (Karte), z. B. bei Neubauten, die noch nicht im Adressverzeichnis stehen. */
   app.put<{ Params: { id: string } }>("/api/klientinnen/:id/position", async (request, reply) => {
     const p = pruefen(positionSchema, request.body, reply);

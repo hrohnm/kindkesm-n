@@ -89,3 +89,22 @@ describe("Akte: Merkmale, Kontakte, Einwilligungen, Vertretung", () => {
     expect((await req("GET", `/api/klientinnen/${id}`)).json().betreuungen[0].vertretungHebammeId).toBe(marielenaId);
   });
 });
+
+describe("Position aus der Adresse", () => {
+  it("meldet nicht gefundene Anschriften verständlich (Online-Suche in Tests aus)", async () => {
+    const id = await krueger();
+    const vorher = (await req("GET", `/api/klientinnen/${id}`)).json();
+    await req("PUT", `/api/klientinnen/${id}/position`, { lat: 54.1, lon: 11.9 });
+    const akte = (await req("GET", `/api/klientinnen/${id}`)).json();
+    const { betreuungen: _b, kontakte: _k, einwilligungen: _e, ...stamm } = akte;
+    await req("PUT", `/api/klientinnen/${id}`, { ...stamm, strasse: "Gibtsnichtweg 99" });
+    const r = await req("POST", `/api/klientinnen/${id}/verorten`);
+    expect(r.statusCode).toBe(422);
+    expect(r.json().fehler).toContain("nicht gefunden");
+    // zurück zur Demo-Anschrift: wird wieder aus dem Adressverzeichnis gefunden
+    await req("PUT", `/api/klientinnen/${id}`, { ...stamm, strasse: vorher.strasse });
+    const ok = await req("POST", `/api/klientinnen/${id}/verorten`);
+    expect(ok.statusCode).toBe(200);
+    expect(ok.json().geoQuelle).toMatch(/adresse|strasse/);
+  });
+});

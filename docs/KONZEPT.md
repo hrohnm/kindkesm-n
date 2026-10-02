@@ -821,7 +821,7 @@ Die App wird als **Progressive Web App** entwickelt: eine Codebasis für iPad (m
 | Löschung | Aufbewahrungsfristen automatisch überwachen, danach Löschvorschlag |
 | Einwilligungen | Fotos, Kinderurkunde, SMS/E-Mail digital erfasst und widerrufbar |
 | E-Mail-Kommunikation | Die Hebammen nutzen heute private Gmail- und Outlook-Adressen. Für Nachrichten mit Gesundheitsdaten empfiehlt sich eine Praxis-Domain mit deutschem Anbieter (AVV) bzw. die praxisinternen Team-Nachrichten (M20) |
-| Drittanbieter | Keine Weitergabe an Google oder Meta; Karten auf OSM-Basis selbst gehostet; keine Tracking-Tools |
+| Drittanbieter | Keine Weitergabe an Google oder Meta; keine Tracking-Tools. Adresssuche zuerst im eigenen Adressverzeichnis (OSM-Daten auf dem Server); nur wenn es nichts findet, optional Online-Adresssuche bei OpenStreetMap (Nominatim) mit Straße/PLZ/Ort ohne Namen, abschaltbar (`GEOCODER_URL=aus`) |
 | Dokumente | Verzeichnis der Verarbeitungstätigkeiten, TOMs, Datenschutzinformation für Klientinnen, ggf. DSFA (Art. 35 DSGVO) |
 
 ---

@@ -13,6 +13,7 @@ import type { FastifyInstance, FastifyReply } from "fastify";
 import { nurHebamme } from "../auth";
 import type { Datenbank } from "../db/client";
 import { abrechnungseinstellung, benutzer, ort, tour, tourvorlage } from "../db/schema";
+import { anschriftZerlegen, geokodieren } from "../geo/adressen";
 import { ortVerorten } from "../geo/positionen";
 import { wegegeldOffeneTage } from "../wegegeld";
 import { pruefen } from "../fehler";
@@ -115,6 +116,18 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
     await protokollieren(db, request.benutzer!.id, "geaendert", "ort", request.params.id);
     const [o] = await db.select().from(ort).where(eq(ort.id, request.params.id));
     return o;
+  });
+
+  /** Position aus der Anschrift bestimmen (Adressverzeichnis bzw. Online-Adresssuche). */
+  app.post<{ Params: { id: string } }>("/api/ich/orte/:id/verorten", async (request, reply) => {
+    const [o] = await db.select().from(ort).where(eq(ort.id, request.params.id));
+    if (!o || (o.benutzerId !== null && o.benutzerId !== request.benutzer!.id)) return reply.code(404).send({ fehler: "Ort nicht gefunden" });
+    const t = await geokodieren(db, anschriftZerlegen(o.anschrift));
+    if (!t) return reply.code(422).send({ fehler: "Die Anschrift wurde nicht gefunden. Bitte im Format „Straße Nr., PLZ Ort“ eingeben oder die Position auf der Karte setzen." });
+    const [neu] = await db.update(ort).set({ lat: t.lat.toFixed(6), lon: t.lon.toFixed(6), geaendertAm: new Date() }).where(eq(ort.id, o.id)).returning();
+    await protokollieren(db, request.benutzer!.id, "position", "ort", o.id, { quelle: t.quelle });
+    await wegegeldOffeneTage(db, request.benutzer!.id);
+    return neu;
   });
 
   /** Position von Hand setzen (Karte), falls die Anschrift nicht im Adressverzeichnis steht. */
