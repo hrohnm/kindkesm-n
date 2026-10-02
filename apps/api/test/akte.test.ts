@@ -148,6 +148,11 @@ describe("Gewichtsverlauf", () => {
     expect(r.kind).toMatchObject({ vorname: "Ole", geburtsgewicht: 3480 });
     expect(r.werte.map((w: { gramm: number }) => w.gramm)).toEqual(expect.arrayContaining([3290, 3240, 3270, 3310]));
     expect(r.werte.find((w: { gramm: number }) => w.gramm === 3310).status).toBe("entwurf");
+    // Länge und Kopfumfang aus der Dokumentation (Komma als Dezimaltrenner)
+    await req("POST", `/api/betreuungen/${b.id}/besuche`, besuchDaten({ datum: "2026-08-20", von: "08:00", bis: "08:30", dokumentation: { mutter: {}, kinder: { [kindId]: { laenge: "53,5", kopfumfang: "36" } }, notiz: "" } }));
+    const r2 = (await req("GET", `/api/kinder/${kindId}/gewicht`)).json();
+    expect(r2.laenge.map((w: { wert: number }) => w.wert)).toContain(53.5);
+    expect(r2.kopfumfang.map((w: { wert: number }) => w.wert)).toContain(36);
     expect((await req("GET", "/api/kinder/00000000-0000-0000-0000-000000000000/gewicht")).statusCode).toBe(404);
   });
 });

@@ -468,7 +468,7 @@ function BesuchFormular({
               gesperrt={fremd}
               kopfZusatz={
                 <button type="button" className="knopf-sekundaer shrink-0 px-3 text-sm" onClick={() => setGewichtKind(k.id)}>
-                  Gewichtsverlauf
+                  Wachstum
                 </button>
               }
               feldHilfe={(f, wert) => {
@@ -537,8 +537,11 @@ function BesuchFormular({
             kindId={gewichtKind}
             besuchId={besuch?.id}
             aktuell={(() => {
-              const g = Number(String(w.kinder[gewichtKind]?.gewicht ?? "").replace(",", "."));
-              return g > 0 ? { datum: w.datum, gramm: g } : null;
+              const zahl = (f: string) => {
+                const v = Number(String(w.kinder[gewichtKind]?.[f] ?? "").replace(",", "."));
+                return v > 0 ? v : undefined;
+              };
+              return { datum: w.datum, gewicht: zahl("gewicht"), laenge: zahl("laenge"), kopfumfang: zahl("kopfumfang") };
             })()}
             schliessen={schliessenGewicht}
           />

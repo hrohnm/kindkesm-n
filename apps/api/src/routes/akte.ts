@@ -206,7 +206,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     return k;
   });
 
-  /** Gewichtsverlauf eines Kindes: Geburtsgewicht und alle dokumentierten Gewichte (auch Entwürfe, gekennzeichnet). */
+  /** Wachstum eines Kindes: alle dokumentierten Gewichte, Längen und Kopfumfänge (auch Entwürfe, gekennzeichnet). */
   app.get<{ Params: { id: string } }>("/api/kinder/:id/gewicht", async (request, reply) => {
     const [k] = await db.select().from(kind).where(eq(kind.id, request.params.id));
     if (!k) return reply.code(404).send({ fehler: "Kind nicht gefunden" });
@@ -218,14 +218,16 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       .innerJoin(benutzer, eq(benutzer.id, besuch.hebammeId))
       .where(eq(besuch.betreuungId, k.betreuungId))
       .orderBy(asc(besuch.datum), asc(besuch.von));
-    const werte = besuche
-      .map((x) => {
-        const roh = (x.dokumentation as { kinder?: Record<string, { gewicht?: unknown }> }).kinder?.[k.id]?.gewicht;
-        const gramm = Number(String(roh ?? "").replace(",", "."));
-        return roh != null && roh !== "" && Number.isFinite(gramm) && gramm > 0 ? { datum: x.datum, von: x.von, gramm, besuchId: x.id, status: x.status, hebamme: x.hebamme } : null;
-      })
-      .filter((x) => x !== null);
-    return { kind: k, klientin: kl, betreuungId: k.betreuungId, werte };
+    const messung = (feld: "gewicht" | "laenge" | "kopfumfang") =>
+      besuche
+        .map((x) => {
+          const roh = (x.dokumentation as { kinder?: Record<string, Record<string, unknown>> }).kinder?.[k.id]?.[feld];
+          const wert = Number(String(roh ?? "").replace(",", "."));
+          return roh != null && roh !== "" && Number.isFinite(wert) && wert > 0 ? { datum: x.datum, von: x.von, wert, besuchId: x.id, status: x.status, hebamme: x.hebamme } : null;
+        })
+        .filter((x) => x !== null);
+    const werte = messung("gewicht").map(({ wert, ...w }) => ({ ...w, gramm: wert }));
+    return { kind: k, klientin: kl, betreuungId: k.betreuungId, werte, laenge: messung("laenge"), kopfumfang: messung("kopfumfang") };
   });
 
   app.get<{ Params: { id: string } }>("/api/betreuungen/:id", async (request, reply) => {
