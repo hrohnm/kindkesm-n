@@ -29,6 +29,7 @@ test("Hausbesuch dokumentieren mit Tablet-Unterschrift", async ({ page }, info) 
   await page.getByLabel("Datum").fill(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`);
   await page.getByLabel("Beginn").fill("10:00");
   await page.getByLabel("Ende").fill("10:50");
+  await page.getByRole("button", { name: /^Paul/ }).click();
   await page.getByRole("button", { name: "voll gestillt" }).first().click();
   await page.getByLabel("Gewicht (g)").first().fill("2950");
   await expect(page.getByText(/\+11,3 % zum Geburtsgewicht/)).toBeVisible();

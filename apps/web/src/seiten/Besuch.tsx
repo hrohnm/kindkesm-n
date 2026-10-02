@@ -226,8 +226,9 @@ function BesuchFormular({
   return (
     <>
       {/* ---------------------------------------------------- Kopfzeile (bleibt beim Scrollen stehen) mit Abrechnung */}
-      <div className="sticky top-0 z-30 -mx-4 -mt-6 mb-5 border-b border-sand-200 bg-sand-50 px-4 pt-3 pb-3 shadow-sm sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:-mx-12 lg:px-12 dark:border-salbei-700 dark:bg-salbei-900">
-        <div className="mx-auto max-w-5xl">
+      {/* Hintergrund über die ganze Breite des Inhaltsbereichs (Pseudo-Element, an der Seitenleiste abgeschnitten durch overflow-x-clip im Layout) */}
+      <div className="sticky top-0 z-30 -mt-6 mb-5 bg-sand-50 pt-3 pb-3 before:absolute before:inset-y-0 before:-right-[100vw] before:-left-[100vw] before:-z-10 before:border-b before:border-sand-200 before:bg-sand-50 before:shadow-sm dark:bg-salbei-900 dark:before:border-salbei-700 dark:before:bg-salbei-900">
+        <div>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <Link to={zurueck ?? `/klientinnen/${betreuung.klientin.id}`} className="inline-flex min-h-9 items-center text-sm text-salbei-600">‹ {zurueck?.startsWith("/tour") ? "Tour" : zurueck === "/" ? "Heute" : `${betreuung.klientin.vorname} ${betreuung.klientin.nachname}`}</Link>

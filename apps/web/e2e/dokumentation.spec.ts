@@ -18,6 +18,10 @@ test("Eigene Ansicht, Felder einblenden, Kacheln zuklappen und Gewichtsverlauf",
   await page.goto("/klientinnen");
   await page.getByText("Lena Krüger").click();
   await page.getByRole("link", { name: "Besuch dokumentieren" }).click();
+  // Kacheln sind standardmäßig zugeklappt
+  await expect(page.getByLabel("RR systolisch (mmHg)")).toHaveCount(0);
+  await page.getByRole("button", { name: /^Mutter/ }).click();
+  await page.getByRole("button", { name: /^Ole/ }).click();
   await expect(page.getByLabel("RR systolisch (mmHg)")).toBeVisible();
   await expect(page.getByLabel("Puls (/min)")).toHaveCount(0);
   await page.getByRole("button", { name: /Weitere Felder einblenden \(Puls\)/ }).click();

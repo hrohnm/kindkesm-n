@@ -50,15 +50,16 @@ export const ansichtSchema = z.object({
   mutter: z.record(z.string(), feldEinstellung).default({}),
   kind: z.record(z.string(), feldEinstellung).default({}),
   /** Kacheln beim Öffnen eines Besuchs aufgeklappt */
-  mutterOffen: z.boolean().default(true),
-  kindOffen: z.boolean().default(true),
+  mutterOffen: z.boolean().default(false),
+  kindOffen: z.boolean().default(false),
 });
 export type Ansicht = z.infer<typeof ansichtSchema>;
 
 /** Standard: alle Felder sichtbar, Vergleich für Messwerte. */
 export function standardAnsicht(): Ansicht {
   const je = (felder: DokuFeld[]) => Object.fromEntries(felder.map((f) => [f.id, { sichtbar: true, vergleich: f.art === "zahl" || f.id === "lochien" || f.id === "fundus" }]));
-  return { mutter: je(DOKU_FELDER.mutter), kind: je(DOKU_FELDER.kind), mutterOffen: true, kindOffen: true };
+  // Kacheln standardmäßig zugeklappt: die Hebamme klappt auf, was sie eintragen möchte
+  return { mutter: je(DOKU_FELDER.mutter), kind: je(DOKU_FELDER.kind), mutterOffen: false, kindOffen: false };
 }
 
 /** Ergänzt gespeicherte Einstellungen um neue Felder (Standardwerte). */
