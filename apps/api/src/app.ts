@@ -12,6 +12,7 @@ import { inArray } from "drizzle-orm";
 import { abrechnungRouten } from "./routes/abrechnung";
 import { aenderungRouten } from "./routes/aenderungen";
 import { akteRouten } from "./routes/akte";
+import { urkundeRouten } from "./routes/urkunde";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
 import { ichRouten } from "./routes/ich";
@@ -67,6 +68,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await regelwerkRouten(app, db);
   await hinweisRouten(app, db);
   await akteRouten(app, db);
+  await urkundeRouten(app, db);
   await abrechnungRouten(app, db);
   await tourenRouten(app, db);
   await aenderungRouten(app, db);

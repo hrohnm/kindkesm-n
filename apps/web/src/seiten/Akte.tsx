@@ -255,7 +255,10 @@ function KinderKarte({ betreuung, neuLaden }: { betreuung: Betreuung; neuLaden: 
             <div className="mt-2 text-sm">
               {k.geburtsgewicht ? `${k.geburtsgewicht.toLocaleString("de-DE")} g` : "– g"} · {k.laenge ? `${Number(k.laenge).toLocaleString("de-DE")} cm` : "– cm"} · KU {k.kopfumfang ? `${Number(k.kopfumfang).toLocaleString("de-DE")} cm` : "–"}
             </div>
-            <Link to={`/kinder/${k.id}/gewicht`} className="mt-2 inline-flex min-h-11 items-center font-medium text-salbei-600 underline">Wachstum und Perzentilen ›</Link>
+            <div className="mt-2 flex flex-wrap gap-x-5">
+              <Link to={`/kinder/${k.id}/gewicht`} className="inline-flex min-h-11 items-center font-medium text-salbei-600 underline">Wachstum und Perzentilen ›</Link>
+              <Link to={`/kinder/${k.id}/urkunde`} className="inline-flex min-h-11 items-center font-medium text-salbei-600 underline">Kinderurkunde ›</Link>
+            </div>
           </div>
         ))}
       </div>

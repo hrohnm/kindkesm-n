@@ -9,3 +9,4 @@ export * from "./aenderung";
 export * from "./csv";
 export * from "./abgleich";
 export * from "./who-wachstum";
+export * from "./urkunde";

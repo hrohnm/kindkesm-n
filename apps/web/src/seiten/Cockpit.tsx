@@ -116,7 +116,7 @@ export function Cockpit() {
             {hinweise.daten.map((h) => (
               <li key={h.id} className={`flex items-start justify-between gap-4 rounded-2xl border border-l-4 px-5 py-4 ${STUFE[h.stufe]}`}>
                 <div>
-                  <div className="font-medium">{h.titel}</div>
+                  {h.link ? <Link to={h.link} className="font-medium underline decoration-salbei-300 underline-offset-2">{h.titel}</Link> : <div className="font-medium">{h.titel}</div>}
                   <div className="text-sm text-slate-500">{h.quelle}</div>
                 </div>
                 <div className="shrink-0 text-right text-sm">

@@ -2,7 +2,7 @@ import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@
 import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, aenderung, benutzer, besuch, leistung, praxis, regelwerk, versand } from "../db/schema";
+import { abrechnungseinstellung, aenderung, benutzer, besuch, betreuung, kind, klientin, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -54,6 +54,26 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       for (const v of unbezahlt) {
         const seit = v.versendetAm ? tageZwischen(new Date(`${v.versendetAm}T12:00:00`), heute) : 0;
         if (seit > 42) hinweise.push({ id: `unbezahlt-${v.nummer}`, titel: `Versand ${v.nummer} seit ${seit} Tagen ohne Zahlungseingang`, datum: v.versendetAm!, tage: 0, stufe: "warnung", quelle: "Abrechnung (Zahlungsfrist der Kassen 21/28 Tage, Anlage 2 § 4)" });
+      }
+    }
+
+    if (request.benutzer!.rolle === "hebamme") {
+      // Kinderurkunde: 7 Tage vor Ende des späten Wochenbetts (Ablauf der 12. Lebenswoche) vorbereiten
+      const kinder = await db
+        .select({ id: kind.id, vorname: kind.vorname, geburtsdatum: kind.geburtsdatum, urkunde: urkunde.status })
+        .from(kind)
+        .innerJoin(betreuung, eq(betreuung.id, kind.betreuungId))
+        .innerJoin(klientin, eq(klientin.id, betreuung.klientinId))
+        .leftJoin(urkunde, eq(urkunde.kindId, kind.id))
+        .where(and(sql`coalesce(${betreuung.zustaendigeHebammeId}, ${klientin.zustaendigeHebammeId}) = ${request.benutzer!.id}`, ne(betreuung.status, "abgeschlossen"), eq(klientin.archiviert, false)));
+      for (const k of kinder) {
+        if (k.urkunde === "fertig") continue;
+        const ende = new Date(`${k.geburtsdatum}T12:00:00`);
+        ende.setDate(ende.getDate() + 83); // letzter Tag der 12. Lebenswoche
+        const tage = tageZwischen(heute, ende);
+        if (tage >= 0 && tage <= 7) {
+          hinweise.push({ id: `urkunde-${k.id}`, titel: `Kinderurkunde für ${k.vorname} vorbereiten – Betreuungszeit endet am ${isoDatum(ende).split("-").reverse().join(".")}`, datum: isoDatum(ende), tage, stufe: "info", quelle: "Kinderurkunde (beim letzten Besuch überreichen)", link: `/kinder/${k.id}/urkunde` });
+        }
       }
     }
 

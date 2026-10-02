@@ -12,6 +12,7 @@ import { Cockpit } from "./seiten/Cockpit";
 import { Einstellungen } from "./seiten/Einstellungen";
 import { Fahrtenbuch } from "./seiten/Fahrtenbuch";
 import { Gewicht } from "./seiten/Gewicht";
+import { Urkunde } from "./seiten/Urkunde";
 import { Abrechnung } from "./seiten/einstellungen/Abrechnung";
 import { Ansicht } from "./seiten/einstellungen/Ansicht";
 import { Offline } from "./seiten/einstellungen/Offline";
@@ -40,6 +41,7 @@ function App() {
         <Route path="tour/:datum" element={<Tour />} />
         <Route path="fahrtenbuch" element={<Fahrtenbuch />} />
         <Route path="kinder/:id/gewicht" element={<Gewicht />} />
+        <Route path="kinder/:id/urkunde" element={<Urkunde />} />
         <Route path="abrechnung" element={<AbrechnungSeite />} />
         <Route path="team" element={<Team />} />
         <Route path="regelwerk" element={<Regelwerk />} />

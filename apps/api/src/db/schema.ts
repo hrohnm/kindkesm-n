@@ -428,3 +428,15 @@ export const selbstzahlerPreis = pgTable(
   },
   (t) => [primaryKey({ columns: [t.benutzerId, t.leistungId] })],
 );
+
+// ------------------------------------------------------------------ Kinderurkunde (M10)
+
+/** Kinderurkunde: eine je Kind; Inhalt (Text, Tabelle, Meilensteine, Optionen) als JSON, das PDF wird daraus erzeugt. */
+export const urkunde = pgTable("urkunde", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kindId: uuid("kind_id").notNull().unique().references(() => kind.id, { onDelete: "cascade" }),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id),
+  daten: jsonb("daten").$type<Record<string, unknown>>().notNull(),
+  status: text("status", { enum: ["entwurf", "fertig"] }).notNull().default("entwurf"),
+  ...zeitstempel(),
+});

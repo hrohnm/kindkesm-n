@@ -34,6 +34,8 @@ export type FristHinweis = {
   tage: number;
   stufe: "info" | "warnung" | "dringend";
   quelle: string;
+  /** Seite in der App, auf der sich der Hinweis erledigen lässt */
+  link?: string;
 };
 
 /**
