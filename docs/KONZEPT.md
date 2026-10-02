@@ -313,6 +313,14 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - Online-Anmeldung über die Website mit Warteliste, Bestätigungs- und Erinnerungsmails
 - Teilnehmerliste und Anwesenheit per Tablet abhaken → Kassenkurse an HebSet (Formular 3.4), Selbstzahlerkurse → Rechnung (M13)
 - Partnergebühren, Ratenzahlung, Stornoregeln
+- **Umgesetzt (M12):**
+  - Kurse mit Art (Geburtsvorbereitung, Rückbildung, Babymassage, Eltern-Kind, sonstige), Gruppe oder Einzelunterweisung, Abrechnung Krankenkasse oder Selbstzahler (Preis, Partnergebühr), Ort, Plätze, Kursleitung durch eine oder mehrere Hebammen
+  - Termine einzeln oder als Serie; je Termin Format (live in Präsenz = 2, live digital = 3, Selbstlerneinheit = 6) und die abrechnende Hebamme (Aufteilung bei Kursen zu zweit)
+  - Teilnehmerinnen aus der Akte oder ohne Akte, Warteliste mit Nachrücken, Stornieren, „bezahlt“ bei Selbstzahlerkursen
+  - Anwesenheit per Tablet; bei Kassenkursen Unterschrift je Versicherte (Tablet oder Papier). Beim Abschließen entsteht je anwesender Versicherter eine Kurseinheit (GPOS 401/402/403/404 + Format) mit Prüfung: 5-Minuten-Einheiten, Kontingent je Versicherte (Geburtsvorbereitung 14 Std., Rückbildung 10 Std.), höchstens die Hälfte als Selbstlerneinheit, Geburtsvorbereitung nur vor und Rückbildung nur nach der Geburt bis Ende des 9. Monats, Begründung bei Einzelunterweisung
+  - Die Kurseinheiten laufen in die normale Abrechnung (Versand, Abrechnungsdatenblatt) und werden auf **Formular 3.4** gedruckt; Selbstlerneinheit ohne „Uhrzeit von“, Dauer bei „Uhrzeit bis“
+  - Öffentliche Anmeldeseite `/anmeldung` (für die Praxis-Website): freigeschaltete Kurse mit Terminen und freien Plätzen, Anmeldung mit Einwilligung, automatisch Warteliste bei vollem Kurs, Schutz gegen Spam (Honigtopf, Begrenzung je IP); neue Anmeldungen erscheinen im Cockpit
+  - Noch offen: Bestätigungs- und Erinnerungsmails (mit dem E-Mail-Postfach der Praxis), Rechnungen für Selbstzahlerkurse (M13), Ratenzahlung
 
 ### M13 – Selbstzahler-Rechnungen
 - Akupunktur, Kinesio-Taping, Schwangerschaftsmassage, Babymassage, Partnergebühren
@@ -857,7 +865,7 @@ Claude entwickelt in diesem Repository in kleinen, lauffähigen Schritten. Jeder
 |---|---|
 | **M-1 Grundgerüst** ✅ | Repository-Struktur, Docker Compose, Datenbank, Anmeldung, Hebammenprofile mit Orten und Einstellungen, Regelwerk-Import, Demo-Daten, Deployment-Anleitung für den VPS ([BETRIEB.md](BETRIEB.md)) |
 | **M-2 Akte und Besuch** ✅ | Klientinnen, Kinder, Betreuungsfälle, Besuchsdokumentation auf dem Tablet, Unterschrift auf Papier oder Tablet, Leistungsberechnung mit Plausibilitätsprüfung (5-Minuten-Einheiten, Zuschläge inkl. Feiertage MV, Kontingente, Materialpauschalen) und Kontingentanzeige |
-| **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 folgt mit dem Kursmodul |
+| **M-3 Abrechnung** ✅ | Amtliche Formulare 3.1/3.3 als PDF (feldgenau auf der Vorlage; mit Tablet-Unterschriften bzw. mit vorausgefülltem Kopf für die Mappe), Kontrollliste für Papier-Originale, Abrechnungsdatenblatt, Versandmappe mit Deckblatt, Versand vorbereiten/versendet/bezahlt inkl. Kürzungen, Sperre versendeter Besuche, Fristen-Hinweise (Ausschlussfrist, offene Zahlungen, 1×/Monat bei Selbstabrechnung). Formular 3.4 mit dem Kursmodul (M12) |
 | **M-4 Touren** ✅ | Tagesplanung mit Terminen (fest, Zeitfenster, flexibel), Optimierung mit Zeitfenstern, OSRM-Routing (Luftlinie als Ersatz), Adressverzeichnis aus OpenStreetMap, Karte, Navigation, Wegegeld 50100/50200 automatisch aus den Hausbesuchen, Fahrtenbuch mit Export |
 | **M-5 Regelwerk-Administration** ✅ | Positionen, Kontingente, Zuschläge, Wegegeld, Feiertage, Fristen und Selbstzahler-Preise bearbeiten, Vier-Augen-Freigabe mit Konfliktprüfung, Fassung freigeben, neue Fassung, Testrechner mit Vorher/Nachher, Verlauf |
 | **M-6 Offline** ✅ | Tour und Akten für heute/morgen verschlüsselt auf dem Gerät, Besuche ohne Netz dokumentieren und abschließen (vorläufige Abrechnung auf dem Gerät), Warteschlange mit automatischer Übertragung, idempotente Übertragung, Konflikterkennung mit feldweisem Zusammenführen, Statusanzeige und Abgleich-Seite (Kapitel 12.3) |

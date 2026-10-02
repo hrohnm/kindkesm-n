@@ -1,5 +1,6 @@
 import {
   besuchAbrechnen,
+  istKursBesuch,
   besuchSchema,
   betreuungSchema,
   kindSchema,
@@ -14,7 +15,7 @@ import {
   type Leistungstyp,
   type RegelwerkDaten,
 } from "@kindkesmoeoen/shared";
-import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, notInArray, or, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { Datenbank } from "../db/client";
 import { benutzer, besuch, besuchHistorie, betreuung, kind, klientin, leistung, termin } from "../db/schema";
@@ -254,8 +255,8 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     if (!k) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
     const rw = await regelwerkFuer(db, heuteIso());
     if (!rw) return [];
-    const relevant = k.geburtsdatum ? ["301", "303", "306"] : ["101-tel", "103", "104"];
-    return kontingentStand(k.fruehere, rw).filter((s) => relevant.includes(s.id));
+    const relevant = k.geburtsdatum ? ["301", "303", "306", "403"] : ["101-tel", "103", "104", "401"];
+    return kontingentStand(k.fruehere, rw).filter((s) => relevant.includes(s.id) && (!["401", "403"].includes(s.id) || s.genutzt > 0));
   });
 
   /** Abrechnungskontext (Geburtsdatum, ET, frühere Besuche) für die Vorschau auf dem Gerät, wenn keine Verbindung besteht. */
@@ -430,12 +431,14 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   app.put<{ Params: { id: string } }>("/api/besuche/:id", async (request, reply) => {
     const b = await eigenerBesuch(request.params.id, request, reply);
     if (!b) return;
+    if (istKursBesuch(b.typ)) return reply.code(409).send({ fehler: "Kurseinheiten werden über die Anwesenheit im Kurs bearbeitet." });
     return besuchSpeichern(request, reply, b.betreuungId, b);
   });
 
   app.delete<{ Params: { id: string } }>("/api/besuche/:id", async (request, reply) => {
     const b = await eigenerBesuch(request.params.id, request, reply);
     if (!b) return;
+    if (istKursBesuch(b.typ)) return reply.code(409).send({ fehler: "Kurseinheiten werden über die Anwesenheit im Kurs bearbeitet." });
     if (b.status !== "entwurf") return reply.code(409).send({ fehler: "Abgeschlossene Besuche können nicht gelöscht werden (Dokumentationspflicht)." });
     await db.delete(besuch).where(eq(besuch.id, b.id));
     await db.update(termin).set({ status: "geplant" }).where(eq(termin.besuchId, b.id));
@@ -461,13 +464,15 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       ort: klientin.ort,
     };
     const basis = db.select(felder).from(besuch).innerJoin(betreuung, eq(betreuung.id, besuch.betreuungId)).innerJoin(klientin, eq(klientin.id, betreuung.klientinId));
-    const heute = await basis.where(and(eq(besuch.hebammeId, ich), eq(besuch.datum, heuteIso()))).orderBy(asc(besuch.von));
+    // Kurseinheiten erscheinen beim Kurs, nicht in der Besuchsliste des Tages
+    const keinKurs = notInArray(besuch.typ, ["geburtsvorbereitung", "rueckbildung"]);
+    const heute = await basis.where(and(eq(besuch.hebammeId, ich), eq(besuch.datum, heuteIso()), keinKurs)).orderBy(asc(besuch.von));
     const entwuerfe = await db
       .select(felder)
       .from(besuch)
       .innerJoin(betreuung, eq(betreuung.id, besuch.betreuungId))
       .innerJoin(klientin, eq(klientin.id, betreuung.klientinId))
-      .where(and(eq(besuch.hebammeId, ich), eq(besuch.status, "entwurf")))
+      .where(and(eq(besuch.hebammeId, ich), eq(besuch.status, "entwurf"), keinKurs))
       .orderBy(desc(besuch.datum));
     // Geplante Besuche der heutigen Tour (die Kachel zählt Termine, nicht nur schon dokumentierte Besuche)
     const geplant = await db

@@ -139,6 +139,8 @@ export type BesuchKurz = {
   unterschrift: { art: string };
   hebamme: string;
   hebammeId: string;
+  /** Kurseinheit: Verweis auf den Kurstermin */
+  dokumentation?: { kurs?: { kursId: string; terminId: string; titel: string } };
 };
 
 export type KontingentStand = { id: string; name: string; genutzt: number; maximum: number; einheit: string };

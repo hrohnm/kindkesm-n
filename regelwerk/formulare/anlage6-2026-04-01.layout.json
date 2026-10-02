@@ -4,7 +4,7 @@
   "gueltig_von": "2026-04-01",
   "seitenhoehe": 841.89,
   "seiten": { "3.1": 0, "3.2": 1, "3.3": 2, "3.4": 3, "3.5": 4 },
-  "unterstuetzt": ["3.1", "3.3"],
+  "unterstuetzt": ["3.1", "3.3", "3.4"],
   "kopf": {
     "krankenkasse": { "x": 40.5, "y": 104.5, "breite": 226, "groesse": 9 },
     "name": { "x": 40.5, "y": 126, "breite": 160, "groesse": 10.5 },
@@ -38,5 +38,8 @@
   "vermerke": { "x": 40.5, "y": 726, "breite": 512, "zeilen": 5, "groesse": 7.5 },
   "zusatz": {
     "3.3": { "mehrlinge": { "x": 175, "y": 290, "groesse": 9 } }
+  },
+  "abweichungen": {
+    "3.4": { "unterschrift": [326.5, 539.0] }
   }
 }

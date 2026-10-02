@@ -27,6 +27,8 @@ export type FormularLayout = {
   };
   vermerke: { x: number; y: number; breite: number; zeilen: number; groesse: number };
   zusatz?: Record<string, { mehrlinge?: { x: number; y: number; groesse: number } }>;
+  /** Abweichende Spalten einzelner Formulare (z. B. 3.4: breitere Unterschriftsspalte, nur vier Leistungsspalten) */
+  abweichungen?: Record<string, Partial<FormularLayout["tabelle"]>>;
 };
 
 /** Verfügbare Formular-Layouts (neueste zuerst). */
@@ -119,7 +121,7 @@ export async function formularSeiten(
       feldText(seite!, hb.ik, { x: l.hebammen.ik.x, y, breite: l.hebammen.ik.breite, groesse: l.hebammen.groesse, schrift: s.normal, seitenhoehe: h });
     });
 
-    const tb = l.tabelle;
+    const tb = { ...l.tabelle, ...l.abweichungen?.[formular] };
     const zelle = (text: string, [x0, x1]: [number, number], y: number, fett = false) =>
       feldText(seite!, text, { x: x0 + 2, y, breite: x1 - x0 - 4, groesse: tb.groesse, schrift: fett ? s.fett : s.normal, ausrichtung: "mitte", seitenhoehe: h });
     for (const [i, z] of zeilen.slice(b * proBlatt, (b + 1) * proBlatt).entries()) {
@@ -127,7 +129,7 @@ export async function formularSeiten(
       const y = oben + tb.zeilenhoehe / 2 + tb.groesse / 2 - 1;
       zelle(String(z.hebNr), tb.hebnr, y);
       zelle(datumDe(z.datum), tb.datum, y);
-      zelle(z.von, tb.von, y);
+      if (z.von) zelle(z.von, tb.von, y);
       zelle(z.bis, tb.bis, y);
       zelle(z.eintrag, tb.leistungsspalten[z.spalte]!, y, true);
       for (const m of z.material) zelle("X", tb.leistungsspalten[m]!, y, true);

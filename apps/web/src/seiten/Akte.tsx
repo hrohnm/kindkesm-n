@@ -3,13 +3,11 @@ import {
   BETREUUNG_STATUS_LABEL,
   GESCHLECHTER,
   GESCHLECHT_LABEL,
-  LEISTUNGSART_LABEL,
-  LEISTUNGSTYP_LABEL,
+  besuchArtLabel,
+  besuchTypLabel,
   lebenstag,
   sswAusEt,
   type BetreuungStatus,
-  type Leistungsart,
-  type Leistungstyp,
 } from "@kindkesmoeoen/shared";
 import { useState } from "react";
 import { Link, useParams } from "react-router";
@@ -346,13 +344,13 @@ function Besuche({ betreuungId }: { betreuungId: string }) {
       ) : (
         <div className="karte divide-y divide-sand-200 p-0 dark:divide-salbei-700">
           {daten.map((b) => (
-            <Link key={b.id} to={`/besuche/${b.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 hover:bg-sand-50 dark:hover:bg-salbei-700/30">
+            <Link key={b.id} to={b.dokumentation?.kurs ? `/kurse/${b.dokumentation.kurs.kursId}/termine/${b.dokumentation.kurs.terminId}` : `/besuche/${b.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 hover:bg-sand-50 dark:hover:bg-salbei-700/30">
               <div className="w-28 shrink-0">
                 <div className="font-medium">{datum(b.datum)}</div>
-                <div className="text-sm text-slate-500">{b.von}–{b.bis}</div>
+                <div className="text-sm text-slate-500">{b.art === 6 ? `Video ${b.bis}` : `${b.von}–${b.bis}`}</div>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-medium">{LEISTUNGSTYP_LABEL[b.typ as Leistungstyp]} · {LEISTUNGSART_LABEL[b.art as Leistungsart]}</div>
+                <div className="font-medium">{besuchTypLabel(b.typ)} · {besuchArtLabel(b.typ, b.art)}{b.dokumentation?.kurs ? ` · ${b.dokumentation.kurs.titel}` : ""}</div>
                 <div className="text-sm text-slate-500">
                   {b.hebamme}{b.hebammeId === ich?.id ? " (ich)" : ""} · GPOS {b.stamm ?? "–"}XX · {b.einheitenAbrechenbar * 5} Min. abrechenbar
                   {b.hinweise.some((h) => h.stufe !== "info") ? " · ⚠ Hinweise" : ""}

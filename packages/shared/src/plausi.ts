@@ -76,6 +76,8 @@ export type RwKontingent = Grenzen & {
   kontakte_gesamt?: number | string | null;
   kontakttage_gesamt?: number;
   einheiten_gesamt?: number;
+  /** Kurse: höchstens dieser Anteil der Einheiten als Selbstlerneinheit */
+  selbstlern_max_anteil?: number;
   mehrling_zusatz_einheiten?: number;
   erste_tage?: { bis_lebenstag: number; auch_tag_erster_hausbesuch: boolean; leistungsart: string; einheiten_pro_kontakt: number; einheiten_pro_tag: number };
   zeitraum?: { ssw_bis_exklusiv?: number } | null;
@@ -423,7 +425,7 @@ export function besuchAbrechnen(e: BesuchEingabe, k: Kontext, rw: RegelwerkDaten
 }
 
 // ------------------------------------------------------------------ Kontingentübersicht je Betreuung
-export type KontingentStand = { id: string; name: string; genutzt: number; maximum: number; einheit: "Kontakte" | "Kontakttage" };
+export type KontingentStand = { id: string; name: string; genutzt: number; maximum: number; einheit: "Kontakte" | "Kontakttage" | "Minuten" };
 
 export function kontingentStand(besuche: FruehererBesuch[], rw: RegelwerkDaten): KontingentStand[] {
   const stand: KontingentStand[] = [];
@@ -431,6 +433,7 @@ export function kontingentStand(besuche: FruehererBesuch[], rw: RegelwerkDaten):
     const passend = besuche.filter((b) => b.stamm !== null && kontingentId(b.stamm, b.art) === k.id);
     if (typeof k.kontakte_gesamt === "number") stand.push({ id: k.id, name: k.name, genutzt: passend.length, maximum: k.kontakte_gesamt, einheit: "Kontakte" });
     else if (k.kontakttage_gesamt) stand.push({ id: k.id, name: k.name, genutzt: new Set(passend.map((b) => b.datum)).size, maximum: k.kontakttage_gesamt, einheit: "Kontakttage" });
+    else if (k.einheiten_gesamt) stand.push({ id: k.id, name: k.name, genutzt: passend.reduce((n, b) => n + b.einheiten, 0) * 5, maximum: k.einheiten_gesamt * 5, einheit: "Minuten" });
   }
   return stand;
 }

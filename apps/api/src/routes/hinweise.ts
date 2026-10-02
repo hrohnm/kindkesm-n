@@ -2,7 +2,7 @@ import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@
 import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, aenderung, benutzer, besuch, betreuung, kind, klientin, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
+import { abrechnungseinstellung, aenderung, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -74,6 +74,19 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
         if (tage >= 0 && tage <= 7) {
           hinweise.push({ id: `urkunde-${k.id}`, titel: `Kinderurkunde für ${k.vorname} vorbereiten – Betreuungszeit endet am ${isoDatum(ende).split("-").reverse().join(".")}`, datum: isoDatum(ende), tage, stufe: "info", quelle: "Kinderurkunde (beim letzten Besuch überreichen)", link: `/kinder/${k.id}/urkunde` });
         }
+      }
+    }
+
+    if (request.benutzer!.rolle === "hebamme") {
+      // Neue Online-Anmeldungen für eigene Kurse
+      const neu = await db
+        .select({ kursId: kurs.id, titel: kurs.titel, n: sql<number>`count(*)::int` })
+        .from(kursTeilnahme)
+        .innerJoin(kurs, eq(kurs.id, kursTeilnahme.kursId))
+        .where(and(eq(kursTeilnahme.status, "angemeldet"), eq(kursTeilnahme.quelle, "online"), sql`${request.benutzer!.id} = any(${kurs.leitung})`))
+        .groupBy(kurs.id, kurs.titel);
+      for (const k of neu) {
+        hinweise.unshift({ id: `kurs-${k.kursId}`, titel: `${k.n} neue Online-Anmeldung${k.n > 1 ? "en" : ""}: ${k.titel}`, datum: isoDatum(heute), tage: 0, stufe: "info", quelle: "Kurse – bitte bestätigen", link: `/kurse/${k.kursId}` });
       }
     }
 
