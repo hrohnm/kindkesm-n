@@ -37,6 +37,19 @@ export const klientinSchema = z.object({
 });
 export type KlientinEingabe = z.infer<typeof klientinSchema>;
 
+/** Art der Geburt (gespeichert ist der Schlüssel; ältere Freitexte bleiben lesbar) */
+export const GEBURTSMODI = {
+  spontan: "Spontangeburt",
+  vaginal_operativ: "Vaginal-operativ (Saugglocke/Zange)",
+  sectio_primaer: "Primäre Sectio (geplant)",
+  sectio_sekundaer: "Sekundäre Sectio",
+  sectio_not: "Notsectio",
+} as const;
+export type Geburtsmodus = keyof typeof GEBURTSMODI;
+export const geburtsmodusLabel = (m: string | null | undefined) => (m ? ((GEBURTSMODI as Record<string, string>)[m] ?? m) : null);
+/** Kaiserschnitt? (auch für ältere Freitexte wie „Sectio“) */
+export const istSectio = (m: string | null | undefined) => Boolean(m && (m.startsWith("sectio_") || /sectio|kaiserschnitt/i.test(m)));
+
 export const betreuungSchema = z.object({
   status: z.enum(BETREUUNG_STATUS),
   et: optDatum,
@@ -64,6 +77,8 @@ export const kindSchema = z.object({
   geburtsgewicht: optZahl(300, 7000),
   laenge: optZahl(20, 70),
   kopfumfang: optZahl(15, 50),
+  /** Art der Geburt – wird an der Betreuung gespeichert (beim Erfassen der Geburt bequem mit angeben) */
+  geburtsmodus: optText(80).optional(),
 });
 export type KindEingabe = z.infer<typeof kindSchema>;
 
@@ -75,9 +90,10 @@ export const dokuMutterSchema = z
     puls: optZahl(30, 220),
     temperatur: optZahl(34, 42),
     fundus: optText(120),
-    lochien: optText(120),
-    brust: optText(200),
-    wunde: optText(200),
+    lochien: optText(300),
+    brust: optText(300),
+    wunde: optText(300),
+    sectionarbe: optText(300),
     befinden: optText(300),
   })
   .partial();
@@ -88,10 +104,10 @@ export const dokuKindSchema = z
     laenge: optZahl(20, 110),
     kopfumfang: optZahl(15, 60),
     temperatur: optZahl(34, 42),
-    haut: optText(80),
-    nabel: optText(120),
-    stillen: optText(200),
-    ausscheidung: optText(120),
+    haut: optText(300),
+    nabel: optText(300),
+    stillen: optText(300),
+    ausscheidung: optText(300),
     notiz: optText(500),
   })
   .partial();
@@ -134,14 +150,15 @@ export type BesuchFormular = z.infer<typeof besuchSchema>;
 
 /** Auswahllisten für die schnelle Dokumentation auf dem Tablet. */
 export const AUSWAHL = {
-  lochien: ["rubra", "fusca", "flava", "alba", "unauffällig", "vermehrt"],
+  lochien: ["rubra", "fusca", "flava", "alba", "unauffällig", "vermehrt", "übelriechend"],
   fundus: ["Nabelhöhe", "1 QF unter Nabel", "2 QF unter Nabel", "3 QF unter Nabel", "Symphyse", "nicht tastbar"],
-  brust: ["weich", "gefüllt", "Milcheinschuss", "gerötet", "wunde Mamillen"],
-  wunde: ["reizlos", "gerötet", "geschwollen", "Naht intakt", "Sectio reizlos"],
-  haut: ["rosig", "leicht ikterisch", "deutlich ikterisch", "blass"],
-  nabel: ["trocken", "feucht", "abgefallen", "gerötet"],
-  stillen: ["voll gestillt", "teilgestillt", "Flasche", "Saugen gut", "Anlegeprobleme"],
-  ausscheidung: ["Urin unauffällig", "Mekonium", "Übergangsstuhl", "Muttermilchstuhl"],
+  brust: ["weich", "gefüllt", "Milcheinschuss", "gerötet", "verhärtet", "wunde Mamillen"],
+  wunde: ["reizlos", "gerötet", "geschwollen", "Naht intakt", "Hämatom", "schmerzhaft"],
+  sectionarbe: ["reizlos", "trocken", "gerötet", "geschwollen", "nässend", "Hämatom", "schmerzhaft", "Fäden/Klammern liegen", "Fäden/Klammern entfernt"],
+  haut: ["rosig", "leicht ikterisch", "deutlich ikterisch", "blass", "trocken", "Ausschlag"],
+  nabel: ["trocken", "feucht", "abgefallen", "gerötet", "riecht"],
+  stillen: ["voll gestillt", "teilgestillt", "Flasche", "Saugen gut", "Anlegeprobleme", "Zufüttern"],
+  ausscheidung: ["Urin unauffällig", "Mekonium", "Übergangsstuhl", "Muttermilchstuhl", "Ziegelmehl"],
 } as const;
 
 // ------------------------------------------------------------------ Merkmale, Kontakte, Einwilligungen (M2)

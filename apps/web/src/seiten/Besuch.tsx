@@ -4,6 +4,7 @@ import {
   LEISTUNGSTYPEN,
   LEISTUNGSTYP_LABEL,
   besuchAbrechnen,
+  istSectio,
   lebenstag,
   materialFuer,
   sswAusEt,
@@ -33,6 +34,7 @@ type BetreuungDetail = {
   id: string;
   status: string;
   et: string | null;
+  geburtsmodus: string | null;
   klientin: { id: string; vorname: string; nachname: string; ort: string | null; hinweise: string | null; flaggen?: string[]; sprache?: string | null; allergien?: string | null };
   kinder: Kind[];
 };
@@ -448,7 +450,7 @@ function BesuchFormular({
           {/* ---------------------------------------------------- Dokumentation Mutter */}
           <DokuKachel
             titel="Mutter"
-            felder={DOKU_FELDER.mutter.filter((f) => geboren || !f.nachGeburt)}
+            felder={DOKU_FELDER.mutter.filter((f) => (geboren || !f.nachGeburt) && (!f.nurSectio || istSectio(betreuung.geburtsmodus)))}
             werte={w.mutter}
             setze={setzeMutter}
             einstellungen={ansicht.mutter}

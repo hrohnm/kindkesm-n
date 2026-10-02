@@ -192,29 +192,33 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   });
 
   app.post<{ Params: { id: string } }>("/api/betreuungen/:id/kinder", async (request, reply) => {
-    const daten = pruefen(kindSchema, request.body, reply);
-    if (!daten) return;
+    const eingabe = pruefen(kindSchema, request.body, reply);
+    if (!eingabe) return;
+    const { geburtsmodus, ...daten } = eingabe;
     const [b] = await db.select().from(betreuung).where(eq(betreuung.id, request.params.id));
     if (!b) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
     const [k] = await db
       .insert(kind)
       .values({ ...daten, betreuungId: b.id, laenge: daten.laenge?.toString() ?? null, kopfumfang: daten.kopfumfang?.toString() ?? null })
       .returning();
-    // Mit der Geburt beginnt das Wochenbett
+    // Mit der Geburt beginnt das Wochenbett; die Art der Geburt gehört zur Betreuung
     if (b.status === "schwangerschaft" || b.status === "anfrage") await db.update(betreuung).set({ status: "wochenbett" }).where(eq(betreuung.id, b.id));
+    if (geburtsmodus !== undefined) await db.update(betreuung).set({ geburtsmodus, geaendertAm: new Date() }).where(eq(betreuung.id, b.id));
     await protokollieren(db, request.benutzer!.id, "angelegt", "kind", k!.id);
     return k;
   });
 
   app.put<{ Params: { id: string } }>("/api/kinder/:id", async (request, reply) => {
-    const daten = pruefen(kindSchema, request.body, reply);
-    if (!daten) return;
+    const eingabe = pruefen(kindSchema, request.body, reply);
+    if (!eingabe) return;
+    const { geburtsmodus, ...daten } = eingabe;
     const [k] = await db
       .update(kind)
       .set({ ...daten, laenge: daten.laenge?.toString() ?? null, kopfumfang: daten.kopfumfang?.toString() ?? null, geaendertAm: new Date() })
       .where(eq(kind.id, request.params.id))
       .returning();
     if (!k) return reply.code(404).send({ fehler: "Kind nicht gefunden" });
+    if (geburtsmodus !== undefined) await db.update(betreuung).set({ geburtsmodus, geaendertAm: new Date() }).where(eq(betreuung.id, k.betreuungId));
     await protokollieren(db, request.benutzer!.id, "geaendert", "kind", k.id);
     return k;
   });

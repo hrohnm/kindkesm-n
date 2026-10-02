@@ -17,6 +17,10 @@ export type DokuFeld = {
   auswahl?: readonly string[];
   /** Nur nach der Geburt sinnvoll (Wochenbett) */
   nachGeburt?: boolean;
+  /** Nur nach einem Kaiserschnitt */
+  nurSectio?: boolean;
+  /** Mehrere Werte gleichzeitig wählbar (gespeichert durch „, “ getrennt) */
+  mehrfach?: boolean;
   inputMode?: "numeric" | "decimal";
 };
 
@@ -27,9 +31,10 @@ export const DOKU_FELDER: { mutter: DokuFeld[]; kind: DokuFeld[] } = {
     { id: "puls", label: "Puls", art: "zahl", einheit: "/min", inputMode: "numeric" },
     { id: "temperatur", label: "Temperatur", art: "zahl", einheit: "°C", inputMode: "decimal" },
     { id: "fundus", label: "Fundus", art: "auswahl", auswahl: AUSWAHL.fundus, nachGeburt: true },
-    { id: "lochien", label: "Lochien", art: "auswahl", auswahl: AUSWAHL.lochien, nachGeburt: true },
-    { id: "brust", label: "Brust", art: "auswahl", auswahl: AUSWAHL.brust, nachGeburt: true },
-    { id: "wunde", label: "Wunde / Naht", art: "auswahl", auswahl: AUSWAHL.wunde, nachGeburt: true },
+    { id: "lochien", label: "Lochien", art: "auswahl", auswahl: AUSWAHL.lochien, nachGeburt: true, mehrfach: true },
+    { id: "brust", label: "Brust", art: "auswahl", auswahl: AUSWAHL.brust, nachGeburt: true, mehrfach: true },
+    { id: "wunde", label: "Wunde / Naht", art: "auswahl", auswahl: AUSWAHL.wunde, nachGeburt: true, mehrfach: true },
+    { id: "sectionarbe", label: "Kaiserschnittnarbe", art: "auswahl", auswahl: AUSWAHL.sectionarbe, nachGeburt: true, nurSectio: true, mehrfach: true },
     { id: "befinden", label: "Befinden", art: "text" },
   ],
   kind: [
@@ -37,10 +42,10 @@ export const DOKU_FELDER: { mutter: DokuFeld[]; kind: DokuFeld[] } = {
     { id: "temperatur", label: "Temperatur", art: "zahl", einheit: "°C", inputMode: "decimal" },
     { id: "laenge", label: "Länge", art: "zahl", einheit: "cm", inputMode: "decimal" },
     { id: "kopfumfang", label: "Kopfumfang", art: "zahl", einheit: "cm", inputMode: "decimal" },
-    { id: "haut", label: "Haut", art: "auswahl", auswahl: AUSWAHL.haut },
-    { id: "nabel", label: "Nabel", art: "auswahl", auswahl: AUSWAHL.nabel },
-    { id: "stillen", label: "Ernährung", art: "auswahl", auswahl: AUSWAHL.stillen },
-    { id: "ausscheidung", label: "Ausscheidung", art: "auswahl", auswahl: AUSWAHL.ausscheidung },
+    { id: "haut", label: "Haut", art: "auswahl", auswahl: AUSWAHL.haut, mehrfach: true },
+    { id: "nabel", label: "Nabel", art: "auswahl", auswahl: AUSWAHL.nabel, mehrfach: true },
+    { id: "stillen", label: "Ernährung", art: "auswahl", auswahl: AUSWAHL.stillen, mehrfach: true },
+    { id: "ausscheidung", label: "Ausscheidung", art: "auswahl", auswahl: AUSWAHL.ausscheidung, mehrfach: true },
   ],
 };
 
@@ -58,7 +63,7 @@ export type Ansicht = z.infer<typeof ansichtSchema>;
 
 /** Standard: alle Felder sichtbar, Vergleich für Messwerte. */
 export function standardAnsicht(): Ansicht {
-  const je = (felder: DokuFeld[]) => Object.fromEntries(felder.map((f) => [f.id, { sichtbar: true, vergleich: f.art === "zahl" || f.id === "lochien" || f.id === "fundus" }]));
+  const je = (felder: DokuFeld[]) => Object.fromEntries(felder.map((f) => [f.id, { sichtbar: true, vergleich: f.art === "zahl" || f.id === "lochien" || f.id === "fundus" || f.id === "sectionarbe" }]));
   // Kacheln standardmäßig zugeklappt: die Hebamme klappt auf, was sie eintragen möchte
   return { mutter: je(DOKU_FELDER.mutter), kind: je(DOKU_FELDER.kind), mutterOffen: false, kindOffen: false };
 }
@@ -178,3 +183,7 @@ export function messverlauf(geburtsdatum: string, werte: Messwert[]) {
     };
   });
 }
+
+/** Mehrfachauswahl: gespeicherter Text ↔ Liste der gewählten Werte */
+export const mehrfachWerte = (wert: string | null | undefined) => (wert ? wert.split(",").map((x) => x.trim()).filter(Boolean) : []);
+export const mehrfachText = (werte: string[]) => werte.join(", ");

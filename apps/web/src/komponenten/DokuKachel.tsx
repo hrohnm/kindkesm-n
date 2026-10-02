@@ -1,4 +1,4 @@
-import type { DokuFeld, FeldEinstellung } from "@kindkesmoeoen/shared";
+import { mehrfachText, mehrfachWerte, type DokuFeld, type FeldEinstellung } from "@kindkesmoeoen/shared";
 import { useState, type ReactNode } from "react";
 import { datum as datumFormat } from "../lib/format";
 import { Feld } from "./Formular";
@@ -105,7 +105,7 @@ export function DokuKachel({
           )}
           {andere.map((f) =>
             f.art === "auswahl" ? (
-              <Chips key={f.id} label={f.label} werte={f.auswahl ?? []} wert={werte[f.id] ?? ""} aendern={(v) => setze(f.id, v)} hilfe={hilfe(f)} />
+              <Chips key={f.id} label={f.label} werte={f.auswahl ?? []} wert={werte[f.id] ?? ""} aendern={(v) => setze(f.id, v)} hilfe={hilfe(f)} mehrfach={f.mehrfach} />
             ) : (
               <Feld key={f.id} label={f.label} hilfe={hilfe(f)}>
                 <input className="feld" value={werte[f.id] ?? ""} onChange={(e) => setze(f.id, e.target.value)} />
@@ -123,18 +123,28 @@ export function DokuKachel({
   );
 }
 
-/** Schnellauswahl per Antippen; freier Text bleibt möglich. */
-export function Chips({ label, werte, wert, aendern, hilfe }: { label: string; werte: readonly string[]; wert: string; aendern: (v: string) => void; hilfe?: ReactNode }) {
+/** Schnellauswahl per Antippen (bei `mehrfach` mehrere Werte, gespeichert durch Komma getrennt). */
+export function Chips({ label, werte, wert, aendern, hilfe, mehrfach }: { label: string; werte: readonly string[]; wert: string; aendern: (v: string) => void; hilfe?: ReactNode; mehrfach?: boolean }) {
+  const gewaehlt = mehrfach ? mehrfachWerte(wert) : wert ? [wert] : [];
+  const umschalten = (v: string) => {
+    if (!mehrfach) return aendern(wert === v ? "" : v);
+    // Reihenfolge wie in der Auswahl, eigene Werte (z. B. aus älteren Besuchen) hinten
+    const neu = gewaehlt.includes(v) ? gewaehlt.filter((x) => x !== v) : [...gewaehlt, v];
+    aendern(mehrfachText([...werte.filter((x) => neu.includes(x)), ...neu.filter((x) => !werte.includes(x))]));
+  };
+  const eigene = gewaehlt.filter((x) => !werte.includes(x));
   return (
-    <div>
-      <span className="etikett">{label}</span>
+    <div role="group" aria-label={label}>
+      <span className="etikett">{label}{mehrfach ? <span className="ml-1 font-normal text-slate-500">(mehrere möglich)</span> : null}</span>
       <div className="flex flex-wrap gap-2">
-        {werte.map((v) => (
-          <button key={v} type="button" aria-pressed={wert === v} onClick={() => aendern(wert === v ? "" : v)} className={`min-h-11 rounded-full px-4 text-sm font-medium ${wert === v ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}>
-            {v}
-          </button>
-        ))}
-        {wert && !werte.includes(wert) && <span className="rounded-full bg-salbei-100 px-4 py-2 text-sm">{wert}</span>}
+        {[...werte, ...eigene].map((v) => {
+          const an = gewaehlt.includes(v);
+          return (
+            <button key={v} type="button" aria-pressed={an} onClick={() => umschalten(v)} className={`min-h-11 rounded-full px-4 text-sm font-medium ${an ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}>
+              {an && mehrfach ? "✓ " : ""}{v}
+            </button>
+          );
+        })}
       </div>
       {hilfe && <span className="mt-1.5 block text-sm">{hilfe}</span>}
     </div>
