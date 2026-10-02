@@ -4,7 +4,7 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { datumLang, sternzeichen, wertFuerPerzentile, type Urkunde, type UrkundeZeile } from "@kindkesmoeoen/shared";
+import { datumLang, sternzeichen, wertFuerPerzentile, type Messgroesse, type Urkunde, type UrkundeZeile } from "@kindkesmoeoen/shared";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage, type RGB } from "pdf-lib";
 import { config } from "../config";
 import { datumDe, sauber, umbrechen } from "./werkzeug";
@@ -15,8 +15,8 @@ export type UrkundePdfDaten = {
   geburtsort: string | null;
   hebamme: string;
   praxis: { name: string; anschrift: string; telefon: string | null; email: string | null };
-  /** Gewichtswerte für die Kurve (Lebenstag ab 1) */
-  gewichte: Array<{ lebenstag: number; gramm: number }>;
+  /** Messwerte für die Kurven (Lebenstag ab 1; Gewicht in g, Länge und Kopfumfang in cm) */
+  reihen: Record<Messgroesse, Array<{ lebenstag: number; wert: number }>>;
 };
 
 const B = 595.28;
@@ -189,45 +189,68 @@ export async function urkundePdf(d: UrkundePdfDaten): Promise<Uint8Array> {
     y += 16;
   }
 
-  // ---------------------------------------------------- Gewichtskurve
-  if (u.optionen.kurve && d.gewichte.length >= 2) {
-    // Höhe an den Platz auf der Seite anpassen (110–150 pt), sonst neue Seite
-    const frei = H - unten - fussHoehe - y - 44;
-    const hoehe = frei >= 110 ? Math.min(150, frei) : 150;
-    platz(hoehe + 44);
-    seite.drawText("Dein Gewicht", { x: RAND, y: H - y, size: 13, font: s.zier, color: FARBE.salbei });
-    y += 10;
-    const links = RAND + 40;
-    const breite = B - RAND - links - 26;
-    const maxTag = Math.max(14, Math.ceil(Math.max(...d.gewichte.map((p) => p.lebenstag)) / 7) * 7);
-    const ref = u.optionen.perzentilen
-      ? [3, 50, 97].map((p) => ({ p, werte: Array.from({ length: maxTag }, (_, i) => wertFuerPerzentile("gewicht", i, p, d.kind.geschlecht)) }))
-      : [];
-    const alle = [...d.gewichte.map((p) => p.gramm), ...ref.flatMap((r) => r.werte)];
-    const yMin = Math.floor((Math.min(...alle) - 100) / 500) * 500;
-    const yMax = Math.ceil((Math.max(...alle) + 100) / 500) * 500;
+  // ---------------------------------------------------- Kurven (Gewicht breit, Länge und Kopfumfang nebeneinander)
+  /** Zeichnet eine Kurve in den Kasten (x, Breite, Höhe) ab der aktuellen Zeile y. */
+  const kurve = (groesse: Messgroesse, titel: string, x0: number, gesamtBreite: number, hoehe: number) => {
+    const punkte = [...d.reihen[groesse]].sort((a, b) => a.lebenstag - b.lebenstag);
+    const cfg = {
+      gewicht: { stufe: 500, beschriftung: 1000, puffer: 100, text: (v: number) => `${zahl(v / 1000)} kg` },
+      laenge: { stufe: 2, beschriftung: 4, puffer: 1, text: (v: number) => `${v} cm` },
+      kopfumfang: { stufe: 1, beschriftung: 2, puffer: 0.5, text: (v: number) => `${v} cm` },
+    }[groesse];
+    seite.drawText(titel, { x: x0, y: H - y, size: 13, font: s.zier, color: FARBE.salbei });
+    const oben = y + 10;
+    const links = x0 + 40;
+    const breite = gesamtBreite - 40 - 22;
+    const maxTag = Math.max(14, Math.ceil(Math.max(...punkte.map((p) => p.lebenstag)) / 7) * 7);
+    const ref = u.optionen.perzentilen ? [3, 50, 97].map((p) => ({ p, werte: Array.from({ length: maxTag }, (_, i) => wertFuerPerzentile(groesse, i, p, d.kind.geschlecht)) })) : [];
+    const alle = [...punkte.map((p) => p.wert), ...ref.flatMap((r) => r.werte)];
+    let stufe = cfg.stufe;
+    const yMin = Math.floor((Math.min(...alle) - cfg.puffer) / stufe) * stufe;
+    const yMax = Math.ceil((Math.max(...alle) + cfg.puffer) / stufe) * stufe;
+    while ((yMax - yMin) / stufe > 8) stufe *= 2; // nicht zu viele Rasterlinien
     const px = (t: number) => links + ((t - 1) / (maxTag - 1)) * breite;
-    const py = (v: number) => H - y - hoehe + ((v - yMin) / (yMax - yMin)) * hoehe;
-    seite.drawRectangle({ x: links, y: H - y - hoehe, width: breite, height: hoehe, color: rgb(1, 1, 1), opacity: 0.7, borderColor: FARBE.hell, borderWidth: 0.6 });
-    for (let v = yMin; v <= yMax; v += 500) {
+    const py = (v: number) => H - oben - hoehe + ((v - yMin) / (yMax - yMin)) * hoehe;
+    seite.drawRectangle({ x: links, y: H - oben - hoehe, width: breite, height: hoehe, color: rgb(1, 1, 1), opacity: 0.7, borderColor: FARBE.hell, borderWidth: 0.6 });
+    for (let v = Math.ceil(yMin / stufe) * stufe; v <= yMax; v += stufe) {
       seite.drawLine({ start: { x: links, y: py(v) }, end: { x: links + breite, y: py(v) }, thickness: 0.3, color: FARBE.hell });
-      if ((v - yMin) % 1000 === 0) seite.drawText(`${zahl(v / 1000)} kg`, { x: RAND - 4, y: py(v) - 3, size: 7.5, font: s.normal, color: FARBE.grau });
+      if (Math.abs(v % (stufe === cfg.stufe ? cfg.beschriftung : stufe)) < 1e-9) seite.drawText(cfg.text(v), { x: x0 - 4, y: py(v) - 3, size: 7.5, font: s.normal, color: FARBE.grau });
     }
     for (const r of ref) {
       for (let i = 1; i < r.werte.length; i++) seite.drawLine({ start: { x: px(i), y: py(r.werte[i - 1]!) }, end: { x: px(i + 1), y: py(r.werte[i]!) }, thickness: r.p === 50 ? 0.8 : 0.5, color: rgb(0.7, 0.72, 0.7), dashArray: r.p === 50 ? undefined : [2, 2] });
       seite.drawText(`P${r.p}`, { x: links + breite + 3, y: py(r.werte.at(-1)!) - 3, size: 6.5, font: s.normal, color: FARBE.grau });
     }
-    const pkt = [...d.gewichte].sort((a, b) => a.lebenstag - b.lebenstag);
-    for (let i = 1; i < pkt.length; i++) seite.drawLine({ start: { x: px(pkt[i - 1]!.lebenstag), y: py(pkt[i - 1]!.gramm) }, end: { x: px(pkt[i]!.lebenstag), y: py(pkt[i]!.gramm) }, thickness: 1.6, color: FARBE.akzent });
-    for (const p of pkt) seite.drawCircle({ x: px(p.lebenstag), y: py(p.gramm), size: 2.6, color: FARBE.akzent, borderColor: rgb(1, 1, 1), borderWidth: 0.8 });
-    y += hoehe + 12;
-    for (const t of [1, ...Array.from({ length: Math.floor(maxTag / 7) }, (_, i) => (i + 1) * 7)]) {
+    for (let i = 1; i < punkte.length; i++) seite.drawLine({ start: { x: px(punkte[i - 1]!.lebenstag), y: py(punkte[i - 1]!.wert) }, end: { x: px(punkte[i]!.lebenstag), y: py(punkte[i]!.wert) }, thickness: 1.6, color: FARBE.akzent });
+    for (const p of punkte) seite.drawCircle({ x: px(p.lebenstag), y: py(p.wert), size: 2.6, color: FARBE.akzent, borderColor: rgb(1, 1, 1), borderWidth: 0.8 });
+    const achseY = oben + hoehe + 10;
+    const schritt = maxTag > 42 && gesamtBreite < 300 ? 14 : 7;
+    for (const t of [1, ...Array.from({ length: Math.floor(maxTag / schritt) }, (_, i) => (i + 1) * schritt)]) {
       const w = s.normal.widthOfTextAtSize(String(t), 7);
-      seite.drawText(String(t), { x: px(t) - w / 2, y: H - y + 2, size: 7, font: s.normal, color: FARBE.grau });
+      seite.drawText(String(t), { x: px(t) - w / 2, y: H - achseY, size: 7, font: s.normal, color: FARBE.grau });
     }
-    y += 4;
-    seite.drawText("Lebenstag", { x: links + breite / 2 - 18, y: H - y - 6, size: 7, font: s.normal, color: FARBE.grau });
-    y += 20;
+    seite.drawText("Lebenstag", { x: links + breite / 2 - 18, y: H - achseY - 10, size: 7, font: s.normal, color: FARBE.grau });
+  };
+  const genug = (g: Messgroesse) => d.reihen[g].length >= 2;
+
+  if (u.optionen.kurve && genug("gewicht")) {
+    // Höhe an den Platz auf der Seite anpassen (110–150 pt), sonst neue Seite
+    const frei = H - unten - fussHoehe - y - 44;
+    const hoehe = frei >= 110 ? Math.min(150, frei) : 150;
+    platz(hoehe + 44);
+    kurve("gewicht", "Dein Gewicht", RAND, B - 2 * RAND, hoehe);
+    y += hoehe + 44;
+  }
+  const klein: Array<[Messgroesse, string]> = [
+    ...(u.optionen.kurveLaenge && genug("laenge") ? [["laenge", "Deine Größe"] as [Messgroesse, string]] : []),
+    ...(u.optionen.kurveKopfumfang && genug("kopfumfang") ? [["kopfumfang", "Dein Kopfumfang"] as [Messgroesse, string]] : []),
+  ];
+  if (klein.length) {
+    const hoehe = 110;
+    platz(hoehe + 44);
+    const abstand = 24;
+    const breite = klein.length === 2 ? (B - 2 * RAND - abstand) / 2 : B - 2 * RAND;
+    klein.forEach(([g, titel], i) => kurve(g, titel, RAND + i * (breite + abstand), breite, hoehe));
+    y += hoehe + 44;
   }
 
   // ---------------------------------------------------- Meilensteine
