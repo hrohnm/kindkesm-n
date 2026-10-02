@@ -7,7 +7,7 @@ Praxis-App für die Hebammenpraxis Kindkesmöön (Bad Doberan): Tablet-optimiert
 - Meilenstein 2: Klientinnen, Betreuungen, Kinder, Besuchsdokumentation fürs Tablet, Unterschrift auf Papier oder Tablet, automatische Leistungsberechnung nach dem Hebammenhilfevertrag mit Plausibilitätsprüfung und Kontingentanzeige
 - Meilenstein 3: Abrechnung – amtliche Formulare als PDF, Abrechnungsdatenblatt, Versandmappe für HebSet bzw. die gewählte Abrechnungsstelle, Versand- und Zahlungsstatus, Fristen
 - Meilenstein 4: Touren – Tagesplanung mit Zeitfenstern und Optimierung, Karte und Navigation, eigenes Routing (OSRM) und Adressverzeichnis aus OpenStreetMap, Wegegeld (50100/50200) automatisch aus den Hausbesuchen, Fahrtenbuch mit Export
-- Meilenstein 5: Regelwerk-Administration – Positionen, Kontingente, Zuschläge, Wegegeld, Feiertage, Fristen und Selbstzahler-Preise in der App bearbeiten; wirksam erst nach Freigabe durch eine zweite Hebamme (Vier-Augen-Prinzip); Fassung freigeben, neue Fassung, Testrechner mit Vorher/Nachher
+- Meilenstein 5: Regelwerk-Administration – Positionen, Kontingente, Zuschläge, Wegegeld, Feiertage, Fristen und Selbstzahler-Preise in der App bearbeiten und neu anlegen, CSV-Import/-Export, eigene Selbstzahler-Preise je Hebamme; wirksam erst nach Freigabe durch eine zweite Hebamme (Vier-Augen-Prinzip); Fassung freigeben, neue Fassung, Testrechner mit Vorher/Nachher
 - Ergänzungen: Tour-Übersicht auf der Startseite, persönliche Ansicht der Besuchsdokumentation (Felder ein-/ausblenden, Vergleich mit dem letzten Besuch, aufklappbare Kacheln), Gewichtsseite je Kind mit WHO-Perzentilkurve und Tabelle, erweiterte Demo-Daten
 
 | Meilenstein | Status |

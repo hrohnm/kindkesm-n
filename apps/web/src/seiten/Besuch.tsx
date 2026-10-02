@@ -3,7 +3,6 @@ import {
   LEISTUNGSART_LABEL,
   LEISTUNGSTYPEN,
   LEISTUNGSTYP_LABEL,
-  MATERIAL_JE_TYP,
   lebenstag,
   sswAusEt,
   type Ansicht,
@@ -190,7 +189,10 @@ function BesuchFormular({
   );
   const lt = geboren ? lebenstag(betreuung.kinder[0]!.geburtsdatum, w.datum) : null;
   const ssw = !geboren && betreuung.et ? sswAusEt(betreuung.et, w.datum).text : null;
-  const materialOptionen = MATERIAL_JE_TYP[w.typ];
+  // Material aus dem am Besuchstag gültigen Regelwerk (inkl. dort neu angelegter Materialpauschalen)
+  const materialListe = useDaten<Array<{ gpos: string; bezeichnung: string }>>(`/api/material?datum=${w.datum}&typ=${w.typ}`);
+  const materialOptionen = (materialListe.daten ?? []).map((m) => m.gpos);
+  const materialName = (g: string) => MATERIAL_LABEL[g] ?? materialListe.daten?.find((m) => m.gpos === g)?.bezeichnung ?? g;
   const typen = useMemo(() => LEISTUNGSTYPEN.filter((t) => (geboren ? t === "wochenbett" : t !== "wochenbett")), [geboren]);
   const brauchtUnterschrift = w.art === 1 || w.art === 2;
 
@@ -281,7 +283,7 @@ function BesuchFormular({
                       const an = w.material.includes(m);
                       return (
                         <button key={m} type="button" aria-pressed={an} onClick={() => setze("material", an ? w.material.filter((x) => x !== m) : [...w.material, m])} className={`min-h-11 rounded-full px-4 text-sm font-medium ${an ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}>
-                          {MATERIAL_LABEL[m] ?? m}
+                          {materialName(m)}
                         </button>
                       );
                     })}
@@ -361,7 +363,7 @@ function BesuchFormular({
                       <div className="mb-1 font-medium">Auf Formular {vorschau.formularzeile.formular} eintragen:</div>
                       <div>
                         {datumFormat(w.datum)} · {w.von}–{w.bis} · Spalte „{vorschau.formularzeile.spalte}“: <strong>{vorschau.formularzeile.eintrag}</strong>
-                        {vorschau.materialAbgerechnet.filter((m) => !["61200", "61300"].includes(m)).map((m) => ` · ${MATERIAL_LABEL[m] ?? m}: X`)}
+                        {vorschau.materialAbgerechnet.filter((m) => !["61200", "61300"].includes(m)).map((m) => ` · ${materialName(m)}: X`)}
                       </div>
                     </div>
                   )}

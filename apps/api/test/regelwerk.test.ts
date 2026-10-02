@@ -114,3 +114,48 @@ describe("Einschränkungen", () => {
     expect((await req("GET", "/api/aenderungen/offen/anzahl", undefined, lorina)).json()).toMatchObject({ anzahl: 0, aktiveHebammen: 2 });
   });
 });
+
+describe("Neu anlegen, CSV und eigene Preise", () => {
+  it("neue Materialposition anlegen; danach im Besuch auswählbar", async () => {
+    const a = (await req("POST", "/api/aenderungen", { regelwerkId: "hhv-2025-11-01", titel: "Neue Materialposition", begruendung: "Test", operationen: [{ art: "position_neu", position: { gpos: "69800", bezeichnung: "Material Test", kurztext: "Testmaterial", leistungsart: "keine Spezifikation", betrag: 3.5, einheit: "pauschal", formular: null, quittierungspflichtig: false, hinweis: null, material_fuer: ["wochenbett"], einmalig: false } }] })).json();
+    expect((await req("POST", `/api/aenderungen/${a.id}/freigeben`, undefined, marielena)).statusCode).toBe(200);
+    expect((await req("GET", "/api/regelwerke/hhv-2025-11-01/positionen?q=69800")).json()[0]).toMatchObject({ gpos: "69800", betrag: "3.50", kategorie: 6 });
+    const m = (await req("GET", "/api/material?datum=2026-01-10&typ=wochenbett")).json();
+    expect(m.map((x: { gpos: string }) => x.gpos)).toContain("69800");
+    // doppelt anlegen geht nicht
+    expect((await req("POST", "/api/aenderungen", { regelwerkId: "hhv-2025-11-01", titel: "Nochmal", begruendung: "Test", operationen: [{ art: "position_neu", position: { gpos: "69800", bezeichnung: "Material Test", kurztext: "x", leistungsart: "keine Spezifikation", betrag: 1, einheit: "pauschal", formular: null, quittierungspflichtig: false, hinweis: null } }] })).statusCode).toBe(400);
+  });
+
+  it("neues Kontingent anlegen", async () => {
+    const a = (await req("POST", "/api/aenderungen", { regelwerkId: "hhv-2025-11-01", titel: "Kontingent 698", begruendung: "Test", operationen: [{ art: "kontingent_neu", kontingent: { id: "698", name: "Testkontingent", positionen: ["69800"], verhalten_bei_ueberschreitung: "hinweis", kontakte_gesamt: 3 } }] })).json();
+    expect((await req("POST", `/api/aenderungen/${a.id}/freigeben`, undefined, marielena)).statusCode).toBe(200);
+    const d = (await req("GET", "/api/regelwerke/hhv-2025-11-01")).json();
+    expect(d.daten.kontingente.find((k: { id: string }) => k.id === "698")).toMatchObject({ kontakte_gesamt: 3 });
+  });
+
+  it("CSV-Export und Import als Vorschlag", async () => {
+    const csv = await req("GET", `/api/regelwerke/${RW}/positionen.csv`);
+    expect(csv.headers["content-type"]).toMatch(/text\/csv/);
+    expect(csv.body.split("\n")[0]).toMatch(/^﻿?GPOS;Gruppe;Bezeichnung/);
+    const geaendert = csv.body.replace(/^(10201;[^\n]*?;)(\d+,\d{2})(;5min)/m, "$19,99$3");
+    const v = (await req("POST", `/api/regelwerke/${RW}/import`, { csv: geaendert })).json();
+    expect(v.operationen).toEqual([{ art: "position", gpos: "10201", felder: { betrag: 9.99 } }]);
+    expect(v.unveraendert).toBeGreaterThan(100);
+    const sz = await req("GET", "/api/selbstzahler.csv");
+    expect(sz.body).toMatch(/Kennung;Bezeichnung/);
+  });
+
+  it("eigener Selbstzahler-Preis je Hebamme (mit Freigabe)", async () => {
+    const liste = (await req("GET", "/api/selbstzahler")).json();
+    const s = liste.find((x: { id: string }) => x.id === "akupunktur");
+    const a = (await req("POST", "/api/aenderungen", { titel: "Mein Akupunkturpreis", begruendung: "Eigene Kalkulation", operationen: [{ art: "selbstzahler_eigen", id: "akupunktur", hebammeId: "00000000-0000-0000-0000-000000000000", preis: 55 }] })).json();
+    expect(a.operationen[0].hebammeId).not.toBe("00000000-0000-0000-0000-000000000000");
+    expect((await req("POST", `/api/aenderungen/${a.id}/freigeben`, undefined, marielena)).statusCode).toBe(200);
+    const j = (await req("GET", "/api/selbstzahler")).json().find((x: { id: string }) => x.id === "akupunktur");
+    expect(j.meinPreis).toBe("55.00");
+    expect(j.preis).toBe(s.preis);
+    expect(j.eigenePreise[0]).toMatchObject({ kuerzel: "JM", preis: "55.00" });
+    const m = (await req("GET", "/api/selbstzahler", undefined, marielena)).json().find((x: { id: string }) => x.id === "akupunktur");
+    expect(m.meinPreis).toBeNull();
+  });
+});

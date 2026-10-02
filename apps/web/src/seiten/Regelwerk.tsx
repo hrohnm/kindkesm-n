@@ -2,7 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Laden, Meldung, Seitenkopf } from "../komponenten/Formular";
 import { IconPlus, IconStift } from "../komponenten/Icons";
 import { Aenderungen } from "../komponenten/regelwerk/Aenderungen";
-import { FassungFreigeben, FeiertageBearbeiten, FristBearbeiten, KontingentBearbeiten, NeueFassung, PositionBearbeiten, SelbstzahlerBearbeiten, SelbstzahlerNeu, ZuschlaegeWegegeldBearbeiten } from "../komponenten/regelwerk/Bearbeiten";
+import { CsvImport, EigenerPreis, FassungFreigeben, FeiertageBearbeiten, FristBearbeiten, KontingentBearbeiten, KontingentNeu, NeueFassung, PositionBearbeiten, PositionNeu, SelbstzahlerBearbeiten, SelbstzahlerNeu, ZuschlaegeWegegeldBearbeiten } from "../komponenten/regelwerk/Bearbeiten";
 import { Testrechner } from "../komponenten/regelwerk/Testrechner";
 import { useAuth } from "../lib/auth";
 import { datum, euro } from "../lib/format";
@@ -64,6 +64,7 @@ export function Regelwerk() {
   const offen = useDaten<{ anzahl: number; aktiveHebammen: number }>("/api/aenderungen/offen/anzahl");
   const vorgeschlagen = () => {
     setBearbeiten(null);
+    void selbstzahler.laden();
     setMeldung("Vorschlag gespeichert. Er wird wirksam, sobald eine Kollegin ihn unter „Änderungen“ freigibt.");
     void offen.laden();
   };
@@ -137,6 +138,13 @@ export function Regelwerk() {
               ))}
             </div>
           </div>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {darf && <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(bearbeiten === "pos-neu" ? null : "pos-neu")}><IconPlus className="size-5" /> Neue Position</button>}
+            <a className="knopf-sekundaer" href={`/api/regelwerke/${id}/positionen.csv`}>CSV exportieren</a>
+            {darf && <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(bearbeiten === "pos-csv" ? null : "pos-csv")}>CSV importieren</button>}
+          </div>
+          {bearbeiten === "pos-neu" && <div className="mb-4"><PositionNeu {...basis("pos-neu")} /></div>}
+          {bearbeiten === "pos-csv" && id && <div className="mb-4"><CsvImport {...basis("pos-csv")} url={`/api/regelwerke/${id}/import`} /></div>}
           {!positionen.daten ? (
             <Laden />
           ) : (
@@ -188,6 +196,11 @@ export function Regelwerk() {
         </>
       )}
 
+      {tab === "Kontingente" && detail.daten && darf && (
+        <div className="mb-4">
+          {bearbeiten === "k-neu" ? <KontingentNeu {...basis("k-neu")} /> : <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten("k-neu")}><IconPlus className="size-5" /> Neues Kontingent</button>}
+        </div>
+      )}
       {tab === "Kontingente" && detail.daten && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {detail.daten.daten.kontingente.map((k) => (
@@ -259,7 +272,13 @@ export function Regelwerk() {
             <div className="mb-4"><Meldung art="hinweis">Beispielpreise (Dummydaten). Umsatzsteuer vor dem Echtbetrieb mit der Steuerberatung klären. Preisänderungen gelten nach Freigabe durch eine zweite Hebamme für die ganze Praxis.</Meldung></div>
             {darf && (
               <div className="mb-4">
-                {bearbeiten === "sz-neu" ? <SelbstzahlerNeu {...basis("sz-neu")} regelwerkId={null} /> : <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten("sz-neu")}><IconPlus className="size-5" /> Neue Leistung</button>}
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(bearbeiten === "sz-neu" ? null : "sz-neu")}><IconPlus className="size-5" /> Neue Leistung</button>
+                  <a className="knopf-sekundaer" href="/api/selbstzahler.csv">CSV exportieren</a>
+                  <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(bearbeiten === "sz-csv" ? null : "sz-csv")}>CSV importieren</button>
+                </div>
+                {bearbeiten === "sz-neu" && <div className="mt-3"><SelbstzahlerNeu {...basis("sz-neu")} regelwerkId={null} /></div>}
+                {bearbeiten === "sz-csv" && <div className="mt-3"><CsvImport {...basis("sz-csv")} regelwerkId={null} url="/api/selbstzahler/import" /></div>}
               </div>
             )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -274,6 +293,15 @@ export function Regelwerk() {
                   </div>
                   <div className="mt-1 text-sm text-slate-500">je {s.einheit} · {s.umsatzsteuer.replace(/_/g, " ")}</div>
                   <div className="mt-2 text-sm">{s.rechnungstext}</div>
+                  {(s.eigenePreise?.length ?? 0) > 0 && (
+                    <div className="mt-2 text-sm text-slate-500">Eigene Preise: {s.eigenePreise!.map((e) => `${e.kuerzel} ${euro(e.preis)}`).join(" · ")}</div>
+                  )}
+                  {darf && (
+                    <button type="button" className="mt-2 min-h-11 text-sm font-medium text-salbei-600" onClick={() => setBearbeiten(bearbeiten === `sz-eigen-${s.id}` ? null : `sz-eigen-${s.id}`)}>
+                      {s.meinPreis ? `Mein Preis: ${euro(s.meinPreis)} – ändern` : "Eigenen Preis festlegen"}
+                    </button>
+                  )}
+                  {bearbeiten === `sz-eigen-${s.id}` && ich && <div className="mt-3"><EigenerPreis {...basis(`sz-eigen-${s.id}`)} regelwerkId={null} s={s} hebammeId={ich.id} meinPreis={s.meinPreis ?? null} /></div>}
                   {bearbeiten === `sz-${s.id}` && <div className="mt-3"><SelbstzahlerBearbeiten {...basis(`sz-${s.id}`)} regelwerkId={null} s={s} /></div>}
                 </div>
               ))}

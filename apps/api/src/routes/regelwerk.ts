@@ -1,7 +1,9 @@
 import { and, asc, eq, ilike, or, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { gebuehrenposition, regelwerk, selbstzahlerLeistung } from "../db/schema";
+import { LEISTUNGSTYPEN, materialFuer, type Leistungstyp } from "@kindkesmoeoen/shared";
+import { benutzer, gebuehrenposition, regelwerk, selbstzahlerLeistung, selbstzahlerPreis } from "../db/schema";
+import { regelwerkFuer } from "../regelwerk-laden";
 
 export async function regelwerkRouten(app: FastifyInstance, db: Datenbank) {
   app.get("/api/regelwerke", async () =>
@@ -38,9 +40,39 @@ export async function regelwerkRouten(app: FastifyInstance, db: Datenbank) {
         const muster = `%${q}%`;
         bedingungen.push(or(ilike(gebuehrenposition.gpos, muster), ilike(gebuehrenposition.bezeichnung, muster))!);
       }
-      return db.select().from(gebuehrenposition).where(and(...bedingungen)).orderBy(asc(gebuehrenposition.gpos));
+      const zeilen = await db.select().from(gebuehrenposition).where(and(...bedingungen)).orderBy(asc(gebuehrenposition.gpos));
+      // Materialangaben stehen nur im Regelwerk-JSON
+      const [rw] = await db.select({ daten: regelwerk.daten }).from(regelwerk).where(eq(regelwerk.id, request.params.id));
+      const json = ((rw?.daten as { positionen?: Array<{ gpos: string; material_fuer?: string[]; einmalig?: boolean }> })?.positionen ?? []);
+      return zeilen.map((z) => {
+        const j = json.find((p) => p.gpos === z.gpos);
+        return { ...z, material_fuer: j?.material_fuer ?? [], einmalig: j?.einmalig ?? false };
+      });
     },
   );
 
-  app.get("/api/selbstzahler", async () => db.select().from(selbstzahlerLeistung).orderBy(asc(selbstzahlerLeistung.bezeichnung)));
+  app.get("/api/selbstzahler", async (request) => {
+    const liste = await db.select().from(selbstzahlerLeistung).orderBy(asc(selbstzahlerLeistung.bezeichnung));
+    const eigene = await db
+      .select({ leistungId: selbstzahlerPreis.leistungId, benutzerId: selbstzahlerPreis.benutzerId, preis: selbstzahlerPreis.preis, kuerzel: benutzer.kuerzel, name: benutzer.name })
+      .from(selbstzahlerPreis)
+      .innerJoin(benutzer, eq(benutzer.id, selbstzahlerPreis.benutzerId));
+    return liste.map((s) => ({
+      ...s,
+      eigenePreise: eigene.filter((e) => e.leistungId === s.id).map(({ leistungId: _l, ...e }) => e),
+      meinPreis: eigene.find((e) => e.leistungId === s.id && e.benutzerId === request.benutzer!.id)?.preis ?? null,
+    }));
+  });
+
+  /** Auswählbares Material für eine Leistung an einem Datum (aus dem dann gültigen Regelwerk). */
+  app.get<{ Querystring: { datum?: string; typ?: string } }>("/api/material", async (request, reply) => {
+    const { datum, typ } = request.query;
+    if (!datum || !/^\d{4}-\d{2}-\d{2}$/.test(datum) || !typ || !(LEISTUNGSTYPEN as string[]).includes(typ)) return reply.code(400).send({ fehler: "datum und typ angeben" });
+    const rw = await regelwerkFuer(db, datum);
+    if (!rw) return [];
+    return materialFuer(rw, typ as Leistungstyp).map((gpos) => {
+      const p = rw.positionen.find((x) => x.gpos === gpos);
+      return { gpos, bezeichnung: p?.kurztext ?? gpos, lang: p?.bezeichnung ?? gpos };
+    });
+  });
 }

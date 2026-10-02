@@ -448,7 +448,9 @@ Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt 
 - **Testrechner**: erfundener Besuch (Datum, Uhrzeit, Art, Leistung, Lebenstag bzw. SSW, Kinderzahl) mit dem aktuellen Regelwerk und – direkt aus dem Vorschlag – mit der offenen Änderung im Vergleich.
 - **Verlauf**: alle Vorschläge mit Status, wer vorgeschlagen und wer entschieden hat; zusätzlich im Protokoll.
 - Schon gespeicherte Besuche behalten ihre berechneten Beträge; neue Werte gelten für neu gespeicherte bzw. geänderte Besuche. Beim Einspielen von Updates (`seed`) werden in der App geänderte Regelwerke nicht durch die Datei überschrieben.
-- Noch offen aus diesem Abschnitt: neue Positionen und Kontingente anlegen, Import/Export als CSV, Selbstzahler-Preise je Hebamme überschreiben.
+- **Neu anlegen:** Gebührenpositionen (GPOS, Bezeichnung, Betrag, Einheit, Leistungsart, Formular, Quittierungspflicht; Materialpauschalen mit „im Besuch auswählbar bei“ und „nur einmal je Betreuung“) und Kontingente (Kennung = GPOS-Stamm, Grenzen, Verhalten bei Überschreitung) – ebenfalls mit Vier-Augen-Freigabe. Neue Varianten bestehender Leistungen nutzt die automatische Berechnung sofort; die Materialauswahl im Besuch kommt jetzt aus dem am Besuchstag gültigen Regelwerk.
+- **CSV-Import/-Export** der Positionen je Fassung und der Selbstzahler-Preisliste (Semikolon, Dezimalkomma, öffnet in Excel). Der Import vergleicht mit dem Bestand und erzeugt einen Vorschlag (geänderte Werte, neue Zeilen; gelöscht wird nichts), den eine zweite Hebamme freigibt.
+- **Selbstzahler-Preise je Hebamme:** eigener Preis je Leistung (leer = Praxispreis), mit Vier-Augen-Freigabe; die Liste zeigt die eigenen Preise aller Hebammen.
 
 **8. Test und Sicherheit**
 - **Testrechner**: Eine Beispielbetreuung durchspielen („Geburt 20.09., Besuche an Tag 1, 2, 2, 3 …“). Die App zeigt die erzeugten Positionen, Beträge und Warnungen, bevor eine neue Version aktiviert wird.

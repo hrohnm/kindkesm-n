@@ -57,9 +57,11 @@ export type Position = {
   quittierungspflichtig: boolean;
   hinweis: string | null;
   befristetBis: string | null;
+  material_fuer?: string[];
+  einmalig?: boolean;
 };
 
-export type Selbstzahler = { id: string; bezeichnung: string; rechnungstext: string; einheit: string; preis: string; umsatzsteuer: string; aktiv: boolean; details: Record<string, unknown> };
+export type Selbstzahler = { id: string; bezeichnung: string; rechnungstext: string; einheit: string; preis: string; umsatzsteuer: string; aktiv: boolean; details: Record<string, unknown>; meinPreis?: string | null; eigenePreise?: Array<{ benutzerId: string; kuerzel: string; name: string; preis: string }> };
 
 // ------------------------------------------------------------------ Akte
 export type KlientinListe = {

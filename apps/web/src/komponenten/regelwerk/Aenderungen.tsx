@@ -51,7 +51,8 @@ export function Aenderungen({ regelwerkId, testen, geaendert }: { regelwerkId: s
     }
   }
 
-  const sichtbar = (liste.daten ?? []).filter((a) => a.regelwerkId === regelwerkId || a.regelwerkId === null);
+  // Alle Vorschläge zeigen (auch zu anderen Fassungen), damit keiner bei der Freigabe übersehen wird
+  const sichtbar = liste.daten ?? [];
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -73,7 +74,7 @@ export function Aenderungen({ regelwerkId, testen, geaendert }: { regelwerkId: s
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <div className="font-semibold">#{a.nummer} {a.titel}</div>
-                  <div className="text-sm text-slate-500">vorgeschlagen von {a.von} am {zeit(a.erstelltAm)}{a.regelwerkId ? "" : " · Selbstzahler-Preisliste"}</div>
+                  <div className="text-sm text-slate-500">vorgeschlagen von {a.von} am {zeit(a.erstelltAm)}{a.regelwerkId ? (a.regelwerkId === regelwerkId ? "" : ` · Fassung ${a.regelwerkId}`) : " · Selbstzahler-Preisliste"}</div>
                 </div>
                 <span className={`rounded-full px-3 py-1 text-sm font-medium ${FARBE[a.status]}`}>{STATUS_AENDERUNG_LABEL[a.status]}</span>
               </div>
@@ -87,7 +88,7 @@ export function Aenderungen({ regelwerkId, testen, geaendert }: { regelwerkId: s
               )}
               {a.status === "offen" && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {a.regelwerkId && <button type="button" className="knopf-sekundaer" onClick={() => testen(a.id)}>Im Testrechner prüfen</button>}
+                  {a.regelwerkId === regelwerkId && <button type="button" className="knopf-sekundaer" onClick={() => testen(a.id)}>Im Testrechner prüfen</button>}
                   {a.darfFreigeben && (
                     <>
                       <button type="button" className="knopf-primaer" onClick={() => confirm(`„${a.titel}“ freigeben? Die Änderung wird sofort wirksam.`) && aktion(`/api/aenderungen/${a.id}/freigeben`, undefined, "Freigegeben – die Änderung ist jetzt wirksam.")}>
