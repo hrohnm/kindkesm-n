@@ -10,6 +10,7 @@ const UNTER = [
   { to: "/einstellungen/offline", label: "Offline" },
   { to: "/einstellungen/passwort", label: "Passwort" },
   // Auf dem Handy fehlen diese in der unteren Leiste, daher nur dort hier verlinkt
+  { to: "/kurse", label: "Kurse ›", nurHandy: true },
   { to: "/team", label: "Team ›", nurHandy: true },
   { to: "/fahrtenbuch", label: "Fahrtenbuch ›", nurHandy: true },
   { to: "/regelwerk", label: "Regelwerk ›", nurHandy: true },

@@ -2,7 +2,7 @@
  * Abrechnungsunterlagen: Fälle zusammenstellen, vor dem Versand prüfen und die Versandmappe als PDF erzeugen.
  * Inhalt der Abrechnungsdaten nach Anlage 2 § 2/§ 7, Formulare nach Anlage 6 des Hebammenhilfevertrags.
  */
-import { LEISTUNGSART_LABEL, type Leistungsart, type RegelwerkDaten } from "@kindkesmoeoen/shared";
+import { besuchArtLabel, type RegelwerkDaten } from "@kindkesmoeoen/shared";
 import { and, asc, eq, inArray, isNull, lte } from "drizzle-orm";
 import { PDFDocument } from "pdf-lib";
 import type { Datenbank } from "./db/client";
@@ -102,7 +102,8 @@ function formularzeilen(fall: Fall, rws: Map<string, RegelwerkDaten>): Zeileninf
       zeile: {
         hebNr: 1,
         datum: b.datum,
-        von: b.von,
+        // Selbstlerneinheit (Kurse): keine „Uhrzeit von“, Dauer des Videos bei „Uhrzeit bis“
+        von: b.art === 6 ? "" : b.von,
         bis: b.bis,
         spalte: spalte.index,
         eintrag: spalte.eintrag,
@@ -188,7 +189,7 @@ export async function mappeErzeugen(db: Datenbank, versandId: string): Promise<{
         l.gpos,
         l.txt ? `${l.bezeichnung}\n${l.txt}` : l.bezeichnung,
         l.einheit === "5min" ? `${l.menge} × 5 Min.` : l.einheit === "pauschal" ? "pauschal" : `${String(l.menge).replace(".", ",")} ${l.einheit}`,
-        `${LEISTUNGSART_LABEL[b.art as Leistungsart]}\n${l.quittierungspflichtig ? beleg : "nur Datenblatt"}`,
+        `${besuchArtLabel(b.typ, b.art)}\n${l.quittierungspflichtig ? beleg : "nur Datenblatt"}`,
         euro(l.betrag),
       ]);
     });

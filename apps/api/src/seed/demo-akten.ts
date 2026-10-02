@@ -210,6 +210,64 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweiter
   }
   for (const h of [...new Set(termine.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
 
+  if (erweitert) await demoKurseAnlegen(db, anfrage, async (email, method, url, payload) => {
+    const res = await app.inject({ method, url, payload: payload as object, headers: email ? { cookie: await anmelden(email) } : {} });
+    if (res.statusCode >= 300) throw new Error(`${method} ${url}: ${res.body}`);
+    return res.json();
+  });
+
   await app.close();
   return familien.length;
+}
+
+type Anfrage = (email: string, method: "GET" | "POST" | "PUT", url: string, payload?: unknown) => Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+type OffeneAnfrage = (email: string | null, method: "GET" | "POST" | "PUT", url: string, payload?: unknown) => Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+/** Demo-Kurse: Geburtsvorbereitung (Kasse, zu zweit geleitet, ein Termin schon abgerechnet) und Babymassage (Selbstzahler). */
+async function demoKurseAnlegen(db: Datenbank, anfrage: Anfrage, offen: OffeneAnfrage) {
+  const johanna = (await anfrage("johanna@kindkesmoeoen.test", "GET", "/api/auth/ich")).id as string;
+  const marielena = (await anfrage("marielena@kindkesmoeoen.test", "GET", "/api/auth/ich")).id as string;
+  const kid = async (nachname: string) => (await db.select({ id: klientin.id }).from(klientin).where(eq(klientin.nachname, nachname)))[0]!.id;
+  const J = "johanna@kindkesmoeoen.test";
+
+  const gv = await anfrage(J, "POST", "/api/kurse", {
+    titel: "Geburtsvorbereitung am Wochenende",
+    art: "geburtsvorbereitung",
+    abrechnung: "kasse",
+    ort: "Praxis, Neue Reihe 46b",
+    maxTeilnehmer: 8,
+    partnerPreis: 60,
+    beschreibung: "Zwei Samstage für werdende Eltern: Ablauf der Geburt, Atmung und Positionen, Wochenbett und Stillen.",
+    leitung: [johanna, marielena],
+    anmeldungOffen: true,
+    status: "laufend",
+  });
+  const t1 = (await anfrage(J, "POST", `/api/kurse/${gv.id}/termine`, { datum: tag(-7), von: "10:00", bis: "13:00", format: 2, hebammeId: johanna, thema: "Ablauf der Geburt, Atmung" }))[0];
+  await anfrage(J, "POST", `/api/kurse/${gv.id}/termine`, { datum: tag(7), von: "10:00", bis: "13:00", format: 2, hebammeId: marielena, thema: "Wochenbett und Stillen" });
+  await anfrage(J, "POST", `/api/kurse/${gv.id}/termine`, { datum: tag(10), von: "00:00", bis: "00:45", format: 6, hebammeId: johanna, thema: "Video: Rückbildung und erste Tage zu Hause" });
+  const berger = await anfrage(J, "POST", `/api/kurse/${gv.id}/teilnahmen`, { klientinId: await kid("Berger"), name: "Sophie Berger", stichtag: tag(45), partner: true });
+  const neumann = await anfrage(J, "POST", `/api/kurse/${gv.id}/teilnahmen`, { klientinId: await kid("Neumann"), name: "Mia Neumann", stichtag: tag(28) });
+  await anfrage(J, "PUT", `/api/kurstermine/${t1.id}/anwesenheit`, {
+    abschliessen: true,
+    eintraege: [berger, neumann].map((t) => ({ teilnahmeId: t.id, anwesend: true, unterschrift: { art: "papier", zeitpunkt: `${tag(-7)}T13:00:00.000Z` } })),
+  });
+  // Eine Anmeldung über die Website, noch nicht bestätigt
+  await offen(null, "POST", `/api/oeffentlich/kurse/${gv.id}/anmeldung`, { name: "Paula Beispiel", email: "paula@example.org", stichtag: tag(60), krankenkasse: "Musterkasse Nord", partner: true, nachricht: "Wir kommen aus Kühlungsborn – gibt es Parkplätze?", einwilligung: true });
+
+  const M = "marielena@kindkesmoeoen.test";
+  const bm = await anfrage(M, "POST", "/api/kurse", {
+    titel: "Babymassage dienstags",
+    art: "babymassage",
+    abrechnung: "selbstzahler",
+    ort: "Praxis, Neue Reihe 46b",
+    maxTeilnehmer: 6,
+    preis: 85,
+    beschreibung: "Fünf Termine für Babys ab etwa 6 Wochen. Bitte ein großes Handtuch mitbringen.",
+    leitung: [marielena],
+    anmeldungOffen: true,
+    status: "geplant",
+  });
+  await anfrage(M, "POST", `/api/kurse/${bm.id}/termine`, { datum: tag(5), von: "10:00", bis: "11:00", format: 2, hebammeId: marielena, wiederholungen: 5, abstandTage: 7 });
+  await anfrage(M, "POST", `/api/kurse/${bm.id}/teilnahmen`, { klientinId: await kid("Becker"), name: "Laura Becker", stichtag: tag(-40), bezahlt: true });
+  await anfrage(M, "POST", `/api/kurse/${bm.id}/teilnahmen`, { name: "Sarah Muster", email: "sarah@example.org", telefon: "0170 0000199", stichtag: tag(-50) });
 }

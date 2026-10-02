@@ -13,6 +13,7 @@ import { abrechnungRouten } from "./routes/abrechnung";
 import { aenderungRouten } from "./routes/aenderungen";
 import { akteRouten } from "./routes/akte";
 import { urkundeRouten } from "./routes/urkunde";
+import { kursRouten } from "./routes/kurse";
 import { authRouten } from "./routes/auth";
 import { hinweisRouten } from "./routes/hinweise";
 import { ichRouten } from "./routes/ich";
@@ -43,7 +44,8 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
     const pfad = request.url.split("?")[0]!;
     const token = request.cookies[SITZUNG_COOKIE];
     if (token) request.benutzer = await sitzungLaden(db, token);
-    if (!OEFFENTLICH.has(pfad) && !request.benutzer) {
+    // Online-Kursanmeldung: ohne Konto (nur Kursdaten lesen bzw. eine Anmeldung abgeben)
+    if (!OEFFENTLICH.has(pfad) && !pfad.startsWith("/api/oeffentlich/") && !request.benutzer) {
       return reply.code(401).send({ fehler: "Bitte anmelden" });
     }
   });
@@ -69,6 +71,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await hinweisRouten(app, db);
   await akteRouten(app, db);
   await urkundeRouten(app, db);
+  await kursRouten(app, db);
   await abrechnungRouten(app, db);
   await tourenRouten(app, db);
   await aenderungRouten(app, db);

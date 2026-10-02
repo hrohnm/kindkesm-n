@@ -89,3 +89,10 @@ Das Praxislogo liegt als `apps/web/public/logo.png`. Favicon und PWA-Icons darau
 - `api()` (`apps/web/src/lib/api.ts`): GET ohne Verbindung aus dem Cache, POST/PUT mit `offline: {...}` in die Warteschlange; sonst `ApiFehler` mit Status 0
 - Server: `besuchSchema` mit optionaler `id` (Gerät) und `stand` (409 mit `konflikt` und `aktuell`), `GET /api/regelwerk-fuer`, `GET /api/betreuungen/:id/abrechnungskontext`
 - Browser-Test: `apps/web/e2e/offline.spec.ts` (Playwright `context.setOffline`)
+
+## Kurse (M12)
+
+- Regeln der Kursabrechnung (Kontingent, Selbstlern-Anteil, Zeitraum Rückbildung): `packages/shared/src/kurs.ts` (Tests in `kurs.test.ts`)
+- API: `apps/api/src/routes/kurse.ts`; Kurseinheiten werden als Kontakt (`besuch`, Typ `geburtsvorbereitung`/`rueckbildung`, Art = Format 2/3/6) mit Leistungen gespeichert und nur über die Anwesenheit geändert
+- Formular 3.4: gleiche Tabelle wie 3.1/3.3, abweichende Unterschriftsspalte in `regelwerk/formulare/anlage6-2026-04-01.layout.json` (`abweichungen`)
+- Öffentliche Schnittstellen ohne Anmeldung: alles unter `/api/oeffentlich/` (Kursliste, Anmeldung)

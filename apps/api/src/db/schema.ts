@@ -224,7 +224,8 @@ export const besuch = pgTable("besuch", {
   datum: date("datum").notNull(),
   von: text("von").notNull(),
   bis: text("bis").notNull(),
-  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"] }).notNull(),
+  /** geburtsvorbereitung/rueckbildung: Kurseinheit einer Versicherten (angelegt über die Kursanwesenheit) */
+  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett", "geburtsvorbereitung", "rueckbildung"] }).notNull(),
   art: smallint("art").notNull(),
   material: text("material").array().notNull().default(sql`'{}'::text[]`),
   dokumentation: jsonb("dokumentation").$type<Record<string, unknown>>().notNull().default({}),
@@ -353,7 +354,8 @@ export const termin = pgTable("termin", {
   fruehestens: text("fruehestens"),
   spaetestens: text("spaetestens"),
   dauerMin: smallint("dauer_min").notNull(),
-  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett"] }).notNull(),
+  /** geburtsvorbereitung/rueckbildung: Kurseinheit einer Versicherten (angelegt über die Kursanwesenheit) */
+  typ: text("typ", { enum: ["schwangerschaft", "vorsorge", "aufklaerung", "stillvorbereitung", "wochenbett", "geburtsvorbereitung", "rueckbildung"] }).notNull(),
   wichtig: boolean("wichtig").notNull().default(false),
   notiz: text("notiz"),
   reihenfolge: smallint("reihenfolge"),
@@ -440,3 +442,73 @@ export const urkunde = pgTable("urkunde", {
   status: text("status", { enum: ["entwurf", "fertig"] }).notNull().default("entwurf"),
   ...zeitstempel(),
 });
+
+// ------------------------------------------------------------------ Kurse (M12)
+
+export const kurs = pgTable("kurs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  titel: text("titel").notNull(),
+  art: text("art", { enum: ["geburtsvorbereitung", "rueckbildung", "babymassage", "eltern_kind", "sonstiges"] }).notNull(),
+  /** Einzelunterweisung statt Gruppe (402/404) */
+  einzel: boolean("einzel").notNull().default(false),
+  abrechnung: text("abrechnung", { enum: ["kasse", "selbstzahler"] }).notNull(),
+  ort: text("ort").notNull().default("Praxis"),
+  maxTeilnehmer: smallint("max_teilnehmer").notNull().default(10),
+  preis: numeric("preis", { precision: 10, scale: 2, mode: "number" }),
+  partnerPreis: numeric("partner_preis", { precision: 10, scale: 2, mode: "number" }),
+  beschreibung: text("beschreibung"),
+  /** Kursleitung: eine oder mehrere Hebammen */
+  leitung: uuid("leitung").array().notNull(),
+  anmeldungOffen: boolean("anmeldung_offen").notNull().default(false),
+  status: text("status", { enum: ["geplant", "laufend", "abgeschlossen", "abgesagt"] }).notNull().default("geplant"),
+  erstelltVon: uuid("erstellt_von").references(() => benutzer.id),
+  ...zeitstempel(),
+});
+
+/** Kurstermin; die angegebene Hebamme rechnet die Einheit ab (Aufteilung bei Kursen zu zweit). */
+export const kurstermin = pgTable("kurstermin", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kursId: uuid("kurs_id").notNull().references(() => kurs.id, { onDelete: "cascade" }),
+  datum: date("datum").notNull(),
+  von: text("von").notNull(),
+  bis: text("bis").notNull(),
+  /** 2 = live in Präsenz, 3 = live digital, 6 = Selbstlerneinheit */
+  format: smallint("format").notNull().default(2),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id),
+  thema: text("thema"),
+  abgeschlossen: boolean("abgeschlossen").notNull().default(false),
+  ...zeitstempel(),
+});
+
+export const kursTeilnahme = pgTable("kurs_teilnahme", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kursId: uuid("kurs_id").notNull().references(() => kurs.id, { onDelete: "cascade" }),
+  /** Verknüpfung zur Akte (Pflicht für die Kassenabrechnung) */
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  name: text("name").notNull(),
+  email: text("email"),
+  telefon: text("telefon"),
+  stichtag: date("stichtag"),
+  krankenkasse: text("krankenkasse"),
+  partner: boolean("partner").notNull().default(false),
+  status: text("status", { enum: ["angemeldet", "bestaetigt", "warteliste", "storniert"] }).notNull().default("bestaetigt"),
+  quelle: text("quelle", { enum: ["praxis", "online"] }).notNull().default("praxis"),
+  bezahlt: boolean("bezahlt").notNull().default(false),
+  nachricht: text("nachricht"),
+  notiz: text("notiz"),
+  ...zeitstempel(),
+});
+
+/** Anwesenheit je Termin und Teilnehmerin; für Kassenkurse mit Unterschrift und dem daraus erzeugten Abrechnungs-Kontakt. */
+export const kursAnwesenheit = pgTable(
+  "kurs_anwesenheit",
+  {
+    terminId: uuid("termin_id").notNull().references(() => kurstermin.id, { onDelete: "cascade" }),
+    teilnahmeId: uuid("teilnahme_id").notNull().references(() => kursTeilnahme.id, { onDelete: "cascade" }),
+    anwesend: boolean("anwesend").notNull(),
+    unterschrift: jsonb("unterschrift").$type<Record<string, unknown>>().notNull().default({ art: "keine" }),
+    besuchId: uuid("besuch_id").references(() => besuch.id, { onDelete: "set null" }),
+    geaendertAm: timestamp("geaendert_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.terminId, t.teilnahmeId] })],
+);

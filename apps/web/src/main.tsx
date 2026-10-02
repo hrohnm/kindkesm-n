@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router";
 import { Layout } from "./komponenten/Layout";
 import "./index.css";
 import { AuthProvider, useAuth } from "./lib/auth";
@@ -11,7 +11,11 @@ import { Besuch } from "./seiten/Besuch";
 import { Cockpit } from "./seiten/Cockpit";
 import { Einstellungen } from "./seiten/Einstellungen";
 import { Fahrtenbuch } from "./seiten/Fahrtenbuch";
+import { Anmeldung } from "./seiten/Anmeldung";
 import { Gewicht } from "./seiten/Gewicht";
+import { Kurs } from "./seiten/Kurs";
+import { Kurse } from "./seiten/Kurse";
+import { KursTermin } from "./seiten/KursTermin";
 import { Urkunde } from "./seiten/Urkunde";
 import { Abrechnung } from "./seiten/einstellungen/Abrechnung";
 import { Ansicht } from "./seiten/einstellungen/Ansicht";
@@ -27,6 +31,9 @@ import { Tour } from "./seiten/Tour";
 
 function App() {
   const { ich } = useAuth();
+  const ort = useLocation();
+  // Öffentliche Kursanmeldung: ohne Konto erreichbar
+  if (ort.pathname === "/anmeldung") return <Anmeldung />;
   if (ich === undefined) return null;
   if (ich === null) return <Anmelden />;
   return (
@@ -43,6 +50,9 @@ function App() {
         <Route path="kinder/:id/gewicht" element={<Gewicht />} />
         <Route path="kinder/:id/urkunde" element={<Urkunde />} />
         <Route path="abrechnung" element={<AbrechnungSeite />} />
+        <Route path="kurse" element={<Kurse />} />
+        <Route path="kurse/:id" element={<Kurs />} />
+        <Route path="kurse/:id/termine/:terminId" element={<KursTermin />} />
         <Route path="team" element={<Team />} />
         <Route path="regelwerk" element={<Regelwerk />} />
         <Route path="einstellungen" element={<Einstellungen />}>

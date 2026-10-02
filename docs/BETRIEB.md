@@ -148,6 +148,10 @@ Das Skript lädt den OpenStreetMap-Extrakt Mecklenburg-Vorpommern (Geofabrik, ca
 3. In `.env` `DOMAIN=app.hebammen-landkreisrostock.de` setzen und `docker compose up -d` ausführen. Caddy holt das neue Zertifikat selbst.
 4. Auf den iPads die App einmal unter der neuen Adresse öffnen und neu zum Home-Bildschirm hinzufügen.
 
+## 6a. Online-Kursanmeldung
+
+Die Anmeldeseite für Kurse ist ohne Konto erreichbar: `https://<adresse>/anmeldung`. Diesen Link auf der Praxis-Website eintragen. Sichtbar sind nur Kurse, bei denen „Online-Anmeldung über die Website“ eingeschaltet ist; es werden keine Namen von Teilnehmerinnen angezeigt. Anmeldungen sind je IP-Adresse auf 10 pro Stunde begrenzt.
+
 ## 7. E-Mail (später)
 
 Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-Server, Benutzer und Passwort des Domain-Postfachs in `.env` eingetragen.
