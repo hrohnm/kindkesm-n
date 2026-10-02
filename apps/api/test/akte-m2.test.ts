@@ -57,6 +57,23 @@ describe("Akte: Merkmale, Kontakte, Einwilligungen, Vertretung", () => {
     expect(akte.einwilligungen.find((x: { art: string }) => x.art === "foto").erteilt).toBe(false);
   });
 
+  it("Art der Geburt beim Erfassen des Kindes und Kaiserschnittnarbe in der Dokumentation", async () => {
+    const id = await krueger();
+    const akte = (await req("GET", `/api/klientinnen/${id}`)).json();
+    const b = akte.betreuungen[0];
+    const kind = b.kinder[0];
+    await req("PUT", `/api/kinder/${kind.id}`, { ...kind, geburtsmodus: "sectio_sekundaer" });
+    expect((await req("GET", `/api/betreuungen/${b.id}`)).json().geburtsmodus).toBe("sectio_sekundaer");
+    const r = await req("POST", `/api/betreuungen/${b.id}/besuche`, {
+      datum: heute, von: "16:00", bis: "16:40", typ: "wochenbett", art: 1, material: [],
+      dokumentation: { mutter: { sectionarbe: "reizlos, Fäden/Klammern liegen", brust: "gefüllt, wunde Mamillen" }, kinder: {}, notiz: null },
+      unterschrift: { art: "keine" }, abschliessen: false,
+    });
+    expect(r.statusCode).toBe(200);
+    const besuch = (await req("GET", `/api/besuche/${r.json().besuch.id}`)).json();
+    expect(besuch.dokumentation.mutter).toMatchObject({ sectionarbe: "reizlos, Fäden/Klammern liegen", brust: "gefüllt, wunde Mamillen" });
+  });
+
   it("Vertretung: Fall erscheint bei der vertretenden Hebamme unter „Meine“", async () => {
     const id = await krueger();
     const vorher = (await req("GET", "/api/klientinnen?nur=meine", undefined, marielena)).json();

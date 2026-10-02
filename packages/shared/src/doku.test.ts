@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { ansichtVervollstaendigen, gewichtFuerPerzentile, gewichtsverlauf, messverlauf, perzentileFuerGewicht, perzentileFuerWert, standardAnsicht, wertFuerPerzentile } from "./doku";
+import { istSectio } from "./akte";
+import { mehrfachText, mehrfachWerte, ansichtVervollstaendigen, gewichtFuerPerzentile, gewichtsverlauf, messverlauf, perzentileFuerGewicht, perzentileFuerWert, standardAnsicht, wertFuerPerzentile } from "./doku";
 
 describe("WHO-Perzentile Gewicht", () => {
   it("Median am Geburtstag entspricht der WHO-Tabelle", () => {
@@ -62,5 +63,19 @@ describe("Ansicht", () => {
     expect(a.mutter.puls).toEqual({ sichtbar: false, vergleich: false });
     expect(a.mutter.rrSys).toEqual(standardAnsicht().mutter.rrSys);
     expect(a.kind.gewicht!.vergleich).toBe(true);
+  });
+});
+
+describe("Mehrfachauswahl und Kaiserschnitt", () => {
+  it("zerlegt und verbindet Mehrfachwerte", () => {
+    expect(mehrfachWerte("gefüllt, wunde Mamillen")).toEqual(["gefüllt", "wunde Mamillen"]);
+    expect(mehrfachWerte("")).toEqual([]);
+    expect(mehrfachText(["reizlos", "Fäden/Klammern liegen"])).toBe("reizlos, Fäden/Klammern liegen");
+  });
+  it("erkennt Kaiserschnitt auch in älteren Freitexten", () => {
+    expect(istSectio("sectio_sekundaer")).toBe(true);
+    expect(istSectio("Sectio caesarea")).toBe(true);
+    expect(istSectio("spontan")).toBe(false);
+    expect(istSectio(null)).toBe(false);
   });
 });

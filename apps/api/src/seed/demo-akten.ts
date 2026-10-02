@@ -31,7 +31,7 @@ const FAMILIEN: Familie[] = [
     hebamme: "johanna@kindkesmoeoen.test",
     klientin: { vorname: "Lena", nachname: "Krüger", geburtsdatum: "1994-05-12", strasse: "Lindenweg 4", plz: "18209", ort: "Bad Doberan", telefon: "0170 0000101", email: null, krankenkasse: "Musterkasse Nord", kassenIk: "109900001", versichertennummer: "K123456789", hinweise: "Hund (freundlich). Parken im Hof." },
     et: tag(-2),
-    kinder: [{ vorname: "Ole", nachname: "Krüger", geburtsdatum: tag(-5), geburtszeit: "04:12", geschlecht: "maennlich", geburtsgewicht: 3480, laenge: 52, kopfumfang: 35 }],
+    kinder: [{ vorname: "Ole", nachname: "Krüger", geburtsdatum: tag(-5), geburtszeit: "04:12", geschlecht: "maennlich", geburtsgewicht: 3480, laenge: 52, kopfumfang: 35, geburtsmodus: "spontan" }],
     besuche: [
       { datum: tag(-3), von: "10:00", bis: "11:30", typ: "wochenbett", art: 1, doku: { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", brust: "Milcheinschuss", befinden: "müde, glücklich" }, kindDoku: [{ gewicht: 3290, temperatur: 37.0, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }] },
       { datum: tag(-2), von: "09:30", bis: "10:15", typ: "wochenbett", art: 1, material: ["61400"], doku: { temperatur: 36.7, fundus: "1 QF unter Nabel", lochien: "rubra", brust: "gefüllt" }, kindDoku: [{ gewicht: 3240, haut: "leicht ikterisch", nabel: "feucht", stillen: "voll gestillt" }] },
@@ -50,7 +50,7 @@ const FAMILIEN: Familie[] = [
     klientin: { vorname: "Maria", nachname: "Hansen", geburtsdatum: "1991-02-20", strasse: "Strandstraße 15", plz: "18230", ort: "Rerik", telefon: "0170 0000103", email: null, krankenkasse: "Musterkasse Nord", kassenIk: "109900001", versichertennummer: "H555666777", hinweise: "Zwillinge, 2. OG ohne Aufzug." },
     et: tag(-18),
     kinder: [
-      { vorname: "Paul", nachname: "Hansen", geburtsdatum: tag(-20), geburtszeit: "11:05", geschlecht: "maennlich", geburtsgewicht: 2650, laenge: 47, kopfumfang: 33 },
+      { vorname: "Paul", nachname: "Hansen", geburtsdatum: tag(-20), geburtszeit: "11:05", geschlecht: "maennlich", geburtsgewicht: 2650, laenge: 47, kopfumfang: 33, geburtsmodus: "sectio_primaer" },
       { vorname: "Emma", nachname: "Hansen", geburtsdatum: tag(-20), geburtszeit: "11:21", geschlecht: "weiblich", geburtsgewicht: 2480, laenge: 46, kopfumfang: 32.5 },
     ],
     besuche: [
@@ -110,11 +110,11 @@ const FAMILIEN_ERWEITERT: Familie[] = [
     hebamme: "marielena@kindkesmoeoen.test",
     klientin: { vorname: "Laura", nachname: "Becker", geburtsdatum: "1990-06-30", strasse: "Ostseeallee 14", plz: "18225", ort: "Kühlungsborn", telefon: "0170 0000108", email: null, krankenkasse: "Musterkasse Nord", kassenIk: "109900001", versichertennummer: "B864209753", hinweise: "Sectio, Hausaufgang über Hof." },
     et: tag(-38),
-    kinder: [{ vorname: "Frieda", nachname: "Becker", geburtsdatum: tag(-40), geburtszeit: "13:02", geschlecht: "weiblich", geburtsgewicht: 3300, laenge: 51, kopfumfang: 34.5 }],
+    kinder: [{ vorname: "Frieda", nachname: "Becker", geburtsdatum: tag(-40), geburtszeit: "13:02", geschlecht: "weiblich", geburtsgewicht: 3300, laenge: 51, kopfumfang: 34.5, geburtsmodus: "sectio_sekundaer" }],
     besuche: [
-      tabletBesuch(-38, "10:00", "11:30", 3150, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", wunde: "Sectio reizlos" }, { haut: "rosig", stillen: "teilgestillt" }),
-      tabletBesuch(-37, "11:15", "12:00", 3080, { fundus: "1 QF unter Nabel", lochien: "rubra", wunde: "Sectio reizlos", brust: "Milcheinschuss" }),
-      tabletBesuch(-36, "10:45", "11:30", 3060, { fundus: "2 QF unter Nabel", lochien: "fusca", wunde: "Sectio reizlos" }, { haut: "leicht ikterisch" }),
+      tabletBesuch(-38, "10:00", "11:30", 3150, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", sectionarbe: "reizlos, Fäden/Klammern liegen" }, { haut: "rosig", stillen: "teilgestillt, Zufüttern" }),
+      tabletBesuch(-37, "11:15", "12:00", 3080, { fundus: "1 QF unter Nabel", lochien: "rubra", sectionarbe: "reizlos", brust: "Milcheinschuss, gefüllt" }),
+      tabletBesuch(-36, "10:45", "11:30", 3060, { fundus: "2 QF unter Nabel", lochien: "fusca", sectionarbe: "gerötet, schmerzhaft" }, { haut: "leicht ikterisch, trocken" }),
       tabletBesuch(-34, "14:30", "15:10", 3120, { fundus: "3 QF unter Nabel", lochien: "fusca" }, { haut: "leicht ikterisch", nabel: "abgefallen" }),
       { ...tabletBesuch(-31, "09:30", "10:10", 3250, { lochien: "flava" }), material: ["61700"] },
       tabletBesuch(-27, "15:00", "15:40", 3390, { lochien: "flava", befinden: "gut" }, { stillen: "voll gestillt", laenge: 52.5, kopfumfang: 35.3 }),
@@ -128,7 +128,7 @@ const FAMILIEN_ERWEITERT: Familie[] = [
     hebamme: "marielena@kindkesmoeoen.test",
     klientin: { vorname: "Svenja", nachname: "Koch", geburtsdatum: "1995-01-17", strasse: "Neue Reihe 40", plz: "18209", ort: "Bad Doberan", telefon: "0170 0000109", email: null, krankenkasse: "Musterkasse Ost", kassenIk: "109900002", versichertennummer: "K112233445", hinweise: null },
     et: tag(-6),
-    kinder: [{ vorname: "Jonas", nachname: "Koch", geburtsdatum: tag(-8), geburtszeit: "03:50", geschlecht: "maennlich", geburtsgewicht: 3900, laenge: 54, kopfumfang: 36 }],
+    kinder: [{ vorname: "Jonas", nachname: "Koch", geburtsdatum: tag(-8), geburtszeit: "03:50", geschlecht: "maennlich", geburtsgewicht: 3900, laenge: 54, kopfumfang: 36, geburtsmodus: "vaginal_operativ" }],
     besuche: [
       tabletBesuch(-7, "14:00", "15:30", 3760, { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", rrSys: 130, rrDia: 82 }, { haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }),
       tabletBesuch(-6, "15:00", "15:50", 3650, { fundus: "1 QF unter Nabel", lochien: "rubra", brust: "Milcheinschuss" }, { haut: "rosig" }),

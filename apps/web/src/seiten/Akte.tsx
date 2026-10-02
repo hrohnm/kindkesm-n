@@ -3,6 +3,8 @@ import {
   BETREUUNG_STATUS_LABEL,
   GESCHLECHTER,
   GESCHLECHT_LABEL,
+  GEBURTSMODI,
+  geburtsmodusLabel,
   besuchArtLabel,
   besuchTypLabel,
   lebenstag,
@@ -185,7 +187,8 @@ function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung
             <dd>{datum(b.et)}{!geburt && b.et ? ` · heute SSW ${sswAusEt(b.et, heute()).text}` : ""}</dd>
             {geburt && (<><dt className="text-slate-500">Geburt</dt><dd>{datum(geburt)} · heute {lebenstag(geburt, heute())}. Lebenstag</dd></>)}
             <dt className="text-slate-500">Gravida/Para</dt><dd>{b.gravida ?? "–"} / {b.para ?? "–"}</dd>
-            <dt className="text-slate-500">Geburtsort</dt><dd>{b.geburtsort ?? "–"}{b.geburtsmodus ? ` · ${b.geburtsmodus}` : ""}</dd>
+            <dt className="text-slate-500">Geburtsort</dt><dd>{b.geburtsort ?? "–"}</dd>
+            <dt className="text-slate-500">Art der Geburt</dt><dd>{geburtsmodusLabel(b.geburtsmodus) ?? "–"}</dd>
             <dt className="text-slate-500">Vertretung</dt><dd>{team.find((h) => h.id === b.vertretungHebammeId)?.name ?? "–"}</dd>
           </dl>
           {b.notizen && <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{b.notizen}</p>}
@@ -222,7 +225,7 @@ function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung
             <Feld label="Gravida" fehler={f.felder.gravida}><input className="feld" inputMode="numeric" value={f.werte.gravida} onChange={(e) => f.setze("gravida", e.target.value)} /></Feld>
             <Feld label="Para" fehler={f.felder.para}><input className="feld" inputMode="numeric" value={f.werte.para} onChange={(e) => f.setze("para", e.target.value)} /></Feld>
             <Feld label="Geburtsort"><input className="feld" value={f.werte.geburtsort} onChange={(e) => f.setze("geburtsort", e.target.value)} placeholder="z. B. Klinikum Südstadt Rostock" /></Feld>
-            <Feld label="Geburtsmodus"><input className="feld" value={f.werte.geburtsmodus} onChange={(e) => f.setze("geburtsmodus", e.target.value)} placeholder="spontan, Sectio, …" /></Feld>
+            <Feld label="Art der Geburt"><GeburtsmodusAuswahl wert={f.werte.geburtsmodus} aendern={(v) => f.setze("geburtsmodus", v)} /></Feld>
             <Feld label="Vertretung" hilfe="Sieht den Fall unter „Meine“, z. B. bei Urlaub der zuständigen Hebamme">
               <select className="feld" value={f.werte.vertretungHebammeId} onChange={(e) => f.setze("vertretungHebammeId", e.target.value)}>
                 <option value="">– keine –</option>
@@ -252,7 +255,7 @@ function KinderKarte({ betreuung, neuLaden }: { betreuung: Betreuung; neuLaden: 
         </button>
       </div>
       {bearbeiten && (
-        <KindFormular betreuungId={betreuung.id} kind={bearbeiten === "neu" ? undefined : bearbeiten} fertig={async () => { setBearbeiten(null); await neuLaden(); }} />
+        <KindFormular betreuungId={betreuung.id} geburtsmodus={betreuung.geburtsmodus} kind={bearbeiten === "neu" ? undefined : bearbeiten} fertig={async () => { setBearbeiten(null); await neuLaden(); }} />
       )}
       {betreuung.kinder.length === 0 && !bearbeiten && <p className="text-slate-500">Noch nicht geboren.</p>}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -281,7 +284,7 @@ function KinderKarte({ betreuung, neuLaden }: { betreuung: Betreuung; neuLaden: 
   );
 }
 
-function KindFormular({ betreuungId, kind, fertig }: { betreuungId: string; kind?: Kind; fertig: () => void }) {
+function KindFormular({ betreuungId, geburtsmodus, kind, fertig }: { betreuungId: string; geburtsmodus: string | null; kind?: Kind; fertig: () => void }) {
   const f = useFormular({
     vorname: kind?.vorname ?? "",
     nachname: kind?.nachname ?? "",
@@ -291,6 +294,7 @@ function KindFormular({ betreuungId, kind, fertig }: { betreuungId: string; kind
     geburtsgewicht: kind?.geburtsgewicht?.toString() ?? "",
     laenge: kind?.laenge ?? "",
     kopfumfang: kind?.kopfumfang ?? "",
+    geburtsmodus: geburtsmodus ?? "",
   });
   return (
     <form
@@ -315,6 +319,7 @@ function KindFormular({ betreuungId, kind, fertig }: { betreuungId: string; kind
         <Feld label="Geburtsgewicht (g)" fehler={f.felder.geburtsgewicht}><input className="feld" inputMode="numeric" value={f.werte.geburtsgewicht} onChange={(e) => f.setze("geburtsgewicht", e.target.value)} /></Feld>
         <Feld label="Länge (cm)" fehler={f.felder.laenge}><input className="feld" inputMode="decimal" value={f.werte.laenge} onChange={(e) => f.setze("laenge", e.target.value)} /></Feld>
         <Feld label="Kopfumfang (cm)" fehler={f.felder.kopfumfang}><input className="feld" inputMode="decimal" value={f.werte.kopfumfang} onChange={(e) => f.setze("kopfumfang", e.target.value)} /></Feld>
+        <Feld label="Art der Geburt" hilfe="Bei Kaiserschnitt erscheint im Besuch das Feld „Kaiserschnittnarbe“."><GeburtsmodusAuswahl wert={f.werte.geburtsmodus} aendern={(v) => f.setze("geburtsmodus", v)} /></Feld>
       </div>
       <div className="flex gap-2">
         <button className="knopf-primaer" disabled={f.speichert}>Speichern</button>
@@ -384,5 +389,16 @@ function Besuche({ betreuungId }: { betreuungId: string }) {
         </div>
       )}
     </section>
+  );
+}
+
+/** Auswahl der Geburtsart; ältere Freitexte bleiben als eigene Option erhalten. */
+function GeburtsmodusAuswahl({ wert, aendern }: { wert: string; aendern: (v: string) => void }) {
+  return (
+    <select className="feld" value={wert} onChange={(e) => aendern(e.target.value)}>
+      <option value="">–</option>
+      {Object.entries(GEBURTSMODI).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+      {wert && !(wert in GEBURTSMODI) && <option value={wert}>{wert}</option>}
+    </select>
   );
 }

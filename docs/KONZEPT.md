@@ -278,6 +278,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M3 – Dokumentation Schwangerschaft / Wochenbett
 - **Besuchsdokumentation als schnelle Maske**: Vitalwerte Mutter (RR, Puls, Temperatur), Fundus/Lochien, Brust/Stillen, Wunde/Naht, Psyche (z. B. EPDS-Fragebogen); Kind: Gewicht, Temperatur, Hautfarbe/Ikterus, Nabel, Ausscheidung, Trinkverhalten
 - **Persönliche Ansicht** (umgesetzt): jede Hebamme legt unter Einstellungen → Dokumentation fest, welche Felder sichtbar sind und bei welchen der Wert des letzten Besuchs zum Vergleich erscheint (bei Zahlen mit Differenz). Ausgeblendete Felder lassen sich im Besuch mit „Weitere Felder“ einblenden, Felder mit Wert erscheinen immer. Die Kacheln Mutter und Kind sind auf- und zuklappbar, standardmäßig zugeklappt (je Hebamme änderbar); zugeklappt zeigen sie eine Kurzfassung der eingetragenen Werte.
+- **Umgesetzt:** Art der Geburt als Auswahl (Spontangeburt, vaginal-operativ, primäre/sekundäre Sectio, Notsectio) in der Betreuung und beim Erfassen des Kindes; nach einem Kaiserschnitt erscheint in der Kachel Mutter das Feld **Kaiserschnittnarbe**. **Mehrfachauswahl** bei Lochien, Brust, Wunde, Kaiserschnittnarbe, Haut, Nabel, Ernährung und Ausscheidung (Fundus bleibt Einzelauswahl)
 - **Textbausteine** und „wie letztes Mal“-Übernahme
 - **Stift-Eingabe** (Apple Pencil / S Pen): Handschrift → Text, Skizzen
 - Vorsorge: Mutterpass-relevante Werte, CTG-Notiz, Beschwerden, Beratungsthemen (Checkliste)

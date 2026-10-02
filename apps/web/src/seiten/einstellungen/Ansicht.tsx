@@ -45,7 +45,7 @@ export function Ansicht() {
               <tr key={f.id}>
                 <td className="py-1 pr-2">
                   {f.label}
-                  {f.nachGeburt && <span className="text-slate-500"> (Wochenbett)</span>}
+                  {f.nurSectio ? <span className="text-slate-500"> (nach Kaiserschnitt)</span> : f.nachGeburt && <span className="text-slate-500"> (Wochenbett)</span>}
                 </td>
                 <td className="py-1 text-center">
                   <input type="checkbox" aria-label={`${f.label} anzeigen`} className="size-6 accent-salbei-600" checked={e.sichtbar} onChange={(ev) => setzeFeld(gruppe, f.id, "sichtbar", ev.target.checked)} />
