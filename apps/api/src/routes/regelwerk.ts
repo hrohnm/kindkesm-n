@@ -64,6 +64,15 @@ export async function regelwerkRouten(app: FastifyInstance, db: Datenbank) {
     }));
   });
 
+  /** Vollständiges Regelwerk, das an einem Datum gilt (für die Abrechnungsvorschau auf dem Gerät, auch offline). */
+  app.get<{ Querystring: { datum?: string } }>("/api/regelwerk-fuer", async (request, reply) => {
+    const datum = request.query.datum;
+    if (!datum || !/^\d{4}-\d{2}-\d{2}$/.test(datum)) return reply.code(400).send({ fehler: "datum angeben" });
+    const rw = await regelwerkFuer(db, datum);
+    if (!rw) return reply.code(404).send({ fehler: "Kein Regelwerk für dieses Datum" });
+    return rw;
+  });
+
   /** Auswählbares Material für eine Leistung an einem Datum (aus dem dann gültigen Regelwerk). */
   app.get<{ Querystring: { datum?: string; typ?: string } }>("/api/material", async (request, reply) => {
     const { datum, typ } = request.query;

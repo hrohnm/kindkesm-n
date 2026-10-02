@@ -14,6 +14,7 @@ import { Fahrtenbuch } from "./seiten/Fahrtenbuch";
 import { Gewicht } from "./seiten/Gewicht";
 import { Abrechnung } from "./seiten/einstellungen/Abrechnung";
 import { Ansicht } from "./seiten/einstellungen/Ansicht";
+import { Offline } from "./seiten/einstellungen/Offline";
 import { OrteTouren } from "./seiten/einstellungen/OrteTouren";
 import { Passwort } from "./seiten/einstellungen/Passwort";
 import { Praxis } from "./seiten/einstellungen/Praxis";
@@ -48,6 +49,7 @@ function App() {
           <Route path="dokumentation" element={<Ansicht />} />
           <Route path="abrechnung" element={<Abrechnung />} />
           <Route path="praxis" element={<Praxis />} />
+          <Route path="offline" element={<Offline />} />
           <Route path="passwort" element={<Passwort />} />
         </Route>
         <Route path="*" element={<Cockpit />} />

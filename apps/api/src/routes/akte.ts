@@ -256,6 +256,13 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     return kontingentStand(k.fruehere, rw).filter((s) => relevant.includes(s.id));
   });
 
+  /** Abrechnungskontext (Geburtsdatum, ET, frühere Besuche) für die Vorschau auf dem Gerät, wenn keine Verbindung besteht. */
+  app.get<{ Params: { id: string } }>("/api/betreuungen/:id/abrechnungskontext", async (request, reply) => {
+    const k = await kontextLaden(db, request.params.id);
+    if (!k) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
+    return { geburtsdatum: k.geburtsdatum, et: k.betreuung.et, anzahlKinder: Math.max(1, k.kinder.length), fruehereBesuche: k.fruehere };
+  });
+
   /** Berechnet Leistungen und Hinweise, ohne zu speichern (Live-Vorschau beim Dokumentieren). */
   app.post<{ Params: { id: string }; Querystring: { besuchId?: string } }>("/api/betreuungen/:id/besuche/vorschau", async (request, reply) => {
     const daten = pruefen(besuchSchema, request.body, reply);
@@ -274,6 +281,33 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   async function besuchSpeichern(request: FastifyRequest, reply: FastifyReply, betreuungId: string, vorhanden?: Besuch) {
     const daten = pruefen(besuchSchema, request.body, reply);
     if (!daten) return;
+    // Offline-Abgleich: Besuch mit dieser Gerätekennung schon übertragen? Dann als Änderung behandeln (keine Dublette)
+    if (!vorhanden && daten.id) {
+      const [schon] = await db.select().from(besuch).where(eq(besuch.id, daten.id));
+      if (schon) {
+        if (schon.hebammeId !== request.benutzer!.id || schon.betreuungId !== betreuungId) return reply.code(409).send({ fehler: "Kennung bereits vergeben." });
+        vorhanden = schon;
+      }
+    }
+    // Konflikt: Der Besuch wurde seit dem Laden auf einem anderen Gerät geändert
+    if (vorhanden && daten.stand && new Date(daten.stand).getTime() !== vorhanden.geaendertAm.getTime()) {
+      return reply.code(409).send({
+        fehler: "Dieser Besuch wurde inzwischen auf einem anderen Gerät geändert.",
+        konflikt: true,
+        aktuell: {
+          geaendertAm: vorhanden.geaendertAm,
+          status: vorhanden.status,
+          datum: vorhanden.datum,
+          von: vorhanden.von,
+          bis: vorhanden.bis,
+          typ: vorhanden.typ,
+          art: vorhanden.art,
+          material: vorhanden.material,
+          dokumentation: vorhanden.dokumentation,
+          unterschrift: vorhanden.unterschrift,
+        },
+      });
+    }
     const k = await kontextLaden(db, betreuungId, vorhanden?.id);
     if (!k) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
     const rw = await regelwerkFuer(db, daten.datum);
@@ -325,7 +359,7 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
         [b] = (await tx.update(besuch).set(werte).where(eq(besuch.id, vorhanden.id)).returning()) as [Besuch];
         await tx.delete(leistung).where(eq(leistung.besuchId, vorhanden.id));
       } else {
-        [b] = (await tx.insert(besuch).values(werte).returning()) as [Besuch];
+        [b] = (await tx.insert(besuch).values(daten.id ? { ...werte, id: daten.id } : werte).returning()) as [Besuch];
       }
       if (ergebnis.zeilen.length) {
         await tx.insert(leistung).values(

@@ -80,3 +80,12 @@ Das Praxislogo liegt als `apps/web/public/logo.png`. Favicon und PWA-Icons darau
 - Routing (OSRM mit Luftlinien-Ersatz): `apps/api/src/geo/routing.ts`; Adressverzeichnis: `apps/api/src/geo/adressen.ts`
 - Wegegeld je Tag: `apps/api/src/wegegeld.ts` (wird nach jedem Speichern eines Besuchs neu berechnet)
 - Adressverzeichnis aus einem OSM-Extrakt erzeugen: `python3 scripts/adressen_extrahieren.py region.osm.pbf adressen.csv.gz` (pyosmium), Import mit `gunzip -c adressen.csv.gz | node apps/api/dist/cli.js adressen-importieren`
+
+## Offline-Betrieb
+
+- Gerätespeicher (IndexedDB + AES-GCM): `apps/web/src/lib/offline/speicher.ts`; Lesecache und freigegebene Pfade: `cache.ts`
+- Warteschlange und Abgleich: `apps/web/src/lib/offline/ausgang.ts`; Zusammenführen (mit Tests): `packages/shared/src/abgleich.ts`
+- Vorladen für heute/morgen: `vorrat.ts`; Start, Takt und Abmelden: `start.ts`; Anzeige: `komponenten/OfflineStatus.tsx`, Seite `seiten/einstellungen/Offline.tsx`
+- `api()` (`apps/web/src/lib/api.ts`): GET ohne Verbindung aus dem Cache, POST/PUT mit `offline: {...}` in die Warteschlange; sonst `ApiFehler` mit Status 0
+- Server: `besuchSchema` mit optionaler `id` (Gerät) und `stand` (409 mit `konflikt` und `aktuell`), `GET /api/regelwerk-fuer`, `GET /api/betreuungen/:id/abrechnungskontext`
+- Browser-Test: `apps/web/e2e/offline.spec.ts` (Playwright `context.setOffline`)

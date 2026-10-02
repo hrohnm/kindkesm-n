@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router";
 import { useAuth } from "../lib/auth";
+import { OfflineStatus } from "./OfflineStatus";
 import { IconAbmelden, IconAbrechnung, IconAuto, IconEinstellungen, IconFamilie, IconHeute, IconRegelwerk, IconTeam, IconTour } from "./Icons";
 
 const NAV = [
@@ -44,6 +45,7 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
+        <OfflineStatus variante="seitenleiste" />
         <div className="mt-4 border-t border-sand-200 pt-4 dark:border-salbei-700">
           <div className="flex items-center gap-3 px-2">
             <span className="flex size-10 items-center justify-center rounded-full bg-salbei-100 font-semibold text-salbei-700">{ich?.kuerzel}</span>
@@ -64,6 +66,7 @@ export function Layout() {
         </div>
       </main>
 
+      <OfflineStatus variante="handy" />
       <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-sand-200 bg-sand-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-salbei-700 dark:bg-salbei-900/95">
         {NAV.filter((n) => !n.nurGross).map(({ to, label, icon: Icon, ende }) => (
           <NavLink

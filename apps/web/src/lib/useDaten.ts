@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 
-/** Lädt Daten von der API und bietet ein Neu-Laden an. */
+/** Lädt Daten von der API und bietet ein Neu-Laden an (auch automatisch nach einem Offline-Abgleich). */
 export function useDaten<T>(pfad: string | null) {
   const [daten, setDaten] = useState<T | undefined>(undefined);
   const [fehler, setFehler] = useState<string | undefined>(undefined);
@@ -22,6 +22,9 @@ export function useDaten<T>(pfad: string | null) {
 
   useEffect(() => {
     void laden();
+    const neu = () => void laden();
+    window.addEventListener("kk:synchronisiert", neu);
+    return () => window.removeEventListener("kk:synchronisiert", neu);
   }, [laden]);
 
   return { daten, fehler, laedt, laden, setDaten };
