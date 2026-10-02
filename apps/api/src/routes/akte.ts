@@ -433,6 +433,11 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
       .innerJoin(klientin, eq(klientin.id, betreuung.klientinId))
       .where(and(eq(besuch.hebammeId, ich), eq(besuch.status, "entwurf")))
       .orderBy(desc(besuch.datum));
-    return { heute, entwuerfe };
+    // Geplante Besuche der heutigen Tour (die Kachel zählt Termine, nicht nur schon dokumentierte Besuche)
+    const geplant = await db
+      .select({ status: termin.status })
+      .from(termin)
+      .where(and(eq(termin.hebammeId, ich), eq(termin.datum, heuteIso()), ne(termin.status, "abgesagt")));
+    return { heute, entwuerfe, geplant: geplant.length, erledigt: geplant.filter((t) => t.status === "erledigt").length };
   });
 }

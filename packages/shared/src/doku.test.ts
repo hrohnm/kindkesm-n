@@ -24,7 +24,8 @@ describe("gewichtsverlauf", () => {
       { datum: "2026-09-01", gramm: 3500, quelle: "geburt" },
       { datum: "2026-09-08", gramm: 3400, quelle: "besuch" },
     ]);
-    expect(v.map((x) => x.lebenstag)).toEqual([0, 3, 7]);
+    expect(v.map((x) => x.lebenstag)).toEqual([1, 4, 8]);
+    expect(v.map((x) => x.alterTage)).toEqual([0, 3, 7]);
     expect(v[1]!.prozentGeburt).toBeCloseTo(-8.57, 1);
     expect(v[2]!.grammProTag).toBe(50);
   });

@@ -119,7 +119,10 @@ function zAusPerzentile(p: number): number {
 
 export type Gewichtswert = { datum: string; gramm: number; quelle: "geburt" | "besuch"; besuchId?: string };
 
-/** Ergänzt Gewichtswerte um Lebenstag, Veränderung zum Vorwert und zum Geburtsgewicht. */
+/**
+ * Ergänzt Gewichtswerte um Lebenstag (Geburtstag = 1. Lebenstag, wie in der übrigen App und im Vertrag),
+ * Alter in Tagen (Geburtstag = 0, Grundlage der WHO-Tabellen), Veränderung zum Vorwert und zum Geburtsgewicht.
+ */
 export function gewichtsverlauf(geburtsdatum: string, werte: Gewichtswert[]) {
   const tagNr = (iso: string) => Math.round(Date.parse(`${iso}T12:00:00Z`) / 86_400_000);
   const sortiert = [...werte].sort((a, b) => a.datum.localeCompare(b.datum) || (a.quelle === "geburt" ? -1 : 1));
@@ -129,7 +132,8 @@ export function gewichtsverlauf(geburtsdatum: string, werte: Gewichtswert[]) {
     const tage = vor ? tagNr(w.datum) - tagNr(vor.datum) : 0;
     return {
       ...w,
-      lebenstag: tagNr(w.datum) - tagNr(geburtsdatum),
+      alterTage: tagNr(w.datum) - tagNr(geburtsdatum),
+      lebenstag: tagNr(w.datum) - tagNr(geburtsdatum) + 1,
       diffVorwert: vor ? w.gramm - vor.gramm : null,
       grammProTag: vor && tage > 0 ? (w.gramm - vor.gramm) / tage : null,
       prozentGeburt: geburt ? ((w.gramm - geburt) / geburt) * 100 : null,
