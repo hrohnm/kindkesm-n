@@ -39,7 +39,7 @@ export type TeamMitglied = { id: string; name: string; kuerzel: string; email: s
 
 export type Praxis = { name: string; anschrift: string; telefon: string | null; email: string | null; aktivesRegelwerkId: string | null };
 
-export type Hinweis = { id: string; titel: string; datum: string; tage: number; stufe: "info" | "warnung" | "dringend"; quelle: string };
+export type Hinweis = { id: string; titel: string; datum: string; tage: number; stufe: "info" | "warnung" | "dringend"; quelle: string; link?: string };
 
 export type RegelwerkKurz = { id: string; name: string; gueltigVon: string; gueltigBis: string | null; status: string; anzahlPositionen: number };
 

@@ -676,6 +676,14 @@ Noch nicht umgesetzt: Benachrichtigung der Familien (kommt mit E-Mail/SMS), Paus
 7. **Optional**: Foto des Kindes, Fußabdruck (Scan oder Foto), Unterschrift der Hebamme (digital), Praxisstempel
 8. **Fuß**: Praxisadresse, Instagram-Handle, „Wir sehen uns beim Rückbildungs- oder Babymassagekurs!“ (dezenter Kurs-Hinweis)
 
+### 10.4 Umsetzung (Stand M10)
+- Akte → Kind → **Kinderurkunde**: Gestaltung *Ostsee (Wellen)*, *Leuchtturm* oder *Schlicht*; Titel; persönlicher Text aus fünf Vorlagen (warm, kurz, plattdeutsch, Mehrlinge, Geschwister) mit eingesetzten Angaben aus der Akte, frei bearbeitbar
+- Tabelle aus der Hebammenzeit automatisch aus Geburtsdaten und Besuchsdokumentation (Gewicht, Länge, Kopfumfang; „Geburt“, „Geburtsgewicht wieder erreicht“, „Abschluss“); Auswahl alle / nur Wochenwerte / einzelne Zeilen, „Besonderes“ je Zeile editierbar
+- Gewichtskurve (optional mit WHO-Perzentilen), Meilensteine, Sternzeichen, Name der Hebamme als Unterschrift, Kurs-Hinweis im Fuß
+- PDF A4 als Vektorgrafik (pdf-lib), Vorschau direkt auf dem Tablet; Entwurf bzw. „Fertig“ wird in der Akte gespeichert, das PDF jederzeit neu erzeugt
+- Cockpit-Hinweis 7 Tage vor Ende der 12. Lebenswoche (mit Link zur Urkunde), solange die Urkunde nicht fertig ist
+- Noch offen: Foto und Fußabdruck (mit M17 und den Einwilligungen in der Akte), Versand per E-Mail (mit dem E-Mail-Postfach der Praxis), KI-Formulierungshilfe
+
 ### 10.3 Technik
 - Vorlage als HTML/CSS → **PDF** (A4 hoch, druckfertig, 300 dpi). Mehrere Designs (Aquarell-Ostsee, Leuchtturm, schlicht)
 - Vorschau auf dem Tablet, Bearbeiten des Textes direkt in der Vorschau
