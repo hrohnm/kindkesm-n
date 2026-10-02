@@ -118,7 +118,7 @@ function UrkundeFormular({ d, neuLaden, meldung, setMeldung }: { d: Antwort; neu
         <div className="space-y-5">
           <section className="karte space-y-4">
             <h2 className="text-lg font-semibold">Gestaltung</h2>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {(Object.keys(URKUNDE_DESIGNS) as UrkundeDesign[]).map((k) => (
                 <button key={k} type="button" aria-pressed={u.design === k} onClick={() => setze("design", k)} className={`min-h-12 rounded-xl px-2 text-sm font-medium ${u.design === k ? "bg-salbei-600 text-white" : "border border-sand-200 bg-white dark:border-salbei-700 dark:bg-salbei-900/40"}`}>
                   {URKUNDE_DESIGNS[k]}

@@ -96,3 +96,8 @@ Das Praxislogo liegt als `apps/web/public/logo.png`. Favicon und PWA-Icons darau
 - API: `apps/api/src/routes/kurse.ts`; Kurseinheiten werden als Kontakt (`besuch`, Typ `geburtsvorbereitung`/`rueckbildung`, Art = Format 2/3/6) mit Leistungen gespeichert und nur über die Anwesenheit geändert
 - Formular 3.4: gleiche Tabelle wie 3.1/3.3, abweichende Unterschriftsspalte in `regelwerk/formulare/anlage6-2026-04-01.layout.json` (`abweichungen`)
 - Öffentliche Schnittstellen ohne Anmeldung: alles unter `/api/oeffentlich/` (Kursliste, Anmeldung)
+
+## Kinderurkunde
+
+- Gestaltungen Ostsee/Leuchtturm/Schlicht: `apps/api/src/pdf/urkunde.ts`; Praxis-Design „Kindkesmöön“: `apps/api/src/pdf/urkunde-kindkesmoeoen.ts`
+- Schreibschrift: `apps/api/assets/fonts/DancingScript.ttf` (SIL Open Font License, siehe `OFL-DancingScript.txt`), eingebettet als Teilmenge über `@pdf-lib/fontkit`; das Docker-Image kopiert `apps/api/assets` mit

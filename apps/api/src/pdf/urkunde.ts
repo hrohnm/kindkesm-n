@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { datumLang, sternzeichen, wertFuerPerzentile, type Messgroesse, type Urkunde, type UrkundeZeile } from "@kindkesmoeoen/shared";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage, type RGB } from "pdf-lib";
 import { config } from "../config";
+import { urkundeKindkesmoeoenPdf } from "./urkunde-kindkesmoeoen";
 import { datumDe, sauber, umbrechen } from "./werkzeug";
 
 export type UrkundePdfDaten = {
@@ -88,6 +89,10 @@ export async function urkundePdf(d: UrkundePdfDaten): Promise<Uint8Array> {
   doc.setTitle(sauber(d.urkunde.titel));
   doc.setAuthor(sauber(d.praxis.name));
   doc.setCreator("Kindkesmöön Praxis-App");
+  if (d.urkunde.design === "kindkesmoeoen") {
+    await urkundeKindkesmoeoenPdf(d, doc);
+    return doc.save();
+  }
   const s: Schriften = {
     normal: await doc.embedFont(StandardFonts.Helvetica),
     fett: await doc.embedFont(StandardFonts.HelveticaBold),

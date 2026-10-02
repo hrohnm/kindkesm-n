@@ -47,7 +47,7 @@ export async function urkundeRouten(app: FastifyInstance, db: Datenbank) {
   function vorschlag(x: Geladen, hebamme: string): Urkunde {
     const textVorlage = x.geschwister.some((s) => s.geburtsdatum === x.k.geburtsdatum) ? "mehrlinge" : "warm";
     return {
-      design: "ostsee",
+      design: "kindkesmoeoen",
       textVorlage,
       titel: `Urkunde für ${x.k.vorname}`,
       text: urkundeText(URKUNDE_TEXTE.find((t) => t.id === textVorlage)!.text, {

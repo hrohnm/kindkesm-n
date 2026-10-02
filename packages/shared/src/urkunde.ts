@@ -4,7 +4,7 @@
  */
 import { z } from "zod";
 
-export const URKUNDE_DESIGNS = { ostsee: "Ostsee (Wellen)", leuchtturm: "Leuchtturm", schlicht: "Schlicht" } as const;
+export const URKUNDE_DESIGNS = { kindkesmoeoen: "Kindkesmöön", ostsee: "Ostsee (Wellen)", leuchtturm: "Leuchtturm", schlicht: "Schlicht" } as const;
 export type UrkundeDesign = keyof typeof URKUNDE_DESIGNS;
 
 /** Platzhalter: {liebe} (Lieber/Liebe) {vorname} {datum} {uhrzeit} {ort} {gewicht} {laenge} {hebamme} {geschwister} */
@@ -99,7 +99,7 @@ export const urkundeZeileSchema = z.object({
 export type UrkundeZeile = z.infer<typeof urkundeZeileSchema>;
 
 export const urkundeSchema = z.object({
-  design: z.enum(["ostsee", "leuchtturm", "schlicht"]),
+  design: z.enum(["kindkesmoeoen", "ostsee", "leuchtturm", "schlicht"]),
   textVorlage: z.string().max(40),
   titel: z.string().trim().min(1).max(60),
   text: z.string().trim().min(1).max(1500),

@@ -40,7 +40,7 @@ describe("Kinderurkunde", () => {
     const id = await oleId();
     const { vorschlag } = (await req("GET", `/api/kinder/${id}/urkunde`)).json();
     const u = { ...vorschlag, meilensteine: [{ datum: null, text: "Nabel abgefallen" }], optionen: { ...vorschlag.optionen, perzentilen: true } };
-    for (const design of ["ostsee", "leuchtturm", "schlicht"]) {
+    for (const design of ["kindkesmoeoen", "ostsee", "leuchtturm", "schlicht"]) {
       const v = await req("POST", `/api/kinder/${id}/urkunde/vorschau.pdf`, { ...u, design });
       expect(v.statusCode).toBe(200);
       expect(v.headers["content-type"]).toBe("application/pdf");

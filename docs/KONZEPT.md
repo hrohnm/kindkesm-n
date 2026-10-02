@@ -685,7 +685,7 @@ Noch nicht umgesetzt: Benachrichtigung der Familien (kommt mit E-Mail/SMS), Paus
 8. **Fuß**: Praxisadresse, Instagram-Handle, „Wir sehen uns beim Rückbildungs- oder Babymassagekurs!“ (dezenter Kurs-Hinweis)
 
 ### 10.4 Umsetzung (Stand M10)
-- Akte → Kind → **Kinderurkunde**: Gestaltung *Ostsee (Wellen)*, *Leuchtturm* oder *Schlicht*; Titel; persönlicher Text aus fünf Vorlagen (warm, kurz, plattdeutsch, Mehrlinge, Geschwister) mit eingesetzten Angaben aus der Akte, frei bearbeitbar
+- Akte → Kind → **Kinderurkunde**: Gestaltung *Kindkesmöön* (Praxis-Design: Logo mit Schriftzug, Schreibschrift Dancing Script, Symbole bei den Geburtsdaten, Mohnblume und Leuchtturm; Seite 2 „Dein Wachstum“ mit Kurven je Messgröße über die Messtage), *Ostsee (Wellen)*, *Leuchtturm* oder *Schlicht*; Titel; persönlicher Text aus fünf Vorlagen (warm, kurz, plattdeutsch, Mehrlinge, Geschwister) mit eingesetzten Angaben aus der Akte, frei bearbeitbar
 - Tabelle aus der Hebammenzeit automatisch aus Geburtsdaten und Besuchsdokumentation (Gewicht, Länge, Kopfumfang; „Geburt“, „Geburtsgewicht wieder erreicht“, „Abschluss“); Auswahl alle / nur Wochenwerte / einzelne Zeilen, „Besonderes“ je Zeile editierbar
 - Gewichtskurve sowie Kurven für Größe (Länge) und Kopfumfang (je einzeln wählbar, optional mit WHO-Perzentilen), Meilensteine, Sternzeichen, Name der Hebamme als Unterschrift, Kurs-Hinweis im Fuß
 - PDF A4 als Vektorgrafik (pdf-lib), Vorschau direkt auf dem Tablet; Entwurf bzw. „Fertig“ wird in der Akte gespeichert, das PDF jederzeit neu erzeugt
