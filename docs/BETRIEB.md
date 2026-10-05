@@ -173,7 +173,7 @@ hebammen-landkreisrostock.de {
 
 Texte ändern: siehe `apps/website/README.md`; danach `docker compose up -d --build website`.
 
-**Betreuungsanfragen (M11):** Das Formular der Website schreibt in die App (Anfragen). Jede Hebamme stellt unter Einstellungen → Mein Profil ihre Kapazität („Wochenbetten pro Monat“) ein und trägt Urlaub im Belegungsplan ein – daraus entsteht die Ampel auf der Website. Abgeschlossene Anfragen löscht die App nach 6 Monaten selbst. Für die Entfernung im Vorschlag wird der Wohnort geokodiert (Adressverzeichnis bzw. Online-Adresssuche, siehe Abschnitt 5a); mit `GEOCODER_URL=aus` und ohne Adressverzeichnis entfällt nur die Entfernungsangabe.
+**Betreuungsanfragen (M11):** Das Formular der Website schreibt in die App (Anfragen). Jede Hebamme stellt unter Einstellungen → Mein Profil ihre Kapazität („Wochenbetten pro Monat“) ein und trägt Urlaub im Belegungsplan ein – daraus entsteht die Ampel auf der Website. Abgeschlossene Anfragen löscht die App nach 6 Monaten selbst. Rückrufwünsche von der Website erscheinen im Cockpit und auf der Seite „Anfragen“; erledigte löscht die App nach 30 Tagen. Für die Entfernung im Vorschlag wird der Wohnort geokodiert (Adressverzeichnis bzw. Online-Adresssuche, siehe Abschnitt 5a); mit `GEOCODER_URL=aus` und ohne Adressverzeichnis entfällt nur die Entfernungsangabe.
 
 ## 7. E-Mail (später)
 

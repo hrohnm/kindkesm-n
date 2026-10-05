@@ -12,3 +12,4 @@ export * from "./who-wachstum";
 export * from "./urkunde";
 export * from "./kurs";
 export * from "./anfrage";
+export * from "./rueckruf";

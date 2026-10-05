@@ -387,6 +387,12 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Website-Startseite und Kontakt: „Freie Plätze nach Entbindungstermin“; Seite „Die Hebammen“.
 - Erwartet: je Monat „frei“, „wenige Plätze“ oder „ausgebucht“ (ohne Zahlen); Lorina „in Babypause, voraussichtlich zurück im …“ – beides live aus der App.
 
+**N6 Rückrufwunsch** 🤖📱
+1. Website → Kontakt → „Wir rufen dich zurück“ (oder Startseite „Rückruf wünschen“): Name, Telefon, Anliegen, Wunsch-Hebamme, Zeitfenster, Einwilligung → „Rückruf anfordern“.
+2. App: Cockpit-Hinweis „n Rückrufwünsche (1 für dich)“ → Anfragen, Abschnitt „Rückrufwünsche“.
+3. Nummer antippen (ruft an), „Nicht erreicht“ mit Notiz, später „Erreicht – erledigt“; bei Anliegen „Hebammenbetreuung“ „Als Betreuungsanfrage erfassen“.
+- Erwartet: Karte mit Anliegen, Zeitfenster („passt jetzt“ im Zeitfenster), Wunsch-Hebamme und Nachricht; Versuche werden gezählt. „Als Betreuungsanfrage erfassen“ füllt Name/Telefon/Nachricht vor, nach dem Speichern öffnet sich die Anfrage und der Rückruf ist erledigt („Erledigte“ aufklappen, „Wieder öffnen“ möglich). Erledigte Rückrufe verschwinden nach 30 Tagen. ⚠️ Ohne Telefonnummer oder Einwilligung Fehlermeldung auf der Website. Demo: „Lotta Stillfrage“ (Wunsch Marielena) und „Svenja Neuhaus“ (Betreuung).
+
 ---
 
 ## O. Website (öffentlich)
