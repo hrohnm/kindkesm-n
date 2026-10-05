@@ -332,4 +332,8 @@ async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
   }
   // Marielena: zwei Wochen Urlaub in drei Monaten
   await anfrage(M, "POST", "/api/abwesenheiten", { von: tag(90), bis: tag(103), art: "urlaub", notiz: "Sommerurlaub" });
+
+  // Rückrufwünsche von der Website: einer mit Wunsch-Hebamme, einer zur Betreuung (→ „Als Betreuungsanfrage erfassen“)
+  await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Lotta Stillfrage", telefon: "0170 0000203", anliegen: "stillen", zeitfenster: "vormittag", hebamme: "Marielena Pontus", nachricht: "Unser Sohn ist 10 Tage alt und trinkt sehr unruhig.", einwilligung: true });
+  await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Svenja Neuhaus", telefon: "0170 0000204", anliegen: "betreuung", zeitfenster: "nachmittag", nachricht: "Bin in der 9. Woche und suche eine Hebamme in Bad Doberan.", einwilligung: true });
 }

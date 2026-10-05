@@ -77,7 +77,8 @@ test("I3 Online-Anmeldung über die öffentliche Seite", async ({ browser, page 
   await gv.getByRole("button", { name: /Anmelden|Warteliste/ }).click();
   const name = info.project.name === "handy" ? "Hanna Handy" : "Tina Tablet";
   await p.getByLabel("Vor- und Nachname").fill(name);
-  await p.getByLabel("E-Mail").fill("test@example.org");
+  // je Gerät eine eigene Adresse: dieselbe E-Mail gilt als doppelte Anmeldung
+  await p.getByLabel("E-Mail").fill(`test-${info.project.name}@example.org`);
   await p.getByLabel(/Errechneter Termin|Geburtsdatum/).fill(iso(70));
   await p.getByLabel("Krankenkasse").fill("Musterkasse Nord").catch(() => {});
   await p.getByRole("button", { name: /Verbindlich anmelden|Auf die Warteliste/ }).click();

@@ -1,0 +1,124 @@
+---
+/**
+ * Rückrufwunsch: Name, Telefon, Anliegen und Zeitfenster gehen direkt in die Praxis-App (Seite „Anfragen“, Cockpit-Hinweis).
+ * Ohne JavaScript bzw. ohne App-Adresse erscheint stattdessen der Hinweis auf die Telefonnummern (Slot).
+ */
+import { TEAM } from "../inhalte/praxis";
+import { appUrl } from "../skripte/app-url";
+
+const app = appUrl();
+// Werte wie in packages/shared/src/rueckruf.ts (die Website baut bewusst ohne die App-Pakete)
+const RUECKRUF_ANLIEGEN = { betreuung: "Hebammenbetreuung", wochenbett: "Fragen im Wochenbett", stillen: "Stillen & Ernährung", kurs: "Kurse", sonstiges: "Sonstiges" };
+const RUECKRUF_ZEITFENSTER = { egal: "jederzeit", vormittag: "vormittags (8–12 Uhr)", mittag: "mittags (12–14 Uhr)", nachmittag: "nachmittags (14–18 Uhr)" };
+const hebammen = TEAM.filter((h) => !h.hinweis);
+const feld = "mt-1 block min-h-12 w-full rounded-2xl border border-salbei-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none";
+const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
+---
+
+{app ? (
+  <div data-rueckruf data-app={app}>
+    <noscript><slot /></noscript>
+    <form class="karte space-y-5 sm:p-8" novalidate data-rueckruf-formular>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class={etikett}>Name<input name="name" required autocomplete="name" class={feld} /></label>
+        <label class={etikett}>Telefonnummer<input name="telefon" type="tel" required autocomplete="tel" class={feld} /></label>
+        <label class={etikett}>Worum geht es?
+          <select name="anliegen" class={feld}>
+            {Object.entries(RUECKRUF_ANLIEGEN).map(([wert, text]) => <option value={wert} selected={wert === "betreuung"}>{text}</option>)}
+          </select>
+        </label>
+        <label class={etikett}>Wunsch-Hebamme <span class="font-normal text-salbei-600">(optional)</span>
+          <select name="hebamme" class={feld}>
+            <option value="">egal</option>
+            {hebammen.map((h) => <option value={h.name}>{h.name}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <fieldset>
+        <legend class={etikett}>Wann erreichen wir dich am besten? <span class="font-normal text-salbei-600">(werktags)</span></legend>
+        <div class="mt-2 grid gap-2 sm:grid-cols-2">
+          {Object.entries(RUECKRUF_ZEITFENSTER).map(([wert, text]) => (
+            <label class="flex min-h-11 items-center gap-3 rounded-2xl bg-salbei-50 px-4"><input type="radio" name="zeitfenster" value={wert} checked={wert === "egal"} class="size-5 accent-salbei-600" /> {text}</label>
+          ))}
+        </div>
+      </fieldset>
+
+      <label class={etikett}>Kurz dein Anliegen <span class="font-normal text-salbei-600">(optional)</span><textarea name="nachricht" rows="3" maxlength="500" class={feld}></textarea></label>
+
+      <!-- Honigtopf gegen Spam: für Menschen unsichtbar -->
+      <div class="absolute -left-[9999px]" aria-hidden="true"><label>Website<input name="webseite" tabindex="-1" autocomplete="off" /></label></div>
+
+      <label class="flex items-start gap-3 text-[0.95rem]">
+        <input type="checkbox" name="einwilligung" required class="mt-1 size-5 shrink-0 accent-salbei-600" />
+        <span>Ich bin einverstanden, dass die Hebammenpraxis Kindkesmöön meinen Namen, meine Telefonnummer und mein Anliegen speichert, um mich zurückzurufen. Erledigte Rückrufwünsche werden nach spätestens 30 Tagen gelöscht. Mehr in der <a href="/datenschutz">Datenschutzerklärung</a>.</span>
+      </label>
+
+      <p class="hidden rounded-2xl bg-mohn-100 p-4 text-mohn-700" role="alert" data-rueckruf-fehler></p>
+      <button type="submit" class="knopf-primaer w-full sm:w-auto">Rückruf anfordern</button>
+    </form>
+    <div class="karte hidden text-center sm:p-10" role="status" data-rueckruf-danke tabindex="-1">
+      <p class="font-titel text-4xl text-salbei-800">Danke!</p>
+      <p class="mx-auto mt-3 max-w-xl">Wir rufen dich so bald wie möglich zurück – meist innerhalb von ein, zwei Werktagen. Unbekannte Nummer? Das sind vielleicht wir.</p>
+    </div>
+  </div>
+) : (
+  <slot />
+)}
+
+<script>
+  import { api } from "../skripte/app-url";
+
+  for (const box of document.querySelectorAll<HTMLElement>("[data-rueckruf]")) {
+    const app = box.dataset.app!;
+    const form = box.querySelector<HTMLFormElement>("[data-rueckruf-formular]")!;
+    const fehler = box.querySelector<HTMLElement>("[data-rueckruf-fehler]")!;
+    const danke = box.querySelector<HTMLElement>("[data-rueckruf-danke]")!;
+    const knopf = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    const zeigeFehler = (text: string) => {
+      fehler.textContent = text;
+      fehler.classList.remove("hidden");
+      fehler.scrollIntoView({ block: "center", behavior: "smooth" });
+    };
+    form.addEventListener("input", () => fehler.classList.add("hidden"));
+
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      fehler.classList.add("hidden");
+      const f = new FormData(form);
+      const text = (n: string) => String(f.get(n) ?? "").trim();
+      const daten = {
+        name: text("name"),
+        telefon: text("telefon"),
+        anliegen: text("anliegen"),
+        zeitfenster: text("zeitfenster") || "egal",
+        hebamme: text("hebamme") || null,
+        nachricht: text("nachricht") || null,
+        einwilligung: f.get("einwilligung") === "on",
+        webseite: text("webseite") || undefined,
+      };
+      if (daten.name.length < 2) return zeigeFehler("Bitte deinen Namen angeben.");
+      if (daten.telefon.replace(/\D/g, "").length < 6) return zeigeFehler("Bitte eine Telefonnummer angeben, unter der wir dich erreichen.");
+      if (!daten.einwilligung) return zeigeFehler("Bitte stimme der Verarbeitung deiner Angaben zu.");
+
+      knopf.disabled = true;
+      knopf.textContent = "Wird gesendet …";
+      try {
+        const r = await fetch(api(app, "/api/oeffentlich/rueckruf"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
+        if (r.ok) {
+          form.classList.add("hidden");
+          danke.classList.remove("hidden");
+          danke.focus();
+          return;
+        }
+        const antwort = (await r.json().catch(() => ({}))) as { fehler?: string; felder?: Record<string, string> };
+        zeigeFehler(r.status === 429 ? "Zu viele Anfragen in kurzer Zeit – bitte später erneut versuchen oder ruf uns direkt an." : (Object.values(antwort.felder ?? {})[0] ?? antwort.fehler ?? "Der Rückrufwunsch konnte nicht gesendet werden."));
+      } catch {
+        zeigeFehler("Keine Verbindung – bitte später erneut versuchen oder ruf uns direkt an.");
+      } finally {
+        knopf.disabled = false;
+        knopf.textContent = "Rückruf anfordern";
+      }
+    });
+  }
+</script>

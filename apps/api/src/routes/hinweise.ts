@@ -2,7 +2,7 @@ import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@
 import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
+import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -62,6 +62,21 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       const [neu] = await db.select({ n: sql<number>`count(*)::int` }).from(anfrage).where(eq(anfrage.status, "neu"));
       if (neu && neu.n > 0) {
         hinweise.push({ id: "anfragen-neu", titel: neu.n === 1 ? "1 neue Betreuungsanfrage" : `${neu.n} neue Betreuungsanfragen`, datum: isoDatum(heute), tage: 0, stufe: "warnung", quelle: "Anfragen – bitte prüfen und antworten", link: "/anfragen" });
+      }
+      // Offene Rückrufwünsche von der Website – alle Hebammen sehen sie, Wunsch-Hebamme wird genannt
+      const rueckrufe = await db.select({ hebammeId: rueckruf.hebammeId, erstelltAm: rueckruf.erstelltAm }).from(rueckruf).where(eq(rueckruf.status, "offen"));
+      if (rueckrufe.length) {
+        const fuerMich = rueckrufe.filter((r) => r.hebammeId === request.benutzer!.id).length;
+        const alt = rueckrufe.some((r) => Date.now() - r.erstelltAm.getTime() > 86_400_000);
+        hinweise.push({
+          id: "rueckrufe",
+          titel: `${rueckrufe.length === 1 ? "1 Rückrufwunsch" : `${rueckrufe.length} Rückrufwünsche`}${fuerMich ? ` (${fuerMich} für dich)` : ""}`,
+          datum: isoDatum(heute),
+          tage: 0,
+          stufe: alt ? "warnung" : "info",
+          quelle: "Website – bitte zurückrufen",
+          link: "/anfragen#rueckrufe",
+        });
       }
       // Kinderurkunde: 7 Tage vor Ende des späten Wochenbetts (Ablauf der 12. Lebenswoche) vorbereiten
       const kinder = await db

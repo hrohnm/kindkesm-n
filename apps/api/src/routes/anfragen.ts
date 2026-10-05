@@ -135,7 +135,10 @@ export async function anfrageRouten(app: FastifyInstance, db: Datenbank) {
     if (!daten) return;
     const [neu] = await db.insert(anfrage).values({ ...daten, status: "in_pruefung", erfasstVon: request.benutzer!.id }).returning();
     await protokollieren(db, request.benutzer!.id, "angelegt", "anfrage", neu!.id);
-    await verorten(neu!.id);
+    // Position für den Vorschlag: kurz darauf warten (Adressverzeichnis ist sofort da), langsame Online-Suche
+    // bei schlechtem Netz läuft im Hintergrund weiter, damit das Speichern nicht hängt
+    const suche = verorten(neu!.id).catch(() => {});
+    await Promise.race([suche, new Promise((fertig) => setTimeout(fertig, 1500))]);
     return neu;
   });
 

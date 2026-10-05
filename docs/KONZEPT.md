@@ -314,6 +314,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
   - Anfragen-Seite mit Gruppen (Offen, Warteliste, Erledigt), Vorschlag je Hebamme (freie Plätze im ET-Monat, Abwesenheit 2 Wochen vor bis 4 Wochen nach dem ET, Luftlinie vom Wohnort), Zusage legt Akte und Betreuung an; Warteliste, Absage, Weiterleitung mit Notiz; Antwortvorlagen per E-Mail-Programm
   - Belegungsplan **je ET-Monat** (statt Kalenderwoche – so planen Familien und so zeigt es die Website): belegt / Kapazität je Hebamme, Ampel, Praxis gesamt, offene Anfragen; Kapazität „Wochenbetten pro Monat“ im Profil; Urlaub, Fortbildung und Babypause kürzen anteilig
   - Website-Bausteine: Kapazitätsampel je Monat (ohne Zahlen) und Team-Status (Babypause) live aus der App
+  - Rückrufwunsch über die Website (Name, Telefon, Anliegen, Zeitfenster, Wunsch-Hebamme): Cockpit-Hinweis, Abschnitt „Rückrufwünsche“ auf der Seite Anfragen mit Anrufen, „nicht erreicht“ (Versuche), erledigt und „als Betreuungsanfrage erfassen“; erledigte nach 30 Tagen gelöscht
   - Datensparsamkeit: abgeschlossene Anfragen werden nach 6 Monaten gelöscht; Anfragen nur für Hebammen sichtbar
 
 ### M12 – Kursverwaltung und Online-Anmeldung

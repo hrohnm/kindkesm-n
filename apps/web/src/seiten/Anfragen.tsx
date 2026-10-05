@@ -1,5 +1,5 @@
-import { ANFRAGE_LEISTUNGEN, ANFRAGE_STATUS, sswAusEt, type AnfrageLeistung, type AnfrageStatus } from "@kindkesmoeoen/shared";
-import { useState } from "react";
+import { ANFRAGE_LEISTUNGEN, ANFRAGE_STATUS, RUECKRUF_ANLIEGEN, nameTeilen, sswAusEt, type AnfrageLeistung, type AnfrageStatus } from "@kindkesmoeoen/shared";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Feld, Laden, Meldung, Seitenkopf } from "../komponenten/Formular";
 import { IconKalender, IconPlus } from "../komponenten/Icons";
@@ -7,6 +7,7 @@ import { api } from "../lib/api";
 import { datum } from "../lib/format";
 import { useDaten } from "../lib/useDaten";
 import { useFormular } from "../lib/useFormular";
+import { Rueckrufe, type Rueckruf } from "./Rueckrufe";
 
 export type Anfrage = {
   id: string;
@@ -52,6 +53,24 @@ export function Anfragen() {
   const liste = useDaten<Anfrage[]>("/api/anfragen");
   const [gruppe, setGruppe] = useState("offen");
   const [neu, setNeu] = useState(false);
+  // Rückruf, aus dem gerade eine Betreuungsanfrage erfasst wird
+  const [ausRueckruf, setAusRueckruf] = useState<Rueckruf | null>(null);
+  // Link aus dem Cockpit (/anfragen#rueckrufe): zum Abschnitt springen, sobald er geladen ist
+  useEffect(() => {
+    if (window.location.hash !== "#rueckrufe") return;
+    const t = window.setInterval(() => {
+      const el = document.getElementById("rueckrufe");
+      if (el) {
+        el.scrollIntoView({ block: "start" });
+        window.clearInterval(t);
+      }
+    }, 100);
+    const ende = window.setTimeout(() => window.clearInterval(t), 3000);
+    return () => {
+      window.clearInterval(t);
+      window.clearTimeout(ende);
+    };
+  }, []);
   const status = GRUPPEN.find((g) => g[0] === gruppe)![2];
   const gezeigt = (liste.daten ?? []).filter((a) => status.includes(a.status)).sort((a, b) => (gruppe === "erledigt" ? b.erstelltAm.localeCompare(a.erstelltAm) : a.et.localeCompare(b.et)));
 
@@ -59,7 +78,7 @@ export function Anfragen() {
     <>
       <Seitenkopf
         titel="Anfragen"
-        untertitel="Betreuungsanfragen von der Website und am Telefon"
+        untertitel="Betreuungsanfragen und Rückrufwünsche von der Website und am Telefon"
         aktion={
           <div className="flex flex-wrap gap-2">
             <Link to="/belegung" className="knopf-sekundaer"><IconKalender className="size-5" /> Belegungsplan</Link>
@@ -67,7 +86,9 @@ export function Anfragen() {
           </div>
         }
       />
-      {neu && <AnfrageFormular abbrechen={() => setNeu(false)} />}
+      {(neu || ausRueckruf) && <AnfrageFormular key={ausRueckruf?.id ?? "neu"} rueckruf={ausRueckruf} abbrechen={() => { setNeu(false); setAusRueckruf(null); }} />}
+      <Rueckrufe alsAnfrage={(r) => { setAusRueckruf(r); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+      <h2 className="mb-3 text-lg font-semibold">Betreuungsanfragen</h2>
 
       <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Status">
         {GRUPPEN.map(([id, text, st]) => {
@@ -111,20 +132,26 @@ export function Anfragen() {
   );
 }
 
-/** Anfrage erfassen, z. B. nach einem Anruf */
-function AnfrageFormular({ abbrechen }: { abbrechen: () => void }) {
+/** Anfrage erfassen, z. B. nach einem Anruf – oder nach einem Rückruf (Rückrufwunsch wird dann erledigt) */
+function AnfrageFormular({ abbrechen, rueckruf }: { abbrechen: () => void; rueckruf?: Rueckruf | null }) {
   const navigate = useNavigate();
-  const f = useFormular({ vorname: "", nachname: "", telefon: "", email: "", et: "", strasse: "", plz: "", ort: "", erstesKind: null as boolean | null, leistungen: [] as AnfrageLeistung[], nachricht: "", quelle: "telefon" as const });
+  const name = rueckruf ? nameTeilen(rueckruf.name) : { vorname: "", nachname: "" };
+  const vorlage = rueckruf ? [`Rückrufwunsch (Website): ${RUECKRUF_ANLIEGEN[rueckruf.anliegen]}`, rueckruf.nachricht && `„${rueckruf.nachricht}“`].filter(Boolean).join("\n") : "";
+  const f = useFormular({ ...name, telefon: rueckruf?.telefon ?? "", email: "", et: "", strasse: "", plz: "", ort: "", erstesKind: null as boolean | null, leistungen: [] as AnfrageLeistung[], nachricht: vorlage, quelle: "telefon" as const });
   return (
     <form
       className="karte mb-6 space-y-4 border-salbei-300"
       onSubmit={async (e) => {
         e.preventDefault();
         let id = "";
-        if (await f.speichern(async (w) => (id = (await api<{ id: string }>("/api/anfragen", { method: "POST", body: w })).id))) navigate(`/anfragen/${id}`);
+        const gespeichert = await f.speichern(async (w) => {
+          id = (await api<{ id: string }>("/api/anfragen", { method: "POST", body: w })).id;
+          if (rueckruf) await api(`/api/rueckrufe/${rueckruf.id}/aktion`, { method: "POST", body: { aktion: "erreicht", notiz: "Als Betreuungsanfrage erfasst" } });
+        });
+        if (gespeichert) navigate(`/anfragen/${id}`);
       }}
     >
-      <h2 className="text-lg font-semibold">Anfrage erfassen</h2>
+      <h2 className="text-lg font-semibold">{rueckruf ? `Betreuungsanfrage aus Rückruf: ${rueckruf.name}` : "Anfrage erfassen"}</h2>
       {f.meldung?.art === "fehler" && <Meldung art="fehler">{f.meldung.text}</Meldung>}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Feld label="Vorname" fehler={f.felder.vorname}><input className="feld" value={f.werte.vorname} onChange={(e) => f.setze("vorname", e.target.value)} autoFocus /></Feld>

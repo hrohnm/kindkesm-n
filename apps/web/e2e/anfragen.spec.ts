@@ -19,7 +19,7 @@ test("Betreuungsanfrage von der Website zusagen und Belegungsplan pflegen", asyn
   await page.getByLabel("Passwort").fill(process.env.DEMO_PASSWORT ?? "kindkes-demo-2026");
   await page.getByRole("button", { name: "Anmelden" }).click();
   await page.getByRole("link", { name: /neue Betreuungsanfragen?/ }).click();
-  await expect(page.getByRole("heading", { name: "Anfragen" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Anfragen", exact: true })).toBeVisible();
   await page.getByTestId("anfrage").filter({ hasText: "Wiebke Website" }).click();
 
   await expect(page.getByRole("heading", { name: "Wiebke Website" })).toBeVisible();

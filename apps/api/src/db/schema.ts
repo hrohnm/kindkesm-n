@@ -583,6 +583,27 @@ export const anfrage = pgTable("anfrage", {
   ...zeitstempel(),
 });
 
+/** Rückrufwunsch von der Website: Name, Telefon, Anliegen, Zeitfenster – erledigte nach 30 Tagen gelöscht. */
+export const rueckruf = pgTable("rueckruf", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  status: text("status", { enum: ["offen", "erledigt"] }).notNull().default("offen"),
+  name: text("name").notNull(),
+  telefon: text("telefon").notNull(),
+  anliegen: text("anliegen", { enum: ["betreuung", "wochenbett", "stillen", "kurs", "sonstiges"] }).notNull(),
+  zeitfenster: text("zeitfenster", { enum: ["egal", "vormittag", "mittag", "nachmittag"] }).notNull(),
+  /** Wunsch-Hebamme (falls auf der Website gewählt) */
+  hebammeId: uuid("hebamme_id").references(() => benutzer.id, { onDelete: "set null" }),
+  nachricht: text("nachricht"),
+  einwilligungAm: timestamp("einwilligung_am", { withTimezone: true }).notNull(),
+  /** Anzahl erfolgloser Anrufversuche */
+  versuche: integer("versuche").notNull().default(0),
+  letzterVersuchAm: timestamp("letzter_versuch_am", { withTimezone: true }),
+  notiz: text("notiz"),
+  erledigtVon: uuid("erledigt_von").references(() => benutzer.id, { onDelete: "set null" }),
+  erledigtAm: timestamp("erledigt_am", { withTimezone: true }),
+  ...zeitstempel(),
+});
+
 /** M11: Urlaub, Fortbildung u. Ä. einer Hebamme – kürzt die Kapazität im Belegungsplan. */
 export const abwesenheit = pgTable("abwesenheit", {
   id: uuid("id").primaryKey().defaultRandom(),
