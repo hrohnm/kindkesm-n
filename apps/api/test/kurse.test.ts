@@ -97,7 +97,7 @@ describe("Kurse", () => {
     await req("PUT", `/api/kurse/${kursId}`, { ...k, anmeldungOffen: true, preis: null, partnerPreis: null, beschreibung: "Für Erstgebärende" });
     const liste = (await req("GET", "/api/oeffentlich/kurse", undefined, null)).json();
     const eintrag = liste.find((x: { id: string }) => x.id === kursId);
-    expect(eintrag).toMatchObject({ titel: "Geburtsvorbereitung Herbst", freiePlaetze: 0, kasse: true });
+    expect(eintrag).toMatchObject({ titel: "Geburtsvorbereitung Herbst", freiePlaetze: 0, kasse: true, artId: "geburtsvorbereitung", stichtag: "et" });
     expect(JSON.stringify(eintrag)).not.toContain("Berger");
     // Die Praxis-Website darf die Liste im Browser laden, fremde Seiten nicht
     const erlaubt = await t.app.inject({ method: "GET", url: "/api/oeffentlich/kurse", headers: { origin: "http://localhost:4321" } });
@@ -110,7 +110,11 @@ describe("Kurse", () => {
     expect((await req("POST", `/api/oeffentlich/kurse/${kursId}/anmeldung`, { ...anmeldung, webseite: "spam" }, null)).statusCode).toBe(400);
     const r = await req("POST", `/api/oeffentlich/kurse/${kursId}/anmeldung`, anmeldung, null);
     expect(r.json()).toEqual({ ok: true, warteliste: true });
+    // Zweimal abgeschickt (andere Schreibweise der E-Mail): keine zweite Teilnahme
+    const nochmal = await req("POST", `/api/oeffentlich/kurse/${kursId}/anmeldung`, { ...anmeldung, email: "Neu@Example.org" }, null);
+    expect(nochmal.json()).toEqual({ ok: true, warteliste: true, bereits: true });
     const d = (await req("GET", `/api/kurse/${kursId}`)).json();
+    expect(d.teilnahmen.filter((x: { name: string }) => x.name === "Neue Mutter")).toHaveLength(1);
     expect(d.teilnahmen.find((x: { name: string }) => x.name === "Neue Mutter")).toMatchObject({ quelle: "online", status: "warteliste" });
     // Andere Schnittstellen bleiben geschützt
     expect((await req("GET", "/api/kurse", undefined, null)).statusCode).toBe(401);

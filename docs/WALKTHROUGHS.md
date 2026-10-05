@@ -396,8 +396,11 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 - Erwartet: keine Cookies, keine Inhalte von Drittanbietern; Kartendienste nur per Klick.
 
 **O2 Kurse und Anmeldung** 🤖
-1. Website → Kurse: aktuelle Termine mit freien Plätzen → „Anmelden“.
-- Erwartet: Anmeldeseite der App öffnet sich direkt mit dem Formular dieses Kurses.
+1. Website → Kurse: aktuelle Termine mit freien Plätzen, Filter nach Kursart, „Alle Termine“ aufklappen → „Anmelden“.
+2. Im Dialog Name, E-Mail, ggf. ET bzw. Geburtsdatum des Kindes, Krankenkasse (nur Kassenkurse), Begleitperson (nur mit Partnergebühr) und Einwilligung → „Verbindlich anmelden“.
+3. Dasselbe noch einmal mit derselben E-Mail; Direktlink `/kurse?kurs=<id>` aufrufen.
+4. In der App als Kursleiterin: Cockpit-Hinweis „neue Online-Anmeldung“ → Kurs.
+- Erwartet: Danke-Meldung im Dialog, freie Plätze sinken sofort; bei vollem Kurs „Warteliste“. Zweite Anmeldung: „schon angemeldet“, kein doppelter Eintrag. Direktlink öffnet das Formular des Kurses. ⚠️ Ohne Name/E-Mail/Einwilligung Fehlermeldung im Dialog. Die Anmeldeseite der App (`/anmeldung`) bleibt für alte Links erhalten.
 
 **O3 Alte Adressen** ⚠️
 1. Alte Wix-Adressen aufrufen (z. B. `/hebammen-team`, `/kopie-von-leistungen`).

@@ -28,7 +28,9 @@ Platzhalterbilder (Unsplash-Lizenz) nach und nach durch eigene Fotos ersetzen: D
 
 ## Live-Daten aus der App
 
-- **Kurse:** `src/komponenten/KursListe.astro` lädt `GET {PUBLIC_APP_URL}/api/oeffentlich/kurse` (ohne Personendaten) und verlinkt auf `{PUBLIC_APP_URL}/anmeldung?kurs=<id>`.
+- **Kurse:** `src/komponenten/KursListe.astro` lädt `GET {PUBLIC_APP_URL}/api/oeffentlich/kurse` (ohne Personendaten) (ohne Personendaten); die Anmeldung läuft direkt auf der Website in einem Dialog und schickt `POST {PUBLIC_APP_URL}/api/oeffentlich/kurse/<id>/anmeldung` (Einwilligung, Honigtopf, Begrenzung je IP; doppelte Anmeldung mit derselben E-Mail legt nichts neu an). Direktlink auf einen Kurs: `/kurse?kurs=<id>`. Auf der Seite „Kurse“ gibt es einen Filter nach Kursart.
+
+  <img src="../../docs/website/kursbuchung-liste.jpg" alt="Kursliste mit Filter auf dem Handy" width="240"> <img src="../../docs/website/kursbuchung-dialog.jpg" alt="Anmeldedialog auf dem Handy" width="240">
 - **Betreuungsanfrage (M11):** `src/komponenten/AnfrageFormular.astro` sendet an `POST {PUBLIC_APP_URL}/api/oeffentlich/anfrage` (Einwilligung, Honigtopf, 5 je Stunde und IP); ohne JavaScript erscheint der Weg per E-Mail/Telefon.
 - **Kapazitätsampel und Team-Status (M11):** `src/komponenten/Kapazitaet.astro` und `src/skripte/praxis-status.ts` lesen `GET {PUBLIC_APP_URL}/api/oeffentlich/praxis` (nur Stufe je Monat und Babypause-Status, keine Zahlen, keine Familien); Elemente mit `data-team-status="Name"` werden aktualisiert.
 
