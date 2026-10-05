@@ -6,6 +6,9 @@ import "./index.css";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { AbrechnungSeite } from "./seiten/AbrechnungSeite";
 import { Akte } from "./seiten/Akte";
+import { AnfrageDetail } from "./seiten/AnfrageDetail";
+import { Anfragen } from "./seiten/Anfragen";
+import { Belegung } from "./seiten/Belegung";
 import { Anmelden } from "./seiten/Anmelden";
 import { Besuch } from "./seiten/Besuch";
 import { Cockpit } from "./seiten/Cockpit";
@@ -54,6 +57,9 @@ function App() {
         <Route path="kurse/:id" element={<Kurs />} />
         <Route path="kurse/:id/termine/:terminId" element={<KursTermin />} />
         <Route path="team" element={<Team />} />
+        <Route path="anfragen" element={<Anfragen />} />
+        <Route path="anfragen/:id" element={<AnfrageDetail />} />
+        <Route path="belegung" element={<Belegung />} />
         <Route path="regelwerk" element={<Regelwerk />} />
         <Route path="einstellungen" element={<Einstellungen />}>
           <Route index element={<Profil />} />

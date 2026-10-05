@@ -211,11 +211,13 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweiter
   for (const h of [...new Set(termine.map((t) => t.hebamme))]) await anfrage(h, "POST", `/api/touren/${heute}/planen`, { modus: "optimieren" });
 
   await demoAktenErgaenzen(db, anfrage, erweitert);
-  if (erweitert) await demoKurseAnlegen(db, anfrage, async (email, method, url, payload) => {
+  const offen: OffeneAnfrage = async (email, method, url, payload) => {
     const res = await app.inject({ method, url, payload: payload as object, headers: email ? { cookie: await anmelden(email) } : {} });
     if (res.statusCode >= 300) throw new Error(`${method} ${url}: ${res.body}`);
     return res.json();
-  });
+  };
+  if (erweitert) await demoKurseAnlegen(db, anfrage, offen);
+  if (erweitert) await demoAnfragenAnlegen(anfrage, offen);
 
   await app.close();
   return familien.length;
@@ -299,4 +301,35 @@ async function demoAktenErgaenzen(db: Datenbank, anfrage: Anfrage, erweitert: bo
     await anfrage(M, "PUT", `/api/klientinnen/${becker}/einwilligungen/urkunde`, { erteilt: true, form: "papier", datum: tag(-30) });
     await anfrage(M, "PUT", `/api/klientinnen/${becker}/einwilligungen/foto`, { erteilt: false, form: "muendlich", datum: tag(-30), notiz: "Keine Fotos gewünscht" });
   }
+}
+
+/** Demo M11: Betreuungsanfragen (Website und Telefon) und ein Urlaub für den Belegungsplan */
+async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
+  const J = "johanna@kindkesmoeoen.test";
+  const M = "marielena@kindkesmoeoen.test";
+  await offen(null, "POST", "/api/oeffentlich/anfrage", {
+    vorname: "Hannah", nachname: "Beispiel", email: "hannah@example.org", telefon: "0170 0000201", et: tag(150), plz: "18236", ort: "Kröpelin",
+    erstesKind: true, leistungen: ["vorsorge", "wochenbett", "geburtsvorbereitung"], nachricht: "Wir sind gerade nach Kröpelin gezogen und suchen eine Hebamme für unser erstes Kind.", einwilligung: true,
+  });
+  await offen(null, "POST", "/api/oeffentlich/anfrage", {
+    vorname: "Miriam", nachname: "Muster", email: "miriam@example.org", et: tag(95), strasse: "Mollistraße 5", plz: "18209", ort: "Bad Doberan",
+    erstesKind: false, leistungen: ["wochenbett", "stillen"], einwilligung: true,
+  });
+  const tel = await anfrage(J, "POST", "/api/anfragen", { vorname: "Ronja", nachname: "Rückruf", telefon: "0170 0000202", et: tag(120), plz: "18211", ort: "Rethwisch", leistungen: ["wochenbett"], nachricht: "Anruf am Vormittag, möchte nur Wochenbett." });
+  await anfrage(J, "POST", `/api/anfragen/${tel.id}/aktion`, { aktion: "warteliste", notiz: "Im ET-Monat voll – Rückruf, falls etwas frei wird." });
+  // Kapazität 3 je Hebamme und weitere Schwangere, damit der Belegungsplan alle Stufen zeigt (frei, knapp, ausgebucht)
+  for (const email of [J, M]) {
+    const profil = await anfrage(email, "GET", "/api/ich/profil");
+    await anfrage(email, "PUT", "/api/ich/profil", { ...profil, wochenbettenProMonat: 3 });
+  }
+  const planung: Array<[string, string, string, number]> = [
+    [J, "Nele", "Hoffmann", 45], [J, "Pia", "Richter", 66], [J, "Lisa", "Wagner", 71], [J, "Greta", "Fischer", 76],
+    [M, "Emma", "Schröder", 38], [M, "Frida", "Wolf", 44], [M, "Ida", "Zimmermann", 52], [M, "Mara", "Krause", 68], [M, "Rieke", "Lehmann", 79],
+  ];
+  for (const [email, vorname, nachname, et] of planung) {
+    const ich = await anfrage(email, "GET", "/api/auth/ich");
+    await anfrage(email, "POST", "/api/klientinnen", { vorname, nachname, et: tag(et), telefon: "", strasse: "", plz: "18209", ort: "Bad Doberan", zustaendigeHebammeId: ich.id });
+  }
+  // Marielena: zwei Wochen Urlaub in drei Monaten
+  await anfrage(M, "POST", "/api/abwesenheiten", { von: tag(90), bis: tag(103), art: "urlaub", notiz: "Sommerurlaub" });
 }

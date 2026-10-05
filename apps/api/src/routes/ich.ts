@@ -37,6 +37,7 @@ export async function ichRouten(app: FastifyInstance, db: Datenbank) {
         telefon: benutzer.telefon,
         ik: benutzer.ik,
         status: benutzer.status,
+        wochenbettenProMonat: benutzer.wochenbettenProMonat,
         babypauseBis: benutzer.babypauseBis,
       })
       .from(benutzer)

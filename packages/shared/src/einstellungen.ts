@@ -109,6 +109,8 @@ export const hebammeProfilSchema = z.object({
   ik: z.preprocess(leerZuNull, ikSchema.nullable()),
   status: z.enum(HEBAMME_STATUS),
   babypauseBis: z.preprocess(leerZuNull, z.iso.date().nullable()),
+  /** Kapazität im Belegungsplan (M11): neue Wochenbetten pro ET-Monat */
+  wochenbettenProMonat: z.coerce.number().int().min(0, "Mindestens 0").max(20, "Höchstens 20").default(4),
 });
 export type HebammeProfil = z.infer<typeof hebammeProfilSchema>;
 

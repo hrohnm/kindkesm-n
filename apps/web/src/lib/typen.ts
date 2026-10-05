@@ -33,7 +33,7 @@ export type Abrechnung = {
   erinnerungVorlaufTage: number;
 };
 
-export type Profil = { name: string; kuerzel: string; email: string; telefon: string | null; ik: string | null; status: HebammeStatus; babypauseBis: string | null };
+export type Profil = { name: string; kuerzel: string; email: string; telefon: string | null; ik: string | null; status: HebammeStatus; babypauseBis: string | null; wochenbettenProMonat: number };
 
 export type TeamMitglied = { id: string; name: string; kuerzel: string; email: string; telefon: string | null; rolle: string; status: HebammeStatus; babypauseBis: string | null; ikHinterlegt: boolean };
 

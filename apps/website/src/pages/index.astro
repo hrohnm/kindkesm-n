@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import hero from "../assets/bilder/hero-schwangerschaft.jpg";
 import duene from "../assets/bilder/ostsee-duene.jpg";
+import Kapazitaet from "../komponenten/Kapazitaet.astro";
 import KursListe from "../komponenten/KursListe.astro";
 import Stimmen from "../komponenten/Stimmen.astro";
 import Seite from "../layouts/Seite.astro";
@@ -27,6 +28,7 @@ import { GEBIETE, LEISTUNGEN, NAMENSERKLAERUNG, PRAXIS, TEAM, ZEITSTRAHL } from 
           <svg class="mt-0.5 size-5 shrink-0 text-mohn-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
           Meldet euch früh – am besten bis zur 12. Schwangerschaftswoche. Hebammen sind gefragt.
         </p>
+        <div class="mt-6 rounded-3xl bg-white/70 p-4"><Kapazitaet kompakt monate={6} /></div>
       </div>
       <div class="relative">
         <Image src={hero} alt="Schwangere Frau hält ihren Babybauch" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2.5rem] object-cover shadow-xl" loading="eager" fetchpriority="high" />
@@ -112,7 +114,7 @@ import { GEBIETE, LEISTUNGEN, NAMENSERKLAERUNG, PRAXIS, TEAM, ZEITSTRAHL } from 
             <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-salbei-200 font-titel text-2xl text-salbei-800" aria-hidden="true">{h.kuerzel}</span>
             <div>
               <p class="font-titel text-2xl">{h.name}</p>
-              <p class="text-sm text-salbei-600">Hebamme{h.hinweis ? ` · ${h.hinweis}` : ""}</p>
+              <p class="text-sm text-salbei-600">Hebamme <span data-team-status={h.name} hidden={!h.hinweis}>{h.hinweis}</span></p>
             </div>
           </li>
         ))}

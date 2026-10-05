@@ -2,7 +2,7 @@ import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@
 import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
-import { abrechnungseinstellung, aenderung, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
+import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -58,6 +58,11 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
     }
 
     if (request.benutzer!.rolle === "hebamme") {
+      // Neue Betreuungsanfragen (Website, M11)
+      const [neu] = await db.select({ n: sql<number>`count(*)::int` }).from(anfrage).where(eq(anfrage.status, "neu"));
+      if (neu && neu.n > 0) {
+        hinweise.push({ id: "anfragen-neu", titel: neu.n === 1 ? "1 neue Betreuungsanfrage" : `${neu.n} neue Betreuungsanfragen`, datum: isoDatum(heute), tage: 0, stufe: "warnung", quelle: "Anfragen – bitte prüfen und antworten", link: "/anfragen" });
+      }
       // Kinderurkunde: 7 Tage vor Ende des späten Wochenbetts (Ablauf der 12. Lebenswoche) vorbereiten
       const kinder = await db
         .select({ id: kind.id, vorname: kind.vorname, geburtsdatum: kind.geburtsdatum, urkunde: urkunde.status })

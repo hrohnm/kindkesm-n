@@ -7,7 +7,7 @@ test("A1 Anmelden mit Demo-Knopf", async ({ page }, info) => {
   await bild(page, info, "A1-anmeldeseite");
   await page.getByRole("button", { name: /Johanna/ }).click();
   await page.getByRole("button", { name: "Anmelden" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(/^(Moin|Guten (Morgen|Tag|Abend)), Johanna!$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(/^(Moin|Hallo|Guten Abend), Johanna!$/);
   await expect(page.getByRole("link", { name: "Klientinnen" }).first()).toBeVisible();
   await bild(page, info, "A1-startseite", false);
 });

@@ -29,7 +29,7 @@ import { TEAM, UEBER_UNS, telLink } from "../inhalte/praxis";
             <span class="mx-auto flex size-32 items-center justify-center rounded-full bg-salbei-200 font-titel text-5xl text-salbei-800" aria-hidden="true">{h.kuerzel}</span>
             <h2 class="mt-5 text-center text-3xl">{h.name}</h2>
             <p class="text-center text-salbei-600">Hebamme</p>
-            {h.hinweis && <p class="mx-auto mt-3 rounded-full bg-mohn-100 px-3 py-1 text-sm font-semibold text-mohn-700">{h.hinweis}</p>}
+            <p class="mx-auto mt-3 rounded-full bg-mohn-100 px-3 py-1 text-sm font-semibold text-mohn-700" data-team-status={h.name} hidden={!h.hinweis}>{h.hinweis}</p>
             <p class="mt-5 text-sm font-semibold text-salbei-600">Schwerpunkte</p>
             <ul class="mt-2 flex flex-wrap gap-2">
               {h.schwerpunkte.map((s) => <li class="rounded-full bg-salbei-100 px-3 py-1 text-sm">{s}</li>)}

@@ -29,7 +29,7 @@ Wiederholen: siehe [Abschnitt „So wiederholen“](#so-wiederholen). Screenshot
 
 Kein Programmfehler, aber das Drehbuch beschrieb es ungenau. [WALKTHROUGHS.md](../WALKTHROUGHS.md) ist angepasst.
 
-- **A1:** Die Begrüßung lautet „Moin, Vorname!“.
+- **A1:** Die Begrüßung lautet je nach Tageszeit „Moin“, „Hallo“ oder „Guten Abend, Vorname!“.
 - **A5:** Wird die IK geändert, erscheint statt „Gespeichert“ der Hinweis, die Änderung der SVI und dem Berufsverband zu melden.
 - **C9 ⚠️:** Wird die Anschrift in den Stammdaten auf eine unauffindbare Adresse geändert, verwirft die App die alte Position bewusst, damit kein falsches Wegegeld entsteht. „Bisherige Position bleibt“ gilt nur für „Aus Adresse ermitteln“ ohne Adressänderung.
 - **D4:** „Entwurf“ führt zurück in die Akte bzw. Tour; der Entwurf steht dort und im Cockpit unter „Offene Dokumentationen“.

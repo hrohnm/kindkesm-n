@@ -43,12 +43,18 @@ export async function geokodieren(db: Datenbank, eingabe: { strasse?: string | n
   return (await imVerzeichnis(db, eingabe)) ?? (await online(eingabe));
 }
 
+/** Ungefähre Position eines Wohnorts (mit Straße genauer, sonst Ortsmitte), z. B. für Anfragen (M11). */
+export async function wohnortGeokodieren(db: Datenbank, eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }): Promise<Treffer | null> {
+  if (eingabe.strasse) return geokodieren(db, eingabe);
+  return online(eingabe, true);
+}
+
 // ------------------------------------------------------------------ Online-Adresssuche (Nominatim)
 const zwischenspeicher = new Map<string, Treffer | null>();
 let letzteAnfrage = 0;
 
-async function online(eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }): Promise<Treffer | null> {
-  if (!config.geocoderUrl || !eingabe.strasse || (!eingabe.plz && !eingabe.ort)) return null;
+async function online(eingabe: { strasse?: string | null; plz?: string | null; ort?: string | null }, nurOrt = false): Promise<Treffer | null> {
+  if (!config.geocoderUrl || (!eingabe.strasse && !nurOrt) || (!eingabe.plz && !eingabe.ort)) return null;
   const schluessel = [eingabe.strasse, eingabe.plz, eingabe.ort].map((x) => (x ?? "").trim().toLowerCase()).join("|");
   if (zwischenspeicher.has(schluessel)) return zwischenspeicher.get(schluessel)!;
   // Nutzungsregeln: höchstens eine Anfrage je Sekunde
@@ -56,7 +62,7 @@ async function online(eingabe: { strasse?: string | null; plz?: string | null; o
   if (warten > 0) await new Promise((r) => setTimeout(r, warten));
   letzteAnfrage = Date.now();
   const url = new URL(`${config.geocoderUrl}/search`);
-  url.search = new URLSearchParams({ format: "jsonv2", limit: "1", countrycodes: "de", addressdetails: "1", street: eingabe.strasse.trim(), ...(eingabe.plz ? { postalcode: eingabe.plz } : {}), ...(eingabe.ort ? { city: eingabe.ort.trim() } : {}) }).toString();
+  url.search = new URLSearchParams({ format: "jsonv2", limit: "1", countrycodes: "de", addressdetails: "1", ...(eingabe.strasse ? { street: eingabe.strasse.trim() } : {}), ...(eingabe.plz ? { postalcode: eingabe.plz } : {}), ...(eingabe.ort ? { city: eingabe.ort.trim() } : {}) }).toString();
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": `Kindkesmoeoen-Praxis-App/1.0${config.geocoderKontakt ? ` (${config.geocoderKontakt})` : ""}`, "Accept-Language": "de" },

@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import silhouette from "../assets/bilder/schwangerschaft-fenster.jpg";
+import AnfrageFormular from "../komponenten/AnfrageFormular.astro";
+import Kapazitaet from "../komponenten/Kapazitaet.astro";
 import Seite from "../layouts/Seite.astro";
 import { PRAXIS, TEAM, telLink } from "../inhalte/praxis";
 
@@ -24,17 +26,21 @@ const vorlage = encodeURIComponent(
   </section>
 
   <section class="abschnitt scroll-mt-20" id="anfrage">
-    <div class="rahmen grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+    <div class="rahmen grid gap-10 lg:grid-cols-[1.5fr_1fr]">
       <div>
         <h2>Betreuung anfragen</h2>
-        <p class="mt-4">Damit wir schnell planen können, schreibt uns bitte:</p>
-        <ul class="mt-4 space-y-2">
-          {["den voraussichtlichen Entbindungstermin", "euren Wohnort", "welche Leistungen ihr euch wünscht (Vorsorge, Wochenbett, Kurse …)", "ob es euer erstes Kind ist", "wie wir euch am besten erreichen"].map((p) => (
-            <li class="flex gap-3"><span class="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-mohn-100 text-sm text-mohn-700" aria-hidden="true">✓</span>{p}</li>
-          ))}
-        </ul>
-        <p class="mt-6 rounded-2xl bg-salbei-50 p-4 text-[0.95rem]">Tipp: Meldet euch möglichst früh, am besten bis zur 12. Schwangerschaftswoche.</p>
-        <p class="mt-4 text-sm text-salbei-600">Bald könnt ihr hier ein Anfrageformular nutzen, das direkt in unserer Praxisplanung ankommt.</p>
+        <p class="mt-4">Tipp: Meldet euch möglichst früh, am besten bis zur 12. Schwangerschaftswoche.</p>
+        <div class="mt-6"><Kapazitaet /></div>
+        <div class="mt-6">
+          <AnfrageFormular>
+            <p class="mt-4">Damit wir schnell planen können, schreibt uns bitte:</p>
+            <ul class="mt-4 space-y-2">
+              {["den voraussichtlichen Entbindungstermin", "euren Wohnort", "welche Leistungen ihr euch wünscht (Vorsorge, Wochenbett, Kurse …)", "ob es euer erstes Kind ist", "wie wir euch am besten erreichen"].map((p) => (
+                <li class="flex gap-3"><span class="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-mohn-100 text-sm text-mohn-700" aria-hidden="true">✓</span>{p}</li>
+              ))}
+            </ul>
+          </AnfrageFormular>
+        </div>
       </div>
 
       <ul class="space-y-5">
@@ -53,7 +59,7 @@ const vorlage = encodeURIComponent(
             </div>
           </li>
         ))}
-        {TEAM.filter((h) => h.hinweis).map((h) => <li class="px-2 text-sm text-salbei-600">{h.name} ist {h.hinweis}.</li>)}
+        {TEAM.filter((h) => h.hinweis).map((h) => <li class="px-2 text-sm text-salbei-600">{h.name}: <span data-team-status={h.name}>{h.hinweis}</span></li>)}
       </ul>
     </div>
   </section>

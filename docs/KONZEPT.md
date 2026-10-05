@@ -309,6 +309,12 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - **Belegungsplan**: Wie viele Wochenbetten hat jede Hebamme in welchen Kalenderwochen? Ampel pro Woche, Urlaub berücksichtigt
 - **Vorschlag**: Welche Hebamme passt (Kapazität, Entfernung zum Wohnort, Leistungswunsch)?
 - Zu- oder Absage per Vorlage, Warteliste, Weiterleitung an Kolleginnen im Netzwerk
+- **Umgesetzt (M11):**
+  - Anfrageformular auf der Website (öffentliche Schnittstelle mit Einwilligung, Honigtopf, Begrenzung je IP) und „Anfrage erfassen“ für Anrufe; Cockpit-Hinweis bei neuen Anfragen
+  - Anfragen-Seite mit Gruppen (Offen, Warteliste, Erledigt), Vorschlag je Hebamme (freie Plätze im ET-Monat, Abwesenheit 2 Wochen vor bis 4 Wochen nach dem ET, Luftlinie vom Wohnort), Zusage legt Akte und Betreuung an; Warteliste, Absage, Weiterleitung mit Notiz; Antwortvorlagen per E-Mail-Programm
+  - Belegungsplan **je ET-Monat** (statt Kalenderwoche – so planen Familien und so zeigt es die Website): belegt / Kapazität je Hebamme, Ampel, Praxis gesamt, offene Anfragen; Kapazität „Wochenbetten pro Monat“ im Profil; Urlaub, Fortbildung und Babypause kürzen anteilig
+  - Website-Bausteine: Kapazitätsampel je Monat (ohne Zahlen) und Team-Status (Babypause) live aus der App
+  - Datensparsamkeit: abgeschlossene Anfragen werden nach 6 Monaten gelöscht; Anfragen nur für Hebammen sichtbar
 
 ### M12 – Kursverwaltung und Online-Anmeldung
 - Kurstypen (Geburtsvorbereitung, Babymassage, Eltern-Kind, Rückbildung), Termine, Räume, **Kursleitung durch eine oder mehrere Hebammen** (z. B. Geburtsvorbereitung zu zweit; die Aufteilung der Leistungen ist für die Pool-Abrechnung festgelegt)
