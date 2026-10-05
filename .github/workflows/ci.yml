@@ -29,4 +29,6 @@ jobs:
         env:
           TEST_DATABASE_URL: postgres://kindkes:kindkes@localhost:5432/kindkes_test
       - run: npm run build
+      - run: npm run build:website
       - run: docker build -t kindkesmoeoen-app:ci .
+      - run: docker build -f Dockerfile.website -t kindkesmoeoen-website:ci .

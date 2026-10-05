@@ -99,6 +99,11 @@ describe("Kurse", () => {
     const eintrag = liste.find((x: { id: string }) => x.id === kursId);
     expect(eintrag).toMatchObject({ titel: "Geburtsvorbereitung Herbst", freiePlaetze: 0, kasse: true });
     expect(JSON.stringify(eintrag)).not.toContain("Berger");
+    // Die Praxis-Website darf die Liste im Browser laden, fremde Seiten nicht
+    const erlaubt = await t.app.inject({ method: "GET", url: "/api/oeffentlich/kurse", headers: { origin: "http://localhost:4321" } });
+    expect(erlaubt.headers["access-control-allow-origin"]).toBe("http://localhost:4321");
+    const fremd = await t.app.inject({ method: "GET", url: "/api/oeffentlich/kurse", headers: { origin: "https://fremde-seite.example" } });
+    expect(fremd.headers["access-control-allow-origin"]).toBeUndefined();
 
     const anmeldung = { name: "Neue Mutter", email: "neu@example.org", stichtag: tag(80), einwilligung: true };
     expect((await req("POST", `/api/oeffentlich/kurse/${kursId}/anmeldung`, { ...anmeldung, einwilligung: false }, null)).statusCode).toBe(400);

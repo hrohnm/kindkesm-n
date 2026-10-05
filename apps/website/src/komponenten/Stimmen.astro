@@ -1,0 +1,13 @@
+---
+import { STIMMEN } from "../inhalte/praxis";
+---
+
+<ul class="grid gap-5 md:grid-cols-3">
+  {STIMMEN.map((s) => (
+    <li class="karte relative">
+      <span class="absolute -top-3 left-6 font-titel text-6xl leading-none text-mohn-300" aria-hidden="true">“</span>
+      <blockquote class="mt-4 text-[0.98rem] italic">{s.text}</blockquote>
+      <p class="mt-4 font-semibold text-salbei-600">– {s.von}</p>
+    </li>
+  ))}
+</ul>

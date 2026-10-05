@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import babyhand from "../assets/bilder/babyhand.jpg";
+import Stimmen from "../komponenten/Stimmen.astro";
+import Seite from "../layouts/Seite.astro";
+import { TEAM, UEBER_UNS, telLink } from "../inhalte/praxis";
+---
+
+<Seite titel="Die Hebammen" beschreibung="Marielena Pontus, Johanna Mede und Lorina Gosemann – das Hebammenteam der Praxis Kindkesmöön in Bad Doberan.">
+  <section class="bg-salbei-100">
+    <div class="rahmen grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.3fr_1fr]">
+      <div>
+        <p class="etikett">Über uns</p>
+        <h1 class="mt-3">Die Hebammen</h1>
+        <div class="fliesstext mt-6 text-lg">
+          {UEBER_UNS.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+      <Image src={babyhand} alt="Babyhand umfasst den Finger eines Erwachsenen" widths={[400, 800]} sizes="(min-width: 1024px) 40vw, 100vw" class="aspect-square w-full rounded-[2.5rem] object-cover" />
+    </div>
+  </section>
+
+  <section class="abschnitt">
+    <div class="rahmen">
+      <ul class="grid gap-6 md:grid-cols-3">
+        {TEAM.map((h) => (
+          <li class="karte flex flex-col">
+            <!-- Platzhalter bis zu den eigenen Fotos: Initialen statt Stockfoto -->
+            <span class="mx-auto flex size-32 items-center justify-center rounded-full bg-salbei-200 font-titel text-5xl text-salbei-800" aria-hidden="true">{h.kuerzel}</span>
+            <h2 class="mt-5 text-center text-3xl">{h.name}</h2>
+            <p class="text-center text-salbei-600">Hebamme</p>
+            {h.hinweis && <p class="mx-auto mt-3 rounded-full bg-mohn-100 px-3 py-1 text-sm font-semibold text-mohn-700">{h.hinweis}</p>}
+            <p class="mt-5 text-sm font-semibold text-salbei-600">Schwerpunkte</p>
+            <ul class="mt-2 flex flex-wrap gap-2">
+              {h.schwerpunkte.map((s) => <li class="rounded-full bg-salbei-100 px-3 py-1 text-sm">{s}</li>)}
+            </ul>
+            <div class="flex-1"></div>
+            <ul class="mt-6 space-y-2 border-t border-salbei-100 pt-4">
+              {h.telefon && <li><a href={telLink(h.telefon)}>{h.telefon}</a></li>}
+              <li class="break-all"><a href={`mailto:${h.email}`}>{h.email}</a></li>
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-sm text-salbei-600">Wir vertreten uns gegenseitig – auch bei Urlaub oder Krankheit seid ihr gut betreut.</p>
+    </div>
+  </section>
+
+  <section class="abschnitt bg-white">
+    <div class="rahmen">
+      <p class="etikett">Das sagen Familien</p>
+      <h2 class="mt-3">Stimmen</h2>
+      <div class="mt-8"><Stimmen /></div>
+    </div>
+  </section>
+</Seite>

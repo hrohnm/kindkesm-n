@@ -1,0 +1,50 @@
+---
+import Entwurf from "../komponenten/Entwurf.astro";
+import Seite from "../layouts/Seite.astro";
+import { PRAXIS, TEAM } from "../inhalte/praxis";
+---
+
+<Seite titel="Datenschutz" beschreibung="Datenschutzerklärung der Hebammenpraxis Kindkesmöön: keine Cookies, kein Tracking, keine externen Schriften.">
+  <section class="abschnitt">
+    <div class="rahmen max-w-3xl">
+      <h1>Datenschutzerklärung</h1>
+      <div class="mt-8">
+        <Entwurf>Auf diese Website zugeschnittener Entwurf. Bitte vor dem Livegang prüfen lassen (z. B. mit einem Datenschutz-Generator oder durch eine Fachperson) und Hosting-Anbieter sowie Anschriften ergänzen.</Entwurf>
+      </div>
+      <div class="fliesstext space-y-8">
+        <section>
+          <h2 class="text-2xl">Das Wichtigste in Kürze</h2>
+          <ul class="mt-3 list-disc space-y-1 pl-6">
+            <li>Diese Website setzt <strong>keine Cookies</strong> und verwendet <strong>keine Analyse- oder Tracking-Dienste</strong>.</li>
+            <li>Schriften und Bilder liegen auf unserem eigenen Server; es werden keine Inhalte von Google oder anderen Anbietern nachgeladen.</li>
+            <li>Kartendienste und Instagram öffnen sich nur, wenn ihr einen Link anklickt.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 class="text-2xl">Verantwortliche</h2>
+          <p class="mt-3">{TEAM.map((h) => h.name).join(", ")}<br />{PRAXIS.name}, {PRAXIS.strasse}, {PRAXIS.plz} {PRAXIS.ort}<br />Kontakt: siehe <a href="/impressum">Impressum</a></p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Aufruf der Website (Server-Logdateien)</h2>
+          <p class="mt-3">Beim Aufruf speichert unser Webserver technisch notwendige Angaben: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, übertragene Datenmenge, Browser und Betriebssystem. Das dient dem sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Die Logdateien werden nach spätestens 14 Tagen gelöscht. Server: [Hosting-Anbieter ergänzen, z. B. Hostinger, mit Vertrag zur Auftragsverarbeitung].</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Kontakt per E-Mail oder Telefon</h2>
+          <p class="mt-3">Wenn ihr uns schreibt oder anruft, verarbeiten wir eure Angaben, um die Anfrage zu beantworten und eine Betreuung zu planen (Art. 6 Abs. 1 lit. b DSGVO). Angaben zur Schwangerschaft wie der Entbindungstermin sind Gesundheitsdaten; wir verarbeiten sie nur für die Betreuung (Art. 9 Abs. 2 lit. h DSGVO). Bitte beachtet, dass E-Mails unverschlüsselt übertragen werden können.</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Kursanmeldung</h2>
+          <p class="mt-3">Die Termine auf dieser Website stammen aus unserer Praxissoftware. Die Online-Anmeldung findet auf unserer Anmeldeseite statt. Dort verarbeiten wir die angegebenen Daten (Name, Kontakt, ggf. Termin bzw. Geburtsdatum des Kindes, Krankenkasse) zur Durchführung des Kurses und – bei Kassenkursen – zur Abrechnung mit der Krankenkasse (Art. 6 Abs. 1 lit. b und c, Art. 9 Abs. 2 lit. h DSGVO).</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Eure Rechte</h2>
+          <p class="mt-3">Ihr habt das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, euch bei einer Aufsichtsbehörde zu beschweren, z. B. beim Landesbeauftragten für Datenschutz und Informationsfreiheit Mecklenburg-Vorpommern.</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Externe Links</h2>
+          <p class="mt-3">Links zu Instagram, Kartendiensten und Partner-Websites führen zu Angeboten anderer Anbieter. Erst beim Anklicken werden Daten an diese übertragen; dort gelten deren Datenschutzerklärungen.</p>
+        </section>
+      </div>
+    </div>
+  </section>
+</Seite>

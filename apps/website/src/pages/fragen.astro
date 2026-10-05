@@ -1,0 +1,39 @@
+---
+import Seite from "../layouts/Seite.astro";
+import { FAQ } from "../inhalte/praxis";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.frage, acceptedAnswer: { "@type": "Answer", text: f.antwort } })),
+};
+---
+
+<Seite titel="Häufige Fragen" beschreibung="Wann melde ich mich bei einer Hebamme? Was zahlt die Krankenkasse? Was passiert im Wochenbett? Antworten der Hebammenpraxis Kindkesmöön.">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <section class="bg-salbei-100">
+    <div class="rahmen py-12 sm:py-16">
+      <p class="etikett">Gut zu wissen</p>
+      <h1 class="mt-3">Häufige Fragen</h1>
+    </div>
+  </section>
+
+  <section class="abschnitt">
+    <div class="rahmen max-w-3xl">
+      <ul class="space-y-4">
+        {FAQ.map((f) => (
+          <li>
+            <details class="group karte p-0">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-titel text-2xl [&::-webkit-details-marker]:hidden">
+                {f.frage}
+                <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-salbei-100 text-salbei-700 transition group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="px-6 pb-6">{f.antwort}</p>
+            </details>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10">Eure Frage ist nicht dabei? <a href="/kontakt">Schreibt oder ruft uns an.</a></p>
+    </div>
+  </section>
+</Seite>

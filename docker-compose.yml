@@ -32,6 +32,21 @@ services:
       # Online-Adresssuche, falls das eigene Adressverzeichnis nichts findet ("aus" = abgeschaltet)
       GEOCODER_URL: ${GEOCODER_URL:-}
       GEOCODER_KONTAKT: ${GEOCODER_KONTAKT:-}
+      # Website, die die öffentliche Kursliste im Browser laden darf
+      WEBSITE_URL: https://${WEBSITE_DOMAIN:-www.localhost}
+
+  # Öffentliche Website (statisch, ohne Datenbank). Erreichbar unter WEBSITE_DOMAIN.
+  website:
+    build:
+      context: .
+      dockerfile: Dockerfile.website
+      args:
+        SITE_URL: https://${WEBSITE_DOMAIN:-www.localhost}
+        PUBLIC_APP_URL: https://${DOMAIN}
+    image: kindkesmoeoen-website:latest
+    restart: unless-stopped
+    environment:
+      APP_URL: https://${DOMAIN}
 
   # Routing (OpenStreetMap, Mecklenburg-Vorpommern). Einrichten mit scripts/karte-einrichten.sh,
   # das Skript setzt COMPOSE_PROFILES=karte in .env, danach startet "docker compose up -d" ihn mit.
@@ -48,12 +63,14 @@ services:
     restart: unless-stopped
     depends_on:
       - app
+      - website
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     environment:
       DOMAIN: ${DOMAIN:?DOMAIN in .env setzen}
+      WEBSITE_DOMAIN: ${WEBSITE_DOMAIN:-www.localhost}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-daten:/data

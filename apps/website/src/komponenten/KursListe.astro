@@ -1,0 +1,93 @@
+---
+/**
+ * Kurstermine mit freien Plätzen live aus der Praxis-App (öffentliche Schnittstelle ohne Personendaten).
+ * Ohne Verbindung oder ohne PUBLIC_APP_URL erscheint ein Hinweis mit Kontaktweg.
+ */
+interface Props {
+  /** höchstens so viele Kurse anzeigen */
+  max?: number;
+}
+const { max } = Astro.props;
+const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+---
+
+<div data-kursliste data-app={app} data-max={max ?? ""} aria-live="polite">
+  <p class="karte text-salbei-700" data-kurs-hinweis>
+    <span data-kurs-text>{app ? "Aktuelle Termine werden geladen …" : "Die aktuellen Kurstermine erfahrt ihr bei uns."}</span>
+    <span class="mt-2 block text-sm">Fragen zu Kursen? <a href="/kontakt">Schreibt oder ruft uns an.</a></span>
+  </p>
+  <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-kurs-liste hidden></ul>
+  {app && <p class="mt-4 text-sm" data-kurs-alle hidden>Alle Kurse mit Anmeldung: <a href={`${app}/anmeldung`}>Online-Kursanmeldung ›</a></p>}
+</div>
+
+<script>
+  type Kurs = {
+    id: string;
+    titel: string;
+    art: string;
+    beschreibung: string | null;
+    ort: string | null;
+    preis: string | null;
+    partnerPreis: string | null;
+    kasse: boolean;
+    termine: Array<{ datum: string; von: string; bis: string; format: number }>;
+    freiePlaetze: number;
+  };
+  const euro = (v: string | null) => (v == null ? "" : Number(v).toLocaleString("de-DE", { style: "currency", currency: "EUR" }));
+  const datum = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+  const text = (t: string) => document.createTextNode(t);
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, klasse: string, ...kinder: Array<Node | string>) => {
+    const e = document.createElement(tag);
+    e.className = klasse;
+    for (const k of kinder) e.append(typeof k === "string" ? text(k) : k);
+    return e;
+  };
+
+  for (const box of document.querySelectorAll<HTMLElement>("[data-kursliste]")) {
+    const app = box.dataset.app;
+    if (!app) continue;
+    const max = Number(box.dataset.max) || Infinity;
+    const hinweis = box.querySelector<HTMLElement>("[data-kurs-hinweis]")!;
+    const meldung = box.querySelector<HTMLElement>("[data-kurs-text]")!;
+    const liste = box.querySelector<HTMLUListElement>("[data-kurs-liste]")!;
+    fetch(`${app}/api/oeffentlich/kurse`)
+      .then((r) => (r.ok ? (r.json() as Promise<Kurs[]>) : Promise.reject(new Error(String(r.status)))))
+      .then((kurse) => {
+        if (!kurse.length) {
+          meldung.textContent = "Gerade sind keine Kurse zur Online-Anmeldung freigeschaltet.";
+          return;
+        }
+        for (const k of kurse.slice(0, max)) {
+          const erster = k.termine[0];
+          const kosten = k.kasse ? "Kosten übernimmt die Krankenkasse" : euro(k.preis);
+          const partner = k.partnerPreis ? ` · Begleitperson ${euro(k.partnerPreis)}` : "";
+          const plaetze = k.freiePlaetze > 0 ? `${k.freiePlaetze} ${k.freiePlaetze === 1 ? "Platz" : "Plätze"} frei` : "ausgebucht – Warteliste";
+          const link = el("a", "knopf-primaer mt-5 w-full", k.freiePlaetze > 0 ? "Anmelden" : "Auf die Warteliste");
+          link.setAttribute("href", `${app}/anmeldung?kurs=${encodeURIComponent(k.id)}`);
+          liste.append(
+            el(
+              "li",
+              "karte flex flex-col",
+              el("p", "etikett", k.art),
+              el("h3", "mt-2 text-2xl", k.titel),
+              el("p", "mt-3 text-[0.95rem]", erster ? `ab ${datum(erster.datum)}, ${erster.von}–${erster.bis} Uhr` : "Termine folgen"),
+              el("p", "text-sm text-salbei-600", `${k.termine.length} ${k.termine.length === 1 ? "Termin" : "Termine"}${k.ort ? ` · ${k.ort}` : ""}`),
+              el("p", "mt-2 text-sm", kosten + partner),
+              el("p", `mt-3 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold ${k.freiePlaetze > 0 ? "bg-salbei-100 text-salbei-800" : "bg-mohn-100 text-mohn-700"}`, plaetze),
+              el("div", "flex-1"),
+              link,
+            ),
+          );
+        }
+        hinweis.hidden = true;
+        liste.hidden = false;
+        box.querySelector<HTMLElement>("[data-kurs-alle]")?.removeAttribute("hidden");
+      })
+      .catch(() => {
+        meldung.textContent = "Die Kurstermine konnten gerade nicht geladen werden.";
+        const a = el("a", "", "Zur Online-Kursanmeldung ›");
+        a.setAttribute("href", `${app}/anmeldung`);
+        hinweis.append(el("span", "mt-2 block", a));
+      });
+  }
+</script>

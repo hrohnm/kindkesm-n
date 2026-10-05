@@ -1,0 +1,50 @@
+---
+import { Image } from "astro:assets";
+import KursListe from "../komponenten/KursListe.astro";
+import Seite from "../layouts/Seite.astro";
+import { KURSE } from "../inhalte/praxis";
+---
+
+<Seite titel="Kurse" beschreibung="Geburtsvorbereitung am Wochenende, Babymassage, Krabbelkiste und Schwangerschaftsyoga in der Hebammenpraxis Kindkesmöön in Bad Doberan – mit Online-Anmeldung.">
+  <section class="bg-salbei-100">
+    <div class="rahmen py-12 sm:py-16">
+      <p class="etikett">In unserem Kursraum</p>
+      <h1 class="mt-3">Kurse</h1>
+      <p class="mt-5 max-w-3xl text-lg">Jeder Kurs soll euch wichtige Informationen geben sowie Tipps und Tricks für die Schwangerschaft, das Wochenbett und das erste Lebensjahr mit eurem Baby.</p>
+    </div>
+  </section>
+
+  <section class="abschnitt" id="termine">
+    <div class="rahmen">
+      <h2>Aktuelle Termine &amp; freie Plätze</h2>
+      <p class="mt-3 text-salbei-700">Direkt aus unserer Kursplanung – die Anmeldung dauert zwei Minuten.</p>
+      <div class="mt-8"><KursListe /></div>
+    </div>
+  </section>
+
+  <section class="abschnitt bg-white">
+    <div class="rahmen">
+      <h2>Unsere Kurse</h2>
+      <ul class="mt-10 grid gap-8 md:grid-cols-2">
+        {KURSE.map((k) => (
+          <li id={k.id} class="karte scroll-mt-24 overflow-hidden p-0">
+            <Image src={k.bild} alt={k.bildAlt} widths={[500, 900]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[16/9] w-full object-cover" />
+            <div class="p-6">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-3xl">{k.titel}</h3>
+                {k.pausiert && <span class="rounded-full bg-mohn-100 px-3 py-1 text-sm font-semibold text-mohn-700">aktuell pausiert</span>}
+              </div>
+              <p class="font-titel text-xl text-mohn-700">{k.untertitel}</p>
+              <p class="mt-4">{k.text}</p>
+              <ul class="mt-4 space-y-1 text-[0.95rem]">
+                {k.details.map((d) => <li class="flex gap-2"><span class="text-salbei-500" aria-hidden="true">✓</span>{d}</li>)}
+              </ul>
+              {k.extern && <a href={k.extern.href} rel="noopener" class="knopf-sekundaer mt-5">{k.extern.text}</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-8 text-salbei-700">Außerdem bieten wir <strong>Rückbildungskurse</strong> an – die Termine findet ihr oben, sobald ein neuer Kurs startet. Fragen? <a href="/kontakt">Meldet euch gern.</a></p>
+    </div>
+  </section>
+</Seite>

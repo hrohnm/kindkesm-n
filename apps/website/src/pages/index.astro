@@ -1,0 +1,162 @@
+---
+import { Image } from "astro:assets";
+import hero from "../assets/bilder/hero-schwangerschaft.jpg";
+import duene from "../assets/bilder/ostsee-duene.jpg";
+import KursListe from "../komponenten/KursListe.astro";
+import Stimmen from "../komponenten/Stimmen.astro";
+import Seite from "../layouts/Seite.astro";
+import { GEBIETE, LEISTUNGEN, NAMENSERKLAERUNG, PRAXIS, TEAM, ZEITSTRAHL } from "../inhalte/praxis";
+---
+
+<Seite beschreibung="Hebammenpraxis Kindkesmöön in Bad Doberan: Schwangerschaftsvorsorge, Wochenbettbetreuung, Stillberatung und Kurse in Bad Doberan, Kröpelin, Rostock und Umgebung." bild={hero.src}>
+  <!-- Bühne -->
+  <section class="relative overflow-hidden bg-salbei-100">
+    <div class="rahmen grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20">
+      <div>
+        <p class="etikett">Hebammenpraxis in Bad Doberan</p>
+        <h1 class="mt-4 text-5xl sm:text-6xl">Kindkesmöön</h1>
+        <p class="mt-3 font-titel text-2xl text-mohn-700 sm:text-3xl">{PRAXIS.motto}</p>
+        <p class="mt-6 max-w-xl text-lg">
+          Wir begleiten dich und deine Familie durch Schwangerschaft, Geburtsvorbereitung, Wochenbett und das erste Jahr mit eurem Baby – bei euch zu Hause und in unserer Praxis in der Neuen Reihe.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/kontakt#anfrage" class="knopf-primaer">Betreuung anfragen</a>
+          <a href="/kurse" class="knopf-sekundaer">Kurse &amp; Termine</a>
+        </div>
+        <p class="mt-6 flex items-start gap-2 text-sm text-salbei-700">
+          <svg class="mt-0.5 size-5 shrink-0 text-mohn-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+          Meldet euch früh – am besten bis zur 12. Schwangerschaftswoche. Hebammen sind gefragt.
+        </p>
+      </div>
+      <div class="relative">
+        <Image src={hero} alt="Schwangere Frau hält ihren Babybauch" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2.5rem] object-cover shadow-xl" loading="eager" fetchpriority="high" />
+        <div class="absolute -bottom-6 -left-4 hidden rounded-3xl bg-white px-5 py-4 shadow-lg sm:block">
+          <p class="text-sm text-salbei-600">Unser Betreuungsgebiet</p>
+          <p class="font-titel text-xl">Bad Doberan &amp; Landkreis Rostock</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leistungen -->
+  <section class="abschnitt">
+    <div class="rahmen">
+      <p class="etikett">Was wir für euch tun</p>
+      <h2 class="mt-3 max-w-2xl">Hebammenhilfe von der Schwangerschaft bis zum ersten Geburtstag</h2>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {LEISTUNGEN.map((l) => (
+          <li class="karte group flex flex-col p-0 overflow-hidden">
+            <Image src={l.bild} alt="" widths={[400, 700]} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" class="aspect-[3/2] w-full object-cover transition group-hover:scale-[1.02]" />
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-xl">{l.titel}</h3>
+              <p class="mt-2 flex-1 text-[0.95rem] text-salbei-700">{l.kurz}</p>
+              <a href={`/leistungen#${l.id}`} class="mt-4 font-semibold">Mehr erfahren<span class="sr-only"> zu {l.titel}</span> ›</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Zeitstrahl -->
+  <section class="abschnitt bg-white">
+    <div class="rahmen">
+      <p class="etikett">Wann brauche ich was?</p>
+      <h2 class="mt-3">Euer Weg mit uns</h2>
+      <ol class="mt-10 grid gap-6 md:grid-cols-5">
+        {ZEITSTRAHL.map((z, i) => (
+          <li class="relative">
+            <div class="flex items-center gap-3 md:flex-col md:items-start">
+              <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-mohn-500 font-titel text-xl text-white">{i + 1}</span>
+              {i < ZEITSTRAHL.length - 1 && <span class="hidden h-0.5 w-full bg-mohn-200 md:absolute md:top-5.5 md:left-12 md:block md:w-[calc(100%-2.5rem)]" aria-hidden="true" />}
+              <div class="md:mt-4">
+                <h3 class="text-xl">{z.phase}</h3>
+                <p class="text-sm font-semibold text-salbei-600">{z.wann}</p>
+              </div>
+            </div>
+            <p class="mt-2 text-[0.95rem] md:mt-3">{z.text}</p>
+            <a href={z.ziel} class="mt-2 inline-block text-sm font-semibold">Mehr ›<span class="sr-only"> zu {z.phase}</span></a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Name -->
+  <section class="abschnitt">
+    <div class="rahmen grid items-center gap-10 lg:grid-cols-[1fr_1.4fr]">
+      <img src="/logo.png" alt="Logo der Hebammenpraxis Kindkesmöön: Schwangere mit Mohnblume" width="320" height="320" class="mx-auto w-56 sm:w-72" loading="lazy" />
+      <div>
+        <p class="etikett">Was bedeutet Kindkesmöön?</p>
+        <h2 class="mt-3">Die „Tante, die die Babys bringt“</h2>
+        <div class="fliesstext mt-6 text-lg">
+          {NAMENSERKLAERUNG.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="abschnitt bg-salbei-100">
+    <div class="rahmen">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="etikett">Die Hebammen</p>
+          <h2 class="mt-3">Drei Hebammen, ein Team</h2>
+        </div>
+        <a href="/hebammen" class="knopf-sekundaer">Lernt uns kennen</a>
+      </div>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-3">
+        {TEAM.map((h) => (
+          <li class="karte flex items-center gap-4">
+            <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-salbei-200 font-titel text-2xl text-salbei-800" aria-hidden="true">{h.kuerzel}</span>
+            <div>
+              <p class="font-titel text-2xl">{h.name}</p>
+              <p class="text-sm text-salbei-600">Hebamme{h.hinweis ? ` · ${h.hinweis}` : ""}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Kurse -->
+  <section class="abschnitt">
+    <div class="rahmen">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="etikett">Kurse in unserer Praxis</p>
+          <h2 class="mt-3">Nächste Termine</h2>
+        </div>
+        <a href="/kurse" class="knopf-sekundaer">Alle Kurse</a>
+      </div>
+      <div class="mt-8"><KursListe max={3} /></div>
+    </div>
+  </section>
+
+  <!-- Betreuungsgebiet -->
+  <section class="abschnitt bg-white">
+    <div class="rahmen grid gap-10 lg:grid-cols-2">
+      <Image src={duene} alt="Weg durch die Dünen an der Ostsee" widths={[500, 900]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+      <div>
+        <p class="etikett">Betreuungsgebiet</p>
+        <h2 class="mt-3">Zwischen Ostsee und Rostock</h2>
+        <p class="mt-4">Wir kommen zu euch nach Hause in Bad Doberan und Umgebung:</p>
+        <ul class="mt-4 flex flex-wrap gap-2" data-gebiete>
+          {GEBIETE.map((g) => <li class="rounded-full bg-salbei-100 px-3 py-1 text-sm">{g}</li>)}
+          <li class="rounded-full px-3 py-1 text-sm italic">&amp; Umgebung</li>
+        </ul>
+        <p class="mt-6">Du bist unsicher, ob wir in deiner Gegend betreuen? <a href="/kontakt#anfrage">Frag uns einfach.</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stimmen -->
+  <section class="abschnitt">
+    <div class="rahmen">
+      <p class="etikett">Das sagen Familien</p>
+      <h2 class="mt-3">Stimmen</h2>
+      <div class="mt-8"><Stimmen /></div>
+    </div>
+  </section>
+</Seite>

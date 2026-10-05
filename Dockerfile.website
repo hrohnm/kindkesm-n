@@ -1,0 +1,24 @@
+# Öffentliche Website: statisch gebaut (Astro) und von einem schlanken Caddy ausgeliefert.
+# Keine Datenbank, keine Geheimnisse – Kurse lädt der Browser über die öffentliche Schnittstelle der App.
+ARG NODE_IMAGE=node:22-alpine
+
+FROM ${NODE_IMAGE} AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY packages/shared/package.json packages/shared/
+COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
+COPY apps/website/package.json apps/website/
+RUN npm ci --no-audit --no-fund --workspace @kindkesmoeoen/website
+COPY tsconfig.base.json ./
+COPY apps/website apps/website
+# Adresse der Website (Sitemap, kanonische Links) und der Praxis-App (Kurse, Anmeldung)
+ARG SITE_URL=https://www.hebammen-landkreisrostock.de
+ARG PUBLIC_APP_URL=
+ENV SITE_URL=${SITE_URL} PUBLIC_APP_URL=${PUBLIC_APP_URL} ASTRO_TELEMETRY_DISABLED=1
+RUN npm run build --workspace @kindkesmoeoen/website
+
+FROM caddy:2-alpine
+COPY deploy/website.Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /app/apps/website/dist /srv
+EXPOSE 8080

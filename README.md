@@ -26,7 +26,7 @@ Praxis-App für die Hebammenpraxis Kindkesmöön (Bad Doberan): Tablet-optimiert
 - [Konzept & Recherche](docs/KONZEPT.md)
 - [Betrieb auf dem Hostinger-VPS](docs/BETRIEB.md)
 - [Entwicklung](docs/ENTWICKLUNG.md)
-- [Website-Neubau: Recherche der bisherigen Website und Platzhalterbilder](docs/website/RECHERCHE.md)
+- [Website der Praxis](apps/website/README.md) · [Recherche der bisherigen Website](docs/website/RECHERCHE.md)
 - [User-Walkthroughs (Testdrehbuch)](docs/WALKTHROUGHS.md) · [Protokoll des letzten Durchlaufs](docs/walkthrough-protokoll/README.md)
 - [Regelwerk aus dem Hebammenhilfevertrag](regelwerk/README.md)
 - [Beispielkonfiguration](konfiguration/einstellungen-beispiel.json) · [Selbstzahler-Preisliste (Dummydaten)](konfiguration/selbstzahler-preisliste.json)

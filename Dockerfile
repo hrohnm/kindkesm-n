@@ -7,6 +7,7 @@ COPY package.json package-lock.json ./
 COPY packages/shared/package.json packages/shared/
 COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
+COPY apps/website/package.json apps/website/
 RUN npm ci --no-audit --no-fund
 COPY tsconfig.base.json ./
 COPY packages packages
