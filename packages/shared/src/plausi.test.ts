@@ -26,6 +26,26 @@ describe("Hilfsfunktionen", () => {
   });
 });
 
+describe("Zeiten", () => {
+  const besuch = (von: string, bis: string) => besuchAbrechnen({ datum: "2026-10-04", von, bis, typ: "wochenbett", art: 1, material: [] }, kind("2026-09-29", [fb("2026-09-30", "301")]), rw);
+  it("Besuch über Mitternacht wird abgerechnet", () => {
+    const e = besuch("23:30", "00:20");
+    expect(e.einheiten).toBe(10);
+    expect(e.hinweise.some((h) => h.stufe === "fehler")).toBe(false);
+  });
+  it("Ende vor Beginn (mehr als 12 Stunden über Mitternacht) ist ein Fehler", () => {
+    const e = besuch("11:00", "10:00");
+    expect(e.einheiten).toBe(0);
+    expect(e.zeilen).toHaveLength(0);
+    expect(e.hinweise).toContainEqual(expect.objectContaining({ stufe: "fehler", text: expect.stringContaining("Ende liegt vor dem Beginn") }));
+  });
+  it("gleicher Beginn und gleiches Ende sind keine 24 Stunden", () => {
+    const e = besuch("11:00", "11:00");
+    expect(e.einheiten).toBe(0);
+    expect(e.hinweise).toContainEqual(expect.objectContaining({ stufe: "fehler", text: expect.stringContaining("mindestens 5 Minuten") }));
+  });
+});
+
 describe("Wochenbett", () => {
   it("früher Hausbesuch: 301 mit 5-Minuten-Einheiten und Materialpauschale lang", () => {
     // Do 01.10.2026, Geburt 29.09. -> 3. Lebenstag

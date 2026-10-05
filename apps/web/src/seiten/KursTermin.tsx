@@ -21,14 +21,17 @@ type Daten = {
 export function KursTermin() {
   const { terminId } = useParams();
   const d = useDaten<Daten>(`/api/kurstermine/${terminId}`);
+  // Meldung hier, damit sie das Neuaufbauen des Formulars nach dem Abschließen übersteht
+  const [meldung, setMeldung] = useState<Meldungstext>();
   if (!d.daten) return d.fehler ? <Meldung art="fehler">{d.fehler}</Meldung> : <Laden />;
-  return <AnwesenheitFormular key={String(d.daten.termin.abgeschlossen) + d.daten.teilnehmerinnen.map((t) => t.besuchId).join()} d={d.daten} neuLaden={d.laden} />;
+  return <AnwesenheitFormular key={String(d.daten.termin.abgeschlossen) + d.daten.teilnehmerinnen.map((t) => t.besuchId).join()} d={d.daten} neuLaden={d.laden} meldung={meldung} setMeldung={setMeldung} />;
 }
 
-function AnwesenheitFormular({ d, neuLaden }: { d: Daten; neuLaden: () => Promise<void> }) {
+type Meldungstext = { art: "ok" | "fehler" | "hinweis"; text: string } | undefined;
+
+function AnwesenheitFormular({ d, neuLaden, meldung, setMeldung }: { d: Daten; neuLaden: () => Promise<void>; meldung: Meldungstext; setMeldung: (m: Meldungstext) => void }) {
   const [liste, setListe] = useState(() => d.teilnehmerinnen.map((t) => ({ id: t.teilnahme.id, anwesend: t.anwesend, unterschrift: t.unterschrift })));
   const [tablet, setTablet] = useState<string | null>(null);
-  const [meldung, setMeldung] = useState<{ art: "ok" | "fehler" | "hinweis"; text: string }>();
   const [speichert, setSpeichert] = useState(false);
   const t = d.termin;
   const setze = (id: string, teil: Partial<(typeof liste)[number]>) => setListe((alt) => alt.map((x) => (x.id === id ? { ...x, ...teil } : x)));

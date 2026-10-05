@@ -4,6 +4,8 @@ Alle Abläufe, die mit dem aktuellen Entwicklungsstand möglich sind – als Tes
 
 **Legende:** 🤖 = durch einen automatischen Browser-Test (`apps/web/e2e/`) abgedeckt · 📱 = auch auf dem Handy prüfen · ⚠️ = Fehler- bzw. Grenzfall
 
+Alle Walkthroughs sind zusätzlich als automatischer Durchlauf in `apps/web/walkthrough/` umgesetzt (`npm run walkthrough` in `apps/web`). Ergebnis, gefundene Fehler und Screenshots: [Walkthrough-Protokoll](walkthrough-protokoll/README.md).
+
 ## 0. Vorbereitung
 
 - Demo-Daten frisch einspielen: `npm run db:reset:demo`, dann `npm run dev:neustart` (im Codespace) und im Browser einmal hart neu laden.
@@ -23,14 +25,14 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **A1 Anmelden** 🤖📱
 1. App öffnen → Anmeldeseite. In der Test-Umgebung einen Demo-Knopf antippen (füllt E-Mail und Passwort) oder Zugangsdaten eintippen → „Anmelden“.
-- Erwartet: Startseite „Guten Morgen/Tag/Abend, Vorname!“ mit Datum; Navigation links (Tablet) bzw. unten (Handy).
+- Erwartet: Startseite „Moin, Vorname!“ mit Datum; Navigation links (Tablet) bzw. unten (Handy).
 
 **A2 Falsches Passwort** ⚠️
 1. Falsches Passwort eingeben.
 - Erwartet: Fehlermeldung. Nach 10 Fehlversuchen in 15 Minuten: Hinweis „Zu viele Versuche … einige Minuten warten“.
 
 **A3 Abmelden**
-1. Seitenleiste unten bzw. Einstellungen → „Abmelden“.
+1. Tablet: Seitenleiste unten → „Abmelden“. Handy: Einstellungen → ganz unten „Abmelden“.
 - Erwartet: Anmeldeseite; Gerätedaten (Offline-Speicher) gelöscht. Gibt es noch nicht übertragene Änderungen, erscheint vorher eine Warnung (siehe L5).
 
 **A4 Passwort ändern**
@@ -39,7 +41,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **A5 Mein Profil**
 1. Einstellungen → Mein Profil: Name, Kürzel, Telefon, IK, ggf. „Babypause voraussichtlich bis“ → Speichern.
-- Erwartet: IK erscheint später auf Formularen und im Versand; ohne IK verweigert die Abrechnung den Versand (H2 ⚠️).
+- Erwartet: „Gespeichert.“ – bei geänderter IK stattdessen der Hinweis, die Änderung der SVI und dem Berufsverband zu melden. IK erscheint später auf Formularen und im Versand; ohne IK verweigert die Abrechnung den Versand (H2 ⚠️).
 
 **A6 Orte und Tourvorlagen** 📱
 1. Einstellungen → Orte & Touren → Ort anlegen (Bezeichnung, Art, Anschrift „Straße Nr., PLZ Ort“, optional Abholzeit).
@@ -109,7 +111,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **C9 Wohnung auf der Karte**
 1. Akte (unten) → „Aus Adresse ermitteln“ bzw. „Position korrigieren“ → auf die Haustür tippen.
-- Erwartet: Position gespeichert („von Hand gesetzt“), Wegegeld neu berechnet. ⚠️ Anschrift nicht gefunden → Meldung, bisherige Position bleibt.
+- Erwartet: Position gespeichert („von Hand gesetzt“), Wegegeld neu berechnet. ⚠️ „Aus Adresse ermitteln“ findet die Anschrift nicht → Meldung, bisherige Position bleibt. Wurde die Anschrift in den Stammdaten auf eine unauffindbare Adresse geändert, wird die alte Position verworfen (sonst falsches Wegegeld) – dann auf der Karte setzen.
 
 **C10 Vertretung**
 1. Als Johanna bei Lena Krüger Vertretung = Marielena eintragen (C4).
@@ -144,11 +146,11 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 - Erwartet: Materialpauschale in der Abrechnung; kein Wegegeld.
 
 **D4 Entwurf, Weiterdokumentieren, Löschen**
-1. Besuch nur als „Entwurf“ speichern → Startseite „Offene Dokumentationen“ → weiter dokumentieren → abschließen; einen anderen Entwurf „Löschen“.
+1. Besuch nur als „Entwurf“ speichern (zurück in Akte bzw. Tour) → Startseite „Offene Dokumentationen“ → weiter dokumentieren → abschließen; einen anderen Entwurf „Löschen“.
 - Erwartet: Entwürfe sind nicht abrechenbar; Löschen nur bei Entwürfen.
 
 **D5 Prüfhinweise der Abrechnung** ⚠️
-1. Fälle ausprobieren: Ende vor Beginn, sehr lange Dauer, Kontingent ausgeschöpft, Wochenbett-Leistung vor der Geburt, Abschließen ohne Unterschrift.
+1. Fälle ausprobieren: Ende vor Beginn (über Mitternacht ist bis 12 Stunden erlaubt, z. B. 23:30–00:20), Beginn = Ende, sehr lange Dauer, Kontingent ausgeschöpft, Wochenbett-Leistung vor der Geburt, Abschließen ohne Unterschrift.
 - Erwartet: rote Fehler bzw. gelbe Hinweise im Kopf; „Abschließen“ wird bei Fehlern bzw. fehlender Unterschrift abgelehnt.
 
 **D6 Kaiserschnittnarbe und Mehrfachauswahl** 🤖
@@ -210,14 +212,14 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **F4 Termine ändern** ⚠️
 1. Reihenfolge mit ↑/↓, Termin bearbeiten, auf einen anderen Tag verschieben, absagen (mit Besuch) bzw. löschen (ohne Besuch).
-- Erwartet: Tour als „Entwurf“, „Ab jetzt neu berechnen“ möglich.
+- Erwartet: Tour als „Entwurf“; heute und sobald ein Besuch erledigt ist, steht „Ab jetzt neu berechnen“ bereit. Abgesagte Termine stehen unter „Abgesagt (n)“ und lassen sich wieder einplanen.
 
 **F5 Tour abschließen und Fahrtenbuch** 🤖
 1. „Tour bestätigen“ → „Ins Fahrtenbuch“ → „Fahrtenbuch öffnen“.
 - Erwartet: Fahrtenbuch-Eintrag des Tages mit Hausbesuchen und km.
 
 **F6 Wegegeld prüfen** ⚠️
-1. Tour unten: Wegegeld-Tabelle (50100/50200, km je Familie). Familie über 25 km → Begründung eintragen; „Gesamtstrecke von Hand (km)“ testen.
+1. Tour unten: Wegegeld-Tabelle (50100/50200, km je Familie; erscheint, sobald an dem Tag ein Hausbesuch abgeschlossen ist). Familie über 25 km → Begründung eintragen; „Gesamtstrecke von Hand (km)“ testen.
 - Erwartet: Wegegeld-Leistungen aktualisiert; gesperrt, sobald der Tag versendet ist.
 
 ---
@@ -265,7 +267,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 **I2 Teilnehmerinnen verwalten**
 1. „+ Teilnehmerin“ aus der Akte oder ohne Akte; bei vollem Kurs automatisch Warteliste.
 2. „Bestätigen“, „Nachrücken“, „Stornieren“, „bezahlt“ (Selbstzahler), „Akte zuordnen …“.
-- Erwartet: ⚠️ Nachrücken bei vollem Kurs wird abgelehnt; Kassenkurse zeigen „keine Akte“ in Rot.
+- Erwartet: Bei vollem Kurs Hinweis „auf die Warteliste gesetzt“, Eintrag sofort unter „Warteliste“. ⚠️ Nachrücken bei vollem Kurs wird abgelehnt; Kassenkurse zeigen „keine Akte“ in Rot.
 
 **I3 Online-Anmeldung** 🤖📱
 1. Ohne Anmeldung `/anmeldung` öffnen (z. B. privates Fenster) → Kurs wählen → Formular mit Einwilligung → „Verbindlich anmelden“ bzw. „Auf die Warteliste“.
@@ -274,7 +276,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **I4 Anwesenheit und Kassenabrechnung** 🤖
 1. Kurs → Termin → „Anwesenheit“ → Teilnehmerinnen abhaken, je Versicherte auf dem Tablet oder auf Papier unterschreiben → „Termin abschließen“.
-- Erwartet: Je Versicherte eine Kurseinheit (Minuten, Betrag, Kontingent 14 h / 10 h, Selbstlern-Anteil); erscheint in der Akte und im nächsten Versand auf Formular 3.4. ⚠️ Ohne Akte bzw. Rückbildung nach dem 9. Monat → Hinweis, keine Abrechnung.
+- Erwartet: Rückmeldung nach dem Abschließen bleibt stehen; je Versicherte eine Kurseinheit (Minuten, Betrag, Kontingent 14 h / 10 h, Selbstlern-Anteil); erscheint in der Akte und im nächsten Versand auf Formular 3.4. ⚠️ Ohne Akte bzw. Rückbildung nach dem 9. Monat → Hinweis, keine Abrechnung.
 
 **I5 Selbstzahlerkurs**
 1. „Babymassage dienstags“: Teilnehmerinnen, „bezahlt“ abhaken, Anwesenheit.

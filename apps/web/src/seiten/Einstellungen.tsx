@@ -1,5 +1,7 @@
 import { NavLink, Outlet } from "react-router";
 import { Seitenkopf } from "../komponenten/Formular";
+import { IconAbmelden } from "../komponenten/Icons";
+import { useAuth } from "../lib/auth";
 
 const UNTER = [
   { to: "/einstellungen", label: "Mein Profil", ende: true },
@@ -17,6 +19,7 @@ const UNTER = [
 ];
 
 export function Einstellungen() {
+  const { ich, abmelden } = useAuth();
   return (
     <>
       <Seitenkopf titel="Einstellungen" />
@@ -33,6 +36,16 @@ export function Einstellungen() {
         ))}
       </div>
       <Outlet />
+      {/* Auf dem Handy fehlt die Seitenleiste mit dem Abmelden-Knopf */}
+      <div className="mt-8 flex items-center gap-3 border-t border-sand-200 pt-4 md:hidden dark:border-salbei-700">
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-medium">{ich?.name}</div>
+          <div className="truncate text-sm text-slate-500">{ich?.email}</div>
+        </div>
+        <button type="button" onClick={abmelden} className="knopf-sekundaer shrink-0">
+          <IconAbmelden className="size-5" /> Abmelden
+        </button>
+      </div>
     </>
   );
 }

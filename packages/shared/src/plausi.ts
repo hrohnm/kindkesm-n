@@ -157,6 +157,8 @@ const tagesNummer = (iso: string) => Math.round(Date.UTC(+iso.slice(0, 4), +iso.
 const isoAusNummer = (n: number) => new Date(n * MS_TAG).toISOString().slice(0, 10);
 export const tageDiff = (von: string, bis: string) => tagesNummer(bis) - tagesNummer(von);
 const minuten = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
+/** Längste zulässige Dauer eines Besuchs über Mitternacht (Minuten) */
+const UEBER_MITTERNACHT_MAX = 12 * 60;
 
 /** Lebenstag des Kindes (Tag der Geburt = 1. Lebenstag, § 5 Anlage 1.1). */
 export const lebenstag = (geburtsdatum: string, datum: string) => tageDiff(geburtsdatum, datum) + 1;
@@ -257,7 +259,12 @@ export function besuchAbrechnen(e: BesuchEingabe, k: Kontext, rw: RegelwerkDaten
   // Dauer
   const start = minuten(e.von);
   let ende = minuten(e.bis);
-  if (ende <= start) ende += 1440;
+  if (ende < start) ende += 1440;
+  // Über Mitternacht ist erlaubt (z. B. 23:30–00:20); mehr als 12 Stunden ist fast sicher ein Tippfehler bei Beginn/Ende
+  if (ende - start > UEBER_MITTERNACHT_MAX) {
+    hinweise.push({ stufe: "fehler", text: `Das Ende liegt vor dem Beginn (${e.von}–${e.bis}). Bitte die Zeiten prüfen – über Mitternacht höchstens ${UEBER_MITTERNACHT_MAX / 60} Stunden.` });
+    return leer;
+  }
   const einheiten = Math.floor((ende - start) / 5);
   leer.einheiten = einheiten;
   if (!stamm) return leer;
