@@ -30,6 +30,8 @@ type Termin = typeof kurstermin.$inferSelect;
 type Teilnahme = typeof kursTeilnahme.$inferSelect;
 
 const AKTIV = ["angemeldet", "bestaetigt"] as const;
+/** Kurse nach der Geburt: statt des errechneten Termins wird das Geburtsdatum des Kindes erfragt */
+const STICHTAG_GEBURT: string[] = ["rueckbildung", "babymassage", "eltern_kind"];
 const istKasse = (k: Kurs) => k.abrechnung === "kasse" && (KASSEN_KURSE as string[]).includes(k.art);
 
 export async function kursRouten(app: FastifyInstance, db: Datenbank) {
@@ -418,7 +420,7 @@ export async function kursRouten(app: FastifyInstance, db: Datenbank) {
       if (termine.length && termine.at(-1)!.datum < heute) continue;
       const belegt = await aktiveAnzahl(k.id);
       // Nur, was auf eine Kursseite gehört: keine Namen von Teilnehmerinnen oder Hebammen-Konten
-      ergebnis.push({ id: k.id, titel: k.titel, art: KURS_ARTEN[k.art], beschreibung: k.beschreibung, ort: k.ort, preis: k.abrechnung === "selbstzahler" ? k.preis : null, partnerPreis: k.partnerPreis, kasse: istKasse(k), termine, freiePlaetze: Math.max(0, k.maxTeilnehmer - belegt) });
+      ergebnis.push({ id: k.id, titel: k.titel, art: KURS_ARTEN[k.art], artId: k.art, stichtag: STICHTAG_GEBURT.includes(k.art) ? "geburt" : "et", beschreibung: k.beschreibung, ort: k.ort, preis: k.abrechnung === "selbstzahler" ? k.preis : null, partnerPreis: k.partnerPreis, kasse: istKasse(k), termine, freiePlaetze: Math.max(0, k.maxTeilnehmer - belegt) });
     }
     return ergebnis.sort((a, b) => (a.termine[0]?.datum ?? "").localeCompare(b.termine[0]?.datum ?? ""));
   });
@@ -432,6 +434,12 @@ export async function kursRouten(app: FastifyInstance, db: Datenbank) {
       if (!/^[0-9a-f-]{36}$/i.test(request.params.id)) return reply.code(404).send({ fehler: "Kurs nicht gefunden" });
       const [k] = await db.select().from(kurs).where(and(eq(kurs.id, request.params.id), eq(kurs.anmeldungOffen, true)));
       if (!k || !["geplant", "laufend"].includes(k.status)) return reply.code(404).send({ fehler: "Für diesen Kurs ist keine Anmeldung möglich." });
+      // Doppelte Anmeldung (z. B. zweimal abgeschickt): nichts neu anlegen, nur den Stand melden
+      const [schon] = await db
+        .select({ status: kursTeilnahme.status })
+        .from(kursTeilnahme)
+        .where(and(eq(kursTeilnahme.kursId, k.id), sql`lower(${kursTeilnahme.email}) = ${daten.email.toLowerCase()}`, inArray(kursTeilnahme.status, [...AKTIV, "warteliste"])));
+      if (schon) return { ok: true, warteliste: schon.status === "warteliste", bereits: true };
       const voll = (await aktiveAnzahl(k.id)) >= k.maxTeilnehmer;
       await db.insert(kursTeilnahme).values({
         kursId: k.id,

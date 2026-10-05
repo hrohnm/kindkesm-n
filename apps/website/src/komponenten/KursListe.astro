@@ -1,23 +1,78 @@
 ---
 /**
- * Kurstermine mit freien Plätzen live aus der Praxis-App (öffentliche Schnittstelle ohne Personendaten).
+ * Kurstermine mit freien Plätzen live aus der Praxis-App (öffentliche Schnittstelle ohne Personendaten)
+ * und Anmeldung direkt auf der Website: Das Formular schickt die Anmeldung an die App (Teilnahme „angemeldet“
+ * bzw. Warteliste). Direktlink auf einen Kurs: /kurse?kurs=<id> öffnet gleich das Formular.
  * Ohne Verbindung oder ohne PUBLIC_APP_URL erscheint ein Hinweis mit Kontaktweg.
  */
 interface Props {
   /** höchstens so viele Kurse anzeigen */
   max?: number;
+  /** Filter nach Kursart anbieten (bei mehreren Arten) */
+  filter?: boolean;
 }
-const { max } = Astro.props;
+const { max, filter = false } = Astro.props;
 const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const feld = "mt-1 block min-h-12 w-full rounded-2xl border border-salbei-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none";
+const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 ---
 
-<div data-kursliste data-app={app} data-max={max ?? ""} aria-live="polite">
-  <p class="karte text-salbei-700" data-kurs-hinweis>
-    <span data-kurs-text>{app ? "Aktuelle Termine werden geladen …" : "Die aktuellen Kurstermine erfahrt ihr bei uns."}</span>
-    <span class="mt-2 block text-sm">Fragen zu Kursen? <a href="/kontakt">Schreibt oder ruft uns an.</a></span>
-  </p>
+<div data-kursliste data-app={app} data-max={max ?? ""} data-filter={filter ? "ja" : ""}>
+  <div aria-live="polite">
+    <p class="karte text-salbei-700" data-kurs-hinweis>
+      <span data-kurs-text>{app ? "Aktuelle Termine werden geladen …" : "Die aktuellen Kurstermine erfahrt ihr bei uns."}</span>
+      <span class="mt-2 block text-sm">Fragen zu Kursen? <a href="/kontakt">Schreibt oder ruft uns an.</a></span>
+    </p>
+  </div>
+  <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Kurse filtern" data-kurs-filter hidden></div>
   <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-kurs-liste hidden></ul>
-  {app && <p class="mt-4 text-sm" data-kurs-alle hidden>Alle Kurse mit Anmeldung: <a href={`${app}/anmeldung`}>Online-Kursanmeldung ›</a></p>}
+  {max && <p class="mt-4 text-sm" data-kurs-alle hidden><a href="/kurse#termine">Alle Kurse &amp; Termine ›</a></p>}
+
+  {app && (
+    <dialog class="m-auto w-[min(42rem,calc(100%-2rem))] rounded-[2rem] bg-sand-50 p-0 text-salbei-900 shadow-2xl backdrop:bg-salbei-900/50" aria-labelledby="kurs-dialog-titel" data-kurs-dialog>
+      <div class="max-h-[90dvh] overflow-y-auto p-6 sm:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="etikett" data-k="art"></p>
+            <h2 class="mt-2 text-3xl" id="kurs-dialog-titel" data-k="titel"></h2>
+          </div>
+          <button type="button" class="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-2xl text-salbei-700 hover:bg-salbei-100" aria-label="Schließen" data-kurs-schliessen>×</button>
+        </div>
+        <p class="mt-3 text-[0.95rem]" data-k="zeitraum"></p>
+        <p class="text-sm text-salbei-600" data-k="kosten"></p>
+        <p class="mt-3 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold" data-k="plaetze"></p>
+
+        <form class="mt-6 space-y-5" novalidate data-kurs-formular>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class={`${etikett} sm:col-span-2`}>Vor- und Nachname<input name="name" required autocomplete="name" class={feld} /></label>
+            <label class={etikett}>E-Mail<input name="email" type="email" required autocomplete="email" class={feld} /></label>
+            <label class={etikett}>Telefon <span class="font-normal text-salbei-600">(optional)</span><input name="telefon" type="tel" autocomplete="tel" class={feld} /></label>
+            <label class={etikett}><span data-k="stichtag">Errechneter Termin</span> <span class="font-normal text-salbei-600">(optional)</span><input name="stichtag" type="date" class={feld} /></label>
+            <label class={etikett} data-nur="kasse">Krankenkasse<input name="krankenkasse" autocomplete="off" class={feld} /></label>
+          </div>
+          <label class="flex min-h-11 items-center gap-3 rounded-2xl bg-salbei-50 px-4" data-nur="partner"><input type="checkbox" name="partner" class="size-5 accent-salbei-600" /> <span data-k="partner">Mit Begleitperson</span></label>
+          <label class={etikett}>Nachricht an uns <span class="font-normal text-salbei-600">(optional)</span><textarea name="nachricht" rows="3" maxlength="1000" class={feld}></textarea></label>
+
+          <!-- Honigtopf gegen Spam: für Menschen unsichtbar -->
+          <div class="absolute -left-[9999px]" aria-hidden="true"><label>Website<input name="webseite" tabindex="-1" autocomplete="off" /></label></div>
+
+          <label class="flex items-start gap-3 text-[0.95rem]">
+            <input type="checkbox" name="einwilligung" required class="mt-1 size-5 shrink-0 accent-salbei-600" />
+            <span>Ich bin einverstanden, dass die Hebammenpraxis Kindkesmöön meine Angaben zur Organisation des Kurses speichert und mich dazu kontaktiert. Mehr in der <a href="/datenschutz">Datenschutzerklärung</a>.</span>
+          </label>
+
+          <p class="hidden rounded-2xl bg-mohn-100 p-4 text-mohn-700" role="alert" data-kurs-fehler></p>
+          <button type="submit" class="knopf-primaer w-full sm:w-auto" data-k="senden">Verbindlich anmelden</button>
+        </form>
+
+        <div class="hidden py-6 text-center" role="status" tabindex="-1" data-kurs-danke>
+          <p class="font-titel text-4xl text-salbei-800">Vielen Dank!</p>
+          <p class="mx-auto mt-3 max-w-md" data-k="danke"></p>
+          <button type="button" class="knopf-sekundaer mt-6" data-kurs-schliessen>Schließen</button>
+        </div>
+      </div>
+    </dialog>
+  )}
 </div>
 
 <script>
@@ -25,6 +80,8 @@ const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
     id: string;
     titel: string;
     art: string;
+    artId: string;
+    stichtag: "et" | "geburt";
     beschreibung: string | null;
     ort: string | null;
     preis: string | null;
@@ -34,12 +91,15 @@ const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
     freiePlaetze: number;
   };
   const euro = (v: string | null) => (v == null ? "" : Number(v).toLocaleString("de-DE", { style: "currency", currency: "EUR" }));
-  const datum = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
-  const text = (t: string) => document.createTextNode(t);
+  const datum = (iso: string, lang = true) => new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", lang ? { weekday: "short", day: "numeric", month: "long", year: "numeric" } : { weekday: "short", day: "numeric", month: "short" });
+  const termin = (t: Kurs["termine"][number], lang = true) => `${datum(t.datum, lang)}, ${t.format === 6 ? "Video zum Selbstlernen" : `${t.von}–${t.bis} Uhr${t.format === 3 ? " (online)" : ""}`}`;
+  const kosten = (k: Kurs) => (k.kasse ? "Kosten übernimmt die Krankenkasse" : euro(k.preis)) + (k.partnerPreis ? ` · Begleitperson ${euro(k.partnerPreis)}` : "");
+  const plaetze = (k: Kurs) => (k.freiePlaetze > 0 ? `${k.freiePlaetze} ${k.freiePlaetze === 1 ? "Platz" : "Plätze"} frei` : "ausgebucht – Warteliste");
+  const plaetzeKlasse = (k: Kurs) => (k.freiePlaetze > 0 ? "bg-salbei-100 text-salbei-800" : "bg-mohn-100 text-mohn-700");
   const el = <K extends keyof HTMLElementTagNameMap>(tag: K, klasse: string, ...kinder: Array<Node | string>) => {
     const e = document.createElement(tag);
     e.className = klasse;
-    for (const k of kinder) e.append(typeof k === "string" ? text(k) : k);
+    for (const k of kinder) e.append(typeof k === "string" ? document.createTextNode(k) : k);
     return e;
   };
 
@@ -50,44 +110,190 @@ const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
     const hinweis = box.querySelector<HTMLElement>("[data-kurs-hinweis]")!;
     const meldung = box.querySelector<HTMLElement>("[data-kurs-text]")!;
     const liste = box.querySelector<HTMLUListElement>("[data-kurs-liste]")!;
-    fetch(`${app}/api/oeffentlich/kurse`)
-      .then((r) => (r.ok ? (r.json() as Promise<Kurs[]>) : Promise.reject(new Error(String(r.status)))))
-      .then((kurse) => {
-        if (!kurse.length) {
-          meldung.textContent = "Gerade sind keine Kurse zur Online-Anmeldung freigeschaltet.";
+    const filterLeiste = box.querySelector<HTMLElement>("[data-kurs-filter]")!;
+    const dialog = box.querySelector<HTMLDialogElement>("[data-kurs-dialog]")!;
+    const form = dialog.querySelector<HTMLFormElement>("[data-kurs-formular]")!;
+    const fehler = dialog.querySelector<HTMLElement>("[data-kurs-fehler]")!;
+    const danke = dialog.querySelector<HTMLElement>("[data-kurs-danke]")!;
+    const k_ = (name: string) => dialog.querySelector<HTMLElement>(`[data-k="${name}"]`)!;
+    const knopf = k_("senden") as HTMLButtonElement;
+    let aktuell: Kurs | null = null;
+    let ausloeser: HTMLElement | null = null;
+
+    const zeigeFehler = (text: string) => {
+      fehler.textContent = text;
+      fehler.classList.remove("hidden");
+      fehler.scrollIntoView({ block: "center", behavior: "smooth" });
+    };
+
+    function oeffnen(k: Kurs, von?: HTMLElement) {
+      aktuell = k;
+      ausloeser = von ?? null;
+      form.reset();
+      form.classList.remove("hidden");
+      danke.classList.add("hidden");
+      fehler.classList.add("hidden");
+      k_("art").textContent = k.art;
+      k_("titel").textContent = k.titel;
+      const erster = k.termine[0];
+      const letzter = k.termine.at(-1);
+      k_("zeitraum").textContent = !erster ? "Termine folgen" : k.termine.length === 1 ? termin(erster) : `${k.termine.length} Termine vom ${datum(erster.datum)} bis ${datum(letzter!.datum)}${k.ort ? ` · ${k.ort}` : ""}`;
+      k_("kosten").textContent = kosten(k);
+      const p = k_("plaetze");
+      p.textContent = plaetze(k);
+      p.className = `mt-3 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold ${plaetzeKlasse(k)}`;
+      k_("stichtag").textContent = k.stichtag === "geburt" ? "Geburtsdatum des Kindes" : "Errechneter Termin";
+      dialog.querySelector<HTMLElement>('[data-nur="kasse"]')!.hidden = !k.kasse;
+      dialog.querySelector<HTMLElement>('[data-nur="partner"]')!.hidden = !k.partnerPreis;
+      k_("partner").textContent = `Mit Begleitperson (${euro(k.partnerPreis)})`;
+      knopf.textContent = k.freiePlaetze > 0 ? "Verbindlich anmelden" : "Auf die Warteliste setzen";
+      dialog.showModal();
+      form.querySelector<HTMLInputElement>("input[name=name]")!.focus();
+    }
+
+    function schliessen() {
+      dialog.close();
+    }
+    dialog.addEventListener("close", () => {
+      // Direktlink aus der Adresszeile entfernen, damit „Zurück“/Neuladen das Formular nicht erneut öffnet
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("kurs")) {
+        url.searchParams.delete("kurs");
+        history.replaceState(null, "", url);
+      }
+      ausloeser?.focus();
+    });
+    for (const b of dialog.querySelectorAll("[data-kurs-schliessen]")) b.addEventListener("click", schliessen);
+    // Klick auf den abgedunkelten Hintergrund schließt
+    dialog.addEventListener("click", (ev) => {
+      if (ev.target === dialog) schliessen();
+    });
+
+    form.addEventListener("input", () => fehler.classList.add("hidden"));
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      if (!aktuell) return;
+      fehler.classList.add("hidden");
+      const f = new FormData(form);
+      const text = (n: string) => String(f.get(n) ?? "").trim();
+      const daten = {
+        name: text("name"),
+        email: text("email"),
+        telefon: text("telefon") || null,
+        stichtag: text("stichtag") || null,
+        krankenkasse: aktuell.kasse ? text("krankenkasse") || null : null,
+        partner: Boolean(aktuell.partnerPreis) && f.get("partner") === "on",
+        nachricht: text("nachricht") || null,
+        einwilligung: f.get("einwilligung") === "on",
+        webseite: text("webseite") || undefined,
+      };
+      if (daten.name.length < 3) return zeigeFehler("Bitte Vor- und Nachnamen angeben.");
+      if (!/^\S+@\S+\.\S+$/.test(daten.email)) return zeigeFehler("Bitte eine gültige E-Mail-Adresse angeben – dorthin schicken wir die Bestätigung.");
+      if (!daten.einwilligung) return zeigeFehler("Bitte stimme der Verarbeitung deiner Angaben zu.");
+
+      knopf.disabled = true;
+      const vorher = knopf.textContent;
+      knopf.textContent = "Wird gesendet …";
+      try {
+        const r = await fetch(`${app}/api/oeffentlich/kurse/${encodeURIComponent(aktuell.id)}/anmeldung`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
+        const antwort = (await r.json().catch(() => ({}))) as { warteliste?: boolean; bereits?: boolean; fehler?: string; felder?: Record<string, string> };
+        if (r.ok) {
+          k_("danke").textContent = antwort.bereits
+            ? `Du bist für „${aktuell.titel}“ schon ${antwort.warteliste ? "auf der Warteliste" : "angemeldet"} – wir melden uns bei dir.`
+            : antwort.warteliste
+              ? `Der Kurs „${aktuell.titel}“ ist im Moment ausgebucht – du stehst auf der Warteliste. Wir melden uns, sobald ein Platz frei wird.`
+              : `Deine Anmeldung für „${aktuell.titel}“ ist bei uns eingegangen. Wir melden uns mit einer Bestätigung bei dir.`;
+          form.classList.add("hidden");
+          danke.classList.remove("hidden");
+          danke.focus();
+          if (!antwort.bereits && !antwort.warteliste) laden();
           return;
         }
-        for (const k of kurse.slice(0, max)) {
-          const erster = k.termine[0];
-          const kosten = k.kasse ? "Kosten übernimmt die Krankenkasse" : euro(k.preis);
-          const partner = k.partnerPreis ? ` · Begleitperson ${euro(k.partnerPreis)}` : "";
-          const plaetze = k.freiePlaetze > 0 ? `${k.freiePlaetze} ${k.freiePlaetze === 1 ? "Platz" : "Plätze"} frei` : "ausgebucht – Warteliste";
-          const link = el("a", "knopf-primaer mt-5 w-full", k.freiePlaetze > 0 ? "Anmelden" : "Auf die Warteliste");
-          link.setAttribute("href", `${app}/anmeldung?kurs=${encodeURIComponent(k.id)}`);
-          liste.append(
-            el(
-              "li",
-              "karte flex flex-col",
-              el("p", "etikett", k.art),
-              el("h3", "mt-2 text-2xl", k.titel),
-              el("p", "mt-3 text-[0.95rem]", erster ? `ab ${datum(erster.datum)}, ${erster.von}–${erster.bis} Uhr` : "Termine folgen"),
-              el("p", "text-sm text-salbei-600", `${k.termine.length} ${k.termine.length === 1 ? "Termin" : "Termine"}${k.ort ? ` · ${k.ort}` : ""}`),
-              el("p", "mt-2 text-sm", kosten + partner),
-              el("p", `mt-3 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold ${k.freiePlaetze > 0 ? "bg-salbei-100 text-salbei-800" : "bg-mohn-100 text-mohn-700"}`, plaetze),
-              el("div", "flex-1"),
-              link,
-            ),
-          );
-        }
-        hinweis.hidden = true;
-        liste.hidden = false;
-        box.querySelector<HTMLElement>("[data-kurs-alle]")?.removeAttribute("hidden");
-      })
-      .catch(() => {
-        meldung.textContent = "Die Kurstermine konnten gerade nicht geladen werden.";
-        const a = el("a", "", "Zur Online-Kursanmeldung ›");
-        a.setAttribute("href", `${app}/anmeldung`);
-        hinweis.append(el("span", "mt-2 block", a));
-      });
+        zeigeFehler(r.status === 429 ? "Zu viele Anmeldungen in kurzer Zeit – bitte später erneut versuchen oder ruf uns an." : r.status === 404 ? "Für diesen Kurs ist gerade keine Anmeldung möglich." : (Object.values(antwort.felder ?? {})[0] ?? antwort.fehler ?? "Die Anmeldung konnte nicht gesendet werden."));
+      } catch {
+        zeigeFehler("Keine Verbindung – bitte später erneut versuchen oder ruf uns an.");
+      } finally {
+        knopf.disabled = false;
+        knopf.textContent = vorher;
+      }
+    });
+
+    function karte(k: Kurs) {
+      const heute = new Date().toISOString().slice(0, 10);
+      const erster = k.termine[0];
+      const naechster = k.termine.find((t) => t.datum >= heute);
+      const laeuft = erster && erster.datum < heute;
+      const knopfKarte = el("button", "knopf-primaer mt-5 w-full", k.freiePlaetze > 0 ? "Anmelden" : "Auf die Warteliste");
+      knopfKarte.type = "button";
+      knopfKarte.setAttribute("aria-label", `${k.freiePlaetze > 0 ? "Anmelden" : "Auf die Warteliste"}: ${k.titel}`);
+      knopfKarte.addEventListener("click", () => oeffnen(k, knopfKarte));
+      const teile: Node[] = [
+        el("p", "etikett", k.art),
+        el("h3", "mt-2 text-2xl", k.titel),
+        el("p", "mt-3 text-[0.95rem]", !erster ? "Termine folgen" : laeuft && naechster ? `läuft bereits – nächster Termin ${termin(naechster)}` : `ab ${termin(erster)}`),
+        el("p", "text-sm text-salbei-600", `${k.termine.length} ${k.termine.length === 1 ? "Termin" : "Termine"}${k.ort ? ` · ${k.ort}` : ""}`),
+      ];
+      if (k.beschreibung) teile.push(el("p", "mt-3 text-[0.95rem] text-salbei-700", k.beschreibung));
+      if (k.termine.length > 1) {
+        const alle = el("ul", "mt-2 space-y-1 text-sm", ...k.termine.map((t) => el("li", "", termin(t, false))));
+        teile.push(el("details", "mt-3 text-sm", el("summary", "cursor-pointer font-semibold text-salbei-700", "Alle Termine"), alle));
+      }
+      teile.push(
+        el("p", "mt-3 text-sm", kosten(k)),
+        el("p", `mt-3 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold ${plaetzeKlasse(k)}`, plaetze(k)),
+        el("div", "flex-1"),
+        knopfKarte,
+      );
+      const li = el("li", "karte flex flex-col", ...teile);
+      li.dataset.art = k.artId;
+      li.dataset.testid = "kurs";
+      return li;
+    }
+
+    function filterBauen(kurse: Kurs[]) {
+      const arten = [...new Map(kurse.map((k) => [k.artId, k.art])).entries()];
+      if (box.dataset.filter !== "ja" || arten.length < 2) return;
+      filterLeiste.replaceChildren();
+      const waehlen = (art: string) => {
+        for (const b of filterLeiste.querySelectorAll<HTMLButtonElement>("button")) b.setAttribute("aria-pressed", String(b.dataset.art === art));
+        for (const li of liste.querySelectorAll<HTMLElement>("li[data-art]")) li.hidden = art !== "" && li.dataset.art !== art;
+      };
+      for (const [id, name] of [["", "Alle"], ...arten]) {
+        const b = el("button", "rounded-full border border-salbei-200 bg-white px-4 py-2 text-sm font-semibold text-salbei-700 aria-pressed:border-salbei-600 aria-pressed:bg-salbei-600 aria-pressed:text-white", name!);
+        b.type = "button";
+        b.dataset.art = id;
+        b.addEventListener("click", () => waehlen(id!));
+        filterLeiste.append(b);
+      }
+      waehlen("");
+      filterLeiste.hidden = false;
+    }
+
+    let ersteLadung = true;
+    function laden() {
+      fetch(`${app}/api/oeffentlich/kurse`)
+        .then((r) => (r.ok ? (r.json() as Promise<Kurs[]>) : Promise.reject(new Error(String(r.status)))))
+        .then((kurse) => {
+          if (!kurse.length) {
+            meldung.textContent = "Gerade sind keine Kurse zur Online-Anmeldung freigeschaltet.";
+            return;
+          }
+          liste.replaceChildren(...kurse.slice(0, max).map(karte));
+          filterBauen(kurse.slice(0, max));
+          hinweis.hidden = true;
+          liste.hidden = false;
+          box.querySelector<HTMLElement>("[data-kurs-alle]")?.removeAttribute("hidden");
+          // Direktlink /kurse?kurs=<id> (z. B. aus Instagram oder einer E-Mail)
+          const gesucht = ersteLadung ? new URLSearchParams(window.location.search).get("kurs") : null;
+          ersteLadung = false;
+          const ziel = gesucht ? kurse.find((k) => k.id === gesucht) : undefined;
+          if (ziel) oeffnen(ziel);
+        })
+        .catch(() => {
+          if (!liste.hidden) return;
+          meldung.textContent = "Die Kurstermine konnten gerade nicht geladen werden. Bitte versucht es später noch einmal oder meldet euch direkt bei uns.";
+        });
+    }
+    laden();
   }
 </script>

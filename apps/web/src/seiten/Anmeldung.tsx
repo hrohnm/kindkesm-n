@@ -15,6 +15,7 @@ type OffenerKurs = {
   kasse: boolean;
   termine: Array<{ datum: string; von: string; bis: string; format: KursFormat }>;
   freiePlaetze: number;
+  stichtag: "et" | "geburt";
 };
 
 /** Öffentliche Kursanmeldung (ohne Anmeldung in der App), von der Praxis-Website verlinkt: /anmeldung bzw. /anmeldung?kurs=<id> */
@@ -90,7 +91,7 @@ function Formular({ kurs, zurueck, fertig }: { kurs: OffenerKurs; zurueck: () =>
   const [felder, setFelder] = useState<Record<string, string>>({});
   const [meldung, setMeldung] = useState<string>();
   const [sendet, setSendet] = useState(false);
-  const rb = kurs.art === "Rückbildung" || kurs.art === "Babymassage" || kurs.art === "Eltern-Kind-Kurs";
+  const rb = kurs.stichtag === "geburt";
 
   async function senden() {
     setSendet(true);

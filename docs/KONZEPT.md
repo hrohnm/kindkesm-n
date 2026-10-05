@@ -328,6 +328,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
   - Anwesenheit per Tablet; bei Kassenkursen Unterschrift je Versicherte (Tablet oder Papier). Beim Abschließen entsteht je anwesender Versicherter eine Kurseinheit (GPOS 401/402/403/404 + Format) mit Prüfung: 5-Minuten-Einheiten, Kontingent je Versicherte (Geburtsvorbereitung 14 Std., Rückbildung 10 Std.), höchstens die Hälfte als Selbstlerneinheit, Geburtsvorbereitung nur vor und Rückbildung nur nach der Geburt bis Ende des 9. Monats, Begründung bei Einzelunterweisung
   - Die Kurseinheiten laufen in die normale Abrechnung (Versand, Abrechnungsdatenblatt) und werden auf **Formular 3.4** gedruckt; Selbstlerneinheit ohne „Uhrzeit von“, Dauer bei „Uhrzeit bis“
   - Öffentliche Anmeldeseite `/anmeldung` (für die Praxis-Website): freigeschaltete Kurse mit Terminen und freien Plätzen, Anmeldung mit Einwilligung, automatisch Warteliste bei vollem Kurs, Schutz gegen Spam (Honigtopf, Begrenzung je IP); neue Anmeldungen erscheinen im Cockpit
+  - Kursbuchung direkt auf der Praxis-Website: Kursliste mit Filter nach Kursart, allen Terminen und freien Plätzen, Anmeldung im Dialog (gleiche öffentliche Schnittstelle), Direktlink `/kurse?kurs=<id>`, doppelte Anmeldungen mit derselben E-Mail werden erkannt; `/anmeldung` in der App bleibt für alte Links
   - Noch offen: Bestätigungs- und Erinnerungsmails (mit dem E-Mail-Postfach der Praxis), Rechnungen für Selbstzahlerkurse (M13), Ratenzahlung
 
 ### M13 – Selbstzahler-Rechnungen
