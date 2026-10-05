@@ -13,6 +13,7 @@ const { titel, beschreibung, bild } = Astro.props;
 const voll = titel ? `${titel} | ${PRAXIS.name} Bad Doberan` : `${PRAXIS.name} – Hebamme in Bad Doberan & Landkreis Rostock`;
 const kanonisch = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site);
 const pfad = Astro.url.pathname.replace(/\/$/, "") || "/";
+const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
 
 const MENUE = [
   { href: "/hebammen", text: "Die Hebammen" },
@@ -59,7 +60,7 @@ const jsonLd = {
     {bild && <meta property="og:image" content={new URL(bild, Astro.site)} />}
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
-  <body class="flex min-h-screen flex-col">
+  <body class="flex min-h-screen flex-col" data-app={app || undefined}>
     <a href="#inhalt" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2">Zum Inhalt springen</a>
 
     <header class="sticky top-0 z-40 border-b border-salbei-100 bg-sand-50/95 backdrop-blur">
@@ -160,5 +161,11 @@ const jsonLd = {
         <div class="h-20 lg:hidden" aria-hidden="true"></div>
       </>
     )}
+    <script>
+      // Team-Status (z. B. Babypause) live aus der Praxis-App
+      import { teamStatusAnzeigen } from "../skripte/praxis-status";
+      const app = document.body.dataset.app;
+      if (app) void teamStatusAnzeigen(app);
+    </script>
   </body>
 </html>

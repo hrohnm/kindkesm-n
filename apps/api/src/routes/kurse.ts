@@ -408,10 +408,8 @@ export async function kursRouten(app: FastifyInstance, db: Datenbank) {
   }
 
   // ------------------------------------------------------------ Öffentliche Online-Anmeldung
-  app.get("/api/oeffentlich/kurse", async (request, reply) => {
-    // Die Praxis-Website lädt die Termine im Browser; nur ihre Adresse(n) sind freigegeben
-    const herkunft = request.headers.origin;
-    if (herkunft && config.websiteUrls.includes(herkunft)) reply.header("Access-Control-Allow-Origin", herkunft).header("Vary", "Origin");
+  // Die Praxis-Website lädt die Termine im Browser (CORS: siehe oeffentlich.ts)
+  app.get("/api/oeffentlich/kurse", async () => {
     const kurse = await db.select().from(kurs).where(and(eq(kurs.anmeldungOffen, true), inArray(kurs.status, ["geplant", "laufend"])));
     const heute = new Date().toISOString().slice(0, 10);
     const ergebnis = [];

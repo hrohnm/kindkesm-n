@@ -1,12 +1,13 @@
 import { NavLink, Outlet } from "react-router";
 import { useAuth } from "../lib/auth";
 import { OfflineStatus } from "./OfflineStatus";
-import { IconAbmelden, IconAbrechnung, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconRegelwerk, IconTeam, IconTour } from "./Icons";
+import { IconAbmelden, IconAbrechnung, IconPost, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconRegelwerk, IconTeam, IconTour } from "./Icons";
 
 const NAV = [
   { to: "/", label: "Heute", icon: IconHeute, ende: true },
   { to: "/tour", label: "Tour", icon: IconTour },
   { to: "/klientinnen", label: "Klientinnen", icon: IconFamilie },
+  { to: "/anfragen", label: "Anfragen", icon: IconPost, nurGross: true },
   { to: "/abrechnung", label: "Abrechnung", icon: IconAbrechnung },
   // Auf dem Handy über Einstellungen bzw. die Tour erreichbar (Platz in der unteren Leiste)
   { to: "/kurse", label: "Kurse", icon: IconKurs, nurGross: true },

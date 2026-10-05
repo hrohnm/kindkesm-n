@@ -1,0 +1,55 @@
+---
+/**
+ * Kapazitätsampel: Für welche Entbindungsmonate sind noch Plätze frei? Live aus der Praxis-App,
+ * ohne Zahlen und ohne Personendaten. Ohne PUBLIC_APP_URL bzw. ohne Verbindung bleibt der Baustein unsichtbar.
+ */
+interface Props {
+  /** Anzahl der Monate */
+  monate?: number;
+  /** kompakte Darstellung (z. B. in der Bühne) */
+  kompakt?: boolean;
+}
+const { monate = 9, kompakt = false } = Astro.props;
+const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+---
+
+{app && (
+  <div data-kapazitaet data-app={app} data-monate={monate} hidden class={kompakt ? "" : "karte"}>
+    <p class={kompakt ? "text-sm font-semibold text-salbei-700" : "font-titel text-2xl"}>Freie Plätze nach Entbindungstermin</p>
+    <ul class="mt-3 flex flex-wrap gap-2" data-kapazitaet-liste></ul>
+    <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-salbei-600">
+      <span><span class="mr-1 inline-block size-2.5 rounded-full bg-salbei-400 align-middle"></span>Plätze frei</span>
+      <span><span class="mr-1 inline-block size-2.5 rounded-full bg-amber-400 align-middle"></span>nur noch wenige</span>
+      <span><span class="mr-1 inline-block size-2.5 rounded-full bg-mohn-500 align-middle"></span>ausgebucht – Warteliste</span>
+    </p>
+  </div>
+)}
+
+<script>
+  import { praxisStatus } from "../skripte/praxis-status";
+
+  const STIL = {
+    frei: "bg-salbei-100 text-salbei-800 ring-salbei-300",
+    knapp: "bg-amber-50 text-amber-900 ring-amber-300",
+    ausgebucht: "bg-mohn-100 text-mohn-700 ring-mohn-200",
+  };
+  const TEXT = { frei: "frei", knapp: "wenige Plätze", ausgebucht: "ausgebucht" };
+
+  for (const box of document.querySelectorAll<HTMLElement>("[data-kapazitaet]")) {
+    praxisStatus(box.dataset.app!).then((status) => {
+      if (!status?.kapazitaet.length) return;
+      const liste = box.querySelector<HTMLUListElement>("[data-kapazitaet-liste]")!;
+      for (const m of status.kapazitaet.slice(0, Number(box.dataset.monate) || 9)) {
+        const li = document.createElement("li");
+        li.className = `rounded-2xl px-3 py-1.5 text-sm ring-1 ${STIL[m.stufe]}`;
+        const monat = document.createElement("span");
+        monat.className = "font-semibold";
+        monat.textContent = `${m.name.split(" ")[0]} ’${m.monat.slice(2, 4)}`;
+        li.append(monat, document.createTextNode(` · ${TEXT[m.stufe]}`));
+        li.setAttribute("aria-label", `${m.name}: ${TEXT[m.stufe]}`);
+        liste.append(li);
+      }
+      box.hidden = false;
+    });
+  }
+</script>

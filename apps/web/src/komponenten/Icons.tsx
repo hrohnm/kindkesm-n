@@ -25,3 +25,5 @@ export const IconDrucken = basis(<><path d="M7 8V3h10v5" /><rect x="3" y="8" wid
 export const IconTour = basis(<><circle cx="6" cy="18" r="2.2" /><circle cx="18" cy="6" r="2.2" /><path d="M8.2 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.8" /></>);
 export const IconKurs = basis(<><circle cx="12" cy="6" r="2.5" /><circle cx="5" cy="10" r="2" /><circle cx="19" cy="10" r="2" /><path d="M7.5 20c.4-3.6 2.2-5.6 4.5-5.6s4.1 2 4.5 5.6" /><path d="M2 18c.3-2.3 1.4-3.6 3-3.6M22 18c-.3-2.3-1.4-3.6-3-3.6" /></>);
 export const IconAuto = basis(<><path d="M5 16V11l2-5h10l2 5v5" /><path d="M3 16h18v3h-3v-1H6v1H3z" /><circle cx="7.5" cy="13.5" r="1" /><circle cx="16.5" cy="13.5" r="1" /></>);
+export const IconPost = basis(<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></>);
+export const IconKalender = basis(<><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>);

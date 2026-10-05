@@ -71,6 +71,13 @@
       "when": 1790944238552,
       "tag": "0009_akte_m2",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791195710187,
+      "tag": "0010_anfragen_m11",
+      "breakpoints": true
     }
   ]
 }

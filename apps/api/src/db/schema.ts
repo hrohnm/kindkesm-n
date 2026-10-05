@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -46,6 +47,8 @@ export const benutzer = pgTable(
     ik: text("ik"),
     status: text("status", { enum: ["aktiv", "babypause", "ausgeschieden"] }).notNull().default("aktiv"),
     babypauseBis: date("babypause_bis"),
+    /** Kapazität für den Belegungsplan (M11): neue Wochenbetten pro ET-Monat */
+    wochenbettenProMonat: integer("wochenbetten_pro_monat").notNull().default(4),
     aktiv: boolean("aktiv").notNull().default(true),
     letzteAnmeldung: timestamp("letzte_anmeldung", { withTimezone: true }),
     /** Persönliche Ansicht der Besuchsdokumentation (sichtbare Felder, Vergleich, Kacheln) */
@@ -551,3 +554,42 @@ export const einwilligung = pgTable(
   },
   (t) => [primaryKey({ columns: [t.klientinId, t.art] })],
 );
+
+/** M11: Betreuungsanfrage (Website, Telefon) bis zur Zu- oder Absage. Enthält den ET (Gesundheitsdatum). */
+export const anfrage = pgTable("anfrage", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  quelle: text("quelle", { enum: ["website", "telefon", "manuell"] }).notNull(),
+  status: text("status", { enum: ["neu", "in_pruefung", "warteliste", "zugesagt", "abgesagt", "weitergeleitet"] }).notNull().default("neu"),
+  vorname: text("vorname").notNull(),
+  nachname: text("nachname").notNull(),
+  email: text("email"),
+  telefon: text("telefon"),
+  et: date("et").notNull(),
+  strasse: text("strasse"),
+  plz: text("plz"),
+  ort: text("ort").notNull(),
+  lat: doublePrecision("lat"),
+  lon: doublePrecision("lon"),
+  erstesKind: boolean("erstes_kind"),
+  leistungen: text("leistungen").array().notNull().default(sql`'{}'::text[]`),
+  nachricht: text("nachricht"),
+  /** Zeitpunkt der Einwilligung auf der Website */
+  einwilligungAm: timestamp("einwilligung_am", { withTimezone: true }),
+  notiz: text("notiz"),
+  hebammeId: uuid("hebamme_id").references(() => benutzer.id, { onDelete: "set null" }),
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  erfasstVon: uuid("erfasst_von").references(() => benutzer.id, { onDelete: "set null" }),
+  bearbeitetAm: timestamp("bearbeitet_am", { withTimezone: true }),
+  ...zeitstempel(),
+});
+
+/** M11: Urlaub, Fortbildung u. Ä. einer Hebamme – kürzt die Kapazität im Belegungsplan. */
+export const abwesenheit = pgTable("abwesenheit", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  benutzerId: uuid("benutzer_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  von: date("von").notNull(),
+  bis: date("bis").notNull(),
+  art: text("art", { enum: ["urlaub", "fortbildung", "krank", "sonstiges"] }).notNull(),
+  notiz: text("notiz"),
+  ...zeitstempel(),
+});

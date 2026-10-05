@@ -1,4 +1,4 @@
-# User-Walkthroughs (Stand: Meilensteine M-1 bis M-6, M10, M12, M15, Akte-Ergänzung)
+# User-Walkthroughs (Stand: Meilensteine M-1 bis M-6, M10, M11, M12, M15, Akte-Ergänzung, Website)
 
 Alle Abläufe, die mit dem aktuellen Entwicklungsstand möglich sind – als Testdrehbuch für die Demo-Umgebung und als Grundlage für weitere automatische Tests. Jeder Walkthrough hat eine Kennung, eine Ausgangslage, die Schritte und das erwartete Ergebnis.
 
@@ -25,7 +25,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 **A1 Anmelden** 🤖📱
 1. App öffnen → Anmeldeseite. In der Test-Umgebung einen Demo-Knopf antippen (füllt E-Mail und Passwort) oder Zugangsdaten eintippen → „Anmelden“.
-- Erwartet: Startseite „Moin, Vorname!“ mit Datum; Navigation links (Tablet) bzw. unten (Handy).
+- Erwartet: Startseite „Moin, Vorname!“ (bis 11 Uhr; danach „Hallo“, ab 17 Uhr „Guten Abend“) mit Datum; Navigation links (Tablet) bzw. unten (Handy).
 
 **A2 Falsches Passwort** ⚠️
 1. Falsches Passwort eingeben.
@@ -362,6 +362,49 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 ---
 
-## N. Bekannte Lücken (noch kein Walkthrough möglich)
+## N. Anfragen und Belegungsplan (M11)
 
-E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), 2FA/automatische Sperre/Geräte abmelden/Datenexport (M25), Belegungsplan (M11), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
+**N1 Anfrage über die Website** 🤖📱
+1. Website → Kontakt → „Betreuung anfragen“: Name, ET, Wohnort (Vorschläge aus dem Betreuungsgebiet), E-Mail oder Telefon, erstes Kind, Wünsche, Nachricht, Einwilligung → „Anfrage senden“.
+- Erwartet: „Vielen Dank!“. ⚠️ Ohne Einwilligung, ohne Kontaktweg oder mit ausgefülltem Honigtopf → Fehlermeldung bzw. Ablehnung; mehr als 5 Anfragen je Stunde und IP → Hinweis „zu viele Anfragen“.
+
+**N2 Anfrage prüfen und zusagen** 🤖
+1. Cockpit-Hinweis „neue Betreuungsanfrage(n)“ → Anfragen → Anfrage öffnen.
+2. Vorschlag ansehen (freie Plätze im ET-Monat, Abwesenheit rund um den ET, Entfernung) → bei der passenden Hebamme „Zusagen“.
+- Erwartet: Akte mit Betreuung (Schwangerschaft, ET, zuständige Hebamme, „Erstgebärend“ bei erstem Kind, Wünsche in den Notizen) öffnet sich; Anfrage „Zugesagt“; im Belegungsplan zählt die Familie.
+
+**N3 Telefonische Anfrage, Warteliste, Absage**
+1. Anfragen → „Anfrage erfassen“ → speichern; Notiz eintragen → „Warteliste“; später „Absagen“ oder „Weitergeleitet“ (mit Notiz).
+2. „Antwort per E-Mail“: Vorlage Zusage / Warteliste / Absage öffnet das E-Mail-Programm.
+- Erwartet: Status je Gruppe (Offen, Warteliste, Erledigt). ⚠️ „Weitergeleitet“ ohne Notiz → Fehler; zugesagte Anfragen lassen sich nicht mehr absagen. Abgeschlossene Anfragen werden nach 6 Monaten automatisch gelöscht.
+
+**N4 Belegungsplan und Abwesenheiten** 🤖
+1. Anfragen → „Belegungsplan“ (Handy: Einstellungen → Belegungsplan): je ET-Monat und Hebamme „belegt / Kapazität“ mit Ampel, Praxis gesamt, offene Anfragen; ‹ / › blättern.
+2. Eigene Abwesenheit (Urlaub, Fortbildung …) eintragen bzw. löschen; Kapazität unter Einstellungen → Mein Profil → „Wochenbetten pro Monat“ ändern.
+- Erwartet: Abwesenheit und Babypause kürzen die Kapazität anteilig; Lorina erscheint bis zum Ende der Babypause als „abwesend“.
+
+**N5 Kapazitätsampel und Team-Status auf der Website** 📱
+1. Website-Startseite und Kontakt: „Freie Plätze nach Entbindungstermin“; Seite „Die Hebammen“.
+- Erwartet: je Monat „frei“, „wenige Plätze“ oder „ausgebucht“ (ohne Zahlen); Lorina „in Babypause, voraussichtlich zurück im …“ – beides live aus der App.
+
+---
+
+## O. Website (öffentlich)
+
+**O1 Rundgang** 📱
+1. Start, Die Hebammen, Die Praxis, Leistungen, Kurse, Fragen, Kontakt, Impressum, Datenschutz, Bildnachweis; Handy-Menü und feste Leiste „Betreuung anfragen“.
+- Erwartet: keine Cookies, keine Inhalte von Drittanbietern; Kartendienste nur per Klick.
+
+**O2 Kurse und Anmeldung** 🤖
+1. Website → Kurse: aktuelle Termine mit freien Plätzen → „Anmelden“.
+- Erwartet: Anmeldeseite der App öffnet sich direkt mit dem Formular dieses Kurses.
+
+**O3 Alte Adressen** ⚠️
+1. Alte Wix-Adressen aufrufen (z. B. `/hebammen-team`, `/kopie-von-leistungen`).
+- Erwartet: dauerhafte Weiterleitung (301) auf die neue Seite.
+
+---
+
+## P. Bekannte Lücken (noch kein Walkthrough möglich)
+
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), 2FA/automatische Sperre/Geräte abmelden/Datenexport (M25), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.

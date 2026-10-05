@@ -11,7 +11,7 @@ export function Profil() {
 }
 
 function ProfilFormular({ profil }: { profil: ProfilTyp }) {
-  const f = useFormular({ ...profil, telefon: profil.telefon ?? "", ik: profil.ik ?? "", babypauseBis: profil.babypauseBis ?? "" });
+  const f = useFormular({ ...profil, telefon: profil.telefon ?? "", ik: profil.ik ?? "", babypauseBis: profil.babypauseBis ?? "", wochenbettenProMonat: String(profil.wochenbettenProMonat) });
   return (
     <form
       className="karte space-y-5"
@@ -33,6 +33,9 @@ function ProfilFormular({ profil }: { profil: ProfilTyp }) {
         </Feld>
         <Feld label="Telefon" fehler={f.felder.telefon}>
           <input className="feld" inputMode="tel" value={f.werte.telefon} onChange={(e) => f.setze("telefon", e.target.value)} />
+        </Feld>
+        <Feld label="Wochenbetten pro Monat" fehler={f.felder.wochenbettenProMonat} hilfe="Kapazität für den Belegungsplan: wie viele neue Familien (nach ET-Monat) du übernehmen möchtest.">
+          <input className="feld" type="number" inputMode="numeric" min={0} max={20} value={f.werte.wochenbettenProMonat} onChange={(e) => f.setze("wochenbettenProMonat", e.target.value)} />
         </Feld>
         <Feld label="Institutionskennzeichen (IK)" fehler={f.felder.ik} hilfe="9 Ziffern, beginnt mit 45. Steht auf jedem Abrechnungsbeleg.">
           <input className="feld" inputMode="numeric" maxLength={9} value={f.werte.ik} onChange={(e) => f.setze("ik", e.target.value.replace(/\D/g, ""))} />

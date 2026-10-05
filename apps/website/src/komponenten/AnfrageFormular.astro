@@ -1,0 +1,137 @@
+---
+/**
+ * Betreuungsanfrage: geht direkt in den Posteingang der Praxis-App (M11).
+ * Ohne JavaScript bzw. ohne PUBLIC_APP_URL wird stattdessen der Weg per E-Mail/Telefon angezeigt (Slot).
+ */
+import { GEBIETE } from "../inhalte/praxis";
+
+const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const LEISTUNGEN = [
+  ["vorsorge", "Schwangerschaftsvorsorge"],
+  ["wochenbett", "Wochenbettbetreuung"],
+  ["stillen", "Stillberatung"],
+  ["geburtsvorbereitung", "Geburtsvorbereitungskurs"],
+  ["rueckbildung", "Rückbildungskurs"],
+  ["sonstiges", "Sonstiges"],
+] as const;
+const feld = "mt-1 block min-h-12 w-full rounded-2xl border border-salbei-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none";
+const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
+---
+
+{app ? (
+  <div data-anfrage data-app={app}>
+    <noscript><slot /></noscript>
+    <form class="karte space-y-5 sm:p-8" novalidate data-anfrage-formular>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class={etikett}>Vorname<input name="vorname" required autocomplete="given-name" class={feld} /></label>
+        <label class={etikett}>Nachname<input name="nachname" required autocomplete="family-name" class={feld} /></label>
+        <label class={etikett}>Voraussichtlicher Entbindungstermin<input name="et" type="date" required class={feld} /></label>
+        <label class={etikett}>Telefon<input name="telefon" type="tel" autocomplete="tel" class={feld} /></label>
+        <label class={`${etikett} sm:col-span-2`}>E-Mail<input name="email" type="email" autocomplete="email" class={feld} /></label>
+        <label class={etikett}>Straße und Hausnummer <span class="font-normal text-salbei-600">(optional)</span><input name="strasse" autocomplete="street-address" class={feld} /></label>
+        <div class="grid grid-cols-[7rem_1fr] gap-3">
+          <label class={etikett}>PLZ<input name="plz" inputmode="numeric" maxlength="5" autocomplete="postal-code" class={feld} /></label>
+          <label class={etikett}>Wohnort<input name="ort" required list="anfrage-orte" autocomplete="address-level2" class={feld} /></label>
+        </div>
+        <datalist id="anfrage-orte">{GEBIETE.map((g) => <option value={g} />)}</datalist>
+      </div>
+
+      <fieldset>
+        <legend class={etikett}>Ist es dein erstes Kind?</legend>
+        <div class="mt-2 flex flex-wrap gap-4">
+          <label class="flex items-center gap-2"><input type="radio" name="erstesKind" value="ja" class="size-5 accent-salbei-600" /> ja</label>
+          <label class="flex items-center gap-2"><input type="radio" name="erstesKind" value="nein" class="size-5 accent-salbei-600" /> nein</label>
+          <label class="flex items-center gap-2"><input type="radio" name="erstesKind" value="" checked class="size-5 accent-salbei-600" /> keine Angabe</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class={etikett}>Was wünschst du dir?</legend>
+        <div class="mt-2 grid gap-2 sm:grid-cols-2">
+          {LEISTUNGEN.map(([wert, text]) => (
+            <label class="flex min-h-11 items-center gap-3 rounded-2xl bg-salbei-50 px-4"><input type="checkbox" name="leistungen" value={wert} class="size-5 accent-salbei-600" /> {text}</label>
+          ))}
+        </div>
+      </fieldset>
+
+      <label class={etikett}>Nachricht an uns <span class="font-normal text-salbei-600">(optional)</span><textarea name="nachricht" rows="4" class={feld}></textarea></label>
+
+      <!-- Honigtopf gegen Spam: für Menschen unsichtbar -->
+      <div class="absolute -left-[9999px]" aria-hidden="true"><label>Website<input name="webseite" tabindex="-1" autocomplete="off" /></label></div>
+
+      <label class="flex items-start gap-3 text-[0.95rem]">
+        <input type="checkbox" name="einwilligung" required class="mt-1 size-5 shrink-0 accent-salbei-600" />
+        <span>Ich bin einverstanden, dass die Hebammenpraxis Kindkesmöön meine Angaben – einschließlich des Entbindungstermins – speichert, um meine Anfrage zu bearbeiten und mich zu kontaktieren. Abgeschlossene Anfragen werden nach spätestens 6 Monaten gelöscht. Mehr in der <a href="/datenschutz">Datenschutzerklärung</a>.</span>
+      </label>
+
+      <p class="hidden rounded-2xl bg-mohn-100 p-4 text-mohn-700" role="alert" data-anfrage-fehler></p>
+      <button type="submit" class="knopf-primaer w-full sm:w-auto">Anfrage senden</button>
+    </form>
+    <div class="karte hidden text-center sm:p-10" role="status" data-anfrage-danke tabindex="-1">
+      <p class="font-titel text-4xl text-salbei-800">Vielen Dank!</p>
+      <p class="mx-auto mt-3 max-w-xl">Deine Anfrage ist bei uns angekommen. Wir melden uns innerhalb von ein paar Tagen bei dir – per E-Mail oder Telefon.</p>
+    </div>
+  </div>
+) : (
+  <slot />
+)}
+
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>("[data-anfrage]")) {
+    const app = box.dataset.app!;
+    const form = box.querySelector<HTMLFormElement>("[data-anfrage-formular]")!;
+    const fehler = box.querySelector<HTMLElement>("[data-anfrage-fehler]")!;
+    const danke = box.querySelector<HTMLElement>("[data-anfrage-danke]")!;
+    const knopf = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    const zeigeFehler = (text: string) => {
+      fehler.textContent = text;
+      fehler.classList.remove("hidden");
+      fehler.scrollIntoView({ block: "center", behavior: "smooth" });
+    };
+
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      fehler.classList.add("hidden");
+      const f = new FormData(form);
+      const text = (n: string) => String(f.get(n) ?? "").trim();
+      const erstes = text("erstesKind");
+      const daten = {
+        vorname: text("vorname"),
+        nachname: text("nachname"),
+        et: text("et"),
+        telefon: text("telefon"),
+        email: text("email"),
+        strasse: text("strasse"),
+        plz: text("plz"),
+        ort: text("ort"),
+        erstesKind: erstes === "ja" ? true : erstes === "nein" ? false : null,
+        leistungen: f.getAll("leistungen").map(String),
+        nachricht: text("nachricht"),
+        einwilligung: f.get("einwilligung") === "on",
+        webseite: text("webseite") || undefined,
+      };
+      if (!daten.vorname || !daten.nachname || !daten.et || !daten.ort) return zeigeFehler("Bitte Vorname, Nachname, Entbindungstermin und Wohnort angeben.");
+      if (!daten.email && !daten.telefon) return zeigeFehler("Bitte E-Mail oder Telefon angeben, damit wir dir antworten können.");
+      if (!daten.einwilligung) return zeigeFehler("Bitte stimme der Verarbeitung deiner Angaben zu.");
+
+      knopf.disabled = true;
+      knopf.textContent = "Wird gesendet …";
+      try {
+        const r = await fetch(`${app}/api/oeffentlich/anfrage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
+        if (r.ok) {
+          form.classList.add("hidden");
+          danke.classList.remove("hidden");
+          danke.focus();
+          return;
+        }
+        const antwort = (await r.json().catch(() => ({}))) as { fehler?: string; felder?: Record<string, string> };
+        zeigeFehler(r.status === 429 ? "Zu viele Anfragen in kurzer Zeit – bitte später erneut versuchen oder anrufen." : Object.values(antwort.felder ?? {})[0] ?? antwort.fehler ?? "Die Anfrage konnte nicht gesendet werden.");
+      } catch {
+        zeigeFehler("Keine Verbindung – bitte später erneut versuchen oder ruf uns an.");
+      } finally {
+        knopf.disabled = false;
+        knopf.textContent = "Anfrage senden";
+      }
+    });
+  }
+</script>
