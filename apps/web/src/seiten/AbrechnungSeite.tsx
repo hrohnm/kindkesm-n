@@ -1,6 +1,8 @@
 import {
   ABRECHNUNGSWEG_LABEL,
   BELEGART_LABEL,
+  besuchArtLabel,
+  besuchTypLabel,
   UNTERSCHRIFT_LABEL,
   VERSANDRHYTHMUS_LABEL,
   isoDatum,
@@ -30,10 +32,38 @@ type FallKurz = {
   belege: { tablet: number; papier: number };
   pruefung: Pruefung[];
 };
+type Posten = {
+  id: string;
+  gpos: string;
+  bezeichnung: string;
+  menge: number;
+  einheit: string;
+  einzelbetrag: string;
+  betrag: string;
+  zuschlag: boolean;
+  quelle: "besuch" | "wegegeld";
+  txt: string | null;
+  status: string;
+  kuerzungBetrag: string | null;
+  kuerzungGrund: string | null;
+};
+type BesuchPosten = {
+  id: string;
+  datum: string;
+  von: string;
+  bis: string;
+  typ: string;
+  art: number;
+  unterschrift: string;
+  kurs: { kursId: string; terminId: string; titel: string } | null;
+  summe: number;
+  leistungen: Posten[];
+};
+type FallMitPosten = FallKurz & { besuche: BesuchPosten[] };
 type Offen = {
   bis: string;
   einstellung: { weg: Abrechnungsweg; belegart: Belegart; unterschrift: Unterschriftsverfahren; versandRhythmus: Versandrhythmus; versandTag: number; abrechnungsstelleName: string | null } | null;
-  faelle: FallKurz[];
+  faelle: FallMitPosten[];
   hinweise: Array<{ stufe: "fehler" | "warnung" | "info"; text: string }>;
   summe: number;
 };
@@ -54,7 +84,7 @@ type Versand = {
   offenSeitTagen: number | null;
 };
 type VersandDetail = Versand & {
-  faelle: Array<FallKurz & { leistungen: Array<{ id: string; datum: string; gpos: string; bezeichnung: string; menge: number; betrag: string; status: string; kuerzungBetrag: string | null; kuerzungGrund: string | null }> }>;
+  faelle: Array<FallMitPosten & { leistungen: Array<{ id: string; datum: string; gpos: string; bezeichnung: string; menge: number; betrag: string; status: string; kuerzungBetrag: string | null; kuerzungGrund: string | null }> }>;
 };
 
 const heute = () => isoDatum(new Date());
@@ -134,20 +164,7 @@ export function AbrechnungSeite() {
             ) : (
               <div className="karte divide-y divide-sand-200 p-0 dark:divide-salbei-700">
                 {offen.daten.faelle.map((f) => (
-                  <div key={f.betreuungId} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
-                    <div className="min-w-0 flex-1">
-                      <Link to={`/klientinnen/${f.klientinId}`} className="font-semibold text-salbei-700 hover:underline dark:text-salbei-100">{f.name}</Link>
-                      <div className="text-sm text-slate-500">
-                        {f.krankenkasse ?? "Kasse fehlt"} · {datum(f.zeitraum[0])}–{datum(f.zeitraum[1])} · {f.anzahlBesuche} Besuch(e)
-                        {f.belege.tablet ? ` · ${f.belege.tablet}× Tablet` : ""}
-                        {f.belege.papier ? ` · ${f.belege.papier}× Papier` : ""}
-                      </div>
-                      {f.pruefung.map((p) => (
-                        <div key={p.text} className={`mt-1 text-sm ${p.stufe === "fehler" ? "text-tulpe-500" : "text-amber-700"}`}>{p.stufe === "fehler" ? "✗" : "!"} {p.text}</div>
-                      ))}
-                    </div>
-                    <div className="text-right font-semibold">{euro(f.summe)}</div>
-                  </div>
+                  <FallZeile key={f.betreuungId} fall={f} />
                 ))}
                 <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                   <div>
@@ -183,8 +200,110 @@ export function AbrechnungSeite() {
   );
 }
 
+const WOCHENTAG = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+const UNTERSCHRIFT_KURZ: Record<string, string> = { tablet: "Tablet", papier: "Papier", keine: "ohne Unterschrift" };
+
+/** Menge lesbar: „9 × 5 Min.“, „12,4 km“, „2 ×“ */
+function mengeText(p: Posten) {
+  const m = p.menge.toLocaleString("de-DE");
+  if (p.einheit === "5min") return `${m} × 5 Min.`;
+  if (p.einheit === "km") return `${m} km`;
+  return p.menge !== 1 ? `${m} ×` : "";
+}
+
+/** Fall in der Liste „Noch nicht abgerechnet“ mit aufklappbarer Einzelaufstellung. */
+function FallZeile({ fall: f }: { fall: FallMitPosten }) {
+  const [offen, setOffen] = useState(false);
+  return (
+    <div className="px-5 py-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="min-w-0 flex-1">
+          <Link to={`/klientinnen/${f.klientinId}`} className="font-semibold text-salbei-700 hover:underline dark:text-salbei-100">{f.name}</Link>
+          <div className="text-sm text-slate-500">
+            {f.krankenkasse ?? "Kasse fehlt"} · {datum(f.zeitraum[0])}–{datum(f.zeitraum[1])} · {f.anzahlBesuche} Besuch(e)
+            {f.belege.tablet ? ` · ${f.belege.tablet}× Tablet` : ""}
+            {f.belege.papier ? ` · ${f.belege.papier}× Papier` : ""}
+          </div>
+          {f.pruefung.map((p) => (
+            <div key={p.text} className={`mt-1 text-sm ${p.stufe === "fehler" ? "text-tulpe-500" : "text-amber-700"}`}>{p.stufe === "fehler" ? "✗" : "!"} {p.text}</div>
+          ))}
+        </div>
+        <div className="text-right">
+          <div className="font-semibold">{euro(f.summe)}</div>
+          <button type="button" aria-expanded={offen} onClick={() => setOffen((x) => !x)} className="min-h-10 text-sm font-medium text-salbei-600">
+            {offen ? "▲ Einzelaufstellung" : "▼ Einzelaufstellung"}
+          </button>
+        </div>
+      </div>
+      {offen && <Einzelaufstellung besuche={f.besuche} />}
+    </div>
+  );
+}
+
+/** Je Besuch die abgerechneten Gebührenpositionen mit Zwischensumme. */
+function Einzelaufstellung({ besuche }: { besuche: BesuchPosten[] }) {
+  return (
+    <div className="mt-3 space-y-3" data-testid="einzelaufstellung">
+      {besuche.map((b) => {
+        const tag = new Date(`${b.datum}T12:00:00`).getDay();
+        return (
+          <div key={b.id} className="rounded-xl border border-sand-200 dark:border-salbei-700">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-sand-50 px-3 py-2 text-sm dark:bg-salbei-900/40">
+              <Link to={b.kurs ? `/kurse/${b.kurs.kursId}/termine/${b.kurs.terminId}` : `/besuche/${b.id}`} className="min-w-0 font-medium hover:underline">
+                {WOCHENTAG[tag]} {datum(b.datum)} · {b.art === 6 ? "Selbstlerneinheit" : `${b.von}–${b.bis}`} · {besuchTypLabel(b.typ)} · {besuchArtLabel(b.typ, b.art)}
+                {b.kurs ? ` · ${b.kurs.titel}` : ""}
+              </Link>
+              <span className="text-slate-500">{UNTERSCHRIFT_KURZ[b.unterschrift] ?? b.unterschrift} · <strong className="text-slate-800 dark:text-slate-100">{euro(b.summe)}</strong></span>
+            </div>
+            <table className="w-full text-sm">
+              <tbody>
+                {b.leistungen.map((l) => (
+                  <tr key={l.id} className="border-t border-sand-200 first:border-0 dark:border-salbei-700">
+                    <td className="w-16 py-1.5 pr-2 pl-3 font-mono align-top">{l.gpos}</td>
+                    <td className="py-1.5 pr-2 align-top">
+                      {l.quelle === "wegegeld" ? "Wegegeld" : l.bezeichnung}
+                      {mengeText(l) ? <span className="block text-xs text-slate-500 sm:hidden">{mengeText(l)} à {euro(l.einzelbetrag)}</span> : null}
+                      {l.zuschlag ? <span className="ml-1 rounded bg-amber-100 px-1 text-xs text-amber-800">Zuschlag</span> : null}
+                      {l.txt ? <span className="block text-xs text-slate-500">{l.txt}</span> : null}
+                      {l.kuerzungBetrag ? <span className="block text-xs text-tulpe-500">gekürzt um {euro(l.kuerzungBetrag)}{l.kuerzungGrund ? `: ${l.kuerzungGrund}` : ""}</span> : null}
+                    </td>
+                    <td className="hidden whitespace-nowrap py-1.5 pr-2 text-right align-top text-slate-500 sm:table-cell">
+                      {mengeText(l)}{mengeText(l) ? ` à ${euro(l.einzelbetrag)}` : ""}
+                    </td>
+                    <td className="whitespace-nowrap py-1.5 pr-3 text-right align-top font-medium">{euro(l.betrag)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Einzelaufstellung eines Versands je Patientin (inkl. Kürzungen nach der Zahlung). */
+function VersandAufstellung({ versandId }: { versandId: string }) {
+  const detail = useDaten<VersandDetail>(`/api/abrechnung/versaende/${versandId}`);
+  if (!detail.daten) return <div className="mt-4"><Laden /></div>;
+  return (
+    <div className="mt-4 space-y-5">
+      {detail.daten.faelle.map((f) => (
+        <div key={f.betreuungId}>
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <Link to={`/klientinnen/${f.klientinId}`} className="font-semibold text-salbei-700 hover:underline dark:text-salbei-100">{f.name}</Link>
+            <span className="text-sm text-slate-500">{f.krankenkasse ?? "Kasse fehlt"} · {f.anzahlBesuche} Besuch(e) · <strong className="text-slate-800 dark:text-slate-100">{euro(f.summe)}</strong></span>
+          </div>
+          <Einzelaufstellung besuche={f.besuche} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function VersandKarte({ versand: v, geaendert }: { versand: Versand; geaendert: () => Promise<void> }) {
   const [modus, setModus] = useState<"versendet" | "bezahlt" | null>(null);
+  const [aufstellung, setAufstellung] = useState(false);
   const [fehler, setFehler] = useState<string>();
   const aktion = async (pfad: string, body?: unknown) => {
     setFehler(undefined);
@@ -221,6 +340,7 @@ function VersandKarte({ versand: v, geaendert }: { versand: Versand; geaendert: 
       {fehler && <div className="mt-3"><Meldung art="fehler">{fehler}</Meldung></div>}
       <div className="mt-4 flex flex-wrap gap-2">
         <a className="knopf-primaer" href={`/api/abrechnung/versaende/${v.id}/mappe.pdf`} target="_blank" rel="noreferrer">Versandmappe (PDF)</a>
+        <button type="button" className="knopf-sekundaer" aria-expanded={aufstellung} onClick={() => setAufstellung((x) => !x)}>{aufstellung ? "Einzelaufstellung schließen" : "Einzelaufstellung"}</button>
         {v.status === "vorbereitet" && (
           <>
             <button type="button" className="knopf-sekundaer" onClick={() => setModus(modus === "versendet" ? null : "versendet")}>Als versendet markieren</button>
@@ -231,6 +351,7 @@ function VersandKarte({ versand: v, geaendert }: { versand: Versand; geaendert: 
           <button type="button" className="knopf-sekundaer" onClick={() => setModus(modus === "bezahlt" ? null : "bezahlt")}>Zahlung erfassen</button>
         )}
       </div>
+      {aufstellung && <VersandAufstellung versandId={v.id} />}
       {modus === "versendet" && <VersendetFormular abschicken={(daten) => aktion("versendet", daten)} />}
       {modus === "bezahlt" && <ZahlungFormular versandId={v.id} abschicken={(daten) => aktion("bezahlt", daten)} />}
     </div>

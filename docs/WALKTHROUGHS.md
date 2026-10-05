@@ -236,8 +236,8 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 ## H. Abrechnung
 
 **H1 Offene Fälle prüfen** 🤖
-1. Abrechnung → offene Fälle bis Datum.
-- Erwartet: Fälle mit Summen und Prüfung; ⚠️ fehlende Versichertennummer/Kassen-IK/Anschrift rot (Fall wird beim Versand ausgelassen), Kontingent-Hinweise gelb.
+1. Abrechnung → offene Fälle bis Datum → je Patientin „▼ Einzelaufstellung“.
+- Erwartet: Fälle mit Summen und Prüfung; die Einzelaufstellung zeigt je Besuch (Datum, Zeit, Leistung, Unterschrift, Zwischensumme) die Gebührenpositionen mit Menge, Einzelbetrag und Betrag, inkl. Material, Zuschlägen und Wegegeld; dieselbe Aufstellung gibt es je Versand (dort mit Kürzungen); ⚠️ fehlende Versichertennummer/Kassen-IK/Anschrift rot (Fall wird beim Versand ausgelassen), Kontingent-Hinweise gelb.
 
 **H2 Versand vorbereiten** 🤖
 1. „Versand vorbereiten“ → „Versandmappe (PDF)“ öffnen.

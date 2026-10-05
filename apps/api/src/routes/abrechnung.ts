@@ -25,6 +25,37 @@ const fallKurz = (f: Awaited<ReturnType<typeof faelleLaden>>[number]) => ({
   pruefung: f.pruefung,
 });
 
+/** Fall mit Einzelaufstellung: je Besuch die abgerechneten Positionen (Anzeige in der Abrechnung). */
+const fallMitPosten = (f: Awaited<ReturnType<typeof faelleLaden>>[number]) => ({
+  ...fallKurz(f),
+  besuche: f.besuche.map((b) => ({
+    id: b.id,
+    datum: b.datum,
+    von: b.von,
+    bis: b.bis,
+    typ: b.typ,
+    art: b.art,
+    unterschrift: (b.unterschrift as { art: string }).art,
+    kurs: (b.dokumentation as { kurs?: { kursId: string; terminId: string; titel: string } }).kurs ?? null,
+    summe: Math.round(b.leistungen.reduce((s, l) => s + Number(l.betrag), 0) * 100) / 100,
+    leistungen: b.leistungen.map((l) => ({
+      id: l.id,
+      gpos: l.gpos,
+      bezeichnung: l.bezeichnung,
+      menge: l.menge,
+      einheit: l.einheit,
+      einzelbetrag: l.einzelbetrag,
+      betrag: l.betrag,
+      zuschlag: l.zuschlag,
+      quelle: l.quelle,
+      txt: l.txt,
+      status: l.status,
+      kuerzungBetrag: l.kuerzungBetrag,
+      kuerzungGrund: l.kuerzungGrund,
+    })),
+  })),
+});
+
 const vorbereitenSchema = z.object({
   bis: z.iso.date(),
   betreuungIds: z.array(z.string().uuid()).optional(),
@@ -80,7 +111,7 @@ export async function abrechnungRouten(app: FastifyInstance, db: Datenbank) {
           : { stufe: "info", text: `In diesem Monat gibt es schon einen Versand (${imMonat.map((v) => v.nummer).join(", ")}).` },
       );
     }
-    return { bis, einstellung, faelle: faelle.map(fallKurz), hinweise: global, summe: Math.round(faelle.reduce((s, f) => s + f.summe, 0) * 100) / 100 };
+    return { bis, einstellung, faelle: faelle.map(fallMitPosten), hinweise: global, summe: Math.round(faelle.reduce((s, f) => s + f.summe, 0) * 100) / 100 };
   });
 
   /** Versand vorbereiten: übernimmt alle fehlerfreien Fälle und reserviert deren Leistungen. */
@@ -150,7 +181,7 @@ export async function abrechnungRouten(app: FastifyInstance, db: Datenbank) {
     return {
       ...v,
       faelle: faelle.map((f) => ({
-        ...fallKurz(f),
+        ...fallMitPosten(f),
         leistungen: f.besuche.flatMap((b) => b.leistungen.map((l) => ({ id: l.id, datum: l.datum, gpos: l.gpos, bezeichnung: l.bezeichnung, menge: l.menge, betrag: l.betrag, status: l.status, kuerzungBetrag: l.kuerzungBetrag, kuerzungGrund: l.kuerzungGrund }))),
       })),
     };
