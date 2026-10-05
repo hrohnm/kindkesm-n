@@ -7,12 +7,11 @@ Vorschau: [Desktop](../../docs/website/vorschau-desktop.jpg) · [Handy](../../do
 ## Entwickeln
 
 ```bash
-npm run dev:website                     # http://localhost:4321
-PUBLIC_APP_URL=http://localhost:3000 npm run dev:website   # mit Kursliste aus der lokalen App
+npm run dev:website                     # http://localhost:4321 (im Codespace startet sie automatisch, Port 4321)
 npm run build:website                   # prüft (astro check) und baut nach apps/website/dist
 ```
 
-Die App erlaubt die Kursliste außerhalb der Produktion für `http://localhost:4321`, in Produktion nur für `WEBSITE_URL`.
+Beim Entwickeln holt die Website Kurse, Kapazität und Team-Status von der eigenen Adresse; der Dev-Server leitet `/api/oeffentlich/…` an die App auf `http://localhost:3000` weiter (anderes Ziel: `PUBLIC_APP_URL=…`). Das funktioniert auch im Codespace, wo `localhost:3000` im Browser nicht erreichbar ist. Erst im Build (Betrieb) lädt der Browser direkt von `PUBLIC_APP_URL`; die App erlaubt das per CORS nur für `WEBSITE_URL` (außerhalb der Produktion zusätzlich `http://localhost:4321`).
 
 ## Inhalte ändern
 

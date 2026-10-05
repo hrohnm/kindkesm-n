@@ -17,5 +17,13 @@ export default defineConfig({
     "/hebammenpraxis-kontakt": "/kontakt",
     "/cookies": "/datenschutz",
   },
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    server: {
+      // Entwicklung: Zugriff über die weitergeleitete Adresse eines GitHub Codespaces erlauben und die
+      // öffentlichen Schnittstellen an die lokale App weiterleiten (siehe src/skripte/app-url.ts)
+      allowedHosts: [".app.github.dev"],
+      proxy: { "/api/oeffentlich": { target: process.env.PUBLIC_APP_URL || "http://localhost:3000", changeOrigin: true } },
+    },
+  },
 });
