@@ -43,15 +43,17 @@ export function Kurs() {
   const navigate = useNavigate();
   const d = useDaten<Detail>(`/api/kurse/${id}`);
   const [bearbeiten, setBearbeiten] = useState(false);
-  const [meldung, setMeldung] = useState<{ art: "ok" | "fehler"; text: string }>();
+  const [meldung, setMeldung] = useState<{ art: "ok" | "fehler" | "hinweis"; text: string }>();
   if (!d.daten) return d.fehler ? <Meldung art="fehler">{d.fehler}</Meldung> : <Laden />;
   const { kurs } = d.daten;
 
+  /** Führt eine Änderung aus und lädt danach neu; gibt f einen Text zurück, erscheint er als Hinweis. */
   async function aktion(f: () => Promise<unknown>, ok?: string) {
     setMeldung(undefined);
     try {
-      await f();
-      if (ok) setMeldung({ art: "ok", text: ok });
+      const hinweis = await f();
+      if (typeof hinweis === "string") setMeldung({ art: "hinweis", text: hinweis });
+      else if (ok) setMeldung({ art: "ok", text: ok });
       await d.laden();
     } catch (e) {
       setMeldung({ art: "fehler", text: (e as Error).message });
@@ -184,7 +186,7 @@ function Teilnehmerinnen({ d, aktion }: { d: Detail; aktion: (f: () => Promise<u
             const r = await api<Teilnahme>(`/api/kurse/${d.kurs.id}/teilnahmen`, { method: "POST", body: { ...w, klientinId: w.klientinId || null, email: w.email || null, telefon: w.telefon || null, stichtag: w.stichtag || null } });
             setNeu(false);
             setW({ klientinId: "", name: "", email: "", telefon: "", stichtag: "", partner: false });
-            if (r.status === "warteliste") throw new Error("Der Kurs ist voll – auf die Warteliste gesetzt.");
+            if (r.status === "warteliste") return "Der Kurs ist voll – auf die Warteliste gesetzt.";
           })}>Hinzufügen</button>
         </div>
       )}

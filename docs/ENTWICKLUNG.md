@@ -60,7 +60,12 @@ npm test            # API-Tests brauchen eine Testdatenbank: TEST_DATABASE_URL (
 # Browser-Rundgang (iPad quer und Handy) gegen eine laufende Instanz mit Demo-Daten
 npm run build && ANMELDUNG_MAX=1000 WEB_DIST=$PWD/apps/web/dist node apps/api/dist/server.js &
 cd apps/web && npx playwright test
+
+# Alle User-Walkthroughs (docs/WALKTHROUGHS.md) mit Screenshots; Demo-Daten vorher zurücksetzen
+npm run db:reset:demo && (cd apps/web && npm run walkthrough)
 ```
+
+Ergebnis und Ablauf des Walkthrough-Durchlaufs: [walkthrough-protokoll/README.md](walkthrough-protokoll/README.md).
 
 ## Datenbank-Änderungen
 
