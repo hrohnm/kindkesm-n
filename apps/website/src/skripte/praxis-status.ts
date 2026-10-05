@@ -7,10 +7,12 @@ export type PraxisStatus = {
   team: Array<{ name: string; status: "aktiv" | "babypause"; babypauseBis: string | null }>;
 };
 
+import { api } from "./app-url";
+
 let laden: Promise<PraxisStatus | null> | undefined;
 
 export function praxisStatus(app: string): Promise<PraxisStatus | null> {
-  laden ??= fetch(`${app}/api/oeffentlich/praxis`)
+  laden ??= fetch(api(app, "/api/oeffentlich/praxis"))
     .then((r) => (r.ok ? (r.json() as Promise<PraxisStatus>) : null))
     .catch(() => null);
   return laden;

@@ -3,6 +3,7 @@
  * Kapazitätsampel: Für welche Entbindungsmonate sind noch Plätze frei? Live aus der Praxis-App,
  * ohne Zahlen und ohne Personendaten. Ohne PUBLIC_APP_URL bzw. ohne Verbindung bleibt der Baustein unsichtbar.
  */
+import { appUrl } from "../skripte/app-url";
 interface Props {
   /** Anzahl der Monate */
   monate?: number;
@@ -10,7 +11,7 @@ interface Props {
   kompakt?: boolean;
 }
 const { monate = 9, kompakt = false } = Astro.props;
-const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const app = appUrl();
 ---
 
 {app && (

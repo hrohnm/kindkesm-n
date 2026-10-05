@@ -5,6 +5,7 @@
  * bzw. Warteliste). Direktlink auf einen Kurs: /kurse?kurs=<id> öffnet gleich das Formular.
  * Ohne Verbindung oder ohne PUBLIC_APP_URL erscheint ein Hinweis mit Kontaktweg.
  */
+import { appUrl } from "../skripte/app-url";
 interface Props {
   /** höchstens so viele Kurse anzeigen */
   max?: number;
@@ -12,7 +13,7 @@ interface Props {
   filter?: boolean;
 }
 const { max, filter = false } = Astro.props;
-const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const app = appUrl();
 const feld = "mt-1 block min-h-12 w-full rounded-2xl border border-salbei-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none";
 const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 ---
@@ -76,6 +77,8 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 </div>
 
 <script>
+  import { api } from "../skripte/app-url";
+
   type Kurs = {
     id: string;
     titel: string;
@@ -104,8 +107,8 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
   };
 
   for (const box of document.querySelectorAll<HTMLElement>("[data-kursliste]")) {
-    const app = box.dataset.app;
-    if (!app) continue;
+    if (!box.dataset.app) continue;
+    const app: string = box.dataset.app;
     const max = Number(box.dataset.max) || Infinity;
     const hinweis = box.querySelector<HTMLElement>("[data-kurs-hinweis]")!;
     const meldung = box.querySelector<HTMLElement>("[data-kurs-text]")!;
@@ -195,7 +198,7 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
       const vorher = knopf.textContent;
       knopf.textContent = "Wird gesendet …";
       try {
-        const r = await fetch(`${app}/api/oeffentlich/kurse/${encodeURIComponent(aktuell.id)}/anmeldung`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
+        const r = await fetch(api(app, `/api/oeffentlich/kurse/${encodeURIComponent(aktuell.id)}/anmeldung`), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
         const antwort = (await r.json().catch(() => ({}))) as { warteliste?: boolean; bereits?: boolean; fehler?: string; felder?: Record<string, string> };
         if (r.ok) {
           k_("danke").textContent = antwort.bereits
@@ -271,7 +274,7 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 
     let ersteLadung = true;
     function laden() {
-      fetch(`${app}/api/oeffentlich/kurse`)
+      fetch(api(app, "/api/oeffentlich/kurse"))
         .then((r) => (r.ok ? (r.json() as Promise<Kurs[]>) : Promise.reject(new Error(String(r.status)))))
         .then((kurse) => {
           if (!kurse.length) {

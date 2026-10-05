@@ -3,9 +3,10 @@
  * Betreuungsanfrage: geht direkt in den Posteingang der Praxis-App (M11).
  * Ohne JavaScript bzw. ohne PUBLIC_APP_URL wird stattdessen der Weg per E-Mail/Telefon angezeigt (Slot).
  */
+import { appUrl } from "../skripte/app-url";
 import { GEBIETE } from "../inhalte/praxis";
 
-const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const app = appUrl();
 const LEISTUNGEN = [
   ["vorsorge", "Schwangerschaftsvorsorge"],
   ["wochenbett", "Wochenbettbetreuung"],
@@ -77,6 +78,8 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 )}
 
 <script>
+  import { api } from "../skripte/app-url";
+
   for (const box of document.querySelectorAll<HTMLElement>("[data-anfrage]")) {
     const app = box.dataset.app!;
     const form = box.querySelector<HTMLFormElement>("[data-anfrage-formular]")!;
@@ -117,7 +120,7 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
       knopf.disabled = true;
       knopf.textContent = "Wird gesendet …";
       try {
-        const r = await fetch(`${app}/api/oeffentlich/anfrage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
+        const r = await fetch(api(app, "/api/oeffentlich/anfrage"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) });
         if (r.ok) {
           form.classList.add("hidden");
           danke.classList.remove("hidden");

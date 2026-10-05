@@ -1,4 +1,5 @@
 ---
+import { appUrl } from "../skripte/app-url";
 import "../styles/global.css";
 import { FUSS_LEISTUNGEN, GEBIETE, PRAXIS, TEAM, telLink } from "../inhalte/praxis";
 
@@ -13,7 +14,7 @@ const { titel, beschreibung, bild } = Astro.props;
 const voll = titel ? `${titel} | ${PRAXIS.name} Bad Doberan` : `${PRAXIS.name} – Hebamme in Bad Doberan & Landkreis Rostock`;
 const kanonisch = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site);
 const pfad = Astro.url.pathname.replace(/\/$/, "") || "/";
-const app = (import.meta.env.PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+const app = appUrl();
 
 const MENUE = [
   { href: "/hebammen", text: "Die Hebammen" },

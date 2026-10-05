@@ -13,15 +13,15 @@
 
 ## Im GitHub Codespace ansehen
 
-Auf GitHub: **Code → Codespaces → Create codespace on main**. Der Codespace richtet sich selbst ein (Node 22, PostgreSQL, Abhängigkeiten, Demo-Daten; beim ersten Mal einige Minuten) und startet API und Web-App. Die Web-App öffnet sich über den Tab **Ports** (Port 5173). Anmeldung: `johanna@kindkesmoeoen.test` / `kindkes-demo-2026`.
+Auf GitHub: **Code → Codespaces → Create codespace on main**. Der Codespace richtet sich selbst ein (Node 22, PostgreSQL, Abhängigkeiten, Demo-Daten; beim ersten Mal einige Minuten) und startet API, Web-App und Website. Die Web-App öffnet sich über den Tab **Ports** (Port 5173), die Website über Port 4321 – mit Kursen, Anfrageformular und Kapazitätsampel live aus der App. Anmeldung: `johanna@kindkesmoeoen.test` / `kindkes-demo-2026`.
 
 Nützliche Befehle im Terminal des Codespaces:
 
 | Befehl | Wirkung |
 |---|---|
 | `npm run db:reset:demo` | Datenbank leeren und frische Demo-Daten einspielen (danach neu anmelden) |
-| `npm run dev:neustart` | API und Web-App neu starten (z. B. nach `git pull`) |
-| `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log` | Logs ansehen |
+| `npm run dev:neustart` | API, Web-App und Website neu starten (z. B. nach `git pull`) |
+| `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log /tmp/kindkes-website.log` | Logs ansehen |
 
 Meldet der Browser **401**, ist der Port privat: im Tab **Ports** über das Globus-Symbol öffnen oder Port 5173 per Rechtsklick auf **Public** stellen (nur mit Demo-Daten!).
 
