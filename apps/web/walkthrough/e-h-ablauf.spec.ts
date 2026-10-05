@@ -244,6 +244,11 @@ test("H1–H5 Abrechnung von offenen Fällen bis zur Zahlung", async ({ page }, 
   await page.goto("/abrechnung");
   await expect(page.getByRole("heading", { name: "Noch nicht abgerechnet" })).toBeVisible();
   await expect(page.getByText(/von \d+ Fällen abrechnungsbereit/)).toBeVisible();
+  // Einzelaufstellung je Patientin
+  await page.getByRole("button", { name: "▼ Einzelaufstellung" }).first().click();
+  const aufstellung = page.getByTestId("einzelaufstellung").first();
+  await expect(aufstellung.locator("td.font-mono").first()).toHaveText(/^\d{5}$/);
+  await expect(aufstellung.getByText(/× 5 Min\. à/).filter({ visible: true }).first()).toBeVisible();
   await bild(page, info, "H1-offene-faelle");
   // H2 Versand vorbereiten, Mappe prüfen, H5 auflösen
   await page.getByRole("button", { name: "Versand vorbereiten" }).click();
@@ -273,6 +278,8 @@ test("H1–H5 Abrechnung von offenen Fällen bis zur Zahlung", async ({ page }, 
   }
   await v2.getByRole("button", { name: "Speichern" }).click();
   await expect(v2.getByText(/bezahlt \d\d\.\d\d\.\d{4}/)).toBeVisible();
+  await v2.getByRole("button", { name: "Einzelaufstellung" }).click();
+  await expect(v2.getByTestId("einzelaufstellung").first()).toBeVisible();
   await bild(page, info, "H4-bezahlt");
 });
 

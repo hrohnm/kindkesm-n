@@ -130,7 +130,7 @@ Kein Programmfehler, aber das Drehbuch beschrieb es ungenau. [WALKTHROUGHS.md](.
 
 | | Ergebnis | Geprüft | Bilder |
 |---|---|---|---|
-| H1 | ✅🤖 | Offene Fälle mit Summen und Prüfung | [Bild](bilder/ipad-quer-H1-offene-faelle.jpg) |
+| H1 | ✅🤖 | Offene Fälle mit Summen und Prüfung, Einzelaufstellung je Patientin und je Versand | [Bild](bilder/ipad-quer-H1-offene-faelle.jpg) |
 | H2 | ✅🤖 | Versand vorbereiten, Versandmappe als PDF; ohne IK abgelehnt | [ohne IK](bilder/ipad-quer-H2-ohne-ik.jpg) · Mappe: [1](bilder/pdf-versandmappe-1.jpg) [2](bilder/pdf-versandmappe-2.jpg) [3](bilder/pdf-versandmappe-3.jpg) |
 | H3 | ✅🤖 | Versendet mit Einschreiben-Nr., danach nicht mehr auflösbar | – |
 | H4 | ✅ | Zahlung erfasst → „bezahlt“ | [Bild](bilder/ipad-quer-H4-bezahlt.jpg) |

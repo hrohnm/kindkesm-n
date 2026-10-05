@@ -24,6 +24,16 @@ describe("Abrechnung", () => {
     expect(r.faelle[0]).toMatchObject({ name: "Maria Hansen", anzahlBesuche: 3, belege: { tablet: 2, papier: 0 } });
     expect(r.faelle[0].pruefung).toEqual([]);
     expect(r.summe).toBeGreaterThan(250);
+    // Einzelaufstellung: je Besuch die Positionen, Summen passen zusammen
+    const fall = r.faelle[0];
+    expect(fall.besuche).toHaveLength(3);
+    expect(fall.besuche[0].leistungen[0]).toMatchObject({ gpos: expect.stringMatching(/^\d{5}$/), einheit: expect.any(String) });
+    const summeBesuche = fall.besuche.reduce((s: number, b: { summe: number }) => s + b.summe, 0);
+    expect(Math.round(summeBesuche * 100) / 100).toBe(fall.summe);
+    for (const b of fall.besuche) {
+      const summePosten = b.leistungen.reduce((s: number, l: { betrag: string }) => s + Number(l.betrag), 0);
+      expect(Math.round(summePosten * 100) / 100).toBe(b.summe);
+    }
   });
 
   it("meldet fehlende Pflichtangaben und lässt den Fall aus", async () => {
@@ -74,6 +84,9 @@ describe("Abrechnung", () => {
     expect(Number(bez.ausgezahlt)).toBeCloseTo(Number(d.summe) - 12.38, 2);
     const nachher = (await req("GET", `/api/abrechnung/versaende/${versandId}`)).json();
     expect(nachher.faelle[0].leistungen.find((x: { id: string }) => x.id === l.id)).toMatchObject({ status: "gekuerzt", kuerzungGrund: "Mehrlingszuschlag nicht anerkannt" });
+    // Einzelaufstellung des Versands zeigt die Kürzung an der Position
+    const posten = nachher.faelle[0].besuche.flatMap((b: { leistungen: Array<{ id: string }> }) => b.leistungen);
+    expect(posten.find((x: { id: string }) => x.id === l.id)).toMatchObject({ kuerzungBetrag: "12.38", kuerzungGrund: "Mehrlingszuschlag nicht anerkannt" });
   });
 
   it("löst einen vorbereiteten Versand wieder auf", async () => {
