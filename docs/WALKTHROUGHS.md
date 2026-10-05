@@ -1,0 +1,365 @@
+# User-Walkthroughs (Stand: Meilensteine M-1 bis M-6, M10, M12, M15, Akte-Ergänzung)
+
+Alle Abläufe, die mit dem aktuellen Entwicklungsstand möglich sind – als Testdrehbuch für die Demo-Umgebung und als Grundlage für weitere automatische Tests. Jeder Walkthrough hat eine Kennung, eine Ausgangslage, die Schritte und das erwartete Ergebnis.
+
+**Legende:** 🤖 = durch einen automatischen Browser-Test (`apps/web/e2e/`) abgedeckt · 📱 = auch auf dem Handy prüfen · ⚠️ = Fehler- bzw. Grenzfall
+
+## 0. Vorbereitung
+
+- Demo-Daten frisch einspielen: `npm run db:reset:demo`, dann `npm run dev:neustart` (im Codespace) und im Browser einmal hart neu laden.
+- Passwort aller Demo-Konten: `kindkes-demo-2026` (nur Test-Umgebung).
+
+| Konto | Rolle / Status | Demo-Familien |
+|---|---|---|
+| `johanna@kindkesmoeoen.test` | Hebamme, aktiv | Lena Krüger (Ole, Spontangeburt), Sophie Berger (schwanger), Anna Schulz (Mats), Katrin Lange (Ella), Mia Neumann (schwanger) |
+| `marielena@kindkesmoeoen.test` | Hebamme, aktiv | Maria Hansen (Zwillinge Paul & Emma, primäre Sectio, Risiko, Latex-Allergie), Jana Wolff (Anfrage), Laura Becker (Frieda, sekundäre Sectio), Svenja Koch (Jonas, vaginal-operativ, Englisch) |
+| `lorina@kindkesmoeoen.test` | Hebamme, Babypause bis 01.03.2027 | – |
+
+Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Marielena), Kurse „Geburtsvorbereitung am Wochenende“ (Kasse, zu zweit, ein Termin schon abgerechnet, eine offene Online-Anmeldung) und „Babymassage dienstags“ (Selbstzahler).
+
+---
+
+## A. Zugang und persönliche Einstellungen
+
+**A1 Anmelden** 🤖📱
+1. App öffnen → Anmeldeseite. In der Test-Umgebung einen Demo-Knopf antippen (füllt E-Mail und Passwort) oder Zugangsdaten eintippen → „Anmelden“.
+- Erwartet: Startseite „Guten Morgen/Tag/Abend, Vorname!“ mit Datum; Navigation links (Tablet) bzw. unten (Handy).
+
+**A2 Falsches Passwort** ⚠️
+1. Falsches Passwort eingeben.
+- Erwartet: Fehlermeldung. Nach 10 Fehlversuchen in 15 Minuten: Hinweis „Zu viele Versuche … einige Minuten warten“.
+
+**A3 Abmelden**
+1. Seitenleiste unten bzw. Einstellungen → „Abmelden“.
+- Erwartet: Anmeldeseite; Gerätedaten (Offline-Speicher) gelöscht. Gibt es noch nicht übertragene Änderungen, erscheint vorher eine Warnung (siehe L5).
+
+**A4 Passwort ändern**
+1. Einstellungen → Passwort → bisheriges und zweimal neues Passwort → Speichern.
+- Erwartet: Bestätigung; neue Anmeldung mit neuem Passwort möglich. ⚠️ Abweichende Wiederholung → Feldfehler.
+
+**A5 Mein Profil**
+1. Einstellungen → Mein Profil: Name, Kürzel, Telefon, IK, ggf. „Babypause voraussichtlich bis“ → Speichern.
+- Erwartet: IK erscheint später auf Formularen und im Versand; ohne IK verweigert die Abrechnung den Versand (H2 ⚠️).
+
+**A6 Orte und Tourvorlagen** 📱
+1. Einstellungen → Orte & Touren → Ort anlegen (Bezeichnung, Art, Anschrift „Straße Nr., PLZ Ort“, optional Abholzeit).
+2. Position prüfen: Karte des Ortes öffnen → „Aus Adresse ermitteln“ oder „Auf der Karte setzen“.
+3. Tourvorlage je Wochentag anlegen (Start, Ende, Abfahrt, Ende spätestens, Wegegeld ab).
+- Erwartet: Position wird beim Speichern automatisch aus der Adresse gesetzt (Adressverzeichnis bzw. Online-Suche); Vorlage wird für neue Touren des Wochentags verwendet. ⚠️ Unbekannte Anschrift → verständliche Meldung, Setzen auf der Karte bleibt möglich.
+
+**A7 Abrechnungseinstellungen**
+1. Einstellungen → Abrechnung: Weg (HebSet bzw. eigene Abrechnungsstelle mit Name/Anschrift), Rhythmus und Stichtag, Erinnerung (Tage vorher), bevorzugtes Unterschriftsverfahren (Papier/Tablet) → Speichern.
+- Erwartet: Fristen-Hinweise im Cockpit passen sich an; ohne Einstellungen zeigt das Cockpit „Abrechnungseinstellungen sind noch nicht hinterlegt“.
+
+**A8 Praxisdaten**
+1. Einstellungen → Praxis: Name, Praxisstandort, Telefon, E-Mail → Speichern.
+- Erwartet: erscheinen auf Versandmappe, Kinderurkunde und als gemeinsamer Ort „Praxis“.
+
+**A9 Persönliche Ansicht der Dokumentation** 🤖
+1. Einstellungen → Dokumentation: Felder für Mutter und Kind ein-/ausblenden, „Vergleich mit dem letzten Besuch“ je Feld, „Kachel beim Öffnen aufgeklappt“ → Speichern. „Auf Standard zurücksetzen“ testen.
+- Erwartet: Im Besuch (D1) sind ausgeblendete Felder verborgen, aber über „Weitere Felder einblenden“ erreichbar; Felder mit Wert erscheinen immer. Die Kaiserschnittnarbe ist als „(nach Kaiserschnitt)“ gekennzeichnet.
+
+---
+
+## B. Startseite (Cockpit)
+
+**B1 Tagesstart** 📱
+1. Nach der Anmeldung die Startseite ansehen.
+- Erwartet:
+  - Kachel „Heute“ mit geplanten/erledigten Besuchen und Tour-Übersicht (Karte, nächster Besuch, „Zur Tour ›“).
+  - „Offene Dokumentationen“ (Entwürfe) mit direktem Link.
+  - „Fristen und Hinweise“, z. B. Abrechnungsstichtag, Ausschlussfrist 30.06., unbezahlte Versände, Regelwerk-Freigaben „wartet auf deine Freigabe“, Kinderurkunde vorbereiten (7 Tage vor Ende der 12. Lebenswoche), neue Online-Anmeldungen zu eigenen Kursen, Rückkehr aus der Babypause. Hinweise mit Link führen direkt zur passenden Seite.
+
+---
+
+## C. Klientinnen und Akte
+
+**C1 Neue Klientin anlegen**
+1. Klientinnen → „Neue Klientin“ → Name, Anschrift, Telefon, ET, zuständige Hebamme → Anlegen.
+- Erwartet: Akte öffnet sich; Betreuung „Schwangerschaft“ mit ET; Position der Wohnung automatisch aus der Adresse („aus der Adresse“ bzw. „ungefähr – bitte prüfen“).
+
+**C2 Suchen und filtern** 📱
+1. Klientinnen → Suchfeld (Name oder Ort), „Alle/Meine“, Status-Filter (Laufend, Anfrage, Schwangerschaft, Wochenbett, Abgeschlossen, Alle).
+- Erwartet: Liste mit Lebenstag bzw. SSW/ET, zuständigem Kürzel, Flaggen (z. B. „Risiko“), Hinweis „Vertretung durch mich“.
+
+**C3 Stammdaten und Anschrift ändern**
+1. Akte → Stammdaten „Bearbeiten“ → z. B. Versichertennummer, Kasse, IK, Anschrift → Speichern.
+- Erwartet: Bei geänderter Anschrift wird die Position neu bestimmt und Wegegeld offener Tage neu berechnet. ⚠️ Versichertennummer/Kassen-IK im falschen Format → Feldfehler.
+
+**C4 Betreuung bearbeiten**
+1. Akte → Betreuung „Bearbeiten“: Status, ET, Gravida/Para, Geburtsort, **Art der Geburt** (Auswahl), **Vertretung**, Notizen → Speichern.
+- Erwartet: Anzeige von SSW bzw. Lebenstag; Art der Geburt und Vertretung sichtbar.
+
+**C5 Geburt erfassen**
+1. Akte → Kinder → „Geburt / Kind erfassen“ → Vorname, Geburtsdatum/-zeit, Geschlecht, Gewicht, Länge, Kopfumfang, **Art der Geburt** → Speichern. Bei Zwillingen ein zweites Kind erfassen.
+- Erwartet: Betreuung wechselt auf „Wochenbett“; Kind mit Links „Wachstum und Perzentilen ›“ und „Kinderurkunde ›“; bei Kaiserschnitt erscheint im Besuch das Feld „Kaiserschnittnarbe“ (D6).
+
+**C6 Merkmale** 🤖
+1. Akte → Merkmale „Bearbeiten“ → Flaggen (Risiko, Sozialdienst/Jugendamt, Dolmetscherin nötig, psychische Belastung, erstgebärend), Sprache, Allergien → Speichern.
+- Erwartet: Abzeichen oben in der Akte und in der Liste; Allergien als rote Meldung in Akte und Besuch.
+
+**C7 Kontakte** 🤖
+1. Akte → Kontakte „+ Kontakt“ → Art (Partner/Begleitperson, Gynäkologin, Kinderärztin, Klinik, Notfall, Sonstige), Name, Telefon, E-Mail, Anschrift → Speichern; Kontakt bearbeiten und löschen.
+- Erwartet: Telefon- und E-Mail-Links funktionieren.
+
+**C8 Einwilligungen** 🤖
+1. Akte (unten) → Einwilligungen → z. B. „Fotos“ → „Erfassen“ → Form „auf dem Tablet unterschrieben“ → unterschreiben → „Einwilligung erteilt“.
+2. Andere Einwilligung schriftlich/mündlich erfassen; später „Widerrufen“ mit Datum.
+- Erwartet: Status „✓ erteilt TT.MM.JJJJ · Form“ bzw. „widerrufen TT.MM.JJJJ“; Unterschrift bleibt sichtbar; jede Änderung im Protokoll. ⚠️ Tablet ohne Unterschrift → Knopf bleibt gesperrt.
+
+**C9 Wohnung auf der Karte**
+1. Akte (unten) → „Aus Adresse ermitteln“ bzw. „Position korrigieren“ → auf die Haustür tippen.
+- Erwartet: Position gespeichert („von Hand gesetzt“), Wegegeld neu berechnet. ⚠️ Anschrift nicht gefunden → Meldung, bisherige Position bleibt.
+
+**C10 Vertretung**
+1. Als Johanna bei Lena Krüger Vertretung = Marielena eintragen (C4).
+2. Als Marielena anmelden → Klientinnen → „Meine“.
+- Erwartet: Lena Krüger erscheint bei Marielena mit „Vertretung durch mich“.
+
+**C11 Formular für die Mappe der Familie drucken**
+1. Akte → Betreuung → „Formular 3.1 drucken“ (Schwangerschaft) bzw. „3.3“ (nach der Geburt).
+- Erwartet: Amtliches Formular als PDF mit vorausgefülltem Kopf (für Papier-Unterschriften).
+
+**C12 Kontingente und Besuchsliste**
+1. Akte → Kontingente und Besuche ansehen.
+- Erwartet: Kontingentbalken (z. B. „2 von 20 Kontakte“, bei Kursen in Minuten); Besuche mit Leistung, Art, GPOS, Minuten, Betrag, Unterschriftsart; Kurseinheiten führen zum Kurstermin.
+
+---
+
+## D. Besuch dokumentieren
+
+**D1 Wochenbett-Hausbesuch aus der Tour (Papier-Unterschrift)** 🤖📱
+1. Tour → Termin → „Dokumentieren“ (Datum und Leistung sind vorbelegt).
+2. Beginn/Ende („Jetzt“-Knöpfe), Kacheln Mutter und Kind aufklappen, Werte eintragen (Zuletzt-Werte erscheinen zum Vergleich), Notiz.
+3. Kopfzeile: Abrechnung prüfen (Minuten, GPOS, Betrag, Hinweise; „▼ Einzelheiten“).
+4. Unterschrift: Formularzeile abschreiben, Häkchen „Die Versicherte hat die Zeile … unterschrieben“ → „Abschließen“.
+- Erwartet: zurück zur Tour, Termin „✓“ erledigt, Besuch in der Akte „✓ Papier-Unterschrift“; Wegegeld des Tages aktualisiert.
+
+**D2 Besuch mit Tablet-Unterschrift** 🤖
+1. Akte → „Besuch dokumentieren“ → Leistung erfassen → „Stattdessen auf dem Tablet“ → unterschreiben lassen → „Abschließen“.
+- Erwartet: Besuch „✓ Tablet-Unterschrift“; erscheint im Versand als Eigendruck auf dem amtlichen Formular.
+
+**D3 Vorsorge bzw. Leistung in der Praxis mit Material**
+1. Bei einer Schwangeren (Sophie Berger) Besuch öffnen → Art „In der Praxis“, Leistung „Vorsorgeuntersuchung“, Material (z. B. Material Vorsorge) wählen.
+- Erwartet: Materialpauschale in der Abrechnung; kein Wegegeld.
+
+**D4 Entwurf, Weiterdokumentieren, Löschen**
+1. Besuch nur als „Entwurf“ speichern → Startseite „Offene Dokumentationen“ → weiter dokumentieren → abschließen; einen anderen Entwurf „Löschen“.
+- Erwartet: Entwürfe sind nicht abrechenbar; Löschen nur bei Entwürfen.
+
+**D5 Prüfhinweise der Abrechnung** ⚠️
+1. Fälle ausprobieren: Ende vor Beginn, sehr lange Dauer, Kontingent ausgeschöpft, Wochenbett-Leistung vor der Geburt, Abschließen ohne Unterschrift.
+- Erwartet: rote Fehler bzw. gelbe Hinweise im Kopf; „Abschließen“ wird bei Fehlern bzw. fehlender Unterschrift abgelehnt.
+
+**D6 Kaiserschnittnarbe und Mehrfachauswahl** 🤖
+1. Laura Becker (sekundäre Sectio) → Besuch → Kachel Mutter: „Kaiserschnittnarbe“ mit mehreren Werten (z. B. reizlos + Fäden/Klammern entfernt), Brust „gefüllt“ + „wunde Mamillen“.
+2. Kachel zuklappen; zum Vergleich Svenja Koch (vaginal-operativ) öffnen.
+- Erwartet: Mehrere Chips mit ✓; Kurzfassung zeigt alle Werte; bei Svenja Koch kein Narbenfeld. Fundus bleibt Einzelauswahl.
+
+**D7 Wachstum aus dem Besuch**
+1. Kachel Kind → „Wachstum“ → Reiter Gewicht/Länge/Kopfumfang; Fenster schließen (✕ oder Esc).
+- Erwartet: Kurve inkl. des gerade eingetragenen (noch nicht gespeicherten) Werts; Besuchsformular bleibt unverändert.
+
+**D8 Abgeschlossenen Besuch korrigieren** ⚠️
+1. Abgeschlossenen Besuch öffnen → Dokumentation ändern → „Änderungen speichern“.
+- Erwartet: Datum, Zeiten und Leistung sind gesperrt (§ 12); frühere Fassung bleibt als Version erhalten. Ist der Besuch schon einem Versand zugeordnet, wird die Änderung abgelehnt.
+
+**D9 Besuch einer Kollegin** ⚠️
+1. Als Marielena einen Besuch von Johanna öffnen (z. B. über die Akte einer vertretenen Familie).
+- Erwartet: nur lesbar, Hinweis „von einer Kollegin dokumentiert“.
+
+---
+
+## E. Wachstum und Kinderurkunde
+
+**E1 Wachstumsseite** 🤖
+1. Akte → Kind → „Wachstum und Perzentilen ›“ → Reiter Gewicht, Länge, Kopfumfang; Punkte antippen.
+- Erwartet: WHO-Perzentilkurven (P3–P97), Kennzahlen (tiefster Wert, Geburtsgewicht wieder erreicht, Perzentile), Tabelle mit Veränderung und Herkunft (Geburt/Besuch/Entwurf).
+
+**E2 Kinderurkunde gestalten** 🤖
+1. Akte → Kind → „Kinderurkunde ›“ (z. B. Frieda Becker).
+2. Gestaltung (Kindkesmöön, Ostsee, Leuchtturm, Schlicht), Titel, Textvorlage (warm, kurz, plattdeutsch, Mehrlinge, Geschwister), Text anpassen.
+3. Tabelle: Alle / Nur Wochenwerte / einzelne Zeilen, „Besonderes“ ergänzen; Meilensteine hinzufügen; Optionen (Kurven für Gewicht, Größe, Kopfumfang, Perzentilen, Sternzeichen, Unterschrift, Kurs-Hinweis).
+4. „PDF-Vorschau“ → „Entwurf speichern“ bzw. „Fertig“ → „Gespeichertes PDF öffnen“ und drucken.
+- Erwartet: Zweiseitige Urkunde (Kindkesmöön: Seite 2 „Dein Wachstum“); Status in der Akte gespeichert.
+
+**E3 Urkunde ohne Einwilligung** ⚠️
+1. Urkunde einer Familie ohne erfasste Einwilligung „Kinderurkunde“ öffnen.
+- Erwartet: Hinweis mit Link „In der Akte unter Einwilligungen erfassen“; Erstellen bleibt möglich.
+
+**E4 Erinnerung im Cockpit**
+1. Kind, dessen 12. Lebenswoche in ≤ 7 Tagen endet (Testkind mit Geburtsdatum vor ca. 80 Tagen anlegen).
+- Erwartet: Hinweis „Kinderurkunde für … vorbereiten“ mit Link; verschwindet, sobald die Urkunde „Fertig“ ist.
+
+---
+
+## F. Tourenplanung
+
+**F1 Tag planen** 🤖📱
+1. Tour → Tag wählen (‹ ›, Datumsfeld, „Heute“) → „Besuch einplanen“ → Familie, Zeit (feste Uhrzeit / Zeitfenster / vormittags / nachmittags / flexibel), Dauer, Leistung, „muss heute“, Notiz → „Termin anlegen“. Vorschläge (fällige Familien) übernehmen.
+2. „Route optimieren“.
+- Erwartet: Reihenfolge mit Ankunftszeiten, Karte mit Route, Strecke/Fahrzeit/Besuchszeit; feste Zeiten werden eingehalten.
+
+**F2 Start, Ziel und Zeiten**
+1. Start-/Zielzeile „bearbeiten“ → Start/Ziel-Ort, Abfahrt, Ankunft spätestens, Puffer, Wegegeld ab → speichern.
+- Erwartet: Neuberechnung; Hinweis, wenn „Ankunft spätestens“ überschritten wird.
+
+**F3 Unterwegs** 📱
+1. Am Termin „Apple Karten“ / „Google Maps“ / „Anrufen“.
+- Erwartet: Navigation bzw. Anruf öffnet sich.
+
+**F4 Termine ändern** ⚠️
+1. Reihenfolge mit ↑/↓, Termin bearbeiten, auf einen anderen Tag verschieben, absagen (mit Besuch) bzw. löschen (ohne Besuch).
+- Erwartet: Tour als „Entwurf“, „Ab jetzt neu berechnen“ möglich.
+
+**F5 Tour abschließen und Fahrtenbuch** 🤖
+1. „Tour bestätigen“ → „Ins Fahrtenbuch“ → „Fahrtenbuch öffnen“.
+- Erwartet: Fahrtenbuch-Eintrag des Tages mit Hausbesuchen und km.
+
+**F6 Wegegeld prüfen** ⚠️
+1. Tour unten: Wegegeld-Tabelle (50100/50200, km je Familie). Familie über 25 km → Begründung eintragen; „Gesamtstrecke von Hand (km)“ testen.
+- Erwartet: Wegegeld-Leistungen aktualisiert; gesperrt, sobald der Tag versendet ist.
+
+---
+
+## G. Fahrtenbuch
+
+**G1 Fahrtenbuch führen** 🤖
+1. Fahrtenbuch → Monat wählen → Eintrag bearbeiten (km-Stand Beginn/Ende, km dienstlich/privat/Wohnung–Praxis, Zweck, Strecke) → Speichern.
+2. Export „CSV (Excel)“ und „PDF“ (Monat bzw. Jahr).
+- Erwartet: Summen je Monat; Exporte enthalten alle Pflichtangaben.
+
+---
+
+## H. Abrechnung
+
+**H1 Offene Fälle prüfen** 🤖
+1. Abrechnung → offene Fälle bis Datum.
+- Erwartet: Fälle mit Summen und Prüfung; ⚠️ fehlende Versichertennummer/Kassen-IK/Anschrift rot (Fall wird beim Versand ausgelassen), Kontingent-Hinweise gelb.
+
+**H2 Versand vorbereiten** 🤖
+1. „Versand vorbereiten“ → „Versandmappe (PDF)“ öffnen.
+- Erwartet: Deckblatt, je Fall Abrechnungsdatenblatt mit Kontrollliste (Papier-Originale), Eigendruck-Formulare 3.1/3.3/3.4 für Tablet-Unterschriften. ⚠️ Ohne IK → Fehlermeldung; bei Selbstabrechnung zweiter Versand im Monat → Warnung.
+
+**H3 Versendet melden**
+1. Versand → „versendet“ → Datum, Einschreiben-Nr.
+- Erwartet: Leistungen gesperrt; nach 6 Wochen ohne Zahlung Hinweis im Cockpit.
+
+**H4 Zahlung mit Kürzung**
+1. Versand → „bezahlt“ → Zahlungseingang, ggf. Kürzung je Leistung mit Grund.
+- Erwartet: Versand bezahlt, ausgezahlter Betrag sichtbar.
+
+**H5 Versand auflösen** ⚠️
+1. Vorbereiteten (nicht versendeten) Versand auflösen.
+- Erwartet: Leistungen wieder offen; bei versendeten Versänden nicht möglich.
+
+---
+
+## I. Kurse
+
+**I1 Kurs anlegen** 📱
+1. Kurse → „Kurs anlegen“ → Titel, Kursart, Abrechnung (Krankenkasse/Selbstzahler), Gruppe oder Einzelunterweisung, Ort, Plätze, Preis/Partnergebühr, Kursleitung (eine oder zwei Hebammen), Beschreibung, Online-Anmeldung → anlegen.
+2. „+ Termine“: erster Termin, Uhrzeit, Format (Präsenz, digital, Video), „Rechnet ab“, Anzahl und Abstand (Serie), Thema.
+- Erwartet: Kurs mit Terminliste, Platzanzeige, Status.
+
+**I2 Teilnehmerinnen verwalten**
+1. „+ Teilnehmerin“ aus der Akte oder ohne Akte; bei vollem Kurs automatisch Warteliste.
+2. „Bestätigen“, „Nachrücken“, „Stornieren“, „bezahlt“ (Selbstzahler), „Akte zuordnen …“.
+- Erwartet: ⚠️ Nachrücken bei vollem Kurs wird abgelehnt; Kassenkurse zeigen „keine Akte“ in Rot.
+
+**I3 Online-Anmeldung** 🤖📱
+1. Ohne Anmeldung `/anmeldung` öffnen (z. B. privates Fenster) → Kurs wählen → Formular mit Einwilligung → „Verbindlich anmelden“ bzw. „Auf die Warteliste“.
+2. Als Kursleiterin: Cockpit-Hinweis „neue Online-Anmeldung“ → Kurs → „Bestätigen“ → ggf. Akte zuordnen.
+- Erwartet: Nur freigeschaltete Kurse, keine Namen anderer; ⚠️ ohne Einwilligung Fehlermeldung.
+
+**I4 Anwesenheit und Kassenabrechnung** 🤖
+1. Kurs → Termin → „Anwesenheit“ → Teilnehmerinnen abhaken, je Versicherte auf dem Tablet oder auf Papier unterschreiben → „Termin abschließen“.
+- Erwartet: Je Versicherte eine Kurseinheit (Minuten, Betrag, Kontingent 14 h / 10 h, Selbstlern-Anteil); erscheint in der Akte und im nächsten Versand auf Formular 3.4. ⚠️ Ohne Akte bzw. Rückbildung nach dem 9. Monat → Hinweis, keine Abrechnung.
+
+**I5 Selbstzahlerkurs**
+1. „Babymassage dienstags“: Teilnehmerinnen, „bezahlt“ abhaken, Anwesenheit.
+- Erwartet: keine Kassenleistung; Rechnungen folgen mit M13.
+
+---
+
+## J. Regelwerk (Vier-Augen-Prinzip)
+
+**J1 Regelwerk ansehen**
+1. Regelwerk → Fassung wählen, Kategorie (Auswahl), Suche nach GPOS/Text; Selbstzahler-Preisliste.
+- Erwartet: Positionen mit Beträgen, Kontingenten, Formularzuordnung.
+
+**J2 Änderung vorschlagen und freigeben** 🤖
+1. Als Marielena: Position bzw. Kontingent bearbeiten → Kurzbeschreibung und Begründung → vorschlagen → „Im Testrechner prüfen“ (Vorher/Nachher).
+2. Als Johanna: Cockpit-Hinweis „wartet auf deine Freigabe“ → freigeben oder ablehnen (mit Kommentar).
+- Erwartet: Wirksam erst nach Freigabe durch eine andere aktive Hebamme. ⚠️ Eigene Vorschläge und Hebammen in Babypause (Lorina) können nicht freigeben; geänderte Grundlage → Konfliktmeldung.
+
+**J3 Neue Position, neues Kontingent, CSV**
+1. „+ neue Position“ bzw. Kontingent anlegen; Positionen als CSV exportieren, bearbeiten, importieren (Vorschau → Vorschlag).
+- Erwartet: Alles läuft als Vorschlag mit Freigabe.
+
+**J4 Eigene Selbstzahler-Preise** 🤖
+1. Selbstzahler-Leistung → „Mein Preis (€)“.
+- Erwartet: eigener Preis je Hebamme; Praxispreise ändern nur mit Freigabe.
+
+**J5 Fassung freigeben / neue Fassung**
+1. „Fassung freigeben“ (Startbelegung) bzw. neue Fassung ab Datum anlegen.
+- Erwartet: Nach einem Versand ist eine Fassung inhaltlich gesperrt; Korrekturen über neue Fassung.
+
+---
+
+## K. Team
+
+**K1 Team ansehen** 🤖
+1. Team → Mitglieder mit Status (aktiv/Babypause bis …), Kontaktdaten, „IK hinterlegt“.
+- Erwartet: Lorina mit Babypause-Hinweis; Rückkehr 90 Tage vorher im Cockpit.
+
+---
+
+## L. Offline-Betrieb
+
+**L1 Für unterwegs laden** 🤖
+1. Einstellungen → Offline → „Für unterwegs laden“ (passiert auch automatisch beim Start und stündlich).
+- Erwartet: Meldung „… Datensätze für heute und morgen gespeichert“, Zeitpunkt sichtbar.
+
+**L2 Besuch im Funkloch** 🤖📱
+1. Verbindung trennen (Flugmodus bzw. Browser-Werkzeuge „Offline“) → Tour → Besuch dokumentieren und abschließen.
+2. Verbindung wiederherstellen.
+- Erwartet: „Ohne Verbindung gespeichert …“, Statusleiste „Offline – 1 Änderung warten“, Termin „offline dokumentiert“, Abrechnung „vorläufig (offline)“; nach der Rückkehr automatische Übertragung, Termin erledigt.
+
+**L3 App ohne Netz öffnen** 🤖
+1. Offline die App neu laden bzw. vom Homescreen öffnen.
+- Erwartet: App startet, Anmeldung bleibt, gespeicherte Daten sichtbar („Stand HH:MM“).
+
+**L4 Konflikt zwischen zwei Geräten** ⚠️
+1. Denselben Besuch auf Gerät A offline ändern, auf Gerät B online dasselbe Feld anders ändern; Gerät A wieder online.
+- Erwartet: Verschiedene Felder werden automatisch zusammengeführt; gleiches Feld → Statusleiste „Konflikt“, Einstellungen → Offline zeigt beide Werte → „Diese Fassung übernehmen“ oder „Andere Fassung behalten“.
+
+**L5 Abmelden mit offenen Änderungen** ⚠️
+1. Offline eine Änderung speichern, dann abmelden.
+- Erwartet: Warnung, dass Änderungen verloren gehen; nach Bestätigung werden Gerätedaten gelöscht.
+
+**L6 Nur online mögliche Aktionen** ⚠️
+1. Offline z. B. Akte bearbeiten, Tour planen oder Versand vorbereiten.
+- Erwartet: Meldung „Keine Verbindung – das ist nur mit Verbindung möglich.“
+
+---
+
+## M. Rollen und Berechtigungen
+
+**M1 Hebamme in Babypause** ⚠️
+1. Als Lorina anmelden.
+- Erwartet: Anmeldung möglich, Fälle sichtbar; Regelwerk-Freigaben nicht möglich.
+
+**M2 Büro-Konto** ⚠️
+1. Konto mit Rolle „buero“ per CLI anlegen (siehe M3) und anmelden.
+- Erwartet: keine Gesundheitsdaten (Klientinnen, Besuche, Kurse liefern „nur für Hebammen“).
+
+**M3 Betrieb (Server, Kommandozeile)**
+1. Konto anlegen, Passwort zurücksetzen, Konto sperren (`docs/BETRIEB.md`, Abschnitt 3); Demo-Daten zurücksetzen; Kartendaten einrichten (5a); Backup und Wiederherstellung (5).
+- Erwartet: Gesperrte Konten können sich nicht anmelden; Passwort-Reset beendet alle Sitzungen.
+
+---
+
+## N. Bekannte Lücken (noch kein Walkthrough möglich)
+
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), 2FA/automatische Sperre/Geräte abmelden/Datenexport (M25), Belegungsplan (M11), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
