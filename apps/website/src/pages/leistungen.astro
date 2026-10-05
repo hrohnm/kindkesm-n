@@ -1,0 +1,47 @@
+---
+import { Image } from "astro:assets";
+import Seite from "../layouts/Seite.astro";
+import { LEISTUNGEN } from "../inhalte/praxis";
+---
+
+<Seite titel="Leistungen" beschreibung="Schwangerschaftsvorsorge, Wochenbettbetreuung, Stillberatung, Geburtsvorbereitung, Rückbildung und Beikostberatung – Hebammenleistungen in Bad Doberan und Umgebung.">
+  <section class="bg-salbei-100">
+    <div class="rahmen py-12 sm:py-16">
+      <p class="etikett">Was wir für euch tun</p>
+      <h1 class="mt-3">Leistungen</h1>
+      <p class="mt-5 max-w-3xl text-lg">Von der Schwangerschaft bis zum Ende der Stillzeit begleiten wir euch – die meisten Leistungen bezahlt die Krankenkasse.</p>
+      <nav aria-label="Leistungen" class="mt-8">
+        <ul class="flex flex-wrap gap-2">
+          {LEISTUNGEN.map((l) => <li><a href={`#${l.id}`} class="inline-block rounded-full bg-white px-4 py-2 text-sm font-medium no-underline ring-1 ring-salbei-200 hover:ring-salbei-400">{l.titel}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <div class="rahmen divide-y divide-salbei-100">
+    {LEISTUNGEN.map((l, i) => (
+      <section id={l.id} class="grid scroll-mt-24 items-center gap-8 py-12 sm:py-16 lg:grid-cols-2">
+        <Image src={l.bild} alt={l.bildAlt} widths={[500, 900]} sizes="(min-width: 1024px) 50vw, 100vw" class={`aspect-[4/3] w-full rounded-[2rem] object-cover ${i % 2 ? "lg:order-2" : ""}`} />
+        <div>
+          <h2>{l.titel}</h2>
+          <div class="fliesstext mt-5">
+            {l.text.map((p) => <p>{p}</p>)}
+          </div>
+          <p class="mt-5 flex items-start gap-2 rounded-2xl bg-salbei-50 p-4 text-[0.95rem]">
+            <svg class="mt-0.5 size-5 shrink-0 text-salbei-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z" /></svg>
+            <span><strong>Kosten:</strong> {l.kasse}</span>
+          </p>
+          {l.link && <a href={l.link.href} class="knopf-sekundaer mt-5">{l.link.text}</a>}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <section class="rahmen">
+    <div class="karte bg-salbei-100 text-center ring-0 sm:p-10">
+      <h2>Ihr wünscht euch eine Hebamme?</h2>
+      <p class="mx-auto mt-3 max-w-2xl">Meldet euch so früh wie möglich – am besten bis zur 12. Schwangerschaftswoche.</p>
+      <a href="/kontakt#anfrage" class="knopf-primaer mt-6">Betreuung anfragen</a>
+    </div>
+  </section>
+</Seite>

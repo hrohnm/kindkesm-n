@@ -154,6 +154,25 @@ Das Skript lädt den OpenStreetMap-Extrakt Mecklenburg-Vorpommern (Geofabrik, ca
 
 Die Anmeldeseite für Kurse ist ohne Konto erreichbar: `https://<adresse>/anmeldung`. Diesen Link auf der Praxis-Website eintragen. Sichtbar sind nur Kurse, bei denen „Online-Anmeldung über die Website“ eingeschaltet ist; es werden keine Namen von Teilnehmerinnen angezeigt. Anmeldungen sind je IP-Adresse auf 10 pro Stunde begrenzt.
 
+## 6b. Öffentliche Website
+
+Die Praxis-Website (`apps/website`) läuft als eigener Container `website` neben der App: statische Seiten, keine Datenbank, keine Cookies. Kurstermine und freie Plätze lädt der Browser über die öffentliche Kursliste der App; die App erlaubt das nur der Website-Adresse.
+
+1. **DNS:** `www.hebammen-landkreisrostock.de` → Typ **A** (und ggf. **AAAA**) → IP des VPS. Die Domain liegt heute bei Wix – erst umstellen, wenn die neue Seite fertig geprüft ist (Impressum, Datenschutz, Fotos).
+2. **`.env`:** `WEBSITE_DOMAIN=www.hebammen-landkreisrostock.de` setzen. `DOMAIN` (App) und `WEBSITE_DOMAIN` (Website) müssen verschiedene Adressen sein.
+3. `docker compose up -d --build` – Caddy holt das Zertifikat, die Website wird mit der App-Adresse für die Kursliste gebaut.
+4. Prüfen: Startseite und `/kurse` öffnen (Termine erscheinen), alte Adressen wie `/hebammen-team` leiten auf die neuen weiter.
+
+Die Adresse ohne `www` (`hebammen-landkreisrostock.de`) auf die `www`-Adresse weiterleiten: entweder beim Domain-Anbieter oder mit einem weiteren Block im `deploy/Caddyfile`:
+
+```
+hebammen-landkreisrostock.de {
+	redir https://www.hebammen-landkreisrostock.de{uri} permanent
+}
+```
+
+Texte ändern: siehe `apps/website/README.md`; danach `docker compose up -d --build website`.
+
 ## 7. E-Mail (später)
 
 Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-Server, Benutzer und Passwort des Domain-Postfachs in `.env` eingetragen.
@@ -169,6 +188,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 - [ ] Tablets/Handys: Bildschirmsperre mit PIN bzw. Face ID, Geräteverschlüsselung aktiv (Offline-Daten liegen verschlüsselt auf dem Gerät, beim Abmelden werden sie gelöscht)
 - [ ] Adresssuche entschieden: Adressverzeichnis importieren (Abschnitt 5a, Anschriften bleiben auf dem Server) und/oder Online-Adresssuche (`GEOCODER_URL`, im Verzeichnis der Verarbeitungstätigkeiten erwähnen)
 - [ ] Datenschutz-Dokumente (Verzeichnis der Verarbeitungstätigkeiten, TOMs, Datenschutzinformation für Familien) erstellt
+- [ ] Website: Impressum und Datenschutzerklärung vervollständigt und geprüft (Entwurfs-Hinweise entfernt), eigene Fotos statt Platzhalter, Texte von der Praxis freigegeben
 
 ## Fehlersuche
 

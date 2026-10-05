@@ -10,3 +10,4 @@ playwright-report/
 
 # Kartendaten (scripts/karte-einrichten.sh)
 /karte/
+.astro/

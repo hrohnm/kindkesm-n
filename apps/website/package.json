@@ -1,0 +1,23 @@
+{
+  "name": "@kindkesmoeoen/website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Öffentliche Website der Hebammenpraxis Kindkesmöön (statisch, getrennt von der Praxis-App)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/nunito-sans": "^5.3.0",
+    "@fontsource/forum": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3"
+  }
+}

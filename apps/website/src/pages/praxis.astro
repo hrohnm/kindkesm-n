@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import raum from "../assets/bilder/raum-kissen.jpg";
+import steg from "../assets/bilder/ostsee-steg.jpg";
+import Seite from "../layouts/Seite.astro";
+import { PRAXIS } from "../inhalte/praxis";
+
+const adresse = `${PRAXIS.strasse}, ${PRAXIS.plz} ${PRAXIS.ort}`;
+const karten = {
+  osm: `https://www.openstreetmap.org/?mlat=${PRAXIS.geo.lat}&mlon=${PRAXIS.geo.lon}#map=18/${PRAXIS.geo.lat}/${PRAXIS.geo.lon}`,
+  google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adresse)}`,
+  apple: `https://maps.apple.com/?q=${encodeURIComponent(PRAXIS.name)}&address=${encodeURIComponent(adresse)}`,
+};
+---
+
+<Seite titel="Die Praxis" beschreibung="Unsere Hebammenpraxis in der Neuen Reihe 46b in Bad Doberan: heller Kursraum, gemütliches Behandlungszimmer, fußläufig zum Marktplatz.">
+  <section class="bg-salbei-100">
+    <div class="rahmen grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-2">
+      <div>
+        <p class="etikett">Neue Reihe 46b · Bad Doberan</p>
+        <h1 class="mt-3">Die Praxis</h1>
+        <div class="fliesstext mt-6 text-lg">
+          <p>Unsere schöne Hebammenpraxis liegt in fußläufiger Entfernung zum Marktplatz von Bad Doberan.</p>
+          <p>Die Praxis verfügt über einen großen, hellen Kursraum und ein gemütliches Behandlungszimmer, in dem sich Schwangere, Mütter und Babys wohlfühlen und geborgen sein können.</p>
+        </div>
+      </div>
+      <figure>
+        <Image src={raum} alt="Gemütliche Sitzecke mit Kissen" widths={[500, 900]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2.5rem] object-cover" />
+        <figcaption class="mt-2 text-sm text-salbei-600">Platzhalter – hier zeigen wir bald Fotos unserer Räume.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="abschnitt">
+    <div class="rahmen grid gap-10 lg:grid-cols-3">
+      <div class="karte">
+        <h2 class="text-2xl">Kursraum</h2>
+        <p class="mt-3">Groß, hell und mit Holzdielen: Hier finden Geburtsvorbereitung, Rückbildung, Babymassage und Schwangerschaftsyoga statt.</p>
+      </div>
+      <div class="karte">
+        <h2 class="text-2xl">Behandlungszimmer</h2>
+        <p class="mt-3">Ruhig und gemütlich für Vorsorge, Beratung, Akupunktur und Gespräche in vertrauter Atmosphäre.</p>
+      </div>
+      <div class="karte">
+        <h2 class="text-2xl">Rund um die Praxis</h2>
+        <p class="mt-3">In der Nähe liegt ein idyllischer Angelteich mit Grünfläche, Sitzplätzen und Spielplatz. Viele Familien verbringen hier nach den Kursen gemeinsam Zeit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="abschnitt bg-white">
+    <div class="rahmen grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="etikett">Anfahrt</p>
+        <h2 class="mt-3">So findet ihr uns</h2>
+        <address class="mt-5 text-lg not-italic">{PRAXIS.name}<br />{PRAXIS.strasse}<br />{PRAXIS.plz} {PRAXIS.ort}</address>
+        <p class="mt-4">Parkplätze findet ihr in unmittelbarer Nähe des Hofgeländes. Zum Marktplatz sind es nur wenige Minuten zu Fuß.</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a class="knopf-sekundaer" href={karten.osm} rel="noopener">OpenStreetMap</a>
+          <a class="knopf-sekundaer" href={karten.google} rel="noopener">Google Maps</a>
+          <a class="knopf-sekundaer" href={karten.apple} rel="noopener">Apple Karten</a>
+        </div>
+        <p class="mt-3 text-sm text-salbei-600">Die Kartendienste öffnen sich erst nach einem Klick – vorher werden keine Daten an sie übertragen.</p>
+      </div>
+      <Image src={steg} alt="Holzsteg am Wasser" widths={[500, 900]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+    </div>
+  </section>
+</Seite>

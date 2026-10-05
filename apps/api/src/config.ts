@@ -50,6 +50,14 @@ export const config = {
       : (process.env.GEOCODER_URL || "https://nominatim.openstreetmap.org").replace(/\/$/, ""),
   /** Kontakt (E-Mail) für die Kennung bei der Online-Adresssuche (Nutzungsregeln von Nominatim) */
   geocoderKontakt: process.env.GEOCODER_KONTAKT || undefined,
+  /**
+   * Adressen der Praxis-Website (kommagetrennt), die die öffentliche Kursliste per Browser abrufen dürfen (CORS).
+   * Außerhalb der Produktion ist zusätzlich die Astro-Entwicklungsadresse erlaubt.
+   */
+  websiteUrls: [
+    ...(process.env.WEBSITE_URL ?? "").split(",").map((u) => u.trim().replace(/\/$/, "")).filter(Boolean),
+    ...(process.env.NODE_ENV === "production" ? [] : ["http://localhost:4321"]),
+  ],
   /** Ordner mit den SQL-Migrationen. */
   migrationsOrdner: process.env.MIGRATIONS_ORDNER ?? join(wurzel, "apps/api/drizzle"),
 };

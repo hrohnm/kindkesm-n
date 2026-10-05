@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import silhouette from "../assets/bilder/schwangerschaft-fenster.jpg";
+import Seite from "../layouts/Seite.astro";
+import { PRAXIS, TEAM, telLink } from "../inhalte/praxis";
+
+const aktiv = TEAM.filter((h) => !h.hinweis);
+const betreff = encodeURIComponent("Anfrage Hebammenbetreuung");
+const vorlage = encodeURIComponent(
+  "Hallo,\n\nich wünsche mir eine Hebammenbetreuung.\n\nVoraussichtlicher Entbindungstermin:\nWohnort:\nGewünschte Leistungen (z. B. Vorsorge, Wochenbett, Kurs):\nErstes Kind? ja / nein\nTelefon:\n\nViele Grüße\n",
+);
+---
+
+<Seite titel="Kontakt & Betreuung anfragen" beschreibung="Du suchst eine Hebamme in Bad Doberan oder Umgebung? Meldet euch bei der Hebammenpraxis Kindkesmöön – telefonisch oder per E-Mail.">
+  <section class="bg-salbei-100">
+    <div class="rahmen grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.4fr_1fr]">
+      <div>
+        <p class="etikett">Kontakt</p>
+        <h1 class="mt-3">Wir freuen uns auf euch</h1>
+        <p class="mt-5 text-lg">Du bist interessiert an einer Betreuung oder einem Kurs? Melde dich gerne bei einer der Hebammen. Wir melden uns innerhalb von ein paar Tagen bei dir zurück.</p>
+      </div>
+      <Image src={silhouette} alt="Silhouette einer Schwangeren am Fenster" widths={[400, 700]} sizes="(min-width: 1024px) 35vw, 100vw" class="hidden aspect-[4/5] w-full rounded-[2.5rem] object-cover lg:block" />
+    </div>
+  </section>
+
+  <section class="abschnitt scroll-mt-20" id="anfrage">
+    <div class="rahmen grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <h2>Betreuung anfragen</h2>
+        <p class="mt-4">Damit wir schnell planen können, schreibt uns bitte:</p>
+        <ul class="mt-4 space-y-2">
+          {["den voraussichtlichen Entbindungstermin", "euren Wohnort", "welche Leistungen ihr euch wünscht (Vorsorge, Wochenbett, Kurse …)", "ob es euer erstes Kind ist", "wie wir euch am besten erreichen"].map((p) => (
+            <li class="flex gap-3"><span class="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-mohn-100 text-sm text-mohn-700" aria-hidden="true">✓</span>{p}</li>
+          ))}
+        </ul>
+        <p class="mt-6 rounded-2xl bg-salbei-50 p-4 text-[0.95rem]">Tipp: Meldet euch möglichst früh, am besten bis zur 12. Schwangerschaftswoche.</p>
+        <p class="mt-4 text-sm text-salbei-600">Bald könnt ihr hier ein Anfrageformular nutzen, das direkt in unserer Praxisplanung ankommt.</p>
+      </div>
+
+      <ul class="space-y-5">
+        {aktiv.map((h) => (
+          <li class="karte">
+            <div class="flex items-center gap-4">
+              <span class="flex size-14 shrink-0 items-center justify-center rounded-full bg-salbei-200 font-titel text-xl" aria-hidden="true">{h.kuerzel}</span>
+              <div>
+                <p class="font-titel text-2xl">{h.name}</p>
+                <p class="text-sm text-salbei-600">Hebamme</p>
+              </div>
+            </div>
+            <div class="mt-5 flex flex-wrap gap-3">
+              {h.telefon && <a class="knopf-sekundaer" href={telLink(h.telefon)}>{h.telefon}</a>}
+              <a class="knopf-primaer" href={`mailto:${h.email}?subject=${betreff}&body=${vorlage}`}>E-Mail schreiben</a>
+            </div>
+          </li>
+        ))}
+        {TEAM.filter((h) => h.hinweis).map((h) => <li class="px-2 text-sm text-salbei-600">{h.name} ist {h.hinweis}.</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="abschnitt bg-white">
+    <div class="rahmen grid gap-8 md:grid-cols-2">
+      <div>
+        <h2 class="text-3xl">Praxis</h2>
+        <address class="mt-4 text-lg not-italic">{PRAXIS.name}<br />{PRAXIS.strasse}<br />{PRAXIS.plz} {PRAXIS.ort}</address>
+        <a href="/praxis" class="mt-4 inline-block font-semibold">Anfahrt &amp; Räume ›</a>
+      </div>
+      <div>
+        <h2 class="text-3xl">Instagram</h2>
+        <p class="mt-4">Neuigkeiten, Kurstermine und Einblicke in die Praxis:</p>
+        <a href={PRAXIS.instagram} rel="noopener" class="knopf-sekundaer mt-4">{PRAXIS.instagramName}</a>
+      </div>
+    </div>
+  </section>
+</Seite>

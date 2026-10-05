@@ -1,0 +1,21 @@
+---
+import Seite from "../layouts/Seite.astro";
+import nachweise from "../inhalte/bildnachweise.json";
+---
+
+<Seite titel="Bildnachweis" beschreibung="Nachweise der auf der Website verwendeten Fotos.">
+  <section class="abschnitt">
+    <div class="rahmen max-w-3xl">
+      <h1>Bildnachweis</h1>
+      <p class="mt-5">Logo: {"Hebammenpraxis Kindkesmöön"}. Die übrigen Fotos stammen von <a href="https://unsplash.com" rel="noopener">Unsplash</a> und stehen unter der <a href="https://unsplash.com/license" rel="noopener">Unsplash-Lizenz</a>. Die abgebildeten Personen sind nicht Klientinnen oder Hebammen unserer Praxis.</p>
+      <ul class="mt-8 divide-y divide-salbei-100">
+        {nachweise.map((n) => (
+          <li class="flex flex-wrap justify-between gap-2 py-3">
+            <span>{n.motiv}</span>
+            <a href={n.quelle} rel="noopener">Foto: {n.fotograf}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Seite>

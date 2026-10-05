@@ -1,0 +1,85 @@
+@import "tailwindcss";
+@import "@fontsource/forum/400.css";
+@import "@fontsource-variable/nunito-sans/index.css";
+
+/* Farben der bisherigen Website (Wix-Palette): Salbei, Mohn/Terrakotta, Sand */
+@theme {
+  --font-titel: "Forum", Georgia, serif;
+  --font-sans: "Nunito Sans Variable", system-ui, sans-serif;
+
+  --color-salbei-50: #f4f6ec;
+  --color-salbei-100: #e9ecd8;
+  --color-salbei-200: #d3d9b4;
+  --color-salbei-300: #ced1bf;
+  --color-salbei-400: #9ea387;
+  --color-salbei-500: #777a65;
+  --color-salbei-600: #6a6d5a;
+  --color-salbei-700: #4f5244;
+  --color-salbei-800: #35362d;
+  --color-salbei-900: #282922;
+
+  --color-mohn-100: #f6dcd8;
+  --color-mohn-200: #edb9b1;
+  --color-mohn-300: #dc9388;
+  --color-mohn-500: #ca4430;
+  --color-mohn-600: #b03a28;
+  --color-mohn-700: #872d20;
+
+  --color-sand-50: #faf8f2;
+  --color-sand-100: #ede8d8;
+  --color-sand-300: #bebaad;
+  --color-sand-500: #8e8b82;
+  --color-sand-700: #5f5d56;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-sand-50 font-sans text-[1.0625rem] leading-relaxed text-salbei-800 antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-titel font-normal text-salbei-800;
+  }
+  h1 {
+    @apply text-4xl leading-tight sm:text-5xl;
+  }
+  h2 {
+    @apply text-3xl leading-tight sm:text-4xl;
+  }
+  h3 {
+    @apply text-2xl leading-snug;
+  }
+  a {
+    @apply text-salbei-700 underline decoration-salbei-300 underline-offset-4 hover:decoration-mohn-500;
+  }
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-mohn-500;
+  }
+}
+
+@utility knopf {
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 font-semibold no-underline transition;
+}
+@utility knopf-primaer {
+  @apply knopf bg-mohn-500 text-white hover:bg-mohn-600;
+}
+@utility knopf-sekundaer {
+  @apply knopf border border-salbei-400 bg-white text-salbei-700 hover:bg-salbei-50;
+}
+@utility rahmen {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+@utility abschnitt {
+  @apply py-14 sm:py-20;
+}
+@utility karte {
+  @apply rounded-3xl bg-white p-6 shadow-sm ring-1 ring-salbei-100;
+}
+@utility etikett {
+  @apply text-sm font-semibold tracking-[0.18em] text-salbei-600 uppercase;
+}
+.fliesstext p + p {
+  margin-top: 1rem;
+}

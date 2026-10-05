@@ -17,7 +17,7 @@ type OffenerKurs = {
   freiePlaetze: number;
 };
 
-/** Öffentliche Kursanmeldung (ohne Anmeldung in der App), z. B. von der Praxis-Website verlinkt: /anmeldung */
+/** Öffentliche Kursanmeldung (ohne Anmeldung in der App), von der Praxis-Website verlinkt: /anmeldung bzw. /anmeldung?kurs=<id> */
 export function Anmeldung() {
   const [kurse, setKurse] = useState<OffenerKurs[]>();
   const [fehler, setFehler] = useState<string>();
@@ -26,7 +26,13 @@ export function Anmeldung() {
 
   useEffect(() => {
     document.title = "Kursanmeldung · Hebammenpraxis Kindkesmöön";
-    api<OffenerKurs[]>("/api/oeffentlich/kurse").then(setKurse, (e) => setFehler((e as Error).message));
+    api<OffenerKurs[]>("/api/oeffentlich/kurse").then((liste) => {
+      setKurse(liste);
+      // Direktlink von der Website: /anmeldung?kurs=<id> öffnet gleich das Formular
+      const id = new URLSearchParams(window.location.search).get("kurs");
+      const kurs = id ? liste.find((k) => k.id === id) : undefined;
+      if (kurs) setGewaehlt(kurs);
+    }, (e) => setFehler((e as Error).message));
   }, []);
 
   return (

@@ -1,0 +1,37 @@
+# Interner Webserver der Website (hinter dem Haupt-Caddy, der HTTPS übernimmt)
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	root * /srv
+	encode zstd gzip
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' {$APP_URL}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+	}
+
+	# Alte Adressen der Wix-Website dauerhaft weiterleiten
+	redir /hebammen-team /hebammen 301
+	redir /general-clean /praxis 301
+	redir /hebammenbetreuung-leistungen /leistungen 301
+	redir /kopie-von-leistungen /kurse 301
+	redir /hebammenpraxis-kontakt /kontakt 301
+	redir /cookies /datenschutz 301
+
+	@unveraenderlich path /_astro/*
+	header @unveraenderlich Cache-Control "public, max-age=31536000, immutable"
+
+	try_files {path} {path}.html {path}/index.html
+	file_server
+
+	handle_errors 404 {
+		rewrite * /404.html
+		file_server
+	}
+}

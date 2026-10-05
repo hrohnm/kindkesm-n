@@ -1,0 +1,164 @@
+---
+import "../styles/global.css";
+import { FUSS_LEISTUNGEN, GEBIETE, PRAXIS, TEAM, telLink } from "../inhalte/praxis";
+
+interface Props {
+  /** Seitentitel ohne Praxisname */
+  titel?: string;
+  beschreibung: string;
+  /** Bild für Vorschauen in sozialen Netzen (absolute oder relative URL) */
+  bild?: string;
+}
+const { titel, beschreibung, bild } = Astro.props;
+const voll = titel ? `${titel} | ${PRAXIS.name} Bad Doberan` : `${PRAXIS.name} – Hebamme in Bad Doberan & Landkreis Rostock`;
+const kanonisch = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site);
+const pfad = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const MENUE = [
+  { href: "/hebammen", text: "Die Hebammen" },
+  { href: "/praxis", text: "Die Praxis" },
+  { href: "/leistungen", text: "Leistungen" },
+  { href: "/kurse", text: "Kurse" },
+  { href: "/fragen", text: "Fragen" },
+  { href: "/kontakt", text: "Kontakt" },
+];
+
+// Strukturierte Daten für Suchmaschinen (lokale Hebammenpraxis)
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  name: PRAXIS.name,
+  description: "Hebammenbetreuung in Schwangerschaft, Wochenbett und Stillzeit sowie Kurse in Bad Doberan und dem Landkreis Rostock.",
+  url: Astro.site?.toString(),
+  logo: new URL("/logo.png", Astro.site).toString(),
+  address: { "@type": "PostalAddress", streetAddress: PRAXIS.strasse, postalCode: PRAXIS.plz, addressLocality: PRAXIS.ort, addressCountry: "DE" },
+  geo: { "@type": "GeoCoordinates", latitude: PRAXIS.geo.lat, longitude: PRAXIS.geo.lon },
+  areaServed: GEBIETE.map((name) => ({ "@type": "City", name })),
+  sameAs: [PRAXIS.instagram],
+  employee: TEAM.map((h) => ({ "@type": "Person", name: h.name, jobTitle: "Hebamme" })),
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{voll}</title>
+    <meta name="description" content={beschreibung} />
+    <link rel="canonical" href={kanonisch} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#9ea387" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content={PRAXIS.name} />
+    <meta property="og:title" content={voll} />
+    <meta property="og:description" content={beschreibung} />
+    {bild && <meta property="og:image" content={new URL(bild, Astro.site)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#inhalt" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2">Zum Inhalt springen</a>
+
+    <header class="sticky top-0 z-40 border-b border-salbei-100 bg-sand-50/95 backdrop-blur">
+      <div class="rahmen flex h-18 items-center justify-between gap-4">
+        <a href="/" class="flex items-center gap-3 no-underline" aria-label={`${PRAXIS.name} – Startseite`}>
+          <img src="/logo.png" alt="" width="48" height="48" class="size-12" />
+          <span class="leading-tight">
+            <span class="block font-titel text-2xl text-salbei-800">Kindkesmöön</span>
+            <span class="block text-xs tracking-[0.2em] text-salbei-600 uppercase">Hebammenpraxis</span>
+          </span>
+        </a>
+
+        <nav aria-label="Hauptmenü" class="hidden lg:block">
+          <ul class="flex items-center gap-1">
+            {MENUE.map((m) => (
+              <li>
+                <a href={m.href} aria-current={pfad.startsWith(m.href) ? "page" : undefined} class="rounded-full px-3 py-2 text-[0.95rem] font-medium text-salbei-700 no-underline hover:bg-salbei-100 aria-[current=page]:bg-salbei-100">
+                  {m.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a href="/kontakt#anfrage" class="knopf-primaer hidden min-h-11 px-5 text-sm lg:inline-flex">Betreuung anfragen</a>
+
+        <!-- Handy: Menü ohne JavaScript -->
+        <details class="group lg:hidden">
+          <summary class="flex size-12 cursor-pointer list-none items-center justify-center rounded-full text-salbei-700 hover:bg-salbei-100 [&::-webkit-details-marker]:hidden" aria-label="Menü">
+            <svg class="size-7 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            <svg class="hidden size-7 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </summary>
+          <nav aria-label="Hauptmenü" class="absolute inset-x-0 top-full border-b border-salbei-100 bg-sand-50 shadow-lg">
+            <ul class="rahmen flex flex-col py-3">
+              {MENUE.map((m) => (
+                <li><a href={m.href} aria-current={pfad.startsWith(m.href) ? "page" : undefined} class="block rounded-2xl px-4 py-3 text-lg text-salbei-800 no-underline hover:bg-salbei-100 aria-[current=page]:bg-salbei-100">{m.text}</a></li>
+              ))}
+              <li class="mt-2 px-4 pb-2"><a href="/kontakt#anfrage" class="knopf-primaer w-full">Betreuung anfragen</a></li>
+            </ul>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="inhalt" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="mt-16 bg-salbei-800 text-salbei-100">
+      <div class="bg-salbei-400/25">
+        <div class="rahmen py-8 text-center">
+          <p class="font-titel text-2xl text-white">Hebammenbetreuung in Bad Doberan &amp; dem Landkreis Rostock</p>
+          <p class="mt-3 text-sm text-salbei-100">{FUSS_LEISTUNGEN.join(" · ")}</p>
+        </div>
+      </div>
+      <div class="rahmen grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <p class="font-titel text-2xl text-white">{PRAXIS.name}</p>
+          <p class="mt-2">{PRAXIS.strasse}<br />{PRAXIS.plz} {PRAXIS.ort}</p>
+          <p class="mt-3 italic text-salbei-200">{PRAXIS.motto}</p>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Kontakt</p>
+          <ul class="mt-2 space-y-1">
+            {TEAM.filter((h) => h.telefon).map((h) => (
+              <li>{h.vorname}: <a class="text-salbei-100 decoration-salbei-400" href={telLink(h.telefon!)}>{h.telefon}</a></li>
+            ))}
+            <li><a class="text-salbei-100 decoration-salbei-400" href="/kontakt">Alle Kontaktwege ›</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Seiten</p>
+          <ul class="mt-2 grid grid-cols-2 gap-1 sm:grid-cols-1">
+            {MENUE.map((m) => <li><a class="text-salbei-100 decoration-salbei-400" href={m.href}>{m.text}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Folgt uns</p>
+          <p class="mt-2"><a class="text-salbei-100 decoration-salbei-400" href={PRAXIS.instagram} rel="noopener">Instagram {PRAXIS.instagramName}</a></p>
+          <p class="mt-6 text-sm text-salbei-200">Diese Website setzt keine Cookies und verwendet keine Tracking-Dienste.</p>
+        </div>
+      </div>
+      <div class="border-t border-salbei-700">
+        <div class="rahmen flex flex-wrap gap-x-6 gap-y-2 py-5 text-sm text-salbei-200">
+          <span>© {new Date().getFullYear()} {PRAXIS.name}</span>
+          <a class="text-salbei-200 decoration-salbei-500" href="/impressum">Impressum</a>
+          <a class="text-salbei-200 decoration-salbei-500" href="/datenschutz">Datenschutz</a>
+          <a class="text-salbei-200 decoration-salbei-500" href="/bildnachweis">Bildnachweis</a>
+        </div>
+      </div>
+    </footer>
+
+    {pfad !== "/kontakt" && (
+      <>
+        <!-- Handy: Anfrage immer erreichbar -->
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-salbei-100 bg-sand-50/95 p-3 backdrop-blur lg:hidden" data-handy-leiste>
+          <a href="/kontakt#anfrage" class="knopf-primaer w-full">Betreuung anfragen</a>
+        </div>
+        <div class="h-20 lg:hidden" aria-hidden="true"></div>
+      </>
+    )}
+  </body>
+</html>

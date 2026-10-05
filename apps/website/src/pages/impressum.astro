@@ -1,0 +1,51 @@
+---
+import Entwurf from "../komponenten/Entwurf.astro";
+import Seite from "../layouts/Seite.astro";
+import { PRAXIS, TEAM } from "../inhalte/praxis";
+---
+
+<Seite titel="Impressum" beschreibung="Impressum der Hebammenpraxis Kindkesmöön in Bad Doberan.">
+  <section class="abschnitt">
+    <div class="rahmen max-w-3xl">
+      <h1>Impressum</h1>
+      <div class="mt-8">
+        <Entwurf>Angaben von der bisherigen Website übernommen. Bitte vor dem Livegang ergänzen bzw. prüfen: ladungsfähige Anschrift jeder Hebamme, Telefonnummern, einheitlicher Name und E-Mail von Lorina, ggf. Berufshaftpflicht. [Ergänzen]-Stellen sind markiert.</Entwurf>
+      </div>
+      <div class="fliesstext space-y-8">
+        <section>
+          <h2 class="text-2xl">Angaben gemäß § 5 DDG</h2>
+          <p class="mt-3">Gemeinsam genutzte Praxisräume:<br />{PRAXIS.name}<br />{PRAXIS.strasse}<br />{PRAXIS.plz} {PRAXIS.ort}</p>
+          <ul class="mt-4 space-y-3">
+            {TEAM.map((h) => (
+              <li>
+                <strong>{h.name}</strong>, Hebamme<br />
+                Anschrift: [Ergänzen]<br />
+                {h.telefon && <>Telefon: {h.telefon}<br /></>}
+                E-Mail: <a href={`mailto:${h.email}`}>{h.email}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2 class="text-2xl">Berufsrechtliche Angaben</h2>
+          <p class="mt-3">Berufsbezeichnung: Hebamme (verliehen in der Bundesrepublik Deutschland)</p>
+          <p>Zuständige Aufsichtsbehörde: Gesundheitsamt des Landkreises Rostock</p>
+          <p>Berufsrechtliche Regelungen: <a href="https://www.gesetze-im-internet.de/hebg_2020/" rel="noopener">Hebammengesetz (HebG)</a> und die Berufsordnung für Hebammen des Landes Mecklenburg-Vorpommern [Link ergänzen]</p>
+          <p>Vergütung: Vertrag über die Versorgung mit Hebammenhilfe nach § 134a SGB V (<a href="https://www.gkv-spitzenverband.de/krankenversicherung/ambulante_leistungen/hebammen/hebammen.jsp" rel="noopener">GKV-Spitzenverband</a>)</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Umsatzsteuer</h2>
+          <p class="mt-3">Nach § 4 Nr. 14 UStG sind Hebammenleistungen von der Umsatzsteuer befreit. Daher wird keine Umsatzsteuer ausgewiesen.</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Verantwortlich für den Inhalt</h2>
+          <p class="mt-3">{TEAM.map((h) => h.name).join(", ")}, Anschrift wie oben</p>
+        </section>
+        <section>
+          <h2 class="text-2xl">Urheberrecht und Bildnachweis</h2>
+          <p class="mt-3">Texte und eigene Fotos dieser Website sind urheberrechtlich geschützt. Nachweise der verwendeten Fotos: <a href="/bildnachweis">Bildnachweis</a>.</p>
+        </section>
+      </div>
+    </div>
+  </section>
+</Seite>
