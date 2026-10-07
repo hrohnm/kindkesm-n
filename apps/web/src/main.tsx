@@ -26,6 +26,7 @@ import { Offline } from "./seiten/einstellungen/Offline";
 import { OrteTouren } from "./seiten/einstellungen/OrteTouren";
 import { Passwort } from "./seiten/einstellungen/Passwort";
 import { Sicherheit } from "./seiten/einstellungen/Sicherheit";
+import { Textbausteine } from "./seiten/einstellungen/Textbausteine";
 import { ZweiFaktorPflicht } from "./seiten/ZweiFaktorPflicht";
 import { Sperre } from "./komponenten/Sperre";
 import { Praxis } from "./seiten/einstellungen/Praxis";
@@ -72,6 +73,7 @@ function App() {
           <Route index element={<Profil />} />
           <Route path="orte" element={<OrteTouren />} />
           <Route path="dokumentation" element={<Ansicht />} />
+          <Route path="textbausteine" element={<Textbausteine />} />
           <Route path="abrechnung" element={<Abrechnung />} />
           <Route path="praxis" element={<Praxis />} />
           <Route path="offline" element={<Offline />} />

@@ -601,6 +601,16 @@ export const anfrage = pgTable("anfrage", {
   ...zeitstempel(),
 });
 
+/** M3: Textbausteine für die Besuchsnotiz – eigene (benutzerId) oder für die ganze Praxis (benutzerId leer) */
+export const textbaustein = pgTable("textbaustein", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  benutzerId: uuid("benutzer_id").references(() => benutzer.id, { onDelete: "cascade" }),
+  titel: text("titel").notNull(),
+  text: text("text").notNull(),
+  erstelltVon: uuid("erstellt_von").references(() => benutzer.id, { onDelete: "set null" }),
+  ...zeitstempel(),
+});
+
 /** M19: Rufbereitschaft (z. B. Wochenende) – wer ist für dringende Fragen erreichbar */
 export const rufbereitschaft = pgTable("rufbereitschaft", {
   id: uuid("id").primaryKey().defaultRandom(),

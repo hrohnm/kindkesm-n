@@ -92,7 +92,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 - Erwartet: Erinnerungen für eigene bzw. vertretene Betreuungen: ET in den nächsten 14 Tagen („Wochenbett vorbereiten“), U2/U3/U4 im jeweiligen Zeitraum, Rückbildungskurs in der 8.–10. Lebenswoche (nicht, wenn schon in einem Rückbildungskurs angemeldet). „Erledigt“ blendet die Erinnerung für diese Hebamme dauerhaft aus; andere Hinweise (Fristen, Warnungen) lassen sich nicht abhaken.
 
 **B2 Warnungen** 🤖
-1. Startseite als Johanna: Hinweise „Ärztliche Anordnung fehlt: Sophie Berger“, ggf. Gewicht („… % unter dem Geburtsgewicht“) und Kontingent („… von … genutzt, noch … frei“ bzw. „ausgeschöpft“).
+1. Startseite als Johanna: Hinweise „Ärztliche Anordnung fehlt: Sophie Berger“, ggf. Gewicht („… % unter dem Geburtsgewicht“) und Kontingent („… von … genutzt, noch … frei“ bzw. „ausgeschöpft“), ggf. EPDS (siehe D11).
 2. „Ärztliche Anordnung fehlt“ antippen → im Besuch „Ärztliche Anordnung liegt vor“ ankreuzen, Notiz (von wem, wann).
 - Erwartet: Gewicht ab 7 % Abnahme als Hinweis, ab 10 % deutlich hervorgehoben (Link zur Wachstumsseite); nur für eigene bzw. vertretene Betreuungen. Kontingente der laufenden Phase erst, wenn nur noch 2 Kontakte (bzw. 10 % der Minuten) übrig sind; kleine Kontingente erst, wenn sie aufgebraucht sind. Nach dem Vermerk verschwindet die Anordnungs-Warnung; der Vermerk geht auch nach dem Versand.
 
@@ -200,6 +200,18 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 **D9 Besuch einer Kollegin** ⚠️
 1. Als Marielena einen Besuch von Johanna öffnen (z. B. über die Akte einer vertretenen Familie).
 - Erwartet: nur lesbar, Hinweis „von einer Kollegin dokumentiert“.
+
+**D10 Textbausteine und „Wie letztes Mal“** 🤖
+1. Einstellungen → Textbausteine: Titel und Text anlegen, ggf. „Für die ganze Praxis“ → Speichern.
+2. Besuch öffnen → unter der Notiz „Textbaustein einfügen …“ wählen.
+3. Kachel Mutter bzw. Kind aufklappen → „Wie letztes Mal (Datum)“.
+- Erwartet: Der Text wird an die Notiz angehängt. Eigene Bausteine sieht nur die Hebamme selbst, Praxis-Bausteine alle Hebammen. „Wie letztes Mal“ übernimmt Auswahl- und Textfelder des letzten Besuchs nur in leere Felder, Messwerte (Gewicht, RR, Temperatur …) nicht.
+
+**D11 EPDS und Beratungsthemen** 🤖
+1. Wochenbett-Besuch (Kind geboren) → „EPDS (Stimmung nach der Geburt)“ → „Auswertung eintragen“ → Punkte je Frage (0–3) vom Papierbogen antippen.
+2. Beratungsthemen antippen (z. B. „Nabelpflege“) → Entwurf speichern.
+3. Startseite.
+- Erwartet: Summe von 30 mit Einordnung (ab 10 genauer hinsehen, ab 13 ärztliche Abklärung); Frage 10 > 0 wird immer deutlich hervorgehoben. Im Cockpit erscheint „… EPDS … Punkte“ für eigene bzw. vertretene Betreuungen (14 Tage lang, bis eine unauffällige Auswertung folgt). Beratungsthemen früherer Besuche zeigen „(besprochen DATUM)“. In der Schwangerschaft erscheinen die Themen der Schwangerschaft, kein EPDS.
 
 ---
 

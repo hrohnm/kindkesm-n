@@ -97,6 +97,8 @@ export const dokuMutterSchema = z
     wunde: optText(300),
     sectionarbe: optText(300),
     befinden: optText(300),
+    /** EPDS: 10 Punktwerte 0–3, kommagetrennt (leere Stellen = noch nicht eingetragen) */
+    epds: z.preprocess(leerZuNull, z.string().regex(/^[0-3]?(,[0-3]?){9}$/, "EPDS: je Frage 0 bis 3 Punkte").nullable()),
   })
   .partial();
 
@@ -118,6 +120,8 @@ export const dokumentationSchema = z.object({
   mutter: dokuMutterSchema.default({}),
   kinder: z.record(z.string(), dokuKindSchema).default({}),
   notiz: optText(5000),
+  /** Besprochene Beratungsthemen (Checkliste) */
+  beratung: z.array(z.string().trim().min(1).max(60)).max(40).default([]),
 });
 export type Dokumentation = z.infer<typeof dokumentationSchema>;
 

@@ -20,6 +20,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { FlaggenAbzeichen } from "../komponenten/AkteZusatz";
 import { DokuKachel, type FruehererWert } from "../komponenten/DokuKachel";
+import { Beratungsthemen, EpdsFeld, TextbausteinWahl } from "../komponenten/BesuchExtras";
 import { GewichtFenster } from "./Gewicht";
 import { Feld, Laden, Meldung } from "../komponenten/Formular";
 import { UnterschriftFeld } from "../komponenten/Unterschrift";
@@ -54,6 +55,7 @@ type Werte = {
   mutter: DokuMutter;
   kinder: Record<string, DokuKind>;
   notiz: string;
+  beratung: string[];
   unterschrift: Unterschrift;
 };
 type BesuchDetail = {
@@ -68,7 +70,7 @@ type BesuchDetail = {
   material: string[];
   status: "entwurf" | "abgeschlossen";
   geaendertAm: string;
-  dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>>; notiz?: string | null };
+  dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>>; notiz?: string | null; beratung?: string[] };
   unterschrift: Unterschrift;
   versionen: Array<{ id: string; zeit: string }>;
   hinweise?: Array<{ stufe: string; text: string }>;
@@ -138,7 +140,7 @@ export function Besuch() {
   return <BesuchFormular betreuung={betreuung.daten} besuch={vorhanden.daten} unterschriftVerfahren={einstellung.daten?.unterschrift ?? "papier"} ansicht={ansicht.daten} alleBesuche={alle.daten} entwurf={entwurf ?? undefined} />;
 }
 
-type FruehererBesuch = { id: string; datum: string; von: string; dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>> } };
+type FruehererBesuch = { id: string; datum: string; von: string; dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>>; beratung?: string[] } };
 
 function BesuchFormular({
   betreuung,
@@ -177,6 +179,7 @@ function BesuchFormular({
     mutter: alsText(q?.dokumentation?.mutter),
     kinder: Object.fromEntries(betreuung.kinder.map((k) => [k.id, alsText(q?.dokumentation?.kinder?.[k.id])])),
     notiz: q?.dokumentation?.notiz ?? "",
+    beratung: q?.dokumentation?.beratung ?? [],
     unterschrift: q?.unterschrift ?? { art: "keine" },
   }));
   // Neue Besuche bekommen ihre Kennung schon auf dem Gerät: doppeltes Senden legt keinen zweiten Besuch an
@@ -202,7 +205,7 @@ function BesuchFormular({
     typ: w.typ,
     art: w.art,
     material: w.material,
-    dokumentation: { mutter: w.mutter, kinder: w.kinder, notiz: w.notiz },
+    dokumentation: { mutter: w.mutter, kinder: w.kinder, notiz: w.notiz, beratung: w.beratung },
     unterschrift: w.unterschrift,
     abschliessen,
     // Neu: Kennung vom Gerät; Änderung: Stand, auf dem sie beruht (Konflikterkennung zwischen Geräten)
@@ -501,10 +504,14 @@ function BesuchFormular({
             />
           ))}
 
+          {geboren && <EpdsFeld wert={w.mutter.epds ?? ""} setze={(v) => setzeMutter("epds", v)} gesperrt={fremd} />}
+          <Beratungsthemen gewaehlt={w.beratung} aendern={(v) => setze("beratung", v)} nachGeburt={geboren} frueher={frueher.map((b) => ({ datum: b.datum, beratung: b.dokumentation.beratung }))} gesperrt={fremd} />
+
           <fieldset disabled={fremd} className="karte">
             <Feld label="Notiz / Beratung">
               <textarea className="feld min-h-28" value={w.notiz} onChange={(e) => setze("notiz", e.target.value)} placeholder="Beratungsthemen, Auffälligkeiten, Absprachen …" />
             </Feld>
+            <div className="mt-2"><TextbausteinWahl einfuegen={(t) => setze("notiz", w.notiz ? `${w.notiz.trimEnd()}\n${t}` : t)} /></div>
           </fieldset>
 
           {/* ---------------------------------------------------- Unterschrift */}
