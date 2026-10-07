@@ -218,6 +218,10 @@ export const betreuung = pgTable("betreuung", {
   zustaendigeHebammeId: uuid("zustaendige_hebamme_id").references(() => benutzer.id),
   /** Vertretung für diesen Fall (sieht ihn unter „Meine“) */
   vertretungHebammeId: uuid("vertretung_hebamme_id").references(() => benutzer.id),
+  /** Kurzübergabe für die Vertretung („Worauf achten?“), wer und wann zuletzt geändert */
+  uebergabe: text("uebergabe"),
+  uebergabeAm: timestamp("uebergabe_am", { withTimezone: true }),
+  uebergabeVon: uuid("uebergabe_von").references(() => benutzer.id, { onDelete: "set null" }),
   notizen: text("notizen"),
   ...zeitstempel(),
 });
@@ -594,6 +598,17 @@ export const anfrage = pgTable("anfrage", {
   klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
   erfasstVon: uuid("erfasst_von").references(() => benutzer.id, { onDelete: "set null" }),
   bearbeitetAm: timestamp("bearbeitet_am", { withTimezone: true }),
+  ...zeitstempel(),
+});
+
+/** M19: Rufbereitschaft (z. B. Wochenende) – wer ist für dringende Fragen erreichbar */
+export const rufbereitschaft = pgTable("rufbereitschaft", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  hebammeId: uuid("hebamme_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  von: date("von").notNull(),
+  bis: date("bis").notNull(),
+  notiz: text("notiz"),
+  erstelltVon: uuid("erstellt_von").references(() => benutzer.id, { onDelete: "set null" }),
   ...zeitstempel(),
 });
 

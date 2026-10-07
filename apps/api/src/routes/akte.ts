@@ -202,7 +202,15 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
   app.put<{ Params: { id: string } }>("/api/betreuungen/:id", async (request, reply) => {
     const daten = pruefen(betreuungSchema, request.body, reply);
     if (!daten) return;
-    const [b] = await db.update(betreuung).set({ ...daten, geaendertAm: new Date() }).where(eq(betreuung.id, request.params.id)).returning();
+    const [alt] = await db.select({ uebergabe: betreuung.uebergabe }).from(betreuung).where(eq(betreuung.id, request.params.id));
+    if (!alt) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
+    // Geänderte Übergabe: wer und wann (die Vertretung bekommt einen Hinweis im Cockpit)
+    const uebergabeNeu = daten.uebergabe !== undefined && (daten.uebergabe ?? null) !== (alt.uebergabe ?? null);
+    const [b] = await db
+      .update(betreuung)
+      .set({ ...daten, ...(uebergabeNeu ? { uebergabeAm: daten.uebergabe ? new Date() : null, uebergabeVon: daten.uebergabe ? request.benutzer!.id : null } : {}), geaendertAm: new Date() })
+      .where(eq(betreuung.id, request.params.id))
+      .returning();
     if (!b) return reply.code(404).send({ fehler: "Betreuung nicht gefunden" });
     await protokollieren(db, request.benutzer!.id, "geaendert", "betreuung", b.id);
     return b;

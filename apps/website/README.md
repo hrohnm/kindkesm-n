@@ -34,6 +34,7 @@ Platzhalterbilder (Unsplash-Lizenz) nach und nach durch eigene Fotos ersetzen: D
 - **Rückrufwunsch:** `src/komponenten/RueckrufFormular.astro` (Kontaktseite, Anker `#rueckruf`) sendet an `POST {PUBLIC_APP_URL}/api/oeffentlich/rueckruf` (Name, Telefon, Anliegen, Zeitfenster, Wunsch-Hebamme; Einwilligung, Honigtopf, 5 je Stunde und IP). In der App erscheint er im Cockpit und auf der Seite „Anfragen“.
 
   <img src="../../docs/website/rueckruf-formular.jpg" alt="Rückrufformular auf dem Handy" width="240"> <img src="../../docs/website/rueckruf-app.jpg" alt="Rückrufwünsche in der App" width="400">
+- **Rufbereitschaft und Abwesenheiten (M19):** dieselbe Schnittstelle liefert `rufbereitschaft` (Namen für heute) und je Hebamme `abwesendBis` (ohne Grund); angezeigt in `[data-rufbereitschaft]` (Kontakt) und in den `data-team-status`-Elementen („bis … nicht erreichbar“).
 - **Kapazitätsampel und Team-Status (M11):** `src/komponenten/Kapazitaet.astro` und `src/skripte/praxis-status.ts` lesen `GET {PUBLIC_APP_URL}/api/oeffentlich/praxis` (nur Stufe je Monat und Babypause-Status, keine Zahlen, keine Familien); Elemente mit `data-team-status="Name"` werden aktualisiert.
 
 ## Betrieb

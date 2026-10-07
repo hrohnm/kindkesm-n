@@ -3,9 +3,9 @@
  * Jede Erinnerung lässt sich als erledigt abhaken (Tabelle hinweis_erledigt) und erscheint dann nicht mehr.
  */
 import { etBald, isoDatum, rueckbildungAnbieten, uUntersuchungFaellig, type FristHinweis } from "@kindkesmoeoen/shared";
-import { and, eq, inArray, or, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, isNotNull, lte, or, sql } from "drizzle-orm";
 import type { Datenbank } from "./db/client";
-import { betreuung, hinweisErledigt, kind, klientin, kurs, kursTeilnahme } from "./db/schema";
+import { benutzer, betreuung, hinweisErledigt, kind, klientin, kurs, kursTeilnahme, rufbereitschaft } from "./db/schema";
 
 export async function erinnerungen(db: Datenbank, benutzerId: string, heute: Date): Promise<FristHinweis[]> {
   const heuteIso = isoDatum(heute);
@@ -20,8 +20,27 @@ export async function erinnerungen(db: Datenbank, benutzerId: string, heute: Dat
         or(sql`coalesce(${betreuung.zustaendigeHebammeId}, ${klientin.zustaendigeHebammeId}) = ${benutzerId}`, eq(betreuung.vertretungHebammeId, benutzerId)),
       ),
     );
-  if (!meine.length) return [];
   const hinweise: FristHinweis[] = [];
+  // Rufbereitschaft heute (für das ganze Team)
+  const ruf = await db
+    .select({ id: rufbereitschaft.id, name: benutzer.name, hebammeId: rufbereitschaft.hebammeId, bis: rufbereitschaft.bis })
+    .from(rufbereitschaft)
+    .innerJoin(benutzer, eq(benutzer.id, rufbereitschaft.hebammeId))
+    .where(and(lte(rufbereitschaft.von, heuteIso), gte(rufbereitschaft.bis, heuteIso)));
+  for (const r of ruf) {
+    hinweise.push({ id: `rufbereitschaft-${r.id}`, titel: r.hebammeId === benutzerId ? `Du hast heute Rufbereitschaft${r.bis > heuteIso ? ` (bis ${r.bis.split("-").reverse().join(".")})` : ""}` : `Rufbereitschaft heute: ${r.name}`, datum: heuteIso, tage: 0, stufe: "info", quelle: "Team", link: "/team" });
+  }
+  // Übergaben an mich als Vertretung (neue Übergabe → neue Kennung, erscheint wieder)
+  const uebergaben = await db
+    .select({ id: betreuung.id, am: betreuung.uebergabeAm, klientinId: klientin.id, vorname: klientin.vorname, nachname: klientin.nachname, von: benutzer.name })
+    .from(betreuung)
+    .innerJoin(klientin, eq(klientin.id, betreuung.klientinId))
+    .leftJoin(benutzer, eq(benutzer.id, betreuung.uebergabeVon))
+    .where(and(eq(betreuung.vertretungHebammeId, benutzerId), isNotNull(betreuung.uebergabe), isNotNull(betreuung.uebergabeAm), inArray(betreuung.status, ["schwangerschaft", "wochenbett"])));
+  for (const u of uebergaben) {
+    hinweise.push({ id: `auto-uebergabe-${u.id}-${u.am!.getTime()}`, titel: `Übergabe für dich: ${u.vorname} ${u.nachname}${u.von ? ` (von ${u.von.split(" ")[0]})` : ""}`, datum: isoDatum(u.am!), tage: 0, stufe: "info", quelle: "Vertretung – bitte lesen", link: `/klientinnen/${u.klientinId}`, erledigbar: true });
+  }
+  if (!meine.length) return filtern(db, benutzerId, hinweise);
   const kinder = await db.select().from(kind).where(inArray(kind.betreuungId, meine.map((b) => b.id)));
   // Wer schon in einem Rückbildungskurs angemeldet ist, braucht keinen Vorschlag
   const imKurs = new Set(
@@ -62,7 +81,11 @@ export async function erinnerungen(db: Datenbank, benutzerId: string, heute: Dat
       }
     }
   }
-  // Doppelte (z. B. Rückbildung bei Mehrlingen) zusammenfassen, Erledigtes ausblenden
+  return filtern(db, benutzerId, hinweise);
+}
+
+/** Doppelte (z. B. Rückbildung bei Mehrlingen) zusammenfassen, Erledigtes ausblenden */
+async function filtern(db: Datenbank, benutzerId: string, hinweise: FristHinweis[]) {
   const eindeutig = [...new Map(hinweise.map((h) => [h.id, h])).values()];
   if (!eindeutig.length) return [];
   const erledigt = new Set(

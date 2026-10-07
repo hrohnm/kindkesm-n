@@ -177,6 +177,7 @@ function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung
     zustaendigeHebammeId: b.zustaendigeHebammeId ?? "",
     vertretungHebammeId: b.vertretungHebammeId ?? "",
     notizen: b.notizen ?? "",
+    uebergabe: b.uebergabe ?? "",
   });
   return (
     <section className="karte">
@@ -196,6 +197,12 @@ function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung
             <dt className="text-slate-500">Vertretung</dt><dd>{team.find((h) => h.id === b.vertretungHebammeId)?.name ?? "–"}</dd>
           </dl>
           {b.notizen && <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{b.notizen}</p>}
+          {b.uebergabe && (
+            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm dark:bg-amber-900/20" data-testid="uebergabe">
+              <div className="font-semibold">Übergabe für die Vertretung{b.uebergabeAm ? ` · ${team.find((h) => h.id === b.uebergabeVon)?.name.split(" ")[0] ?? ""}, ${datum(b.uebergabeAm.slice(0, 10))}` : ""}</div>
+              <p className="mt-1 whitespace-pre-line">{b.uebergabe}</p>
+            </div>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button type="button" className="knopf-sekundaer min-h-11 px-3" onClick={() => setBearbeiten(true)}>
               <IconStift className="size-5" /> Bearbeiten
@@ -238,6 +245,9 @@ function BetreuungKarte({ betreuung: b, team, neuLaden }: { betreuung: Betreuung
             </Feld>
           </div>
           <Feld label="Notizen"><textarea className="feld min-h-20" value={f.werte.notizen} onChange={(e) => f.setze("notizen", e.target.value)} /></Feld>
+          <Feld label="Übergabe für die Vertretung (Worauf achten?)" hilfe="Die Vertretung bekommt bei jeder Änderung einen Hinweis im Cockpit und sieht die Übergabe im Besuch.">
+            <textarea className="feld min-h-20" maxLength={1000} value={f.werte.uebergabe} onChange={(e) => f.setze("uebergabe", e.target.value)} placeholder="z. B. Hund – vorher anrufen; Mamillen wund, Stillposition üben; Partner spricht nur Englisch" />
+          </Feld>
           <div className="flex gap-2">
             <button className="knopf-primaer" disabled={f.speichert}>Speichern</button>
             <button type="button" className="knopf-sekundaer" onClick={() => setBearbeiten(false)}>Abbrechen</button>

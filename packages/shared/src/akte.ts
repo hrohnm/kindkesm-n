@@ -60,6 +60,8 @@ export const betreuungSchema = z.object({
   zustaendigeHebammeId: z.preprocess(leerZuNull, z.string().uuid().nullable()),
   vertretungHebammeId: z.preprocess(leerZuNull, z.string().uuid().nullable()).optional(),
   notizen: optText(2000),
+  /** Kurzübergabe für die Vertretung */
+  uebergabe: optText(1000).optional(),
 });
 export type BetreuungEingabe = z.infer<typeof betreuungSchema>;
 

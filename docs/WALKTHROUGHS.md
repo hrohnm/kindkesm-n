@@ -142,6 +142,11 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 2. Als Marielena anmelden → Klientinnen → „Meine“.
 - Erwartet: Lena Krüger erscheint bei Marielena mit „Vertretung durch mich“.
 
+**C11 Übergabe an die Vertretung** 🤖
+1. Als Johanna: Betreuung bearbeiten → „Übergabe für die Vertretung (Worauf achten?)“ ausfüllen → Speichern.
+2. Als Marielena (Vertretung): Startseite → „Übergabe für dich: … (von Johanna)“ → Akte; einen Besuch öffnen.
+- Erwartet: Akte zeigt die Übergabe mit Name und Datum, der Besuch zeigt sie oben als Hinweis. „Erledigt“ blendet den Cockpit-Hinweis aus; jede neue Übergabe erscheint wieder. Demo: Nele Hoffmann (Johanna → Marielena).
+
 **C11 Formular für die Mappe der Familie drucken**
 1. Akte → Betreuung → „Formular 3.1 drucken“ (Schwangerschaft) bzw. „3.3“ (nach der Geburt).
 - Erwartet: Amtliches Formular als PDF mit vorausgefülltem Kopf (für Papier-Unterschriften).
@@ -341,6 +346,12 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Team → Mitglieder mit Status (aktiv/Babypause bis …), Kontaktdaten, „IK hinterlegt“.
 - Erwartet: Lorina mit Babypause-Hinweis; Rückkehr 90 Tage vorher im Cockpit.
 
+
+**K2 Rufbereitschaft** 🤖
+1. Team → „Rufbereitschaft“: Hebamme, Von, Bis, Notiz → „Eintragen“; Eintrag löschen.
+2. Startseite: „Rufbereitschaft heute: …“ bzw. „Du hast heute Rufbereitschaft“.
+3. Website → Kontakt.
+- Erwartet: Liste ab heute mit „heute“-Kennzeichen; nur aktive Hebammen wählbar (⚠️ Ende vor Beginn → Fehler). Auf der Website „Heute in Rufbereitschaft: …“; bei eingetragener Abwesenheit steht bei der Hebamme „bis … nicht erreichbar – das Team vertritt“ (ohne Grund). Demo: Marielena heute bis übermorgen.
 ---
 
 ## L. Offline-Betrieb

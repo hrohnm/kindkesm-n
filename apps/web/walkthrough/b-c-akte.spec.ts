@@ -240,7 +240,7 @@ test("C10 Vertretung", async ({ page }, info) => {
   await akteOeffnen(page, "Lena Krüger");
   const b = karte(page, "Betreuung");
   await b.getByRole("button", { name: "Bearbeiten" }).click();
-  await b.getByLabel("Vertretung").selectOption({ label: "Marielena Pontus" });
+  await b.getByRole("combobox", { name: /^Vertretung/ }).selectOption({ label: "Marielena Pontus" });
   await b.getByRole("button", { name: "Speichern" }).click();
   await expect(b.getByText("Marielena Pontus")).toBeVisible();
   await page.getByRole("button", { name: "Abmelden" }).first().click();
