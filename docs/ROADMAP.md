@@ -23,7 +23,6 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 | **M13 Selbstzahler-Rechnungen** | Rechnungs-PDF mit fortlaufender Nummer und GiroCode (QR), Zahlungseingang, Rechnungen für Selbstzahlerkurse und Partnergebühren, EÜR-Export (CSV/DATEV) | M | Preisliste (M26, fertig) |
 | **M12 Rest** | Bestätigungs- und Erinnerungsmails an Teilnehmerinnen, Ratenzahlung, Stornoregeln | S | E-Mail, M13 |
 | **M23 Automatisierungen** | „ET in 2 Wochen → Erstbesuch vorbereiten“, „Kind 8 Wochen → Rückbildungskurs anbieten“, „U-Untersuchung fällig“ (Fristen-, Versand- und Urkunden-Hinweise gibt es schon) | S | – |
-| **M1/M7 Warnungen** | Gewichtsabnahme über 10 %, Kontingent fast ausgeschöpft im Cockpit, fehlende ärztliche Anordnung; Start/Stopp-Knopf für die Besuchsdauer | S | – |
 | **M3 Rest** | Textbausteine, „wie letztes Mal“, EPDS-Fragebogen, Checkliste Beratungsthemen | M | – |
 | **M19 Rest** | Kurzübergabe für die Vertretung („Worauf achten?“), Rufbereitschaftsplan (Babypause, Urlaub und Vertretung je Betreuung gibt es schon) | S | – |
 | **M20 Team-Nachrichten** | Nachrichten mit Bezug zur Akte (statt WhatsApp), Aufgaben mit Fälligkeit | M | – |
@@ -45,7 +44,7 @@ Ziel: Die App läuft auf dem VPS, die Hebammen können mit echten Familien paral
 
 1. **Basis E-Mail** (S). Voraussetzung für Passwort-Hinweise, Kursmails und spätere Erinnerungen.
 2. ~~**M25 Sicherheit**~~ ✅ umgesetzt (Zwei-Faktor-Anmeldung, App-Sperre, Geräte abmelden, Datenexport).
-3. **M1/M7 Warnungen** (S): Gewichtsabnahme über 10 %, Kontingent fast ausgeschöpft, Start/Stopp-Knopf.
+3. ~~**M1/M7 Warnungen**~~ ✅ umgesetzt (Gewicht, Kontingente, Anordnung, laufende Besuchsdauer).
 4. **Echtbetrieb einrichten** (Praxis + Claude): Checkliste in [BETRIEB.md](BETRIEB.md#vor-dem-echtbetrieb) abarbeiten – AVV mit Hostinger, Backup mit getesteter Wiederherstellung, Regelwerk fachlich prüfen und freigeben, Datenschutz-Dokumente, persönliche Konten, `DEMO_MODUS=nein`.
 5. **Website live** (Praxis + Claude): Impressum und Datenschutz vervollständigen, Lorinas Namen und E-Mail vereinheitlichen, eigene Fotos, Domain umstellen.
 

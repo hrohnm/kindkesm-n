@@ -262,6 +262,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - **Heute**: Tour des Tages mit Karte, nächster Termin mit „Navigation starten“, geschätzte Ankunft
 - **Kacheln**: offene Dokumentationen, nicht abgerechnete Leistungen, fehlende Unterschriften, anstehende Entbindungstermine (nächste 14 Tage), Kinder mit Betreuungsende (→ Kinderurkunde), Kursbelegung
 - **Warnungen**: Kontingent fast ausgeschöpft („Noch 2 Kontakte im frühen Wochenbett“), Gewichtsabnahme über 10 %, fehlende ärztliche Anordnung
+- **Umgesetzt (Warnungen):** im Cockpit für eigene und vertretene Betreuungen – Gewichtsabnahme (letzter Wert der letzten 14 Tage; ab 7 % Hinweis, ab 10 % dringend, Link zur Wachstumsseite), Kontingente der laufenden Phase (≤ 2 Kontakte bzw. ≤ 10 % der Minuten übrig, ausgeschöpft = Warnung), Besuche mit nötiger ärztlicher Anordnung, solange sie nicht vermerkt ist. Im Besuch: „Ärztliche Anordnung liegt vor“ mit Notiz (auch nach dem Versand), laufende Besuchsdauer mit „Stopp“-Knopf (M7 Check-in/Check-out)
 - Tablet: Dashboard mit 2–3 Spalten · Handy: gestapelte Karten, „Heute“ zuerst
 
 ### M2 – Klientinnen- und Kinderverwaltung

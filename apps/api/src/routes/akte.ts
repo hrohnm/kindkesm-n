@@ -17,6 +17,7 @@ import {
 } from "@kindkesmoeoen/shared";
 import { and, asc, desc, eq, gte, inArray, isNull, lte, ne, notInArray, or, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { z } from "zod";
 import type { Datenbank } from "../db/client";
 import { benutzer, besuch, besuchHistorie, betreuung, einwilligung, kind, klientin, kontakt, leistung, termin } from "../db/schema";
 import { pruefen } from "../fehler";
@@ -468,6 +469,17 @@ export async function akteRouten(app: FastifyInstance, db: Datenbank) {
     if (!b) return;
     if (istKursBesuch(b.typ)) return reply.code(409).send({ fehler: "Kurseinheiten werden über die Anwesenheit im Kurs bearbeitet." });
     return besuchSpeichern(request, reply, b.betreuungId, b);
+  });
+
+  /** Ärztliche Anordnung vermerken – auch nach dem Versand möglich, ändert keine Leistungen */
+  app.put<{ Params: { id: string } }>("/api/besuche/:id/anordnung", async (request, reply) => {
+    const b = await eigenerBesuch(request.params.id, request, reply);
+    if (!b) return;
+    const daten = pruefen(z.object({ vorhanden: z.boolean(), notiz: z.string().trim().max(200).nullable().default(null) }), request.body, reply);
+    if (!daten) return;
+    await db.update(besuch).set({ anordnungVorhanden: daten.vorhanden, anordnungNotiz: daten.vorhanden ? daten.notiz : null }).where(eq(besuch.id, b.id));
+    await protokollieren(db, request.benutzer!.id, daten.vorhanden ? "anordnung_vermerkt" : "anordnung_entfernt", "besuch", b.id);
+    return { ok: true };
   });
 
   app.delete<{ Params: { id: string } }>("/api/besuche/:id", async (request, reply) => {

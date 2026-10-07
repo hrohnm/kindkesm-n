@@ -3,6 +3,7 @@ import {
   LEISTUNGSART_LABEL,
   LEISTUNGSTYPEN,
   LEISTUNGSTYP_LABEL,
+  anordnungNoetig,
   besuchAbrechnen,
   istSectio,
   lebenstag,
@@ -68,6 +69,9 @@ type BesuchDetail = {
   dokumentation: { mutter?: Record<string, unknown>; kinder?: Record<string, Record<string, unknown>>; notiz?: string | null };
   unterschrift: Unterschrift;
   versionen: Array<{ id: string; zeit: string }>;
+  hinweise?: Array<{ stufe: string; text: string }>;
+  anordnungVorhanden?: boolean;
+  anordnungNotiz?: string | null;
 };
 
 const MATERIAL_LABEL: Record<string, string> = {
@@ -380,6 +384,8 @@ function BesuchFormular({
           )}
           {/* Fehler immer sichtbar, auch zugeklappt */}
           {!abrechnungOffen && vorschau?.hinweise.filter((h) => h.stufe === "fehler").map((h) => <p key={h.text} className="mt-1 text-sm text-tulpe-500">{h.text}</p>)}
+          {/* Ärztliche Anordnung: immer sichtbar, sobald die Prüfung eine verlangt */}
+          {besuch && !fremd && vorschau && anordnungNoetig(vorschau.hinweise) && <div className="mt-3"><AnordnungVermerk besuch={besuch} /></div>}
         </div>
       </div>
 
@@ -405,10 +411,10 @@ function BesuchFormular({
                     <button type="button" className="knopf-sekundaer shrink-0 px-3" onClick={() => setze("von", jetzt())}>Jetzt</button>
                   </div>
                 </Feld>
-                <Feld label="Ende">
+                <Feld label="Ende" hilfe={!w.bis && w.datum === heute() && w.von ? <Laufzeit von={w.von} /> : undefined}>
                   <div className="flex gap-2">
                     <input className="feld" type="time" value={w.bis} onChange={(e) => setze("bis", e.target.value)} />
-                    <button type="button" className="knopf-sekundaer shrink-0 px-3" onClick={() => setze("bis", jetzt())}>Jetzt</button>
+                    <button type="button" className="knopf-sekundaer shrink-0 px-3" onClick={() => setze("bis", jetzt())}>{w.bis ? "Jetzt" : "Stopp"}</button>
                   </div>
                 </Feld>
               </div>
@@ -553,5 +559,42 @@ function BesuchFormular({
         )}
       </div>
     </>
+  );
+}
+
+/** Laufende Besuchsdauer seit „Beginn“, bis „Ende“ gesetzt ist (Check-in/Check-out) */
+function Laufzeit({ von }: { von: string }) {
+  const [jetztMin, setJetztMin] = useState(() => new Date().getHours() * 60 + new Date().getMinutes());
+  useEffect(() => {
+    const t = window.setInterval(() => setJetztMin(new Date().getHours() * 60 + new Date().getMinutes()), 20_000);
+    return () => window.clearInterval(t);
+  }, []);
+  const [h, m] = von.split(":").map(Number);
+  const dauer = jetztMin - ((h ?? 0) * 60 + (m ?? 0));
+  if (Number.isNaN(dauer) || dauer < 0 || dauer > 600) return null;
+  return <span className="text-salbei-600" data-testid="laufzeit">Besuch läuft seit {dauer} Min.</span>;
+}
+
+/** Ärztliche Anordnung vermerken, wenn die Prüfung eine verlangt (auch nach dem Versand möglich) */
+function AnordnungVermerk({ besuch }: { besuch: BesuchDetail }) {
+  const [vorhanden, setVorhanden] = useState(Boolean(besuch.anordnungVorhanden));
+  const [notiz, setNotiz] = useState(besuch.anordnungNotiz ?? "");
+  const [stand, setStand] = useState<"" | "speichert" | "gespeichert">("");
+  async function speichern(v: boolean, n: string) {
+    setStand("speichert");
+    await api(`/api/besuche/${besuch.id}/anordnung`, { method: "PUT", body: { vorhanden: v, notiz: n || null } });
+    setStand("gespeichert");
+  }
+  return (
+    <div className="space-y-2 rounded-xl border border-amber-300 bg-amber-50 p-3 dark:bg-amber-900/20">
+      <label className="flex min-h-11 items-center gap-3 font-medium">
+        <input type="checkbox" className="size-6 accent-salbei-600" checked={vorhanden} onChange={(e) => { setVorhanden(e.target.checked); void speichern(e.target.checked, notiz); }} />
+        Ärztliche Anordnung liegt vor
+      </label>
+      {vorhanden && (
+        <input className="feld" placeholder="Von wem, vom … (optional)" aria-label="Notiz zur Anordnung" value={notiz} maxLength={200} onChange={(e) => setNotiz(e.target.value)} onBlur={() => void speichern(true, notiz)} />
+      )}
+      {stand === "gespeichert" && <p className="text-sm text-salbei-600">Gespeichert</p>}
+    </div>
   );
 }

@@ -258,6 +258,9 @@ export const besuch = pgTable("besuch", {
   einheitenAbrechenbar: smallint("einheiten_abrechenbar").notNull().default(0),
   summe: numeric("summe", { precision: 10, scale: 2 }).notNull().default("0"),
   hinweise: jsonb("hinweise").$type<Array<{ stufe: string; text: string }>>().notNull().default([]),
+  /** Ärztliche Anordnung liegt vor (wenn die Prüfung eine verlangt), mit Notiz z. B. „Dr. Muster, 05.10.“ */
+  anordnungVorhanden: boolean("anordnung_vorhanden").notNull().default(false),
+  anordnungNotiz: text("anordnung_notiz"),
   ...zeitstempel(),
 });
 
