@@ -406,6 +406,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - **Praxisstandort** als gemeinsamer Ort für alle (Neue Reihe 46b, Bad Doberan)
 - **Abrechnungseinstellungen** je Hebamme (siehe Kapitel 8.2)
 - Audit-Log, Geräteverwaltung (verlorenes Tablet sperren), automatische Backups, Export aller Daten (keine Abhängigkeit vom Anbieter)
+- **Umgesetzt (Sicherheit):** Zwei-Faktor-Anmeldung mit Authenticator-App (TOTP nach RFC 6238, QR-Code, 8 Wiederherstellungscodes, Schutz gegen Wiederverwendung), wahlweise Pflicht für alle (`ZWEI_FAKTOR_PFLICHT=ja`, geführte Einrichtung); App-Sperre nach einstellbarer Zeit ohne Bedienung (Entsperren mit Passwort, offline über einen gesalzenen PBKDF2-Prüfwert auf dem Gerät; Hintergrund währenddessen nicht bedienbar); angemeldete Geräte mit „zuletzt aktiv“, einzeln oder alle anderen abmelden; Export aller Tabellen als JSON (ohne Passwörter, Sitzungen und Zwei-Faktor-Geheimnisse, protokolliert)
 
 ### M26 – Gebühren- und Regelwerk-Administration ⭐
 Alle abrechnungsrelevanten Regeln sind **Daten, nicht Code**. Die Praxis pflegt sie selbst in der App, z. B. wenn der Hebammenhilfevertrag sich ändert, Beträge angepasst werden oder ein Formular neu gefasst wird.

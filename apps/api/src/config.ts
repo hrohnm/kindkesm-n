@@ -31,6 +31,8 @@ export const config = {
   webDist: process.env.WEB_DIST,
   /** Anmeldeversuche je IP-Adresse in 15 Minuten (Schutz vor Passwort-Raten; für automatische Tests höher setzbar). */
   anmeldungMax: Number(process.env.ANMELDUNG_MAX ?? 10),
+  /** Zwei-Faktor-Anmeldung für alle Konten verlangen (ZWEI_FAKTOR_PFLICHT=ja; im Echtbetrieb empfohlen). */
+  zweiFaktorPflicht: process.env.ZWEI_FAKTOR_PFLICHT === "ja",
   /** Laufzeit einer Sitzung in Stunden. */
   sitzungStunden: Number(process.env.SITZUNG_STUNDEN ?? 12),
   /** Basisordner des Repositorys (Regelwerk- und Konfigurationsdateien für den Import). */

@@ -7,6 +7,9 @@ export function Anmelden() {
   const { anmelden } = useAuth();
   const [email, setEmail] = useState("");
   const [passwort, setPasswort] = useState("");
+  // Zweiter Schritt: Code aus der Authenticator-App (oder Wiederherstellungscode)
+  const [codeNoetig, setCodeNoetig] = useState(false);
+  const [code, setCode] = useState("");
   const [fehler, setFehler] = useState<string>();
   const [laeuft, setLaeuft] = useState(false);
   const [demo, setDemo] = useState<{ passwort: string; konten: Array<{ email: string; name: string; status: string }> }>();
@@ -23,9 +26,11 @@ export function Anmelden() {
     setLaeuft(true);
     setFehler(undefined);
     try {
-      await anmelden(email, passwort);
+      const r = await anmelden(email, passwort, codeNoetig ? code : undefined);
+      if (r === "zweiter_faktor") setCodeNoetig(true);
     } catch (err) {
       setFehler((err as Error).message);
+      setCode("");
     } finally {
       setLaeuft(false);
     }
@@ -42,18 +47,33 @@ export function Anmelden() {
           </div>
         </div>
         {fehler && <Meldung art="fehler">{fehler}</Meldung>}
-        <label className="block">
-          <span className="etikett">E-Mail</span>
-          <input className="feld" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <label className="block">
-          <span className="etikett">Passwort</span>
-          <input className="feld" type="password" autoComplete="current-password" value={passwort} onChange={(e) => setPasswort(e.target.value)} required />
-        </label>
-        <button className="knopf-primaer w-full" disabled={laeuft}>
-          {laeuft ? "Anmelden …" : "Anmelden"}
-        </button>
-        {demo && (
+        {codeNoetig ? (
+          <>
+            <p className="text-slate-600 dark:text-slate-300">Bitte den 6-stelligen Code aus deiner Authenticator-App eingeben.</p>
+            <label className="block">
+              <span className="etikett">Code</span>
+              <input className="feld text-center text-2xl tracking-[0.3em]" inputMode="numeric" autoComplete="one-time-code" autoFocus maxLength={9} value={code} onChange={(e) => setCode(e.target.value)} required />
+            </label>
+            <p className="text-sm text-slate-500">Handy nicht zur Hand? Einen der Wiederherstellungscodes (z. B. ABCD-EFGH) eingeben – jeder gilt nur einmal.</p>
+            <button className="knopf-primaer w-full" disabled={laeuft}>{laeuft ? "Prüfen …" : "Bestätigen"}</button>
+            <button type="button" className="w-full text-sm text-slate-500 underline" onClick={() => { setCodeNoetig(false); setCode(""); setFehler(undefined); }}>Zurück</button>
+          </>
+        ) : (
+          <>
+            <label className="block">
+              <span className="etikett">E-Mail</span>
+              <input className="feld" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </label>
+            <label className="block">
+              <span className="etikett">Passwort</span>
+              <input className="feld" type="password" autoComplete="current-password" value={passwort} onChange={(e) => setPasswort(e.target.value)} required />
+            </label>
+            <button className="knopf-primaer w-full" disabled={laeuft}>
+              {laeuft ? "Anmelden …" : "Anmelden"}
+            </button>
+          </>
+        )}
+        {demo && !codeNoetig && (
           <div className="border-t border-sand-200 pt-4 dark:border-salbei-700">
             <p className="mb-2 text-sm text-slate-500">Test-Umgebung – Demo-Zugang eintragen:</p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

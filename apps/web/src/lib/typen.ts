@@ -7,7 +7,18 @@ import type {
   Versandrhythmus,
 } from "@kindkesmoeoen/shared";
 
-export type Ich = { id: string; email: string; name: string; kuerzel: string; rolle: "hebamme" | "buero"; status: HebammeStatus };
+export type Ich = {
+  id: string;
+  email: string;
+  name: string;
+  kuerzel: string;
+  rolle: "hebamme" | "buero";
+  status: HebammeStatus;
+  /** M25: Zwei-Faktor-Anmeldung eingerichtet / in der Praxis Pflicht, App-Sperre in Minuten (0 = aus) */
+  zweiFaktor?: boolean;
+  zweiFaktorPflicht?: boolean;
+  sperreMinuten?: number;
+};
 
 export type Ort = { id: string; benutzerId: string | null; bezeichnung: string; typ: OrtTyp; anschrift: string; abholzeit: string | null; lat?: string | null; lon?: string | null };
 

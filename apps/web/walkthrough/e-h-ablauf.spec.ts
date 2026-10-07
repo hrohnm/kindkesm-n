@@ -295,7 +295,8 @@ test("H2 ⚠️ Versand ohne IK wird abgelehnt", async ({ page }, info) => {
   await bild(page, info, "A5-ik-geaendert", false);
   await page.goto("/abrechnung");
   await page.getByRole("button", { name: "Versand vorbereiten" }).click();
-  await expect(page.getByRole("alert").filter({ hasText: /IK|Institutionskennzeichen/ })).toBeVisible();
+  // Hinweis in der Übersicht und Fehlermeldung des Versands erscheinen beide – eine genügt
+  await expect(page.getByRole("alert").filter({ hasText: /IK|Institutionskennzeichen/ }).first()).toBeVisible();
   await bild(page, info, "H2-ohne-ik", false);
   await page.goto("/einstellungen");
   await page.getByLabel("Institutionskennzeichen (IK)").fill(alt);

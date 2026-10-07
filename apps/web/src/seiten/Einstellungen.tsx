@@ -11,6 +11,7 @@ const UNTER = [
   { to: "/einstellungen/praxis", label: "Praxis" },
   { to: "/einstellungen/offline", label: "Offline" },
   { to: "/einstellungen/passwort", label: "Passwort" },
+  { to: "/einstellungen/sicherheit", label: "Sicherheit" },
   // Auf dem Handy fehlen diese in der unteren Leiste, daher nur dort hier verlinkt
   { to: "/anfragen", label: "Anfragen ›", nurHandy: true },
   { to: "/belegung", label: "Belegungsplan ›", nurHandy: true },

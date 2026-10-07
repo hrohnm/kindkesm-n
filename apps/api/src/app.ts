@@ -3,7 +3,7 @@ import cookie from "@fastify/cookie";
 import rateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
-import { SITZUNG_COOKIE, sitzungLaden } from "./auth";
+import { SITZUNG_COOKIE, sitzungLaden, tokenHash } from "./auth";
 import { config } from "./config";
 import type { Datenbank } from "./db/client";
 import { benutzer } from "./db/schema";
@@ -24,6 +24,7 @@ import { teamRouten } from "./routes/team";
 import { tourenRouten } from "./routes/touren";
 import { anfrageRouten } from "./routes/anfragen";
 import { rueckrufRouten } from "./routes/rueckrufe";
+import { sicherheitRouten } from "./routes/sicherheit";
 import { oeffentlicheSchnittstellen } from "./oeffentlich";
 
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
@@ -47,10 +48,17 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
     if (!request.url.startsWith("/api/")) return;
     const pfad = request.url.split("?")[0]!;
     const token = request.cookies[SITZUNG_COOKIE];
-    if (token) request.benutzer = await sitzungLaden(db, token);
+    if (token) {
+      request.benutzer = await sitzungLaden(db, token);
+      if (request.benutzer) request.sitzungId = tokenHash(token);
+    }
     // Online-Kursanmeldung: ohne Konto (nur Kursdaten lesen bzw. eine Anmeldung abgeben)
     if (!OEFFENTLICH.has(pfad) && !pfad.startsWith("/api/oeffentlich/") && !request.benutzer) {
       return reply.code(401).send({ fehler: "Bitte anmelden" });
+    }
+    // Zwei-Faktor-Pflicht: bis zur Einrichtung nur Anmeldung und Einrichtung erlaubt
+    if (config.zweiFaktorPflicht && request.benutzer && !request.benutzer.zweiFaktor && !pfad.startsWith("/api/auth/") && !pfad.startsWith("/api/ich/2fa/")) {
+      return reply.code(403).send({ fehler: "Bitte zuerst die Zwei-Faktor-Anmeldung einrichten.", code: "zwei_faktor_einrichten" });
     }
   });
 
@@ -84,6 +92,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await aenderungRouten(app, db);
   await anfrageRouten(app, db);
   await rueckrufRouten(app, db);
+  await sicherheitRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

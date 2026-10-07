@@ -25,6 +25,9 @@ import { Ansicht } from "./seiten/einstellungen/Ansicht";
 import { Offline } from "./seiten/einstellungen/Offline";
 import { OrteTouren } from "./seiten/einstellungen/OrteTouren";
 import { Passwort } from "./seiten/einstellungen/Passwort";
+import { Sicherheit } from "./seiten/einstellungen/Sicherheit";
+import { ZweiFaktorPflicht } from "./seiten/ZweiFaktorPflicht";
+import { Sperre } from "./komponenten/Sperre";
 import { Praxis } from "./seiten/einstellungen/Praxis";
 import { Profil } from "./seiten/einstellungen/Profil";
 import { Klientinnen } from "./seiten/Klientinnen";
@@ -39,7 +42,11 @@ function App() {
   if (ort.pathname === "/anmeldung") return <Anmeldung />;
   if (ich === undefined) return null;
   if (ich === null) return <Anmelden />;
+  if (ich.zweiFaktorPflicht && !ich.zweiFaktor) return <ZweiFaktorPflicht />;
   return (
+    <>
+    <Sperre />
+    <div id="app-inhalt" className="contents">
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Cockpit />} />
@@ -69,10 +76,13 @@ function App() {
           <Route path="praxis" element={<Praxis />} />
           <Route path="offline" element={<Offline />} />
           <Route path="passwort" element={<Passwort />} />
+          <Route path="sicherheit" element={<Sicherheit />} />
         </Route>
         <Route path="*" element={<Cockpit />} />
       </Route>
     </Routes>
+    </div>
+    </>
   );
 }
 

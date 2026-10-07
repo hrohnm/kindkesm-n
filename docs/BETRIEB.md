@@ -58,6 +58,7 @@ In `.env` eintragen:
 | `DB_PASSWORT` | Ergebnis von `openssl rand -base64 32` |
 | `SITZUNG_STUNDEN` | Anmeldedauer in Stunden (Standard 12) |
 | `DEMO_MODUS` | `ja` zeigt auf der Login-Seite Knöpfe für die Demo-Konten (nur Test-Umgebung), sonst `nein` |
+| `ZWEI_FAKTOR_PFLICHT` | `ja` verlangt für alle Konten die Zwei-Faktor-Anmeldung (Authenticator-App); wer sie noch nicht hat, wird nach der Anmeldung durch die Einrichtung geführt. Im Echtbetrieb `ja` |
 | `OSRM_URL` | leer lassen; setzt `scripts/karte-einrichten.sh` (Abschnitt 5a) |
 | `GEOCODER_URL` | leer = Online-Adresssuche über nominatim.openstreetmap.org, wenn das eigene Adressverzeichnis eine Anschrift nicht kennt (nur Straße, PLZ, Ort – keine Namen); `aus` = abschalten |
 | `GEOCODER_KONTAKT` | E-Mail der Praxis (Kennung gegenüber Nominatim laut Nutzungsregeln) |
@@ -185,6 +186,7 @@ Erinnerungen per E-Mail kommen in einem späteren Meilenstein. Dann werden SMTP-
 - [ ] Firewall, SSH nur mit Schlüssel, automatische Updates aktiv
 - [ ] Produktivumgebung **ohne** `--demo` eingerichtet bzw. Demo-Konten gesperrt, `DEMO_MODUS=nein`
 - [ ] Persönliche Konten angelegt, Passwörter geändert
+- [ ] `ZWEI_FAKTOR_PFLICHT=ja`, alle Hebammen haben die Zwei-Faktor-Anmeldung eingerichtet und ihre Wiederherstellungscodes sicher aufbewahrt; App-Sperre eingestellt (Einstellungen → Sicherheit)
 - [ ] Tägliches Backup mit externer Kopie eingerichtet und eine Wiederherstellung getestet
 - [ ] Regelwerk fachlich geprüft und in der App freigegeben (Regelwerk → „Fassung freigeben“, zweite Hebamme bestätigt)
 - [ ] Tablets/Handys: Bildschirmsperre mit PIN bzw. Face ID, Geräteverschlüsselung aktiv (Offline-Daten liegen verschlüsselt auf dem Gerät, beim Abmelden werden sie gelöscht)
