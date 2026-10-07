@@ -21,6 +21,7 @@ const UNTER = [
   { to: "/kurse", label: "Kurse ›", nurHandy: true },
   { to: "/team", label: "Team ›", nurHandy: true },
   { to: "/fahrtenbuch", label: "Fahrtenbuch ›", nurHandy: true },
+  { to: "/statistik", label: "Statistik ›", nurHandy: true },
   { to: "/regelwerk", label: "Regelwerk ›", nurHandy: true },
 ];
 

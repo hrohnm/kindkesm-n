@@ -390,6 +390,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M22 – Statistik
 - Betreuungen pro Hebamme/Monat, Wochenbetten nach Ort (Heatmap), Kilometer und Fahrtzeit, Umsatz (Kasse vs. Selbstzahler), Kursauslastung
 - Offene Beträge: versendet, aber noch nicht als bezahlt abgehakt (siehe Kapitel 8.7)
+- **Umgesetzt:** Seite **Statistik** je Jahr. Für das ganze Team: Besuche (abgeschlossen) je Monat als Balkendiagramm (auch als Tabelle), betreute Familien, Geburten, je Hebamme, Wohnorte der Familien, Kursauslastung mit Warteliste. Nur für die angemeldete Hebamme (sie rechnet einzeln ab): Umsatz Kasse je Monat, noch nicht versendete Leistungen, versendet und unbezahlt, dienstliche Kilometer aus dem Fahrtenbuch. Offen: Umsatz Selbstzahler (mit M13), Fahrtzeit, Heatmap
 
 ### M23 – Erinnerungen und Automatisierungen
 - „ET in 2 Wochen → Erstbesuch Wochenbett vorbereiten“

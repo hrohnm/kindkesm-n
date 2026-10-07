@@ -28,3 +28,4 @@ export const IconAuto = basis(<><path d="M5 16V11l2-5h10l2 5v5" /><path d="M3 16
 export const IconPost = basis(<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></>);
 export const IconTelefon = basis(<><path d="M5 4h3.5l1.5 4.5-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z" /></>);
 export const IconKalender =basis(<><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>);
+export const IconStatistik = basis(<><path d="M4 20h16" /><path d="M7 16v-5M12 16V7M17 16v-8" /></>);

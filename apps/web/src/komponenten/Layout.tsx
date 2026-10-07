@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router";
 import { useAuth } from "../lib/auth";
 import { OfflineStatus } from "./OfflineStatus";
-import { IconAbmelden, IconAbrechnung, IconPost, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconKalender, IconRegelwerk, IconTeam, IconTour } from "./Icons";
+import { IconAbmelden, IconAbrechnung, IconPost, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconKalender, IconRegelwerk, IconStatistik, IconTeam, IconTour } from "./Icons";
 
 const NAV = [
   { to: "/", label: "Heute", icon: IconHeute, ende: true },
@@ -15,6 +15,7 @@ const NAV = [
   { to: "/kurse", label: "Kurse", icon: IconKurs, nurGross: true },
   { to: "/fahrtenbuch", label: "Fahrtenbuch", icon: IconAuto, nurGross: true },
   { to: "/team", label: "Team", icon: IconTeam, nurGross: true },
+  { to: "/statistik", label: "Statistik", icon: IconStatistik, nurGross: true },
   { to: "/regelwerk", label: "Regelwerk", icon: IconRegelwerk, nurGross: true },
   { to: "/einstellungen", label: "Einstellungen", icon: IconEinstellungen },
 ];
