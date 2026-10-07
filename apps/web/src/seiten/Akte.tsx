@@ -1,3 +1,4 @@
+import { FotoKarte } from "../komponenten/Fotos";
 import { TeamKarte } from "../komponenten/TeamNachrichten";
 import {
   BETREUUNG_STATUS,
@@ -97,6 +98,7 @@ export function Akte() {
           <Besuche betreuungId={betreuung.id} />
         </>
       )}
+      <FotoKarte klientinId={k.id} kinder={betreuung?.kinder ?? []} />
       <TeamKarte klientinId={k.id} />
       <div className="mt-6">
         <EinwilligungenKarte klientin={k} neuLaden={akte.laden} />

@@ -33,6 +33,11 @@ export const config = {
   anmeldungMax: Number(process.env.ANMELDUNG_MAX ?? 10),
   /** Zwei-Faktor-Anmeldung für alle Konten verlangen (ZWEI_FAKTOR_PFLICHT=ja; im Echtbetrieb empfohlen). */
   zweiFaktorPflicht: process.env.ZWEI_FAKTOR_PFLICHT === "ja",
+  /**
+   * Schlüssel für die Verschlüsselung der Fotos (M17): 32 Byte, Base64 (z. B. `openssl rand -base64 32`).
+   * Ohne Schlüssel sind Foto-Uploads im Betrieb gesperrt; in Entwicklung und Tests gilt ein fester Entwicklungsschlüssel.
+   */
+  fotoSchluessel: process.env.FOTO_SCHLUESSEL || undefined,
   /** Laufzeit einer Sitzung in Stunden. */
   sitzungStunden: Number(process.env.SITZUNG_STUNDEN ?? 12),
   /** Basisordner des Repositorys (Regelwerk- und Konfigurationsdateien für den Import). */

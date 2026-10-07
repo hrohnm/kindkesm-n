@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
+import { customType,
   boolean,
   date,
   doublePrecision,
@@ -702,4 +702,22 @@ export const aufgabe = pgTable("aufgabe", {
   erledigtVon: uuid("erledigt_von").references(() => benutzer.id, { onDelete: "set null" }),
   erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
   ...zeitstempel(),
+});
+
+/** Binärdaten (PostgreSQL bytea) */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
+
+/** M17: Foto in der Akte, AES-256-GCM-verschlüsselt (IV + Tag + Chiffrat) – nur mit Einwilligung „foto“ */
+export const foto = pgTable("foto", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  klientinId: uuid("klientin_id").notNull().references(() => klientin.id, { onDelete: "cascade" }),
+  kindId: uuid("kind_id").references(() => kind.id, { onDelete: "set null" }),
+  besuchId: uuid("besuch_id").references(() => besuch.id, { onDelete: "set null" }),
+  bereich: text("bereich", { enum: ["nabel", "naht", "sectionarbe", "brust", "haut", "sonstiges"] }).notNull(),
+  notiz: text("notiz"),
+  mime: text("mime").notNull(),
+  groesse: integer("groesse").notNull(),
+  daten: bytea("daten").notNull(),
+  aufgenommenAm: timestamp("aufgenommen_am", { withTimezone: true }).notNull().defaultNow(),
+  erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id),
 });

@@ -364,6 +364,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M17 – Foto-Dokumentation ⭐
 - Fotos von Nabel, Naht oder Hautbefund direkt in der Akte. Fotos bleiben **nicht** in der Galerie des Geräts, sondern werden verschlüsselt in der App gespeichert
 - Verlaufsvergleich (Bilder nebeneinander), Einwilligung wird geprüft
+- **Umgesetzt:** Kasten „Fotos“ in der Akte: Aufnahme mit der Kamera (`capture`, nicht in der Galerie), im Browser auf 1600 px verkleinert, auf dem Server mit AES-256-GCM verschlüsselt in der Datenbank (`FOTO_SCHLUESSEL`); Bereich (Nabel, Naht/Damm, Kaiserschnittnarbe, Brust, Haut, Sonstiges), Kind, Notiz; Verlauf je Bereich nebeneinander, Vergrößern, Löschen. Nur mit erteilter Einwilligung; nach Widerruf gesperrt mit „Alle Fotos löschen“. Bilder werden nie zwischengespeichert (`no-store`, nicht offline), Inhalt wird geprüft (nur JPEG/PNG/WebP). Im Datenexport nur die Angaben, nicht die Bilder (die sichert das Datenbank-Backup). Kein Website-Baustein (Gesundheitsdaten)
 
 ### M18 – Vorlagen und Briefe
 - Arztbrief, Überleitungsbericht, Bescheinigungen (z. B. Mutterschutz-relevante Bescheinigungen, soweit zulässig), Kursbescheinigungen

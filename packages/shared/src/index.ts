@@ -18,3 +18,4 @@ export * from "./automatisierungen";
 export * from "./epds";
 export * from "./kalender";
 export * from "./team";
+export * from "./foto";

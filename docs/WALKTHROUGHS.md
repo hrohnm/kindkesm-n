@@ -155,6 +155,12 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Akte → Kontingente und Besuche ansehen.
 - Erwartet: Kontingentbalken (z. B. „2 von 20 Kontakte“, bei Kursen in Minuten); Besuche mit Leistung, Art, GPOS, Minuten, Betrag, Unterschriftsart; Kurseinheiten führen zum Kurstermin.
 
+**C13 Fotos in der Akte** 🤖
+1. Akte Anna Schulz → Kasten „Fotos“: Verlauf „Nabel (3)“ von Mats nebeneinander; Foto antippen (vergrößern, Esc/„Schließen“).
+2. Bereich (z. B. Haut), Kind, Notiz wählen → „Foto aufnehmen“ (Tablet: Kamera öffnet sich direkt) → im Verlauf; vergrößern → „Löschen“.
+3. Akte Laura Becker (Fotos abgelehnt); bei einer Akte die Einwilligung „Fotos“ widerrufen.
+- Erwartet: Aufnahme nur mit erteilter Einwilligung („Fotos nur mit Einwilligung …“). Fotos landen nicht in der Galerie, werden verkleinert (max. 1600 px) und verschlüsselt gespeichert; Filter je Bereich, älteste links. Nach Widerruf sind die Bilder gesperrt, Hinweis und „Alle n Fotos löschen“. Ohne `FOTO_SCHLUESSEL` auf dem Server: Hinweis „nicht eingerichtet“. ⚠️ Andere Dateien als Fotos werden abgelehnt.
+
 ---
 
 ## D. Besuch dokumentieren
@@ -483,4 +489,4 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 ## P. Bekannte Lücken (noch kein Walkthrough möglich)
 
-E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Raumbelegung (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Raumbelegung (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
