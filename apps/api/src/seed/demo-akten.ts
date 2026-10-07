@@ -23,7 +23,7 @@ type Familie = {
   klientin: Record<string, string | null>;
   et: string | null;
   kinder?: Array<Record<string, string | number | null>>;
-  besuche?: Array<{ datum: string; von: string; bis: string; typ: string; art: 1 | 2 | 3 | 4; material?: string[]; doku?: Record<string, unknown>; kindDoku?: Array<Record<string, unknown>>; offen?: boolean; tablet?: boolean }>;
+  besuche?: Array<{ datum: string; von: string; bis: string; typ: string; art: 1 | 2 | 3 | 4; material?: string[]; doku?: Record<string, unknown>; kindDoku?: Array<Record<string, unknown>>; beratung?: string[]; offen?: boolean; tablet?: boolean }>;
 };
 
 const FAMILIEN: Familie[] = [
@@ -33,7 +33,7 @@ const FAMILIEN: Familie[] = [
     et: tag(-2),
     kinder: [{ vorname: "Ole", nachname: "Krüger", geburtsdatum: tag(-5), geburtszeit: "04:12", geschlecht: "maennlich", geburtsgewicht: 3480, laenge: 52, kopfumfang: 35, geburtsmodus: "spontan" }],
     besuche: [
-      { datum: tag(-3), von: "10:00", bis: "11:30", typ: "wochenbett", art: 1, doku: { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", brust: "Milcheinschuss", befinden: "müde, glücklich" }, kindDoku: [{ gewicht: 3290, temperatur: 37.0, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }] },
+      { datum: tag(-3), von: "10:00", bis: "11:30", typ: "wochenbett", art: 1, doku: { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", brust: "Milcheinschuss", befinden: "müde, glücklich" }, kindDoku: [{ gewicht: 3290, temperatur: 37.0, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }], beratung: ["Stillen/Anlegen", "Vitamin K/D, Fluorid"] },
       { datum: tag(-2), von: "09:30", bis: "10:15", typ: "wochenbett", art: 1, material: ["61400"], doku: { temperatur: 36.7, fundus: "1 QF unter Nabel", lochien: "rubra", brust: "gefüllt" }, kindDoku: [{ gewicht: 3240, haut: "leicht ikterisch", nabel: "feucht", stillen: "voll gestillt" }] },
       { datum: tag(-1), von: "17:40", bis: "18:20", typ: "wochenbett", art: 1, doku: { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "weich", befinden: "stabil" }, kindDoku: [{ gewicht: 3270, haut: "leicht ikterisch", nabel: "trocken", stillen: "voll gestillt" }] },
       { datum: tag(0), von: "09:00", bis: "09:45", typ: "wochenbett", art: 1, offen: true, doku: { fundus: "2 QF unter Nabel" }, kindDoku: [{ gewicht: 3310 }] },
@@ -85,10 +85,10 @@ const FAMILIEN_ERWEITERT: Familie[] = [
     et: tag(-13),
     kinder: [{ vorname: "Mats", nachname: "Schulz", geburtsdatum: tag(-12), geburtszeit: "22:40", geschlecht: "maennlich", geburtsgewicht: 3620, laenge: 53, kopfumfang: 35.5 }],
     besuche: [
-      papierBesuch(-11, "10:30", "11:50", 3480, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 124, rrDia: 78 }, { temperatur: 37.1, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }),
+      { ...papierBesuch(-11, "10:30", "11:50", 3480, { temperatur: 37.0, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 124, rrDia: 78 }, { temperatur: 37.1, haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }), beratung: ["Stillen/Anlegen", "Nabelpflege", "Vitamin K/D, Fluorid"] },
       { ...papierBesuch(-10, "11:00", "11:50", 3390, { temperatur: 36.9, fundus: "1 QF unter Nabel", lochien: "rubra", brust: "Milcheinschuss" }, { haut: "rosig", stillen: "Saugen gut" }), material: ["61400"] },
       papierBesuch(-9, "10:15", "11:00", 3350, { temperatur: 36.8, fundus: "2 QF unter Nabel", lochien: "fusca", brust: "gefüllt" }, { haut: "leicht ikterisch", nabel: "trocken" }),
-      papierBesuch(-7, "14:00", "14:40", 3420, { fundus: "3 QF unter Nabel", lochien: "fusca", brust: "weich", befinden: "gut erholt" }, { haut: "leicht ikterisch", nabel: "abgefallen", ausscheidung: "Muttermilchstuhl" }),
+      { ...papierBesuch(-7, "14:00", "14:40", 3420, { fundus: "3 QF unter Nabel", lochien: "fusca", brust: "weich", befinden: "gut erholt" }, { haut: "leicht ikterisch", nabel: "abgefallen", ausscheidung: "Muttermilchstuhl" }), beratung: ["Schlafen/sicherer Schlafplatz (SIDS)", "U-Untersuchungen"] },
       papierBesuch(-5, "09:30", "10:10", 3530, { fundus: "Symphyse", lochien: "flava" }, { haut: "rosig", stillen: "voll gestillt" }),
       papierBesuch(-2, "15:00", "15:40", 3660, { fundus: "nicht tastbar", lochien: "flava", befinden: "gut" }, { haut: "rosig", stillen: "voll gestillt", ausscheidung: "Muttermilchstuhl" }),
     ],
@@ -98,13 +98,13 @@ const FAMILIEN_ERWEITERT: Familie[] = [
     klientin: { vorname: "Katrin", nachname: "Lange", geburtsdatum: "1996-03-14", strasse: "Haffstraße 3", plz: "18230", ort: "Rerik", telefon: "0170 0000106", email: null, krankenkasse: "Musterkasse Ost", kassenIk: "109900002", versichertennummer: "L135792468", hinweise: "Ambulante Geburt, Erstgebärende." },
     et: tag(1),
     kinder: [{ vorname: "Ella", nachname: "Lange", geburtsdatum: tag(-2), geburtszeit: "06:15", geschlecht: "weiblich", geburtsgewicht: 3150, laenge: 50, kopfumfang: 34 }],
-    besuche: [papierBesuch(-1, "16:00", "17:30", 3010, { temperatur: 37.2, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 118, rrDia: 72 }, { temperatur: 36.9, haut: "rosig", nabel: "feucht", stillen: "Anlegeprobleme" })],
+    besuche: [papierBesuch(-1, "16:00", "17:30", 2830, { temperatur: 37.2, fundus: "Nabelhöhe", lochien: "rubra", brust: "weich", rrSys: 118, rrDia: 72 }, { temperatur: 36.9, haut: "rosig", nabel: "feucht", stillen: "Anlegeprobleme" })],
   },
   {
     hebamme: "johanna@kindkesmoeoen.test",
     klientin: { vorname: "Mia", nachname: "Neumann", geburtsdatum: "1998-12-02", strasse: "Bahnhofstraße 12", plz: "18236", ort: "Kröpelin", telefon: "0170 0000107", email: "mia.neumann@example.org", krankenkasse: "Musterkasse West", kassenIk: "109900003", versichertennummer: "N975318642", hinweise: null },
     et: tag(28),
-    besuche: [{ datum: tag(-14), von: "09:00", bis: "09:30", typ: "vorsorge", art: 2, material: ["60200"], doku: { rrSys: 112, rrDia: 70, puls: 82, befinden: "gut, Sodbrennen" } }],
+    besuche: [{ datum: tag(-14), von: "09:00", bis: "09:30", typ: "vorsorge", art: 2, material: ["60200"], doku: { rrSys: 112, rrDia: 70, puls: 82, befinden: "gut, Sodbrennen" }, beratung: ["Beschwerden", "Geburtsvorbereitung"] }],
   },
   {
     hebamme: "marielena@kindkesmoeoen.test",
@@ -120,7 +120,7 @@ const FAMILIEN_ERWEITERT: Familie[] = [
       tabletBesuch(-27, "15:00", "15:40", 3390, { lochien: "flava", befinden: "gut" }, { stillen: "voll gestillt", laenge: 52.5, kopfumfang: 35.3 }),
       tabletBesuch(-23, "10:00", "10:40", 3560, { lochien: "alba" }),
       tabletBesuch(-16, "11:00", "11:40", 3820, { lochien: "alba" }, { stillen: "voll gestillt", laenge: 54, kopfumfang: 36.4 }),
-      tabletBesuch(-9, "14:00", "14:40", 4050, {}, { stillen: "voll gestillt" }),
+      { ...tabletBesuch(-9, "14:00", "14:40", 4050, { befinden: "erschöpft, weint oft", epds: "1,1,2,1,1,1,1,1,1,0" }, { stillen: "voll gestillt" }), beratung: ["Babyblues/Stimmung", "Rückbildung"] },
       tabletBesuch(-2, "10:00", "10:40", 4290, { befinden: "sehr gut" }, { stillen: "voll gestillt", ausscheidung: "Muttermilchstuhl", laenge: 55.5, kopfumfang: 37.4 }),
     ],
   },
@@ -132,7 +132,7 @@ const FAMILIEN_ERWEITERT: Familie[] = [
     besuche: [
       tabletBesuch(-7, "14:00", "15:30", 3760, { temperatur: 36.9, fundus: "Nabelhöhe", lochien: "rubra", rrSys: 130, rrDia: 82 }, { haut: "rosig", nabel: "feucht", stillen: "voll gestillt" }),
       tabletBesuch(-6, "15:00", "15:50", 3650, { fundus: "1 QF unter Nabel", lochien: "rubra", brust: "Milcheinschuss" }, { haut: "rosig" }),
-      tabletBesuch(-5, "14:30", "15:15", 3620, { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "wunde Mamillen" }, { haut: "leicht ikterisch", stillen: "Anlegeprobleme" }),
+      { ...tabletBesuch(-5, "14:30", "15:15", 3620, { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "wunde Mamillen" }, { haut: "leicht ikterisch", stillen: "Anlegeprobleme" }), beratung: ["Stillen/Anlegen", "Babyblues/Stimmung"] },
       tabletBesuch(-4, "16:00", "16:40", 3680, { fundus: "2 QF unter Nabel", lochien: "fusca", brust: "gefüllt" }, { haut: "leicht ikterisch", stillen: "Saugen gut" }),
       tabletBesuch(-2, "15:30", "16:10", 3790, { fundus: "3 QF unter Nabel", lochien: "fusca", brust: "weich" }, { haut: "rosig", nabel: "abgefallen", stillen: "voll gestillt" }),
     ],
@@ -193,7 +193,7 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweiter
         typ: b.typ,
         art: b.art,
         material: b.material ?? [],
-        dokumentation: { mutter: b.doku ?? {}, kinder, notiz: null },
+        dokumentation: { mutter: b.doku ?? {}, kinder, notiz: null, beratung: b.beratung ?? [] },
         unterschrift: b.offen || b.art >= 3 ? { art: "keine" } : b.tablet ? tablet(b.datum, b.bis, `${f.klientin.vorname} ${f.klientin.nachname}`) : papier(b.datum, b.bis),
         abschliessen: !b.offen,
       });
@@ -343,6 +343,31 @@ async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
     uebergabe: "Zweites Kind, erste Geburt war ein Kaiserschnitt. Wünscht Hausgeburt nicht – Klinik Südstadt angemeldet. Bitte vorher anrufen (Hund).",
   });
   await anfrage(M, "POST", "/api/rufbereitschaft", { hebammeId: mid, von: tag(0), bis: tag(2), notiz: "Wochenende" });
+
+  // M3: Textbausteine (Praxis und eigene)
+  for (const [email, titel, text, praxis] of [
+    [J, "Stillberatung Anlegen", "Anlegen in Wiegehaltung und Rückengriff geübt, Kind saugt effektiv, Mutter sicher.", true],
+    [J, "Nabelpflege", "Nabel trocken und reizlos, Pflege besprochen (trocken halten, Windel unterhalb).", true],
+    [M, "Sicherer Schlaf", "Sicherer Schlafplatz besprochen: Rückenlage, eigenes Bett im Elternschlafzimmer, Schlafsack, rauchfreie Umgebung.", true],
+    [J, "Gewichtskontrolle", "Gewicht kontrolliert, Verlauf mit den Eltern besprochen, nächste Kontrolle vereinbart.", false],
+  ] as const) await anfrage(email, "POST", "/api/textbausteine", { titel, text, praxis });
+
+  // M5: Termine der nächsten Tage für den Teamkalender und Johannas Fortbildung nächste Woche
+  const bid = async (email: string, nachname: string) => {
+    const k = (await anfrage(email, "GET", `/api/klientinnen?q=${encodeURIComponent(nachname)}`))[0];
+    return (await anfrage(email, "GET", `/api/klientinnen/${k.id}`)).betreuungen[0].id as string;
+  };
+  const kommend: Array<[string, string, number, Record<string, unknown>]> = [
+    [J, "Krüger", 1, { zeit: "fix", uhrzeit: "09:30", dauerMin: 45, typ: "wochenbett" }],
+    [J, "Lange", 1, { zeit: "vormittags", dauerMin: 60, typ: "wochenbett", wichtig: true }],
+    [J, "Schulz", 2, { zeit: "fenster", fruehestens: "14:00", spaetestens: "16:00", dauerMin: 45, typ: "wochenbett" }],
+    [J, "Neumann", 3, { zeit: "fix", uhrzeit: "10:00", dauerMin: 30, typ: "vorsorge" }],
+    [M, "Koch", 1, { zeit: "fix", uhrzeit: "11:00", dauerMin: 45, typ: "wochenbett" }],
+    [M, "Hansen", 2, { zeit: "vormittags", dauerMin: 60, typ: "wochenbett" }],
+    [M, "Wolff", 4, { zeit: "fix", uhrzeit: "15:00", dauerMin: 60, typ: "schwangerschaft" }],
+  ];
+  for (const [email, nachname, offset, t] of kommend) await anfrage(email, "POST", `/api/touren/${tag(offset)}/termine`, { ...t, betreuungId: await bid(email, nachname) });
+  await anfrage(J, "POST", "/api/abwesenheiten", { von: tag(9), bis: tag(10), art: "fortbildung", notiz: "Fortbildung Stillberatung" });
 
   // Rückrufwünsche von der Website: einer mit Wunsch-Hebamme, einer zur Betreuung (→ „Als Betreuungsanfrage erfassen“)
   await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Lotta Stillfrage", telefon: "0170 0000203", anliegen: "stillen", zeitfenster: "vormittag", hebamme: "Marielena Pontus", nachricht: "Unser Sohn ist 10 Tage alt und trinkt sehr unruhig.", einwilligung: true });

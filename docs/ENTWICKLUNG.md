@@ -19,11 +19,14 @@ Nützliche Befehle im Terminal des Codespaces:
 
 | Befehl | Wirkung |
 |---|---|
+| `npm run codespace:aktualisieren` | Testdeploy: neuesten Stand von `main` holen, Abhängigkeiten, Migrationen, frische Demo-Daten, alles neu starten |
 | `npm run db:reset:demo` | Datenbank leeren und frische Demo-Daten einspielen (danach neu anmelden) |
 | `npm run dev:neustart` | API, Web-App und Website neu starten (z. B. nach `git pull`) |
 | `tail -f /tmp/kindkes-api.log /tmp/kindkes-web.log /tmp/kindkes-website.log` | Logs ansehen |
 
 Meldet der Browser **401**, ist der Port privat: im Tab **Ports** über das Globus-Symbol öffnen oder Port 5173 per Rechtsklick auf **Public** stellen (nur mit Demo-Daten!).
+
+**Kalender-Abo im Codespace:** Der Abo-Link zeigt auf die Codespace-Adresse (Port 5173). Kalender-Apps können ihn nur abrufen, wenn der Port auf **Public** steht. Das ist nur mit Demo-Daten in Ordnung; sonst den Link einfach im Browser öffnen, um die ICS-Datei anzusehen.
 
 Im Codespace läuft kein Routing-Server: Strecken werden aus der Luftlinie geschätzt. Die Demo-Familien und -Orte haben Positionen aus einem kleinen Demo-Adressverzeichnis (`konfiguration/demo-adressen.csv`).
 

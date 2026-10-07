@@ -94,7 +94,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 **B2 Warnungen** 🤖
 1. Startseite als Johanna: Hinweise „Ärztliche Anordnung fehlt: Sophie Berger“, ggf. Gewicht („… % unter dem Geburtsgewicht“) und Kontingent („… von … genutzt, noch … frei“ bzw. „ausgeschöpft“), ggf. EPDS (siehe D11).
 2. „Ärztliche Anordnung fehlt“ antippen → im Besuch „Ärztliche Anordnung liegt vor“ ankreuzen, Notiz (von wem, wann).
-- Erwartet: Gewicht ab 7 % Abnahme als Hinweis, ab 10 % deutlich hervorgehoben (Link zur Wachstumsseite); nur für eigene bzw. vertretene Betreuungen. Kontingente der laufenden Phase erst, wenn nur noch 2 Kontakte (bzw. 10 % der Minuten) übrig sind; kleine Kontingente erst, wenn sie aufgebraucht sind. Nach dem Vermerk verschwindet die Anordnungs-Warnung; der Vermerk geht auch nach dem Versand.
+- Erwartet: Gewicht ab 7 % Abnahme als Hinweis, ab 10 % deutlich hervorgehoben (Link zur Wachstumsseite); nur für eigene bzw. vertretene Betreuungen. Kontingente der laufenden Phase erst, wenn nur noch 2 Kontakte (bzw. 10 % der Minuten) übrig sind; kleine Kontingente erst, wenn sie aufgebraucht sind. Nach dem Vermerk verschwindet die Anordnungs-Warnung; der Vermerk geht auch nach dem Versand. Demo: „Ella Lange: 10,2 % unter dem Geburtsgewicht“ (dringend).
 
 ---
 
@@ -205,13 +205,13 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Einstellungen → Textbausteine: Titel und Text anlegen, ggf. „Für die ganze Praxis“ → Speichern.
 2. Besuch öffnen → unter der Notiz „Textbaustein einfügen …“ wählen.
 3. Kachel Mutter bzw. Kind aufklappen → „Wie letztes Mal (Datum)“.
-- Erwartet: Der Text wird an die Notiz angehängt. Eigene Bausteine sieht nur die Hebamme selbst, Praxis-Bausteine alle Hebammen. „Wie letztes Mal“ übernimmt Auswahl- und Textfelder des letzten Besuchs nur in leere Felder, Messwerte (Gewicht, RR, Temperatur …) nicht.
+- Erwartet: Der Text wird an die Notiz angehängt. Eigene Bausteine sieht nur die Hebamme selbst, Praxis-Bausteine alle Hebammen. „Wie letztes Mal“ übernimmt Auswahl- und Textfelder des letzten Besuchs nur in leere Felder, Messwerte (Gewicht, RR, Temperatur …) nicht. Demo: Praxis-Bausteine „Stillberatung Anlegen“, „Nabelpflege“, „Sicherer Schlaf“, Johanna zusätzlich „Gewichtskontrolle“.
 
 **D11 EPDS und Beratungsthemen** 🤖
 1. Wochenbett-Besuch (Kind geboren) → „EPDS (Stimmung nach der Geburt)“ → „Auswertung eintragen“ → Punkte je Frage (0–3) vom Papierbogen antippen.
 2. Beratungsthemen antippen (z. B. „Nabelpflege“) → Entwurf speichern.
 3. Startseite.
-- Erwartet: Summe von 30 mit Einordnung (ab 10 genauer hinsehen, ab 13 ärztliche Abklärung); Frage 10 > 0 wird immer deutlich hervorgehoben. Im Cockpit erscheint „… EPDS … Punkte“ für eigene bzw. vertretene Betreuungen (14 Tage lang, bis eine unauffällige Auswertung folgt). Beratungsthemen früherer Besuche zeigen „(besprochen DATUM)“. In der Schwangerschaft erscheinen die Themen der Schwangerschaft, kein EPDS.
+- Erwartet: Summe von 30 mit Einordnung (ab 10 genauer hinsehen, ab 13 ärztliche Abklärung); Frage 10 > 0 wird immer deutlich hervorgehoben. Im Cockpit erscheint „… EPDS … Punkte“ für eigene bzw. vertretene Betreuungen (14 Tage lang, bis eine unauffällige Auswertung folgt). Beratungsthemen früherer Besuche zeigen „(besprochen DATUM)“. In der Schwangerschaft erscheinen die Themen der Schwangerschaft, kein EPDS. Demo: Marielena sieht „Laura Becker: EPDS 10 Punkte“; besprochene Themen u. a. bei Krüger, Schulz, Koch, Becker und Neumann.
 
 ---
 
@@ -368,7 +368,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 **K3 Teamkalender** 🤖
 1. Kalender (Handy: Einstellungen → „Kalender ›“): Woche mit einer Spalte je Hebamme; „‹“, „Diese Woche“, „›“.
 2. „Hebammen in Babypause zeigen“ ankreuzen; einen Hausbesuch bzw. Kurstermin antippen.
-- Erwartet: Hausbesuche (Uhrzeit bzw. Zeitfenster, Art, Familie; erledigte durchgestrichen), Kurstermine mit Ort, Abwesenheiten (nur Art) und Rufbereitschaft, mehrtägige Einträge an jedem Tag; heute hervorgehoben. Lorina erscheint erst nach dem Häkchen. Hausbesuche führen zur Akte, Kurstermine zum Termin.
+- Erwartet: Hausbesuche (Uhrzeit bzw. Zeitfenster, Art, Familie; erledigte durchgestrichen), Kurstermine mit Ort, Abwesenheiten (nur Art) und Rufbereitschaft, mehrtägige Einträge an jedem Tag; heute hervorgehoben. Lorina erscheint erst nach dem Häkchen. Hausbesuche führen zur Akte, Kurstermine zum Termin. Demo: Termine heute und an den nächsten Tagen, Marielenas Rufbereitschaft, Kurse; nächste Woche Johannas Fortbildung.
 
 **K4 Kalender abonnieren** 🤖
 1. Kalender → „Kalender abonnieren“ → „Abo-Link erzeugen“ → „Link kopieren“ bzw. „In Kalender-App öffnen“ (iPhone/Android/Outlook).

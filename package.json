@@ -13,6 +13,7 @@
     "dev:web": "npm run dev -w @kindkesmoeoen/web",
     "dev:website": "npm run dev -w @kindkesmoeoen/website",
     "dev:neustart": "bash .devcontainer/starten.sh neu",
+    "codespace:aktualisieren": "bash .devcontainer/aktualisieren.sh",
     "build": "npm run build -w @kindkesmoeoen/web && npm run build -w @kindkesmoeoen/api",
     "build:website": "npm run build -w @kindkesmoeoen/website",
     "typecheck": "npm run typecheck --workspaces --if-present",
