@@ -364,6 +364,16 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 2. Startseite: „Rufbereitschaft heute: …“ bzw. „Du hast heute Rufbereitschaft“.
 3. Website → Kontakt.
 - Erwartet: Liste ab heute mit „heute“-Kennzeichen; nur aktive Hebammen wählbar (⚠️ Ende vor Beginn → Fehler). Auf der Website „Heute in Rufbereitschaft: …“; bei eingetragener Abwesenheit steht bei der Hebamme „bis … nicht erreichbar – das Team vertritt“ (ohne Grund). Demo: Marielena heute bis übermorgen.
+
+**K3 Teamkalender** 🤖
+1. Kalender (Handy: Einstellungen → „Kalender ›“): Woche mit einer Spalte je Hebamme; „‹“, „Diese Woche“, „›“.
+2. „Hebammen in Babypause zeigen“ ankreuzen; einen Hausbesuch bzw. Kurstermin antippen.
+- Erwartet: Hausbesuche (Uhrzeit bzw. Zeitfenster, Art, Familie; erledigte durchgestrichen), Kurstermine mit Ort, Abwesenheiten (nur Art) und Rufbereitschaft, mehrtägige Einträge an jedem Tag; heute hervorgehoben. Lorina erscheint erst nach dem Häkchen. Hausbesuche führen zur Akte, Kurstermine zum Termin.
+
+**K4 Kalender abonnieren** 🤖
+1. Kalender → „Kalender abonnieren“ → „Abo-Link erzeugen“ → „Link kopieren“ bzw. „In Kalender-App öffnen“ (iPhone/Android/Outlook).
+2. „Neuen Link erzeugen“; „Abo beenden“.
+- Erwartet: Im privaten Kalender nur eigene Einträge, Familien als „Besuch S. B.“ (ohne Art, Anschrift, Notiz); Kurse mit Titel und Ort. Der Link wird nur einmal angezeigt; ein neuer Link oder „Abo beenden“ macht den alten sofort ungültig. Der Link steht nicht im Datenexport.
 ---
 
 ## L. Offline-Betrieb
@@ -456,6 +466,7 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 3. Dasselbe noch einmal mit derselben E-Mail; Direktlink `/kurse?kurs=<id>` aufrufen.
 4. In der App als Kursleiterin: Cockpit-Hinweis „neue Online-Anmeldung“ → Kurs.
 - Erwartet: Danke-Meldung im Dialog, freie Plätze sinken sofort; bei vollem Kurs „Warteliste“. Zweite Anmeldung: „schon angemeldet“, kein doppelter Eintrag. Direktlink öffnet das Formular des Kurses. ⚠️ Ohne Name/E-Mail/Einwilligung Fehlermeldung im Dialog. Die Anmeldeseite der App (`/anmeldung`) bleibt für alte Links erhalten.
+- Ergänzung: Unter der Kursliste „Kurstermine im eigenen Kalender: abonnieren · als Datei laden“ (Kurse mit offener Anmeldung, ohne Personendaten).
 
 **O3 Alte Adressen** ⚠️
 1. Alte Wix-Adressen aufrufen (z. B. `/hebammen-team`, `/kopie-von-leistungen`).
@@ -465,4 +476,4 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 ## P. Bekannte Lücken (noch kein Walkthrough möglich)
 
-E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Raumbelegung (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.

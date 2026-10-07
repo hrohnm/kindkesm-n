@@ -1,0 +1,4383 @@
+{
+  "id": "5952271e-384c-4303-a306-9fdd74103051",
+  "prevId": "6883e94f-965e-4d03-a50e-6a4d67348676",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.abrechnungseinstellung": {
+      "name": "abrechnungseinstellung",
+      "schema": "",
+      "columns": {
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "weg": {
+          "name": "weg",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'hebset'"
+        },
+        "abrechnungsstelle_name": {
+          "name": "abrechnungsstelle_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abrechnungsstelle_anschrift": {
+          "name": "abrechnungsstelle_anschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "belegart": {
+          "name": "belegart",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'eigendruck_amtliches_formular'"
+        },
+        "unterschrift": {
+          "name": "unterschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'papier'"
+        },
+        "versand_rhythmus": {
+          "name": "versand_rhythmus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'monatlich'"
+        },
+        "versand_tag": {
+          "name": "versand_tag",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "erinnerung_vorlauf_tage": {
+          "name": "erinnerung_vorlauf_tage",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 2
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "abrechnungseinstellung_benutzer_id_benutzer_id_fk": {
+          "name": "abrechnungseinstellung_benutzer_id_benutzer_id_fk",
+          "tableFrom": "abrechnungseinstellung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.abwesenheit": {
+      "name": "abwesenheit",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "von": {
+          "name": "von",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bis": {
+          "name": "bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "art": {
+          "name": "art",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "abwesenheit_benutzer_id_benutzer_id_fk": {
+          "name": "abwesenheit_benutzer_id_benutzer_id_fk",
+          "tableFrom": "abwesenheit",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.adresse": {
+      "name": "adresse",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "adresse_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "plz": {
+          "name": "plz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ort": {
+          "name": "ort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "strasse": {
+          "name": "strasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "strasse_norm": {
+          "name": "strasse_norm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hausnummer": {
+          "name": "hausnummer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lon": {
+          "name": "lon",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "adresse_suche_idx": {
+          "name": "adresse_suche_idx",
+          "columns": [
+            {
+              "expression": "plz",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "strasse_norm",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "hausnummer",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "adresse_ort_idx": {
+          "name": "adresse_ort_idx",
+          "columns": [
+            {
+              "expression": "strasse_norm",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "ort",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.aenderung": {
+      "name": "aenderung",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nummer": {
+          "name": "nummer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "aenderung_nummer_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "regelwerk_id": {
+          "name": "regelwerk_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "titel": {
+          "name": "titel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "begruendung": {
+          "name": "begruendung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "operationen": {
+          "name": "operationen",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vorher": {
+          "name": "vorher",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'offen'"
+        },
+        "erstellt_von": {
+          "name": "erstellt_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "entschieden_von": {
+          "name": "entschieden_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "entschieden_am": {
+          "name": "entschieden_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kommentar": {
+          "name": "kommentar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "aenderung_regelwerk_id_regelwerk_id_fk": {
+          "name": "aenderung_regelwerk_id_regelwerk_id_fk",
+          "tableFrom": "aenderung",
+          "tableTo": "regelwerk",
+          "columnsFrom": [
+            "regelwerk_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "aenderung_erstellt_von_benutzer_id_fk": {
+          "name": "aenderung_erstellt_von_benutzer_id_fk",
+          "tableFrom": "aenderung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erstellt_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "aenderung_entschieden_von_benutzer_id_fk": {
+          "name": "aenderung_entschieden_von_benutzer_id_fk",
+          "tableFrom": "aenderung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "entschieden_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.anfrage": {
+      "name": "anfrage",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "quelle": {
+          "name": "quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'neu'"
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nachname": {
+          "name": "nachname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "et": {
+          "name": "et",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "strasse": {
+          "name": "strasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "plz": {
+          "name": "plz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ort": {
+          "name": "ort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lon": {
+          "name": "lon",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstes_kind": {
+          "name": "erstes_kind",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leistungen": {
+          "name": "leistungen",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "nachricht": {
+          "name": "nachricht",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einwilligung_am": {
+          "name": "einwilligung_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "klientin_id": {
+          "name": "klientin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erfasst_von": {
+          "name": "erfasst_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bearbeitet_am": {
+          "name": "bearbeitet_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "anfrage_hebamme_id_benutzer_id_fk": {
+          "name": "anfrage_hebamme_id_benutzer_id_fk",
+          "tableFrom": "anfrage",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "anfrage_klientin_id_klientin_id_fk": {
+          "name": "anfrage_klientin_id_klientin_id_fk",
+          "tableFrom": "anfrage",
+          "tableTo": "klientin",
+          "columnsFrom": [
+            "klientin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "anfrage_erfasst_von_benutzer_id_fk": {
+          "name": "anfrage_erfasst_von_benutzer_id_fk",
+          "tableFrom": "anfrage",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erfasst_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.benutzer": {
+      "name": "benutzer",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "passwort_hash": {
+          "name": "passwort_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rolle": {
+          "name": "rolle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'hebamme'"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kuerzel": {
+          "name": "kuerzel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ik": {
+          "name": "ik",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'aktiv'"
+        },
+        "babypause_bis": {
+          "name": "babypause_bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wochenbetten_pro_monat": {
+          "name": "wochenbetten_pro_monat",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 4
+        },
+        "aktiv": {
+          "name": "aktiv",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "letzte_anmeldung": {
+          "name": "letzte_anmeldung",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ansicht": {
+          "name": "ansicht",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "totp_geheimnis": {
+          "name": "totp_geheimnis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totp_aktiv": {
+          "name": "totp_aktiv",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "totp_neu": {
+          "name": "totp_neu",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totp_letzter_schritt": {
+          "name": "totp_letzter_schritt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wiederherstellung": {
+          "name": "wiederherstellung",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "sperre_minuten": {
+          "name": "sperre_minuten",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 15
+        },
+        "kalender_token": {
+          "name": "kalender_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kalender_abgerufen": {
+          "name": "kalender_abgerufen",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "benutzer_email_idx": {
+          "name": "benutzer_email_idx",
+          "columns": [
+            {
+              "expression": "lower(\"email\")",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.besuch": {
+      "name": "besuch",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "betreuung_id": {
+          "name": "betreuung_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "von": {
+          "name": "von",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bis": {
+          "name": "bis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "typ": {
+          "name": "typ",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "art": {
+          "name": "art",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "material": {
+          "name": "material",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "dokumentation": {
+          "name": "dokumentation",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "unterschrift": {
+          "name": "unterschrift",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"art\":\"keine\"}'::jsonb"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'entwurf'"
+        },
+        "regelwerk_id": {
+          "name": "regelwerk_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stamm": {
+          "name": "stamm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einheiten": {
+          "name": "einheiten",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "einheiten_abrechenbar": {
+          "name": "einheiten_abrechenbar",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "summe": {
+          "name": "summe",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "hinweise": {
+          "name": "hinweise",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "anordnung_vorhanden": {
+          "name": "anordnung_vorhanden",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "anordnung_notiz": {
+          "name": "anordnung_notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "besuch_betreuung_id_betreuung_id_fk": {
+          "name": "besuch_betreuung_id_betreuung_id_fk",
+          "tableFrom": "besuch",
+          "tableTo": "betreuung",
+          "columnsFrom": [
+            "betreuung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "besuch_hebamme_id_benutzer_id_fk": {
+          "name": "besuch_hebamme_id_benutzer_id_fk",
+          "tableFrom": "besuch",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.besuch_historie": {
+      "name": "besuch_historie",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "besuch_id": {
+          "name": "besuch_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "geaendert_von": {
+          "name": "geaendert_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stand": {
+          "name": "stand",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zeit": {
+          "name": "zeit",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "besuch_historie_besuch_id_besuch_id_fk": {
+          "name": "besuch_historie_besuch_id_besuch_id_fk",
+          "tableFrom": "besuch_historie",
+          "tableTo": "besuch",
+          "columnsFrom": [
+            "besuch_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "besuch_historie_geaendert_von_benutzer_id_fk": {
+          "name": "besuch_historie_geaendert_von_benutzer_id_fk",
+          "tableFrom": "besuch_historie",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "geaendert_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.betreuung": {
+      "name": "betreuung",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "klientin_id": {
+          "name": "klientin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'schwangerschaft'"
+        },
+        "et": {
+          "name": "et",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gravida": {
+          "name": "gravida",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "para": {
+          "name": "para",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geburtsort": {
+          "name": "geburtsort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geburtsmodus": {
+          "name": "geburtsmodus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "zustaendige_hebamme_id": {
+          "name": "zustaendige_hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vertretung_hebamme_id": {
+          "name": "vertretung_hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uebergabe": {
+          "name": "uebergabe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uebergabe_am": {
+          "name": "uebergabe_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uebergabe_von": {
+          "name": "uebergabe_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notizen": {
+          "name": "notizen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "betreuung_klientin_id_klientin_id_fk": {
+          "name": "betreuung_klientin_id_klientin_id_fk",
+          "tableFrom": "betreuung",
+          "tableTo": "klientin",
+          "columnsFrom": [
+            "klientin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "betreuung_zustaendige_hebamme_id_benutzer_id_fk": {
+          "name": "betreuung_zustaendige_hebamme_id_benutzer_id_fk",
+          "tableFrom": "betreuung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "zustaendige_hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "betreuung_vertretung_hebamme_id_benutzer_id_fk": {
+          "name": "betreuung_vertretung_hebamme_id_benutzer_id_fk",
+          "tableFrom": "betreuung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "vertretung_hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "betreuung_uebergabe_von_benutzer_id_fk": {
+          "name": "betreuung_uebergabe_von_benutzer_id_fk",
+          "tableFrom": "betreuung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "uebergabe_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.einwilligung": {
+      "name": "einwilligung",
+      "schema": "",
+      "columns": {
+        "klientin_id": {
+          "name": "klientin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "art": {
+          "name": "art",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erteilt": {
+          "name": "erteilt",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "form": {
+          "name": "form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "widerrufen_am": {
+          "name": "widerrufen_am",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unterschrift": {
+          "name": "unterschrift",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erfasst_von": {
+          "name": "erfasst_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "einwilligung_klientin_id_klientin_id_fk": {
+          "name": "einwilligung_klientin_id_klientin_id_fk",
+          "tableFrom": "einwilligung",
+          "tableTo": "klientin",
+          "columnsFrom": [
+            "klientin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "einwilligung_erfasst_von_benutzer_id_fk": {
+          "name": "einwilligung_erfasst_von_benutzer_id_fk",
+          "tableFrom": "einwilligung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erfasst_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "einwilligung_klientin_id_art_pk": {
+          "name": "einwilligung_klientin_id_art_pk",
+          "columns": [
+            "klientin_id",
+            "art"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.fahrt": {
+      "name": "fahrt",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tour_id": {
+          "name": "tour_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "km_stand_beginn": {
+          "name": "km_stand_beginn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "km_stand_ende": {
+          "name": "km_stand_ende",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strecke": {
+          "name": "strecke",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zweck": {
+          "name": "zweck",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "km_dienstlich": {
+          "name": "km_dienstlich",
+          "type": "numeric(7, 1)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "km_wohnung_betrieb": {
+          "name": "km_wohnung_betrieb",
+          "type": "numeric(7, 1)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "km_privat": {
+          "name": "km_privat",
+          "type": "numeric(7, 1)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "fahrt_hebamme_id_benutzer_id_fk": {
+          "name": "fahrt_hebamme_id_benutzer_id_fk",
+          "tableFrom": "fahrt",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "fahrt_tour_id_tour_id_fk": {
+          "name": "fahrt_tour_id_tour_id_fk",
+          "tableFrom": "fahrt",
+          "tableTo": "tour",
+          "columnsFrom": [
+            "tour_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.gebuehrenposition": {
+      "name": "gebuehrenposition",
+      "schema": "",
+      "columns": {
+        "regelwerk_id": {
+          "name": "regelwerk_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gpos": {
+          "name": "gpos",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gruppe": {
+          "name": "gruppe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bezeichnung": {
+          "name": "bezeichnung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kurztext": {
+          "name": "kurztext",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kategorie": {
+          "name": "kategorie",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leistungsart": {
+          "name": "leistungsart",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zuschlag": {
+          "name": "zuschlag",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "betrag": {
+          "name": "betrag",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einheit": {
+          "name": "einheit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "formular": {
+          "name": "formular",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quittierungspflichtig": {
+          "name": "quittierungspflichtig",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hinweis": {
+          "name": "hinweis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "befristet_von": {
+          "name": "befristet_von",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "befristet_bis": {
+          "name": "befristet_bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "gebuehrenposition_regelwerk_id_regelwerk_id_fk": {
+          "name": "gebuehrenposition_regelwerk_id_regelwerk_id_fk",
+          "tableFrom": "gebuehrenposition",
+          "tableTo": "regelwerk",
+          "columnsFrom": [
+            "regelwerk_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "gebuehrenposition_regelwerk_id_gpos_pk": {
+          "name": "gebuehrenposition_regelwerk_id_gpos_pk",
+          "columns": [
+            "regelwerk_id",
+            "gpos"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hinweis_erledigt": {
+      "name": "hinweis_erledigt",
+      "schema": "",
+      "columns": {
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hinweis_id": {
+          "name": "hinweis_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erledigt_am": {
+          "name": "erledigt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hinweis_erledigt_benutzer_id_benutzer_id_fk": {
+          "name": "hinweis_erledigt_benutzer_id_benutzer_id_fk",
+          "tableFrom": "hinweis_erledigt",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "hinweis_erledigt_benutzer_id_hinweis_id_pk": {
+          "name": "hinweis_erledigt_benutzer_id_hinweis_id_pk",
+          "columns": [
+            "benutzer_id",
+            "hinweis_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kind": {
+      "name": "kind",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "betreuung_id": {
+          "name": "betreuung_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nachname": {
+          "name": "nachname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geburtsdatum": {
+          "name": "geburtsdatum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "geburtszeit": {
+          "name": "geburtszeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geschlecht": {
+          "name": "geschlecht",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geburtsgewicht": {
+          "name": "geburtsgewicht",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "laenge": {
+          "name": "laenge",
+          "type": "numeric(4, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kopfumfang": {
+          "name": "kopfumfang",
+          "type": "numeric(4, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kind_betreuung_id_betreuung_id_fk": {
+          "name": "kind_betreuung_id_betreuung_id_fk",
+          "tableFrom": "kind",
+          "tableTo": "betreuung",
+          "columnsFrom": [
+            "betreuung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.klientin": {
+      "name": "klientin",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nachname": {
+          "name": "nachname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "geburtsdatum": {
+          "name": "geburtsdatum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strasse": {
+          "name": "strasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "plz": {
+          "name": "plz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ort": {
+          "name": "ort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "krankenkasse": {
+          "name": "krankenkasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kassen_ik": {
+          "name": "kassen_ik",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "versichertennummer": {
+          "name": "versichertennummer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hinweise": {
+          "name": "hinweise",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flaggen": {
+          "name": "flaggen",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "sprache": {
+          "name": "sprache",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "allergien": {
+          "name": "allergien",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lon": {
+          "name": "lon",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geo_quelle": {
+          "name": "geo_quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "zustaendige_hebamme_id": {
+          "name": "zustaendige_hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archiviert": {
+          "name": "archiviert",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "klientin_zustaendige_hebamme_id_benutzer_id_fk": {
+          "name": "klientin_zustaendige_hebamme_id_benutzer_id_fk",
+          "tableFrom": "klientin",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "zustaendige_hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kontakt": {
+      "name": "kontakt",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "klientin_id": {
+          "name": "klientin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "art": {
+          "name": "art",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "anschrift": {
+          "name": "anschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kontakt_klientin_id_klientin_id_fk": {
+          "name": "kontakt_klientin_id_klientin_id_fk",
+          "tableFrom": "kontakt",
+          "tableTo": "klientin",
+          "columnsFrom": [
+            "klientin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kurs": {
+      "name": "kurs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "titel": {
+          "name": "titel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "art": {
+          "name": "art",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "einzel": {
+          "name": "einzel",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "abrechnung": {
+          "name": "abrechnung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ort": {
+          "name": "ort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Praxis'"
+        },
+        "max_teilnehmer": {
+          "name": "max_teilnehmer",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        },
+        "preis": {
+          "name": "preis",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partner_preis": {
+          "name": "partner_preis",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "beschreibung": {
+          "name": "beschreibung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leitung": {
+          "name": "leitung",
+          "type": "uuid[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anmeldung_offen": {
+          "name": "anmeldung_offen",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'geplant'"
+        },
+        "erstellt_von": {
+          "name": "erstellt_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kurs_erstellt_von_benutzer_id_fk": {
+          "name": "kurs_erstellt_von_benutzer_id_fk",
+          "tableFrom": "kurs",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erstellt_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kurs_anwesenheit": {
+      "name": "kurs_anwesenheit",
+      "schema": "",
+      "columns": {
+        "termin_id": {
+          "name": "termin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "teilnahme_id": {
+          "name": "teilnahme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anwesend": {
+          "name": "anwesend",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unterschrift": {
+          "name": "unterschrift",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"art\":\"keine\"}'::jsonb"
+        },
+        "besuch_id": {
+          "name": "besuch_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kurs_anwesenheit_termin_id_kurstermin_id_fk": {
+          "name": "kurs_anwesenheit_termin_id_kurstermin_id_fk",
+          "tableFrom": "kurs_anwesenheit",
+          "tableTo": "kurstermin",
+          "columnsFrom": [
+            "termin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "kurs_anwesenheit_teilnahme_id_kurs_teilnahme_id_fk": {
+          "name": "kurs_anwesenheit_teilnahme_id_kurs_teilnahme_id_fk",
+          "tableFrom": "kurs_anwesenheit",
+          "tableTo": "kurs_teilnahme",
+          "columnsFrom": [
+            "teilnahme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "kurs_anwesenheit_besuch_id_besuch_id_fk": {
+          "name": "kurs_anwesenheit_besuch_id_besuch_id_fk",
+          "tableFrom": "kurs_anwesenheit",
+          "tableTo": "besuch",
+          "columnsFrom": [
+            "besuch_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "kurs_anwesenheit_termin_id_teilnahme_id_pk": {
+          "name": "kurs_anwesenheit_termin_id_teilnahme_id_pk",
+          "columns": [
+            "termin_id",
+            "teilnahme_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kurs_teilnahme": {
+      "name": "kurs_teilnahme",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kurs_id": {
+          "name": "kurs_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "klientin_id": {
+          "name": "klientin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stichtag": {
+          "name": "stichtag",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "krankenkasse": {
+          "name": "krankenkasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partner": {
+          "name": "partner",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'bestaetigt'"
+        },
+        "quelle": {
+          "name": "quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'praxis'"
+        },
+        "bezahlt": {
+          "name": "bezahlt",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "nachricht": {
+          "name": "nachricht",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kurs_teilnahme_kurs_id_kurs_id_fk": {
+          "name": "kurs_teilnahme_kurs_id_kurs_id_fk",
+          "tableFrom": "kurs_teilnahme",
+          "tableTo": "kurs",
+          "columnsFrom": [
+            "kurs_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "kurs_teilnahme_klientin_id_klientin_id_fk": {
+          "name": "kurs_teilnahme_klientin_id_klientin_id_fk",
+          "tableFrom": "kurs_teilnahme",
+          "tableTo": "klientin",
+          "columnsFrom": [
+            "klientin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kurstermin": {
+      "name": "kurstermin",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kurs_id": {
+          "name": "kurs_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "von": {
+          "name": "von",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bis": {
+          "name": "bis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "format": {
+          "name": "format",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 2
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "thema": {
+          "name": "thema",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abgeschlossen": {
+          "name": "abgeschlossen",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kurstermin_kurs_id_kurs_id_fk": {
+          "name": "kurstermin_kurs_id_kurs_id_fk",
+          "tableFrom": "kurstermin",
+          "tableTo": "kurs",
+          "columnsFrom": [
+            "kurs_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "kurstermin_hebamme_id_benutzer_id_fk": {
+          "name": "kurstermin_hebamme_id_benutzer_id_fk",
+          "tableFrom": "kurstermin",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.leistung": {
+      "name": "leistung",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "besuch_id": {
+          "name": "besuch_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "regelwerk_id": {
+          "name": "regelwerk_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gpos": {
+          "name": "gpos",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bezeichnung": {
+          "name": "bezeichnung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "menge": {
+          "name": "menge",
+          "type": "numeric(8, 1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "einheit": {
+          "name": "einheit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "einzelbetrag": {
+          "name": "einzelbetrag",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "betrag": {
+          "name": "betrag",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zuschlag": {
+          "name": "zuschlag",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "formular": {
+          "name": "formular",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quittierungspflichtig": {
+          "name": "quittierungspflichtig",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quelle": {
+          "name": "quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'besuch'"
+        },
+        "txt": {
+          "name": "txt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'erfasst'"
+        },
+        "versand_id": {
+          "name": "versand_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuerzung_betrag": {
+          "name": "kuerzung_betrag",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuerzung_grund": {
+          "name": "kuerzung_grund",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "leistung_besuch_id_besuch_id_fk": {
+          "name": "leistung_besuch_id_besuch_id_fk",
+          "tableFrom": "leistung",
+          "tableTo": "besuch",
+          "columnsFrom": [
+            "besuch_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "leistung_hebamme_id_benutzer_id_fk": {
+          "name": "leistung_hebamme_id_benutzer_id_fk",
+          "tableFrom": "leistung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "leistung_versand_id_versand_id_fk": {
+          "name": "leistung_versand_id_versand_id_fk",
+          "tableFrom": "leistung",
+          "tableTo": "versand",
+          "columnsFrom": [
+            "versand_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.ort": {
+      "name": "ort",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bezeichnung": {
+          "name": "bezeichnung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "typ": {
+          "name": "typ",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anschrift": {
+          "name": "anschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "abholzeit": {
+          "name": "abholzeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lon": {
+          "name": "lon",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ort_benutzer_id_benutzer_id_fk": {
+          "name": "ort_benutzer_id_benutzer_id_fk",
+          "tableFrom": "ort",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.praxis": {
+      "name": "praxis",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "smallint",
+          "primaryKey": true,
+          "notNull": true,
+          "default": 1
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anschrift": {
+          "name": "anschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aktives_regelwerk_id": {
+          "name": "aktives_regelwerk_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einstellungen": {
+          "name": "einstellungen",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.protokoll": {
+      "name": "protokoll",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aktion": {
+          "name": "aktion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "objekt": {
+          "name": "objekt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "objekt_id": {
+          "name": "objekt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details": {
+          "name": "details",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "zeit": {
+          "name": "zeit",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "protokoll_benutzer_id_benutzer_id_fk": {
+          "name": "protokoll_benutzer_id_benutzer_id_fk",
+          "tableFrom": "protokoll",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.regelwerk": {
+      "name": "regelwerk",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gueltig_von": {
+          "name": "gueltig_von",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gueltig_bis": {
+          "name": "gueltig_bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'entwurf'"
+        },
+        "daten": {
+          "name": "daten",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "importiert_am": {
+          "name": "importiert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.rueckruf": {
+      "name": "rueckruf",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'offen'"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anliegen": {
+          "name": "anliegen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zeitfenster": {
+          "name": "zeitfenster",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nachricht": {
+          "name": "nachricht",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einwilligung_am": {
+          "name": "einwilligung_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "versuche": {
+          "name": "versuche",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "letzter_versuch_am": {
+          "name": "letzter_versuch_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erledigt_von": {
+          "name": "erledigt_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erledigt_am": {
+          "name": "erledigt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rueckruf_hebamme_id_benutzer_id_fk": {
+          "name": "rueckruf_hebamme_id_benutzer_id_fk",
+          "tableFrom": "rueckruf",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "rueckruf_erledigt_von_benutzer_id_fk": {
+          "name": "rueckruf_erledigt_von_benutzer_id_fk",
+          "tableFrom": "rueckruf",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erledigt_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.rufbereitschaft": {
+      "name": "rufbereitschaft",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "von": {
+          "name": "von",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bis": {
+          "name": "bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_von": {
+          "name": "erstellt_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rufbereitschaft_hebamme_id_benutzer_id_fk": {
+          "name": "rufbereitschaft_hebamme_id_benutzer_id_fk",
+          "tableFrom": "rufbereitschaft",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "rufbereitschaft_erstellt_von_benutzer_id_fk": {
+          "name": "rufbereitschaft_erstellt_von_benutzer_id_fk",
+          "tableFrom": "rufbereitschaft",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erstellt_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.selbstzahler_leistung": {
+      "name": "selbstzahler_leistung",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "bezeichnung": {
+          "name": "bezeichnung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rechnungstext": {
+          "name": "rechnungstext",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "einheit": {
+          "name": "einheit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "preis": {
+          "name": "preis",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "umsatzsteuer": {
+          "name": "umsatzsteuer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "details": {
+          "name": "details",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "aktiv": {
+          "name": "aktiv",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.selbstzahler_preis": {
+      "name": "selbstzahler_preis",
+      "schema": "",
+      "columns": {
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "leistung_id": {
+          "name": "leistung_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "preis": {
+          "name": "preis",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "selbstzahler_preis_benutzer_id_benutzer_id_fk": {
+          "name": "selbstzahler_preis_benutzer_id_benutzer_id_fk",
+          "tableFrom": "selbstzahler_preis",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "selbstzahler_preis_leistung_id_selbstzahler_leistung_id_fk": {
+          "name": "selbstzahler_preis_leistung_id_selbstzahler_leistung_id_fk",
+          "tableFrom": "selbstzahler_preis",
+          "tableTo": "selbstzahler_leistung",
+          "columnsFrom": [
+            "leistung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "selbstzahler_preis_benutzer_id_leistung_id_pk": {
+          "name": "selbstzahler_preis_benutzer_id_leistung_id_pk",
+          "columns": [
+            "benutzer_id",
+            "leistung_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sitzung": {
+      "name": "sitzung",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "laeuft_ab_am": {
+          "name": "laeuft_ab_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "letzte_aktivitaet": {
+          "name": "letzte_aktivitaet",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sitzung_benutzer_id_benutzer_id_fk": {
+          "name": "sitzung_benutzer_id_benutzer_id_fk",
+          "tableFrom": "sitzung",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.termin": {
+      "name": "termin",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "betreuung_id": {
+          "name": "betreuung_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zeit": {
+          "name": "zeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uhrzeit": {
+          "name": "uhrzeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fruehestens": {
+          "name": "fruehestens",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "spaetestens": {
+          "name": "spaetestens",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dauer_min": {
+          "name": "dauer_min",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "typ": {
+          "name": "typ",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wichtig": {
+          "name": "wichtig",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reihenfolge": {
+          "name": "reihenfolge",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ankunft": {
+          "name": "ankunft",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "besuch_id": {
+          "name": "besuch_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'geplant'"
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "termin_hebamme_id_benutzer_id_fk": {
+          "name": "termin_hebamme_id_benutzer_id_fk",
+          "tableFrom": "termin",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "termin_betreuung_id_betreuung_id_fk": {
+          "name": "termin_betreuung_id_betreuung_id_fk",
+          "tableFrom": "termin",
+          "tableTo": "betreuung",
+          "columnsFrom": [
+            "betreuung_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "termin_besuch_id_besuch_id_fk": {
+          "name": "termin_besuch_id_besuch_id_fk",
+          "tableFrom": "termin",
+          "tableTo": "besuch",
+          "columnsFrom": [
+            "besuch_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.textbaustein": {
+      "name": "textbaustein",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "titel": {
+          "name": "titel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erstellt_von": {
+          "name": "erstellt_von",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "textbaustein_benutzer_id_benutzer_id_fk": {
+          "name": "textbaustein_benutzer_id_benutzer_id_fk",
+          "tableFrom": "textbaustein",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "textbaustein_erstellt_von_benutzer_id_fk": {
+          "name": "textbaustein_erstellt_von_benutzer_id_fk",
+          "tableFrom": "textbaustein",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "erstellt_von"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.tour": {
+      "name": "tour",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_ort_id": {
+          "name": "start_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ende_ort_id": {
+          "name": "ende_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wegegeld_ausgangs_ort_id": {
+          "name": "wegegeld_ausgangs_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_zeit": {
+          "name": "start_zeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ende_spaetestens": {
+          "name": "ende_spaetestens",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "puffer_min": {
+          "name": "puffer_min",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 5
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'entwurf'"
+        },
+        "meter": {
+          "name": "meter",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fahr_sek": {
+          "name": "fahr_sek",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ankunft_ende": {
+          "name": "ankunft_ende",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geometrie": {
+          "name": "geometrie",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quelle": {
+          "name": "quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hinweise": {
+          "name": "hinweise",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "tour_tag_idx": {
+          "name": "tour_tag_idx",
+          "columns": [
+            {
+              "expression": "hebamme_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "datum",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "tour_hebamme_id_benutzer_id_fk": {
+          "name": "tour_hebamme_id_benutzer_id_fk",
+          "tableFrom": "tour",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tour_start_ort_id_ort_id_fk": {
+          "name": "tour_start_ort_id_ort_id_fk",
+          "tableFrom": "tour",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "start_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tour_ende_ort_id_ort_id_fk": {
+          "name": "tour_ende_ort_id_ort_id_fk",
+          "tableFrom": "tour",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "ende_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tour_wegegeld_ausgangs_ort_id_ort_id_fk": {
+          "name": "tour_wegegeld_ausgangs_ort_id_ort_id_fk",
+          "tableFrom": "tour",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "wegegeld_ausgangs_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.tourvorlage": {
+      "name": "tourvorlage",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wochentage": {
+          "name": "wochentage",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_ort_id": {
+          "name": "start_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ende_ort_id": {
+          "name": "ende_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ende_spaetestens": {
+          "name": "ende_spaetestens",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_zeit": {
+          "name": "start_zeit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'08:00'"
+        },
+        "wegegeld_ausgangs_ort_id": {
+          "name": "wegegeld_ausgangs_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "tourvorlage_benutzer_id_benutzer_id_fk": {
+          "name": "tourvorlage_benutzer_id_benutzer_id_fk",
+          "tableFrom": "tourvorlage",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tourvorlage_start_ort_id_ort_id_fk": {
+          "name": "tourvorlage_start_ort_id_ort_id_fk",
+          "tableFrom": "tourvorlage",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "start_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tourvorlage_ende_ort_id_ort_id_fk": {
+          "name": "tourvorlage_ende_ort_id_ort_id_fk",
+          "tableFrom": "tourvorlage",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "ende_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tourvorlage_wegegeld_ausgangs_ort_id_ort_id_fk": {
+          "name": "tourvorlage_wegegeld_ausgangs_ort_id_ort_id_fk",
+          "tableFrom": "tourvorlage",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "wegegeld_ausgangs_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.urkunde": {
+      "name": "urkunde",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kind_id": {
+          "name": "kind_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "daten": {
+          "name": "daten",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'entwurf'"
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "urkunde_kind_id_kind_id_fk": {
+          "name": "urkunde_kind_id_kind_id_fk",
+          "tableFrom": "urkunde",
+          "tableTo": "kind",
+          "columnsFrom": [
+            "kind_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "urkunde_hebamme_id_benutzer_id_fk": {
+          "name": "urkunde_hebamme_id_benutzer_id_fk",
+          "tableFrom": "urkunde",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "urkunde_kind_id_unique": {
+          "name": "urkunde_kind_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "kind_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.versand": {
+      "name": "versand",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nummer": {
+          "name": "nummer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'vorbereitet'"
+        },
+        "bis": {
+          "name": "bis",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weg": {
+          "name": "weg",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "empfaenger_name": {
+          "name": "empfaenger_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "empfaenger_anschrift": {
+          "name": "empfaenger_anschrift",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "anzahl_faelle": {
+          "name": "anzahl_faelle",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anzahl_leistungen": {
+          "name": "anzahl_leistungen",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summe": {
+          "name": "summe",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "versendet_am": {
+          "name": "versendet_am",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "einschreiben_nr": {
+          "name": "einschreiben_nr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bezahlt_am": {
+          "name": "bezahlt_am",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ausgezahlt": {
+          "name": "ausgezahlt",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "geaendert_am": {
+          "name": "geaendert_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "versand_hebamme_id_benutzer_id_fk": {
+          "name": "versand_hebamme_id_benutzer_id_fk",
+          "tableFrom": "versand",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.wegegeld_tag": {
+      "name": "wegegeld_tag",
+      "schema": "",
+      "columns": {
+        "hebamme_id": {
+          "name": "hebamme_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ausgangs_ort_id": {
+          "name": "ausgangs_ort_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gesamt_meter": {
+          "name": "gesamt_meter",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quelle": {
+          "name": "quelle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "manuell_km": {
+          "name": "manuell_km",
+          "type": "numeric(7, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "getrennte_wege": {
+          "name": "getrennte_wege",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "begruendungen": {
+          "name": "begruendungen",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "hinweise": {
+          "name": "hinweise",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "berechnet_am": {
+          "name": "berechnet_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "wegegeld_tag_hebamme_id_benutzer_id_fk": {
+          "name": "wegegeld_tag_hebamme_id_benutzer_id_fk",
+          "tableFrom": "wegegeld_tag",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "hebamme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "wegegeld_tag_ausgangs_ort_id_ort_id_fk": {
+          "name": "wegegeld_tag_ausgangs_ort_id_ort_id_fk",
+          "tableFrom": "wegegeld_tag",
+          "tableTo": "ort",
+          "columnsFrom": [
+            "ausgangs_ort_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "wegegeld_tag_hebamme_id_datum_pk": {
+          "name": "wegegeld_tag_hebamme_id_datum_pk",
+          "columns": [
+            "hebamme_id",
+            "datum"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

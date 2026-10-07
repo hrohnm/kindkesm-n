@@ -292,6 +292,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - Teamansicht (eine Spalte je aktiver Hebamme; Hebammen in Babypause ausgeblendet), Kursräume, Praxisraum-Belegung
 - Kalendersynchronisation (ICS-Abo) mit dem privaten Kalender, nur mit Initialen, ohne Gesundheitsdaten
 - Terminbestätigung bzw. -erinnerung per SMS/E-Mail an Eltern (optional)
+- **Umgesetzt:** Seite **Kalender** (Woche, eine Spalte je Hebamme, Babypause ausblendbar) mit Hausbesuchen, Kursterminen, Abwesenheiten und Rufbereitschaft. **Privates Kalender-Abo** (ICS) je Hebamme: nur eigene Einträge, Familien mit Initialen, keine Art des Besuchs, keine Anschrift oder Notiz; Link mit Zufallstoken (gespeichert nur als SHA-256), jederzeit neu erzeugbar oder abschaltbar. Website-Baustein: öffentliches Abo der Kurstermine (`/api/oeffentlich/kurse.ics`). Offen: Raumbelegung, Terminbestätigung per SMS/E-Mail
 
 ### M7 – Leistungserfassung und Plausibilitätsprüfung
 - Leistung entsteht automatisch aus dem Termin; Dauer aus Check-in/Check-out (Start/Stopp-Knopf)
