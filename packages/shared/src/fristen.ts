@@ -36,6 +36,8 @@ export type FristHinweis = {
   quelle: string;
   /** Seite in der App, auf der sich der Hinweis erledigen lässt */
   link?: string;
+  /** Erinnerung, die sich mit „Erledigt“ ausblenden lässt (M23) */
+  erledigbar?: boolean;
 };
 
 /**

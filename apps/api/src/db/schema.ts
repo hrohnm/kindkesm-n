@@ -597,6 +597,17 @@ export const anfrage = pgTable("anfrage", {
   ...zeitstempel(),
 });
 
+/** M23: als erledigt abgehakte Erinnerungen im Cockpit (je Hebamme) */
+export const hinweisErledigt = pgTable(
+  "hinweis_erledigt",
+  {
+    benutzerId: uuid("benutzer_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    hinweisId: text("hinweis_id").notNull(),
+    erledigtAm: timestamp("erledigt_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.benutzerId, t.hinweisId] })],
+);
+
 /** Rückrufwunsch von der Website: Name, Telefon, Anliegen, Zeitfenster – erledigte nach 30 Tagen gelöscht. */
 export const rueckruf = pgTable("rueckruf", {
   id: uuid("id").primaryKey().defaultRandom(),

@@ -3,7 +3,8 @@ import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
 import { cockpitWarnungen } from "../warnungen";
-import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
+import { erinnerungen } from "../automatisierungen";
+import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, hinweisErledigt, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -66,6 +67,8 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       }
       // Gewicht, Kontingente, fehlende ärztliche Anordnungen (M1/M7)
       hinweise.push(...(await cockpitWarnungen(db, request.benutzer!.id, heute)));
+      // Erinnerungen aus ET und Geburtsdatum (M23)
+      hinweise.push(...(await erinnerungen(db, request.benutzer!.id, heute)));
       // Offene Rückrufwünsche von der Website – alle Hebammen sehen sie, Wunsch-Hebamme wird genannt
       const rueckrufe = await db.select({ hebammeId: rueckruf.hebammeId, erstelltAm: rueckruf.erstelltAm }).from(rueckruf).where(eq(rueckruf.status, "offen"));
       if (rueckrufe.length) {
@@ -124,5 +127,12 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       }
     }
     return hinweise.sort((a, b) => a.tage - b.tage);
+  });
+
+  /** Erinnerung als erledigt abhaken (nur Erinnerungen der Automatisierung, Kennung „auto-…“) */
+  app.post<{ Params: { id: string } }>("/api/hinweise/:id/erledigt", async (request, reply) => {
+    if (!/^auto-[a-z0-9-]{1,80}$/.test(request.params.id)) return reply.code(400).send({ fehler: "Dieser Hinweis lässt sich nicht abhaken." });
+    await db.insert(hinweisErledigt).values({ benutzerId: request.benutzer!.id, hinweisId: request.params.id }).onConflictDoNothing();
+    return { ok: true };
   });
 }

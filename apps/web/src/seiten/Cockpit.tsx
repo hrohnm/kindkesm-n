@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { IconGlocke } from "../komponenten/Icons";
 import { TourUebersicht } from "../komponenten/TourUebersicht";
 import { Laden, Seitenkopf } from "../komponenten/Formular";
+import { api } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { datum, inTagen } from "../lib/format";
 import type { Hinweis, RegelwerkKurz, TeamMitglied } from "../lib/typen";
@@ -119,9 +120,24 @@ export function Cockpit() {
                   {h.link ? <Link to={h.link} className="font-medium underline decoration-salbei-300 underline-offset-2">{h.titel}</Link> : <div className="font-medium">{h.titel}</div>}
                   <div className="text-sm text-slate-500">{h.quelle}</div>
                 </div>
-                <div className="shrink-0 text-right text-sm">
-                  <div className="font-medium">{datum(h.datum)}</div>
-                  <div className="text-slate-500">{inTagen(h.tage)}</div>
+                <div className="flex shrink-0 flex-col items-end gap-2 text-right text-sm">
+                  <div>
+                    <div className="font-medium">{datum(h.datum)}</div>
+                    <div className="text-slate-500">{inTagen(h.tage)}</div>
+                  </div>
+                  {h.erledigbar && (
+                    <button
+                      type="button"
+                      className="knopf-sekundaer min-h-9 px-3 text-sm"
+                      aria-label={`Erledigt: ${h.titel}`}
+                      onClick={async () => {
+                        await api(`/api/hinweise/${h.id}/erledigt`, { method: "POST" });
+                        hinweise.setDaten(hinweise.daten?.filter((x) => x.id !== h.id));
+                      }}
+                    >
+                      Erledigt
+                    </button>
+                  )}
                 </div>
               </li>
             ))}
