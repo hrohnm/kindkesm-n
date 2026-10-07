@@ -61,6 +61,21 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Einstellungen → Dokumentation: Felder für Mutter und Kind ein-/ausblenden, „Vergleich mit dem letzten Besuch“ je Feld, „Kachel beim Öffnen aufgeklappt“ → Speichern. „Auf Standard zurücksetzen“ testen.
 - Erwartet: Im Besuch (D1) sind ausgeblendete Felder verborgen, aber über „Weitere Felder einblenden“ erreichbar; Felder mit Wert erscheinen immer. Die Kaiserschnittnarbe ist als „(nach Kaiserschnitt)“ gekennzeichnet.
 
+**A10 Zwei-Faktor-Anmeldung** 🤖
+1. Einstellungen → Sicherheit → „Einrichten“: Passwort → QR-Code mit einer Authenticator-App scannen (oder Schlüssel abtippen) → 6-stelligen Code eingeben → „Einschalten“.
+2. Wiederherstellungscodes notieren, „Ich habe die Codes gespeichert“. Abmelden und neu anmelden: nach dem Passwort wird der Code verlangt; ein Wiederherstellungscode geht auch (nur einmal).
+3. „Neue Wiederherstellungscodes“ bzw. „Ausschalten“ (jeweils mit Passwort).
+- Erwartet: ⚠️ Falscher Code → „Der Code ist falsch“; derselbe Code gilt nur einmal. Mit `ZWEI_FAKTOR_PFLICHT=ja` führt die App nach der Anmeldung zuerst durch die Einrichtung, Ausschalten ist dann nicht möglich.
+
+**A11 App-Sperre** 🤖📱
+1. Einstellungen → Sicherheit → „Sperren nach“ z. B. 5 Minuten; Tablet liegen lassen.
+- Erwartet: Nach der Zeit ohne Bedienung verdeckt „Gesperrt“ die App; Entsperren mit dem Passwort, auch ohne Verbindung (auf diesem Gerät zuletzt verwendetes Passwort). Angefangene Eingaben bleiben erhalten. ⚠️ Falsches Passwort → Hinweis, keine Abmeldung.
+
+**A12 Geräte abmelden und Datenexport**
+1. Einstellungen → Sicherheit → „Angemeldete Geräte“: Gerät, Anmeldezeit, zuletzt aktiv; ein anderes Gerät „Abmelden“ bzw. „Alle anderen Geräte abmelden“.
+2. „Export herunterladen“.
+- Erwartet: Das abgemeldete Gerät landet beim nächsten Zugriff auf der Anmeldeseite (gespeicherte Daten werden gelöscht). Der Export ist eine JSON-Datei mit allen Tabellen ohne Passwörter und Zwei-Faktor-Geheimnisse; er erscheint im Protokoll.
+
 ---
 
 ## B. Startseite (Cockpit)
@@ -416,4 +431,4 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 ## P. Bekannte Lücken (noch kein Walkthrough möglich)
 
-E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), 2FA/automatische Sperre/Geräte abmelden/Datenexport (M25), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Teamkalender und Kalender-Abo (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.

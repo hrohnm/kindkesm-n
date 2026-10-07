@@ -53,6 +53,15 @@ export const benutzer = pgTable(
     letzteAnmeldung: timestamp("letzte_anmeldung", { withTimezone: true }),
     /** Persönliche Ansicht der Besuchsdokumentation (sichtbare Felder, Vergleich, Kacheln) */
     ansicht: jsonb("ansicht").$type<Record<string, unknown>>().notNull().default({}),
+    /** Zwei-Faktor-Anmeldung (TOTP): Geheimnis, aktiv, noch nicht bestätigtes neues Geheimnis, zuletzt genutzter Zeitschritt */
+    totpGeheimnis: text("totp_geheimnis"),
+    totpAktiv: boolean("totp_aktiv").notNull().default(false),
+    totpNeu: text("totp_neu"),
+    totpLetzterSchritt: integer("totp_letzter_schritt"),
+    /** SHA-256 der noch nicht verbrauchten Wiederherstellungscodes */
+    wiederherstellung: jsonb("wiederherstellung").$type<string[]>().notNull().default([]),
+    /** App-Sperre nach so vielen Minuten ohne Bedienung (0 = aus) */
+    sperreMinuten: smallint("sperre_minuten").notNull().default(15),
     ...zeitstempel(),
   },
   (t) => [uniqueIndex("benutzer_email_idx").on(sql`lower(${t.email})`)],
@@ -64,6 +73,8 @@ export const sitzung = pgTable("sitzung", {
   laeuftAbAm: timestamp("laeuft_ab_am", { withTimezone: true }).notNull(),
   erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
   userAgent: text("user_agent"),
+  /** Für „Geräte abmelden“: wann das Gerät zuletzt mit dem Server gesprochen hat (höchstens alle 5 Minuten aktualisiert) */
+  letzteAktivitaet: timestamp("letzte_aktivitaet", { withTimezone: true }),
 });
 
 /** Orte: private Anschrift, Schule, Kita … je Hebamme; benutzerId null = Praxisstandort. */

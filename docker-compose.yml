@@ -27,6 +27,7 @@ services:
       DATABASE_URL: postgres://kindkes:${DB_PASSWORT}@db:5432/kindkes
       SITZUNG_STUNDEN: ${SITZUNG_STUNDEN:-12}
       DEMO_MODUS: ${DEMO_MODUS:-nein}
+      ZWEI_FAKTOR_PFLICHT: ${ZWEI_FAKTOR_PFLICHT:-nein}
       # Routing-Server für echte Straßenstrecken (scripts/karte-einrichten.sh); leer = Schätzung aus der Luftlinie
       OSRM_URL: ${OSRM_URL:-}
       # Online-Adresssuche, falls das eigene Adressverzeichnis nichts findet ("aus" = abgeschaltet)

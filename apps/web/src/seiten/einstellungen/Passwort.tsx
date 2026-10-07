@@ -1,8 +1,11 @@
 import { Feld, Meldung } from "../../komponenten/Formular";
 import { api } from "../../lib/api";
+import { useAuth } from "../../lib/auth";
+import { pruefwertMerken } from "../../lib/sperre";
 import { useFormular } from "../../lib/useFormular";
 
 export function Passwort() {
+  const { ich } = useAuth();
   const f = useFormular({ altesPasswort: "", neuesPasswort: "", wiederholung: "" });
   const ungleich = f.werte.wiederholung.length > 0 && f.werte.wiederholung !== f.werte.neuesPasswort;
   return (
@@ -15,6 +18,8 @@ export function Passwort() {
           ({ altesPasswort, neuesPasswort }) => api("/api/auth/passwort", { method: "POST", body: { altesPasswort, neuesPasswort } }),
           "Passwort geändert. Andere Geräte wurden abgemeldet.",
         );
+        // Prüfwert für die App-Sperre ohne Verbindung an das neue Passwort anpassen
+        if (ok && ich) await pruefwertMerken(f.werte.neuesPasswort, ich.id);
         if (ok) f.setWerte({ altesPasswort: "", neuesPasswort: "", wiederholung: "" });
       }}
     >

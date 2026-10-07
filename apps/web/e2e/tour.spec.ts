@@ -15,7 +15,8 @@ test("Tour planen, Besuch einplanen und Fahrtenbuch", async ({ page }, info) => 
   await expect(page).toHaveURL(/\/tour$/);
   await expect(page.getByRole("heading", { name: "Tour", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Lena Krüger" })).toBeVisible();
-  await expect(page.getByText("Ziel: Schule der Tochter")).toBeVisible();
+  // Johannas Tourvorlage: mittwochs Praxistag (Ziel Kita), sonst Schultag (Ziel Schule der Tochter)
+  await expect(page.getByText(new Date().getDay() === 3 ? "Ziel: Kita" : "Ziel: Schule der Tochter")).toBeVisible();
   await expect(page.getByText("Strecke", { exact: true })).toBeVisible();
   if (SCREENSHOTS) await page.screenshot({ path: `${SCREENSHOTS}/${info.project.name}-tour.png`, fullPage: true });
 

@@ -10,7 +10,7 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 
 | Bereich | Module |
 |---|---|
-| Hausbesuch (Phase 1) | M1 Cockpit mit Tour und Hinweisen · M2 Akte (Kontakte, Merkmale, Einwilligungen, Vertretung je Betreuung) · M3 Besuchsdokumentation mit persönlicher Ansicht · M6 Tourenplanung · M7 Leistungen mit Plausibilitätsprüfung · M8 Abrechnungsunterlagen (Formulare 3.1/3.3/3.4, Versandmappe, Fristen) · M9 Fahrtenbuch und Wegegeld · M25 Konten, Rollen, Orte, Abrechnungseinstellungen · M26 Regelwerk mit Vier-Augen-Freigabe · Offline-Betrieb |
+| Hausbesuch (Phase 1) | M1 Cockpit mit Tour und Hinweisen · M2 Akte (Kontakte, Merkmale, Einwilligungen, Vertretung je Betreuung) · M3 Besuchsdokumentation mit persönlicher Ansicht · M6 Tourenplanung · M7 Leistungen mit Plausibilitätsprüfung · M8 Abrechnungsunterlagen (Formulare 3.1/3.3/3.4, Versandmappe, Fristen) · M9 Fahrtenbuch und Wegegeld · M25 Konten, Rollen, Orte, Abrechnungseinstellungen, Zwei-Faktor-Anmeldung, App-Sperre, Geräte, Datenexport · M26 Regelwerk mit Vier-Augen-Freigabe · Offline-Betrieb |
 | Praxis (Phase 2) | M10 Kinderurkunde · M11 Anfragen, Belegungsplan, Rückrufwünsche · M12 Kurse mit Anwesenheit und Online-Anmeldung · M15 Wachstumskurven (Gewicht, Länge, Kopfumfang) |
 | Website | Alle Seiten neu, Kurse mit Buchung, Betreuungsanfrage, Rückrufwunsch, Kapazitätsampel, Team-Status – live aus der App |
 
@@ -19,7 +19,6 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 | Modul | Was fehlt | Aufwand | Hängt ab von |
 |---|---|---|---|
 | **Basis E-Mail** | Versand über das Postfach der Praxis-Domain (SMTP), Vorlagen, Versandprotokoll | S | Postfach der Domain |
-| **M25 Sicherheit** | Zwei-Faktor-Anmeldung, automatische Sperre nach Inaktivität, Geräte abmelden (verlorenes Tablet), Export aller Daten | M | – |
 | **M5 Kalender** | Teamkalender (Spalte je aktiver Hebamme), Raumbelegung Praxis/Kursraum, Kalender-Abo (ICS, nur Initialen, ohne Gesundheitsdaten) | M | – |
 | **M13 Selbstzahler-Rechnungen** | Rechnungs-PDF mit fortlaufender Nummer und GiroCode (QR), Zahlungseingang, Rechnungen für Selbstzahlerkurse und Partnergebühren, EÜR-Export (CSV/DATEV) | M | Preisliste (M26, fertig) |
 | **M12 Rest** | Bestätigungs- und Erinnerungsmails an Teilnehmerinnen, Ratenzahlung, Stornoregeln | S | E-Mail, M13 |
@@ -45,7 +44,7 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 Ziel: Die App läuft auf dem VPS, die Hebammen können mit echten Familien parallel zu Hebamio arbeiten.
 
 1. **Basis E-Mail** (S). Voraussetzung für Passwort-Hinweise, Kursmails und spätere Erinnerungen.
-2. **M25 Sicherheit** (M): Zwei-Faktor-Anmeldung, automatische Sperre, Geräte abmelden, Datenexport. Vor echten Gesundheitsdaten Pflicht.
+2. ~~**M25 Sicherheit**~~ ✅ umgesetzt (Zwei-Faktor-Anmeldung, App-Sperre, Geräte abmelden, Datenexport).
 3. **M1/M7 Warnungen** (S): Gewichtsabnahme über 10 %, Kontingent fast ausgeschöpft, Start/Stopp-Knopf.
 4. **Echtbetrieb einrichten** (Praxis + Claude): Checkliste in [BETRIEB.md](BETRIEB.md#vor-dem-echtbetrieb) abarbeiten – AVV mit Hostinger, Backup mit getesteter Wiederherstellung, Regelwerk fachlich prüfen und freigeben, Datenschutz-Dokumente, persönliche Konten, `DEMO_MODUS=nein`.
 5. **Website live** (Praxis + Claude): Impressum und Datenschutz vervollständigen, Lorinas Namen und E-Mail vereinheitlichen, eigene Fotos, Domain umstellen.

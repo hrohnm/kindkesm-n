@@ -153,3 +153,6 @@ export const passwortAendernSchema = z.object({
 });
 
 export const WOCHENTAGE_KURZ = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] as const;
+
+/** M25: App-Sperre nach so vielen Minuten ohne Bedienung (0 = aus) */
+export const SPERRE_MINUTEN = [0, 5, 10, 15, 30, 60] as const;
