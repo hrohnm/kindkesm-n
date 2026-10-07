@@ -150,7 +150,9 @@ describe("Fahrtenbuch", () => {
   it("erzeugt den Tageseintrag aus der Tour und trennt die Fahrt zur Schule als privat ab", async () => {
     const f = (await req("POST", `/api/fahrtenbuch/aus-tag/${heute}`)).json();
     expect(f.zweck).toBe("Hausbesuche (2)");
-    expect(f.strecke).toMatch(/^Zuhause – 18209 Bad Doberan – 18236 Kröpelin – Schule der Tochter$/);
+    // Johannas Tourvorlagen (Demo): mittwochs „Praxistag“ Praxis → Kita, sonst „Schultag“ Zuhause → Schule
+    const mittwoch = new Date(`${heute}T12:00:00`).getDay() === 3;
+    expect(f.strecke).toMatch(mittwoch ? /^Praxis – 18209 Bad Doberan – 18236 Kröpelin – Kita$/ : /^Zuhause – 18209 Bad Doberan – 18236 Kröpelin – Schule der Tochter$/);
     expect(f.kmDienstlich).toBeGreaterThan(0);
     expect(f.kmPrivat).toBeGreaterThan(0);
     expect(f.strecke).not.toMatch(/Krüger|Berger/);
