@@ -864,6 +864,8 @@ Hebamme (Status aktiv/Babypause/ausgeschieden, IK, Vorlagen)
 
 ## 15. Umsetzungsplan und Roadmap
 
+> Aktueller Stand und die nächsten Etappen: **[ROADMAP.md](ROADMAP.md)**.
+
 ### Phase 0 – Klärung (abgeschlossen)
 - Recherche, Konzept, Regelwerk aus dem Vertrag, Entscheidungen der Praxis (Kapitel 5.1)
 - Rest: Startregelwerk ([`regelwerk/hhv-2026-04-01-positionen.csv`](../regelwerk/hhv-2026-04-01-positionen.csv)) einmal fachlich durchsehen
