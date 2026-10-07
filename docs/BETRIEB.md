@@ -50,6 +50,8 @@ nano .env
 
 > **Klonen über das Hostinger-Panel:** Alternativ das Repository über die Git-Funktion im hPanel klonen (URL `https://github.com/hrohnm/kindkesm-n.git`, Branch `main`). Danach geht es mit `.env` und `docker compose up -d --build` per SSH im geklonten Ordner weiter. Updates holst du dann per `git pull` (oder über die Pull-Funktion im Panel) und startest anschließend `docker compose up -d --build`.
 
+> **Hostinger Docker Manager („Compose aus GitHub-URL“):** Der Docker Manager baut die Images aus einem temporären Klon, startet die Container aber im Projektordner `/docker/<projekt>`, in dem nur die Compose-Datei liegt. Deshalb bindet die Compose-Datei keine Dateien aus dem Repository ein: Die Caddy-Konfiguration steckt im eigenen Image (`deploy/Dockerfile.caddy`). Die Werte aus `.env.example` (mindestens `DB_PASSWORT`, `DOMAIN`, `WEBSITE_DOMAIN`, `FOTO_SCHLUESSEL`, `DEMO_MODUS`) im Docker Manager als Umgebungsvariablen eintragen. Der Routing-Server (Profil `karte`) braucht den Ordner `karte/` auf dem Server und lässt sich deshalb nur per SSH einrichten (`scripts/karte-einrichten.sh`).
+
 In `.env` eintragen:
 
 | Variable | Wert |

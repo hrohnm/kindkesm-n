@@ -1,0 +1,4 @@
+# Caddy mit fest eingebauter Konfiguration – kein Bind-Mount nötig, damit der Start auch dort klappt,
+# wo nur die Compose-Datei auf dem Server liegt (z. B. Hostinger Docker Manager „aus GitHub“).
+FROM caddy:2-alpine
+COPY Caddyfile /etc/caddy/Caddyfile

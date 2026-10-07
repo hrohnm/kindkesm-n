@@ -32,3 +32,4 @@ jobs:
       - run: npm run build:website
       - run: docker build -t kindkesmoeoen-app:ci .
       - run: docker build -f Dockerfile.website -t kindkesmoeoen-website:ci .
+      - run: docker build -f deploy/Dockerfile.caddy -t kindkesmoeoen-caddy:ci deploy

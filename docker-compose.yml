@@ -62,7 +62,11 @@ services:
       - ./karte:/data:ro
 
   caddy:
-    image: caddy:2-alpine
+    # Konfiguration (deploy/Caddyfile) ist ins Image eingebaut – nach Änderungen neu bauen
+    build:
+      context: ./deploy
+      dockerfile: Dockerfile.caddy
+    image: kindkesmoeoen-caddy:latest
     restart: unless-stopped
     depends_on:
       - app
@@ -75,7 +79,6 @@ services:
       DOMAIN: ${DOMAIN:?DOMAIN in .env setzen}
       WEBSITE_DOMAIN: ${WEBSITE_DOMAIN:-www.localhost}
     volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-daten:/data
       - caddy-config:/config
 
