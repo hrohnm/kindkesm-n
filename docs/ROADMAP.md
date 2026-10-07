@@ -23,7 +23,6 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 | **M13 Selbstzahler-Rechnungen** | Rechnungs-PDF mit fortlaufender Nummer und GiroCode (QR), Zahlungseingang, Rechnungen für Selbstzahlerkurse und Partnergebühren, EÜR-Export (CSV/DATEV) | M | Preisliste (M26, fertig) |
 | **M12 Rest** | Bestätigungs- und Erinnerungsmails an Teilnehmerinnen, Ratenzahlung, Stornoregeln | S | E-Mail, M13 |
 | **M3 Rest** | Textbausteine, „wie letztes Mal“, EPDS-Fragebogen, Checkliste Beratungsthemen | M | – |
-| **M19 Rest** | Kurzübergabe für die Vertretung („Worauf achten?“), Rufbereitschaftsplan (Babypause, Urlaub und Vertretung je Betreuung gibt es schon) | S | – |
 | **M20 Team-Nachrichten** | Nachrichten mit Bezug zur Akte (statt WhatsApp), Aufgaben mit Fälligkeit | M | – |
 | **M18 Vorlagen und Briefe** | Arztbrief, Überleitungsbericht, Bescheinigungen, Kursbescheinigung; Platzhalter, Briefkopf | M | – |
 | **M17 Fotos** | Fotos von Nabel, Naht, Haut verschlüsselt in der Akte (nicht in der Galerie), Verlauf nebeneinander, Prüfung der Einwilligung | M | Einwilligungen (fertig) |
@@ -67,7 +66,7 @@ Ziel: Alles, was die Hebammen im Parallelbetrieb täglich vermissen werden.
 
 Ziel: Zusammenarbeit der drei Hebammen ohne WhatsApp und Zettel.
 
-1. **M19 Rest** (S): Kurzübergabe, Rufbereitschaftsplan
+1. ~~**M19 Rest**~~ ✅ umgesetzt (Kurzübergabe, Rufbereitschaftsplan, Website-Hinweise)
 2. **M20 Team-Nachrichten und Aufgaben** (M)
 3. **M18 Vorlagen und Briefe** (M)
 4. **M17 Fotos** (M)

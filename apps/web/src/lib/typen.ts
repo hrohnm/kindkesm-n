@@ -112,6 +112,10 @@ export type Betreuung = {
   zustaendigeHebammeId: string | null;
   vertretungHebammeId: string | null;
   notizen: string | null;
+  /** Kurzübergabe für die Vertretung (M19) */
+  uebergabe?: string | null;
+  uebergabeAm?: string | null;
+  uebergabeVon?: string | null;
   kinder: Kind[];
 };
 

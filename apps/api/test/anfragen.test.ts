@@ -117,7 +117,7 @@ describe("M11 Betreuungsanfragen und Belegungsplan", () => {
     expect(r.kapazitaet).toHaveLength(12);
     expect(Object.keys(r.kapazitaet[0])).toEqual(["monat", "name", "stufe"]);
     expect(["frei", "knapp", "ausgebucht"]).toContain(r.kapazitaet[0].stufe);
-    expect(r.team.find((h: { name: string }) => h.name === "Lorina Gosemann")).toEqual({ name: "Lorina Gosemann", status: "babypause", babypauseBis: "2027-03" });
+    expect(r.team.find((h: { name: string }) => h.name === "Lorina Gosemann")).toEqual({ name: "Lorina Gosemann", status: "babypause", babypauseBis: "2027-03", abwesendBis: null });
     expect(JSON.stringify(r)).not.toContain("Lea");
   });
 

@@ -34,6 +34,8 @@ import { useDaten } from "../lib/useDaten";
 type BetreuungDetail = {
   id: string;
   status: string;
+  uebergabe?: string | null;
+  uebergabeAm?: string | null;
   et: string | null;
   geburtsmodus: string | null;
   klientin: { id: string; vorname: string; nachname: string; ort: string | null; hinweise: string | null; flaggen?: string[]; sprache?: string | null; allergien?: string | null };
@@ -392,6 +394,13 @@ function BesuchFormular({
       {betreuung.klientin.allergien && <div className="mb-4"><Meldung art="fehler"><strong>Allergien:</strong> {betreuung.klientin.allergien}</Meldung></div>}
       {(betreuung.klientin.flaggen?.length || betreuung.klientin.sprache) ? <div className="mb-4"><FlaggenAbzeichen flaggen={betreuung.klientin.flaggen ?? []} sprache={betreuung.klientin.sprache} /></div> : null}
       {betreuung.klientin.hinweise && <div className="mb-4"><Meldung art="hinweis">{betreuung.klientin.hinweise}</Meldung></div>}
+      {betreuung.uebergabe && (
+        <div className="mb-4">
+          <Meldung art="hinweis">
+            <strong>Übergabe{betreuung.uebergabeAm ? ` vom ${datumFormat(betreuung.uebergabeAm.slice(0, 10))}` : ""}:</strong> <span className="whitespace-pre-line">{betreuung.uebergabe}</span>
+          </Meldung>
+        </div>
+      )}
       {fremd && <div className="mb-4"><Meldung art="hinweis">Dieser Besuch wurde von einer Kollegin dokumentiert und kann nur von ihr geändert werden.</Meldung></div>}
       {meldung && <div className="mb-4"><Meldung art={meldung.art}>{meldung.text}</Meldung></div>}
       {entwurf && <div className="mb-4"><Meldung art="hinweis">Diese Fassung wurde ohne Verbindung gespeichert und ist noch nicht übertragen.</Meldung></div>}

@@ -10,11 +10,11 @@ import {
   vorschlagen,
   type HebammeKapazitaet,
 } from "@kindkesmoeoen/shared";
-import { and, asc, desc, eq, inArray, lt, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lt, lte, ne, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { config } from "../config";
 import type { Datenbank } from "../db/client";
-import { abwesenheit, anfrage, benutzer, betreuung, kind, klientin, ort } from "../db/schema";
+import { abwesenheit, anfrage, benutzer, betreuung, kind, klientin, ort, rufbereitschaft } from "../db/schema";
 import { pruefen } from "../fehler";
 import { wohnortGeokodieren } from "../geo/adressen";
 import { klientinVerorten } from "../geo/positionen";
@@ -92,12 +92,24 @@ export async function anfrageRouten(app: FastifyInstance, db: Datenbank) {
     },
   );
 
-  /** Kapazitätsampel je ET-Monat und Team-Status – ohne Zahlen zur Belegung, ohne Klientinnen */
+  /**
+   * Kapazitätsampel je ET-Monat und Team-Status – ohne Zahlen zur Belegung, ohne Klientinnen.
+   * M19: wer gerade abwesend ist (nur „bis wann“, ohne Grund) und wer heute Rufbereitschaft hat.
+   */
   app.get("/api/oeffentlich/praxis", async () => {
     const { hebammen, plan: p } = await plan(aktuellerMonat(), 12);
+    const heute = new Date().toISOString().slice(0, 10);
+    const abwesend = await db.select({ benutzerId: abwesenheit.benutzerId, bis: abwesenheit.bis }).from(abwesenheit).where(and(lte(abwesenheit.von, heute), gte(abwesenheit.bis, heute)));
+    const ruf = await db.select({ hebammeId: rufbereitschaft.hebammeId }).from(rufbereitschaft).where(and(lte(rufbereitschaft.von, heute), gte(rufbereitschaft.bis, heute)));
     return {
       kapazitaet: oeffentlicheKapazitaet(p),
-      team: hebammen.map((h) => ({ name: h.name, status: h.status === "babypause" ? "babypause" : "aktiv", babypauseBis: h.status === "babypause" && h.babypauseBis ? h.babypauseBis.slice(0, 7) : null })),
+      team: hebammen.map((h) => ({
+        name: h.name,
+        status: h.status === "babypause" ? "babypause" : "aktiv",
+        babypauseBis: h.status === "babypause" && h.babypauseBis ? h.babypauseBis.slice(0, 7) : null,
+        abwesendBis: abwesend.filter((a) => a.benutzerId === h.id).map((a) => a.bis).sort().at(-1) ?? null,
+      })),
+      rufbereitschaft: hebammen.filter((h) => ruf.some((r) => r.hebammeId === h.id)).map((h) => h.name),
     };
   });
 

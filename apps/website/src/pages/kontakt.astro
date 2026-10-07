@@ -52,6 +52,7 @@ const vorlage = encodeURIComponent(
               <div>
                 <p class="font-titel text-2xl">{h.name}</p>
                 <p class="text-sm text-salbei-600">Hebamme</p>
+                <p class="mt-1 text-sm font-semibold text-mohn-700" data-team-status={h.name} hidden></p>
               </div>
             </div>
             <div class="mt-5 flex flex-wrap gap-3">
@@ -61,6 +62,7 @@ const vorlage = encodeURIComponent(
           </li>
         ))}
         {TEAM.filter((h) => h.hinweis).map((h) => <li class="px-2 text-sm text-salbei-600">{h.name}: <span data-team-status={h.name}>{h.hinweis}</span></li>)}
+        <li class="rounded-2xl bg-salbei-100 px-4 py-3 text-[0.95rem]" data-rufbereitschaft hidden>Heute in Rufbereitschaft: <strong data-rufbereitschaft-name></strong></li>
         <li class="px-2"><a href="#rueckruf" class="font-semibold">Nicht erreicht? Rückruf wünschen ›</a></li>
       </ul>
     </div>

@@ -373,6 +373,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - **Babypause/Elternzeit** als eigener Status einer Hebamme (aktuell bei Lorina Gosemann): Sie erhält keine neuen Anfragen und keine Touren, behält aber Lesezugriff auf ihre abgeschlossenen Fälle, und das Ende ist im Belegungsplan bereits einplanbar
 - **Übergabe**: Vertretung bekommt die Akte freigeschaltet, mit Kurzübergabe („Worauf achten?“)
 - Rufbereitschaftsplan (z. B. Wochenende), Weiterleitung der Telefonnummer
+- **Umgesetzt (M19):** Babypause, Urlaub/Abwesenheiten mit Wirkung auf den Belegungsplan und Vertretung je Betreuung gab es schon. Neu: Kurzübergabe je Betreuung („Worauf achten?“, mit Name und Zeitpunkt) – die Vertretung bekommt einen abhakbaren Cockpit-Hinweis und sieht die Übergabe in Akte und Besuch; Rufbereitschaftsplan auf der Team-Seite (jede Hebamme plant fürs Team, nur aktive Hebammen) mit Cockpit-Hinweis „Rufbereitschaft heute“. Website: „Heute in Rufbereitschaft“ und „bis … nicht erreichbar“ aus den Abwesenheiten (ohne Grund). Die Weiterleitung der Telefonnummer bleibt Sache der Telefonanlage
 
 ### M20 – Team-Nachrichten und Übergaben ⭐
 - Kurznachrichten **mit Bezug zur Akte**, verschlüsselt und praxisintern (ersetzt WhatsApp, das für Gesundheitsdaten nicht zulässig ist)
