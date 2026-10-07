@@ -7,6 +7,7 @@ const UNTER = [
   { to: "/einstellungen", label: "Mein Profil", ende: true },
   { to: "/einstellungen/orte", label: "Orte & Touren" },
   { to: "/einstellungen/dokumentation", label: "Dokumentation" },
+  { to: "/einstellungen/textbausteine", label: "Textbausteine" },
   { to: "/einstellungen/abrechnung", label: "Abrechnung" },
   { to: "/einstellungen/praxis", label: "Praxis" },
   { to: "/einstellungen/offline", label: "Offline" },

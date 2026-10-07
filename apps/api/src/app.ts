@@ -26,6 +26,7 @@ import { anfrageRouten } from "./routes/anfragen";
 import { rueckrufRouten } from "./routes/rueckrufe";
 import { sicherheitRouten } from "./routes/sicherheit";
 import { rufbereitschaftRouten } from "./routes/rufbereitschaft";
+import { textbausteinRouten } from "./routes/textbausteine";
 import { oeffentlicheSchnittstellen } from "./oeffentlich";
 
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
@@ -95,6 +96,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await rueckrufRouten(app, db);
   await sicherheitRouten(app, db);
   await rufbereitschaftRouten(app, db);
+  await textbausteinRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

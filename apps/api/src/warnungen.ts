@@ -3,7 +3,7 @@
  * für die laut Prüfung eine ärztliche Anordnung nötig ist und noch nicht als vorhanden vermerkt wurde.
  * Betrachtet werden die Betreuungen, für die die Hebamme zuständig oder als Vertretung eingetragen ist.
  */
-import { anordnungNoetig, gewichtWarnung, isoDatum, kontingentStand, kontingentWarnung, letztesGewicht, tageZwischen, type FristHinweis, type FruehererBesuch, type Leistungsart } from "@kindkesmoeoen/shared";
+import { anordnungNoetig, epdsAuswerten, epdsLesen, gewichtWarnung, isoDatum, kontingentStand, kontingentWarnung, letztesGewicht, tageZwischen, type FristHinweis, type FruehererBesuch, type Leistungsart } from "@kindkesmoeoen/shared";
 import { and, asc, desc, eq, gte, inArray, or, sql } from "drizzle-orm";
 import type { Datenbank } from "./db/client";
 import { besuch, betreuung, kind, klientin } from "./db/schema";
@@ -54,6 +54,22 @@ export async function cockpitWarnungen(db: Datenbank, benutzerId: string, heute:
           quelle: w.stufe === "warnung" ? "Gewicht – Stillen/Ernährung prüfen, ggf. ärztlich abklären" : "Gewicht – genauer beobachten",
           link: `/kinder/${k.id}/gewicht`,
         });
+      }
+      // EPDS: letzte Auswertung der letzten 14 Tage
+      const mitEpds = [...eigene].reverse().find((x) => typeof (x.dokumentation as { mutter?: { epds?: unknown } })?.mutter?.epds === "string");
+      if (mitEpds && tageZwischen(new Date(`${mitEpds.datum}T12:00:00`), heute) <= 14) {
+        const e = epdsAuswerten(epdsLesen((mitEpds.dokumentation as { mutter: { epds: string } }).mutter.epds));
+        if (e && (e.selbstverletzung || e.stufe !== "unauffaellig")) {
+          hinweise.push({
+            id: `epds-${b.id}`,
+            titel: `${name}: EPDS ${e.summe} ${e.summe === 1 ? "Punkt" : "Punkte"}${e.selbstverletzung ? " – Frage 10 positiv" : ""}`,
+            datum: mitEpds.datum,
+            tage: 0,
+            stufe: e.selbstverletzung || e.stufe === "auffaellig" ? "dringend" : "info",
+            quelle: e.selbstverletzung || e.stufe === "auffaellig" ? "Stimmung – ärztliche Abklärung anbahnen" : "Stimmung – genauer hinsehen",
+            link: `/besuche/${mitEpds.id}`,
+          });
+        }
       }
       // Kontingente der laufenden Phase
       if (rw) {

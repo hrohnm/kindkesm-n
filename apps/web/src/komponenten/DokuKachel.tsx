@@ -77,6 +77,14 @@ export function DokuKachel({
     ) : undefined;
   };
 
+  // „Wie letztes Mal“: Auswahl- und Textfelder des letzten dokumentierten Besuchs in noch leere Felder übernehmen.
+  // Messwerte (Gewicht, RR, Temperatur …) werden bewusst nicht übernommen.
+  const letzter = frueher.find((b) => felder.some((f) => f.art !== "zahl" && !leer(b.werte[f.id])));
+  const wieLetztesMal = () => {
+    if (!letzter) return;
+    for (const f of felder) if (f.art !== "zahl" && leer(werte[f.id]) && !leer(letzter.werte[f.id])) setze(f.id, String(letzter.werte[f.id]));
+  };
+
   const zahlen = felder.filter((f) => f.art === "zahl" && sichtbar(f));
   const andere = felder.filter((f) => f.art !== "zahl" && sichtbar(f));
 
@@ -111,6 +119,11 @@ export function DokuKachel({
                 <input className="feld" value={werte[f.id] ?? ""} onChange={(e) => setze(f.id, e.target.value)} />
               </Feld>
             ),
+          )}
+          {letzter && !gesperrt && (
+            <button type="button" className="knopf-sekundaer min-h-10 px-3 text-sm" onClick={wieLetztesMal} title="Auswahl- und Textfelder des letzten Besuchs in leere Felder übernehmen (Messwerte nicht)">
+              Wie letztes Mal ({datumFormat(letzter.datum)})
+            </button>
           )}
           {(ausgeblendet.length > 0 || alle) && (
             <button type="button" className="min-h-11 text-sm font-medium text-salbei-600" onClick={() => setAlle((x) => !x)}>
