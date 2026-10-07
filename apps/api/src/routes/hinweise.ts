@@ -2,6 +2,7 @@ import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@
 import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
+import { cockpitWarnungen } from "../warnungen";
 import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
@@ -63,6 +64,8 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       if (neu && neu.n > 0) {
         hinweise.push({ id: "anfragen-neu", titel: neu.n === 1 ? "1 neue Betreuungsanfrage" : `${neu.n} neue Betreuungsanfragen`, datum: isoDatum(heute), tage: 0, stufe: "warnung", quelle: "Anfragen – bitte prüfen und antworten", link: "/anfragen" });
       }
+      // Gewicht, Kontingente, fehlende ärztliche Anordnungen (M1/M7)
+      hinweise.push(...(await cockpitWarnungen(db, request.benutzer!.id, heute)));
       // Offene Rückrufwünsche von der Website – alle Hebammen sehen sie, Wunsch-Hebamme wird genannt
       const rueckrufe = await db.select({ hebammeId: rueckruf.hebammeId, erstelltAm: rueckruf.erstelltAm }).from(rueckruf).where(eq(rueckruf.status, "offen"));
       if (rueckrufe.length) {

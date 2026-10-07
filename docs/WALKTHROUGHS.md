@@ -87,6 +87,11 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
   - „Offene Dokumentationen“ (Entwürfe) mit direktem Link.
   - „Fristen und Hinweise“, z. B. Abrechnungsstichtag, Ausschlussfrist 30.06., unbezahlte Versände, Regelwerk-Freigaben „wartet auf deine Freigabe“, Kinderurkunde vorbereiten (7 Tage vor Ende der 12. Lebenswoche), neue Online-Anmeldungen zu eigenen Kursen, Rückkehr aus der Babypause. Hinweise mit Link führen direkt zur passenden Seite.
 
+**B2 Warnungen** 🤖
+1. Startseite als Johanna: Hinweise „Ärztliche Anordnung fehlt: Sophie Berger“, ggf. Gewicht („… % unter dem Geburtsgewicht“) und Kontingent („… von … genutzt, noch … frei“ bzw. „ausgeschöpft“).
+2. „Ärztliche Anordnung fehlt“ antippen → im Besuch „Ärztliche Anordnung liegt vor“ ankreuzen, Notiz (von wem, wann).
+- Erwartet: Gewicht ab 7 % Abnahme als Hinweis, ab 10 % deutlich hervorgehoben (Link zur Wachstumsseite); nur für eigene bzw. vertretene Betreuungen. Kontingente der laufenden Phase erst, wenn nur noch 2 Kontakte (bzw. 10 % der Minuten) übrig sind; kleine Kontingente erst, wenn sie aufgebraucht sind. Nach dem Vermerk verschwindet die Anordnungs-Warnung; der Vermerk geht auch nach dem Versand.
+
 ---
 
 ## C. Klientinnen und Akte
@@ -151,6 +156,8 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 3. Kopfzeile: Abrechnung prüfen (Minuten, GPOS, Betrag, Hinweise; „▼ Einzelheiten“).
 4. Unterschrift: Formularzeile abschreiben, Häkchen „Die Versicherte hat die Zeile … unterschrieben“ → „Abschließen“.
 - Erwartet: zurück zur Tour, Termin „✓“ erledigt, Besuch in der Akte „✓ Papier-Unterschrift“; Wegegeld des Tages aktualisiert.
+
+- Ergänzung: Solange „Ende“ leer ist, zeigt der Besuch „Besuch läuft seit … Min.“; „Stopp“ setzt das Ende auf jetzt.
 
 **D2 Besuch mit Tablet-Unterschrift** 🤖
 1. Akte → „Besuch dokumentieren“ → Leistung erfassen → „Stattdessen auf dem Tablet“ → unterschreiben lassen → „Abschließen“.
