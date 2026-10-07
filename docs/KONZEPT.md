@@ -394,6 +394,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 - „Übergabebereite Belege vorhanden → HebSet-Versand vorbereiten (1. und 15.)“
 - „U-Untersuchung fällig“ (Hinweis für die Eltern)
 - „Ausschlussfrist 30.06.: Leistungen aus dem Vorjahr noch nicht versendet“
+- **Umgesetzt (M23):** Erinnerungen im Cockpit für eigene und vertretene Betreuungen – ET in den nächsten 14 Tagen (Wochenbett vorbereiten), U2/U3/U4 im Zeitraum der Kinder-Richtlinie (Eltern erinnern), Rückbildungskurs in der 8.–10. Lebenswoche (außer bei bestehender Anmeldung); je Hebamme „Erledigt“ zum Ausblenden. Versand-, Fristen- und Urkunden-Erinnerungen gab es schon. Erinnerungen per E-Mail an Eltern folgen mit dem E-Mail-Versand
 
 ### M24 – TI und eLB (Phase 3)
 - eGK-Einlesen über ein zugelassenes Kartenterminal bzw. TI-Gateway (Anbieter wie CGM, telekonnekt). Ersetzt dann das HebSet-Print-Lesegerät

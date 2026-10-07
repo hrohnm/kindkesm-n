@@ -22,7 +22,6 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 | **M5 Kalender** | Teamkalender (Spalte je aktiver Hebamme), Raumbelegung Praxis/Kursraum, Kalender-Abo (ICS, nur Initialen, ohne Gesundheitsdaten) | M | – |
 | **M13 Selbstzahler-Rechnungen** | Rechnungs-PDF mit fortlaufender Nummer und GiroCode (QR), Zahlungseingang, Rechnungen für Selbstzahlerkurse und Partnergebühren, EÜR-Export (CSV/DATEV) | M | Preisliste (M26, fertig) |
 | **M12 Rest** | Bestätigungs- und Erinnerungsmails an Teilnehmerinnen, Ratenzahlung, Stornoregeln | S | E-Mail, M13 |
-| **M23 Automatisierungen** | „ET in 2 Wochen → Erstbesuch vorbereiten“, „Kind 8 Wochen → Rückbildungskurs anbieten“, „U-Untersuchung fällig“ (Fristen-, Versand- und Urkunden-Hinweise gibt es schon) | S | – |
 | **M3 Rest** | Textbausteine, „wie letztes Mal“, EPDS-Fragebogen, Checkliste Beratungsthemen | M | – |
 | **M19 Rest** | Kurzübergabe für die Vertretung („Worauf achten?“), Rufbereitschaftsplan (Babypause, Urlaub und Vertretung je Betreuung gibt es schon) | S | – |
 | **M20 Team-Nachrichten** | Nachrichten mit Bezug zur Akte (statt WhatsApp), Aufgaben mit Fälligkeit | M | – |
@@ -59,7 +58,7 @@ Ziel: Alles, was die Hebammen im Parallelbetrieb täglich vermissen werden.
 1. **M5 Teamkalender und Kalender-Abo** (M)
 2. **M13 Selbstzahler-Rechnungen und EÜR-Export** (M) – Babymassage, Akupunktur, Partnergebühren
 3. **M12 Rest** (S): Kursbestätigung und -erinnerung per E-Mail, Ratenzahlung, Storno
-4. **M23 Automatisierungen** (S)
+4. ~~**M23 Automatisierungen**~~ ✅ umgesetzt (ET, U-Untersuchungen, Rückbildungskurs, abhakbar)
 5. **M3 Rest** (M): Textbausteine, „wie letztes Mal“, EPDS
 
 **Website-Bausteine:** Kursbestätigung mit Link zum Selbst-Stornieren (Platz wird frei, Warteliste rückt nach); „Kurs beendet → Rechnung per E-Mail“ bei Selbstzahlerkursen; Hinweis „Rückbildungskurs“ für Familien, deren Kind 8 Wochen alt wird (per E-Mail, mit Einwilligung).

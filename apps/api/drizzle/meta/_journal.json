@@ -99,6 +99,13 @@
       "when": 1791368869838,
       "tag": "0013_anordnung",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1791369610244,
+      "tag": "0014_hinweis_erledigt",
+      "breakpoints": true
     }
   ]
 }

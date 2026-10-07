@@ -87,6 +87,10 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
   - „Offene Dokumentationen“ (Entwürfe) mit direktem Link.
   - „Fristen und Hinweise“, z. B. Abrechnungsstichtag, Ausschlussfrist 30.06., unbezahlte Versände, Regelwerk-Freigaben „wartet auf deine Freigabe“, Kinderurkunde vorbereiten (7 Tage vor Ende der 12. Lebenswoche), neue Online-Anmeldungen zu eigenen Kursen, Rückkehr aus der Babypause. Hinweise mit Link führen direkt zur passenden Seite.
 
+**B3 Erinnerungen** 🤖
+1. Startseite als Johanna: „U2 für Ole steht an (3.–10. Lebenstag) – Eltern erinnern“ → „Erledigt“.
+- Erwartet: Erinnerungen für eigene bzw. vertretene Betreuungen: ET in den nächsten 14 Tagen („Wochenbett vorbereiten“), U2/U3/U4 im jeweiligen Zeitraum, Rückbildungskurs in der 8.–10. Lebenswoche (nicht, wenn schon in einem Rückbildungskurs angemeldet). „Erledigt“ blendet die Erinnerung für diese Hebamme dauerhaft aus; andere Hinweise (Fristen, Warnungen) lassen sich nicht abhaken.
+
 **B2 Warnungen** 🤖
 1. Startseite als Johanna: Hinweise „Ärztliche Anordnung fehlt: Sophie Berger“, ggf. Gewicht („… % unter dem Geburtsgewicht“) und Kontingent („… von … genutzt, noch … frei“ bzw. „ausgeschöpft“).
 2. „Ärztliche Anordnung fehlt“ antippen → im Besuch „Ärztliche Anordnung liegt vor“ ankreuzen, Notiz (von wem, wann).
