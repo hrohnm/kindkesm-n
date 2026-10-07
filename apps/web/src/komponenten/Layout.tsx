@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router";
 import { useAuth } from "../lib/auth";
 import { OfflineStatus } from "./OfflineStatus";
-import { IconAbmelden, IconAbrechnung, IconPost, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconKalender, IconRegelwerk, IconTeam, IconTour } from "./Icons";
+import { IconAbmelden, IconAbrechnung, IconPost, IconAuto, IconKurs, IconEinstellungen, IconFamilie, IconHeute, IconKalender, IconRegelwerk, IconStatistik, IconTeam, IconTour } from "./Icons";
 
 const NAV = [
   { to: "/", label: "Heute", icon: IconHeute, ende: true },
@@ -10,10 +10,12 @@ const NAV = [
   { to: "/anfragen", label: "Anfragen", icon: IconPost, nurGross: true },
   { to: "/abrechnung", label: "Abrechnung", icon: IconAbrechnung },
   // Auf dem Handy über Einstellungen bzw. die Tour erreichbar (Platz in der unteren Leiste)
+  { to: "/nachrichten", label: "Nachrichten", icon: IconPost, nurGross: true },
   { to: "/kalender", label: "Kalender", icon: IconKalender, nurGross: true },
   { to: "/kurse", label: "Kurse", icon: IconKurs, nurGross: true },
   { to: "/fahrtenbuch", label: "Fahrtenbuch", icon: IconAuto, nurGross: true },
   { to: "/team", label: "Team", icon: IconTeam, nurGross: true },
+  { to: "/statistik", label: "Statistik", icon: IconStatistik, nurGross: true },
   { to: "/regelwerk", label: "Regelwerk", icon: IconRegelwerk, nurGross: true },
   { to: "/einstellungen", label: "Einstellungen", icon: IconEinstellungen },
 ];
@@ -23,8 +25,8 @@ export function Layout() {
   const { ich, abmelden } = useAuth();
   return (
     <div className="flex min-h-full">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-sand-200 bg-sand-50 px-4 py-6 md:flex lg:w-72 dark:border-salbei-700 dark:bg-salbei-900">
-        <div className="mb-8 flex items-center gap-3 px-2">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-sand-200 bg-sand-50 px-4 py-6 md:flex lg:w-72 dark:border-salbei-700 dark:bg-salbei-900">
+        <div className="mb-6 flex items-center gap-3 px-2">
           <img src="/logo.png" alt="" className="size-12" />
           <div>
             <div className="text-lg font-semibold leading-tight text-salbei-700 dark:text-salbei-100">Kindkesmöön</div>

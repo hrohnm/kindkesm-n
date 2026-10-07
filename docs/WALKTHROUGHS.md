@@ -155,6 +155,12 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 1. Akte → Kontingente und Besuche ansehen.
 - Erwartet: Kontingentbalken (z. B. „2 von 20 Kontakte“, bei Kursen in Minuten); Besuche mit Leistung, Art, GPOS, Minuten, Betrag, Unterschriftsart; Kurseinheiten führen zum Kurstermin.
 
+**C13 Fotos in der Akte** 🤖
+1. Akte Anna Schulz → Kasten „Fotos“: Verlauf „Nabel (3)“ von Mats nebeneinander; Foto antippen (vergrößern, Esc/„Schließen“).
+2. Bereich (z. B. Haut), Kind, Notiz wählen → „Foto aufnehmen“ (Tablet: Kamera öffnet sich direkt) → im Verlauf; vergrößern → „Löschen“.
+3. Akte Laura Becker (Fotos abgelehnt); bei einer Akte die Einwilligung „Fotos“ widerrufen.
+- Erwartet: Aufnahme nur mit erteilter Einwilligung („Fotos nur mit Einwilligung …“). Fotos landen nicht in der Galerie, werden verkleinert (max. 1600 px) und verschlüsselt gespeichert; Filter je Bereich, älteste links. Nach Widerruf sind die Bilder gesperrt, Hinweis und „Alle n Fotos löschen“. Ohne `FOTO_SCHLUESSEL` auf dem Server: Hinweis „nicht eingerichtet“. ⚠️ Andere Dateien als Fotos werden abgelehnt.
+
 ---
 
 ## D. Besuch dokumentieren
@@ -365,6 +371,18 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 3. Website → Kontakt.
 - Erwartet: Liste ab heute mit „heute“-Kennzeichen; nur aktive Hebammen wählbar (⚠️ Ende vor Beginn → Fehler). Auf der Website „Heute in Rufbereitschaft: …“; bei eingetragener Abwesenheit steht bei der Hebamme „bis … nicht erreichbar – das Team vertritt“ (ohne Grund). Demo: Marielena heute bis übermorgen.
 
+**K5 Team-Nachrichten und Aufgaben** 🤖
+1. Als Marielena: Startseite „… neue Team-Nachrichten (1 an dich)“ antippen → Nachricht von Johanna (Ella Lange) mit „neu“.
+2. Nachricht schreiben, „Empfängerin“ Johanna bzw. „ganzes Team“ → „Senden“; eigene Nachricht löschen.
+3. Reiter „Aufgaben“: Aufgabe mit „Fällig am“ und „Für“ (mich, Kollegin, Team) → „Anlegen“; abhaken; „Erledigte der letzten 30 Tage zeigen“.
+4. Akte Laura Becker → Kasten „Team“.
+- Erwartet: Direktnachrichten sehen nur Absenderin und Empfängerin, Team-Nachrichten alle; nach dem Ansehen verschwindet der Cockpit-Hinweis. Aufgaben erscheinen im Cockpit am Fälligkeitstag und am Tag davor (Warnung), danach als überfällig (dringend); Team-Aufgaben bei allen. Abhaken darf jede Hebamme, löschen nur die Erstellerin. In der Akte nur die Aufgaben und Nachrichten zu dieser Familie; neue Einträge dort sind automatisch mit der Akte verknüpft. Demo: Nachrichten zu Ella Lange und Laura Becker, Aufgaben (u. a. überfällige Team-Aufgabe „Verbrauchsmaterial …“).
+
+**K6 Statistik** 🤖📱
+1. Statistik (Handy: Einstellungen → „Statistik ›“), Jahr wählen.
+2. Diagramm „Besuche je Monat“: Balken antippen bzw. mit der Maus darüber; „Als Tabelle“.
+- Erwartet: Kennzahlen des Teams (Besuche, Familien, Geburten, Kurse), Tabelle je Hebamme, Wohnorte, Kursauslastung (angemeldet/Plätze, Warteliste). „Meine Abrechnung (Kasse)“ zeigt nur die eigenen Zahlen: Umsatz Kasse, noch nicht versendet, versendet und unbezahlt, dienstliche Kilometer. Entwürfe zählen nicht.
+
 **K3 Teamkalender** 🤖
 1. Kalender (Handy: Einstellungen → „Kalender ›“): Woche mit einer Spalte je Hebamme; „‹“, „Diese Woche“, „›“.
 2. „Hebammen in Babypause zeigen“ ankreuzen; einen Hausbesuch bzw. Kurstermin antippen.
@@ -476,4 +494,4 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 
 ## P. Bekannte Lücken (noch kein Walkthrough möglich)
 
-E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Fotos (M17), Raumbelegung (M5), Vorlagen und Briefe (M18), Statistik (M22), TI-Anbindung (M24), Hebamio-Import.
+E-Mail-Versand (Kursbestätigungen, Urkunde per Mail), Selbstzahler-Rechnungen (M13), Raumbelegung (M5), Vorlagen und Briefe (M18), Selbstzahler-Umsatz in der Statistik (M22 Rest), TI-Anbindung (M24), Hebamio-Import.

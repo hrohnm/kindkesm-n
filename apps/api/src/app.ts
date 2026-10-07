@@ -29,6 +29,9 @@ import { rufbereitschaftRouten } from "./routes/rufbereitschaft";
 import { textbausteinRouten } from "./routes/textbausteine";
 import { oeffentlicheSchnittstellen } from "./oeffentlich";
 import { kalenderRouten } from "./routes/kalender";
+import { nachrichtenRouten } from "./routes/nachrichten";
+import { fotoRouten } from "./routes/fotos";
+import { statistikRouten } from "./routes/statistik";
 
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
 
@@ -99,6 +102,9 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await rufbereitschaftRouten(app, db);
   await textbausteinRouten(app, db);
   await kalenderRouten(app, db);
+  await nachrichtenRouten(app, db);
+  await fotoRouten(app, db);
+  await statistikRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

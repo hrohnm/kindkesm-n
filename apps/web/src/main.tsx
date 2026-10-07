@@ -35,6 +35,8 @@ import { Klientinnen } from "./seiten/Klientinnen";
 import { Regelwerk } from "./seiten/Regelwerk";
 import { Team } from "./seiten/Team";
 import { Kalender } from "./seiten/Kalender";
+import { Nachrichten } from "./seiten/Nachrichten";
+import { Statistik } from "./seiten/Statistik";
 import { Tour } from "./seiten/Tour";
 
 function App() {
@@ -66,6 +68,8 @@ function App() {
         <Route path="kurse/:id" element={<Kurs />} />
         <Route path="kurse/:id/termine/:terminId" element={<KursTermin />} />
         <Route path="kalender" element={<Kalender />} />
+        <Route path="nachrichten" element={<Nachrichten />} />
+        <Route path="statistik" element={<Statistik />} />
         <Route path="team" element={<Team />} />
         <Route path="anfragen" element={<Anfragen />} />
         <Route path="anfragen/:id" element={<AnfrageDetail />} />

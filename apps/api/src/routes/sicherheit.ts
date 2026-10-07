@@ -126,7 +126,12 @@ export async function sicherheitRouten(app: FastifyInstance, db: Datenbank) {
       if (!is(wert, PgTable) || wert === sitzung) continue;
       const zeilen = (await db.select().from(wert)) as Record<string, unknown>[];
       tabellen[getTableName(wert)] =
-        wert === benutzer ? zeilen.map(({ passwortHash: _p, totpGeheimnis: _g, totpNeu: _n, wiederherstellung: _w, kalenderToken: _k, ...rest }) => rest) : zeilen;
+        wert === benutzer
+          ? zeilen.map(({ passwortHash: _p, totpGeheimnis: _g, totpNeu: _n, wiederherstellung: _w, kalenderToken: _k, ...rest }) => rest)
+          : // Fotos: nur Angaben, die verschlüsselten Bilddaten sichert das Datenbank-Backup
+            wert === schema.foto
+            ? zeilen.map(({ daten: _d, ...rest }) => rest)
+            : zeilen;
     }
     await protokollieren(db, request.benutzer.id, "datenexport", "praxis", undefined, { tabellen: Object.keys(tabellen).length });
     const datum = new Date().toISOString().slice(0, 10);

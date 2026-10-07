@@ -364,6 +364,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M17 – Foto-Dokumentation ⭐
 - Fotos von Nabel, Naht oder Hautbefund direkt in der Akte. Fotos bleiben **nicht** in der Galerie des Geräts, sondern werden verschlüsselt in der App gespeichert
 - Verlaufsvergleich (Bilder nebeneinander), Einwilligung wird geprüft
+- **Umgesetzt:** Kasten „Fotos“ in der Akte: Aufnahme mit der Kamera (`capture`, nicht in der Galerie), im Browser auf 1600 px verkleinert, auf dem Server mit AES-256-GCM verschlüsselt in der Datenbank (`FOTO_SCHLUESSEL`); Bereich (Nabel, Naht/Damm, Kaiserschnittnarbe, Brust, Haut, Sonstiges), Kind, Notiz; Verlauf je Bereich nebeneinander, Vergrößern, Löschen. Nur mit erteilter Einwilligung; nach Widerruf gesperrt mit „Alle Fotos löschen“. Bilder werden nie zwischengespeichert (`no-store`, nicht offline), Inhalt wird geprüft (nur JPEG/PNG/WebP). Im Datenexport nur die Angaben, nicht die Bilder (die sichert das Datenbank-Backup). Kein Website-Baustein (Gesundheitsdaten)
 
 ### M18 – Vorlagen und Briefe
 - Arztbrief, Überleitungsbericht, Bescheinigungen (z. B. Mutterschutz-relevante Bescheinigungen, soweit zulässig), Kursbescheinigungen
@@ -379,6 +380,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M20 – Team-Nachrichten und Übergaben ⭐
 - Kurznachrichten **mit Bezug zur Akte**, verschlüsselt und praxisintern (ersetzt WhatsApp, das für Gesundheitsdaten nicht zulässig ist)
 - Aufgaben („Bitte Anordnung bei Dr. X anfordern“) mit Fälligkeit
+- **Umgesetzt:** Seite **Nachrichten** (Reiter Nachrichten/Aufgaben) und Kasten „Team“ in der Akte. Nachrichten an das ganze Team oder eine Kollegin (Direktnachrichten sehen nur die beiden), optional zu einer Akte; „neu“-Kennzeichen, beim Ansehen gelesen; eigene löschbar. Aufgaben für mich, eine Kollegin oder das Team mit Fälligkeit; jede Hebamme kann abhaken, löschen nur die Erstellerin. Im Cockpit: „n neue Team-Nachrichten (… an dich)“ sowie fällige (heute/morgen) und überfällige Aufgaben. Alles protokolliert, im Datenexport enthalten. Kein Website-Baustein (rein intern)
 
 ### M21 – QM, Fortbildung, Material
 - QM-Handbuch (Kapitel, Versionen, Lesebestätigung durch das Team)
@@ -388,6 +390,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M22 – Statistik
 - Betreuungen pro Hebamme/Monat, Wochenbetten nach Ort (Heatmap), Kilometer und Fahrtzeit, Umsatz (Kasse vs. Selbstzahler), Kursauslastung
 - Offene Beträge: versendet, aber noch nicht als bezahlt abgehakt (siehe Kapitel 8.7)
+- **Umgesetzt:** Seite **Statistik** je Jahr. Für das ganze Team: Besuche (abgeschlossen) je Monat als Balkendiagramm (auch als Tabelle), betreute Familien, Geburten, je Hebamme, Wohnorte der Familien, Kursauslastung mit Warteliste. Nur für die angemeldete Hebamme (sie rechnet einzeln ab): Umsatz Kasse je Monat, noch nicht versendete Leistungen, versendet und unbezahlt, dienstliche Kilometer aus dem Fahrtenbuch. Offen: Umsatz Selbstzahler (mit M13), Fahrtzeit, Heatmap
 
 ### M23 – Erinnerungen und Automatisierungen
 - „ET in 2 Wochen → Erstbesuch Wochenbett vorbereiten“

@@ -1,10 +1,11 @@
-import { abrechnungsfristen, isoDatum, tageZwischen, type FristHinweis } from "@kindkesmoeoen/shared";
-import { and, eq, isNull, ne, sql } from "drizzle-orm";
+import { abrechnungsfristen, aufgabeStufe, isoDatum, tageZwischen, type FristHinweis } from "@kindkesmoeoen/shared";
+import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { Datenbank } from "../db/client";
 import { cockpitWarnungen } from "../warnungen";
 import { erinnerungen } from "../automatisierungen";
-import { abrechnungseinstellung, aenderung, anfrage, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, hinweisErledigt, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
+import { ungeleseneNachrichten } from "./nachrichten";
+import { abrechnungseinstellung, aenderung, anfrage, aufgabe, benutzer, besuch, betreuung, kind, klientin, kurs, kursTeilnahme, leistung, hinweisErledigt, praxis, regelwerk, rueckruf, urkunde, versand } from "../db/schema";
 
 /** Hinweise und Fristen für das Cockpit der angemeldeten Person. */
 export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
@@ -69,6 +70,30 @@ export async function hinweisRouten(app: FastifyInstance, db: Datenbank) {
       hinweise.push(...(await cockpitWarnungen(db, request.benutzer!.id, heute)));
       // Erinnerungen aus ET und Geburtsdatum (M23)
       hinweise.push(...(await erinnerungen(db, request.benutzer!.id, heute)));
+      // Team-Nachrichten und Aufgaben (M20)
+      const ungelesen = await ungeleseneNachrichten(db, request.benutzer!.id);
+      if (ungelesen.anzahl) {
+        hinweise.unshift({ id: "nachrichten", titel: `${ungelesen.anzahl === 1 ? "1 neue Team-Nachricht" : `${ungelesen.anzahl} neue Team-Nachrichten`}${ungelesen.direkt ? ` (${ungelesen.direkt} an dich)` : ""}`, datum: isoDatum(heute), tage: 0, stufe: ungelesen.direkt ? "warnung" : "info", quelle: "Nachrichten", link: "/nachrichten" });
+      }
+      const heuteIso = isoDatum(heute);
+      const offeneAufgaben = await db
+        .select({ id: aufgabe.id, titel: aufgabe.titel, faelligAm: aufgabe.faelligAm, zustaendigId: aufgabe.zustaendigId, vorname: klientin.vorname, nachname: klientin.nachname })
+        .from(aufgabe)
+        .leftJoin(klientin, eq(klientin.id, aufgabe.klientinId))
+        .where(and(isNull(aufgabe.erledigtAm), or(isNull(aufgabe.zustaendigId), eq(aufgabe.zustaendigId, request.benutzer!.id))));
+      for (const a of offeneAufgaben) {
+        const stufe = aufgabeStufe(a.faelligAm, heuteIso);
+        if (!stufe || !a.faelligAm) continue;
+        hinweise.push({
+          id: `aufgabe-${a.id}`,
+          titel: `Aufgabe${a.zustaendigId ? "" : " (Team)"}: ${a.titel}${a.vorname ? ` – ${a.vorname} ${a.nachname}` : ""}`,
+          datum: a.faelligAm,
+          tage: tageZwischen(heute, new Date(`${a.faelligAm}T12:00:00`)),
+          stufe,
+          quelle: stufe === "dringend" ? "Aufgabe überfällig" : "Aufgabe fällig",
+          link: "/nachrichten?ansicht=aufgaben",
+        });
+      }
       // Offene Rückrufwünsche von der Website – alle Hebammen sehen sie, Wunsch-Hebamme wird genannt
       const rueckrufe = await db.select({ hebammeId: rueckruf.hebammeId, erstelltAm: rueckruf.erstelltAm }).from(rueckruf).where(eq(rueckruf.status, "offen"));
       if (rueckrufe.length) {

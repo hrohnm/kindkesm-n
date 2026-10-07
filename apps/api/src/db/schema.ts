@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
+import { customType,
   boolean,
   date,
   doublePrecision,
@@ -666,4 +666,58 @@ export const abwesenheit = pgTable("abwesenheit", {
   art: text("art", { enum: ["urlaub", "fortbildung", "krank", "sonstiges"] }).notNull(),
   notiz: text("notiz"),
   ...zeitstempel(),
+});
+
+/** M20: Team-Nachricht (an eine Kollegin oder das ganze Team), optional mit Bezug zu einer Akte */
+export const nachricht = pgTable("nachricht", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  vonId: uuid("von_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  /** null = ganzes Team */
+  anId: uuid("an_id").references(() => benutzer.id, { onDelete: "cascade" }),
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  text: text("text").notNull(),
+  ...zeitstempel(),
+});
+
+export const nachrichtGelesen = pgTable(
+  "nachricht_gelesen",
+  {
+    nachrichtId: uuid("nachricht_id").notNull().references(() => nachricht.id, { onDelete: "cascade" }),
+    benutzerId: uuid("benutzer_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    gelesenAm: timestamp("gelesen_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.nachrichtId, t.benutzerId] })],
+);
+
+/** M20: Aufgabe mit Fälligkeit (für eine Hebamme oder das Team), optional mit Bezug zu einer Akte */
+export const aufgabe = pgTable("aufgabe", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  titel: text("titel").notNull(),
+  notiz: text("notiz"),
+  /** null = jemand aus dem Team */
+  zustaendigId: uuid("zustaendig_id").references(() => benutzer.id, { onDelete: "set null" }),
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  faelligAm: date("faellig_am"),
+  erledigtAm: timestamp("erledigt_am", { withTimezone: true }),
+  erledigtVon: uuid("erledigt_von").references(() => benutzer.id, { onDelete: "set null" }),
+  erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  ...zeitstempel(),
+});
+
+/** Binärdaten (PostgreSQL bytea) */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
+
+/** M17: Foto in der Akte, AES-256-GCM-verschlüsselt (IV + Tag + Chiffrat) – nur mit Einwilligung „foto“ */
+export const foto = pgTable("foto", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  klientinId: uuid("klientin_id").notNull().references(() => klientin.id, { onDelete: "cascade" }),
+  kindId: uuid("kind_id").references(() => kind.id, { onDelete: "set null" }),
+  besuchId: uuid("besuch_id").references(() => besuch.id, { onDelete: "set null" }),
+  bereich: text("bereich", { enum: ["nabel", "naht", "sectionarbe", "brust", "haut", "sonstiges"] }).notNull(),
+  notiz: text("notiz"),
+  mime: text("mime").notNull(),
+  groesse: integer("groesse").notNull(),
+  daten: bytea("daten").notNull(),
+  aufgenommenAm: timestamp("aufgenommen_am", { withTimezone: true }).notNull().defaultNow(),
+  erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id),
 });

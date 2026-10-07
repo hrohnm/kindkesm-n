@@ -75,6 +75,8 @@ test("Zwei-Faktor-Anmeldung, App-Sperre und Geräte", async ({ page, browser }, 
   await expect(page.getByText("Gespeichert")).toBeVisible();
   await page.clock.install();
   await page.reload();
+  // erst vorspulen, wenn die App geladen ist (sonst startet die Zeitmessung erst danach)
+  await expect(page.getByLabel("Sperren nach")).toHaveValue("5");
   await page.clock.fastForward("06:00");
   const sperre = page.getByRole("dialog");
   await expect(sperre.getByRole("heading", { name: "Gesperrt" })).toBeVisible();

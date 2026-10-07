@@ -6,7 +6,9 @@
 import { appBauen } from "../app";
 import type { Datenbank } from "../db/client";
 import { and, eq } from "drizzle-orm";
-import { besuch, klientin, termin } from "../db/schema";
+import { crc32, deflateSync } from "node:zlib";
+import { fotoSchluessel } from "../foto-krypto";
+import { besuch, foto, klientin, termin } from "../db/schema";
 
 const tag = (offset: number) => {
   const d = new Date();
@@ -217,7 +219,7 @@ export async function demoAktenAnlegen(db: Datenbank, passwort: string, erweiter
     return res.json();
   };
   if (erweitert) await demoKurseAnlegen(db, anfrage, offen);
-  if (erweitert) await demoAnfragenAnlegen(anfrage, offen);
+  if (erweitert) await demoAnfragenAnlegen(db, anfrage, offen);
 
   await app.close();
   return familien.length;
@@ -304,7 +306,7 @@ async function demoAktenErgaenzen(db: Datenbank, anfrage: Anfrage, erweitert: bo
 }
 
 /** Demo M11: Betreuungsanfragen (Website und Telefon) und ein Urlaub für den Belegungsplan */
-async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
+async function demoAnfragenAnlegen(db: Datenbank, anfrage: Anfrage, offen: OffeneAnfrage) {
   const J = "johanna@kindkesmoeoen.test";
   const M = "marielena@kindkesmoeoen.test";
   await offen(null, "POST", "/api/oeffentlich/anfrage", {
@@ -369,7 +371,60 @@ async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
   for (const [email, nachname, offset, t] of kommend) await anfrage(email, "POST", `/api/touren/${tag(offset)}/termine`, { ...t, betreuungId: await bid(email, nachname) });
   await anfrage(J, "POST", "/api/abwesenheiten", { von: tag(9), bis: tag(10), art: "fortbildung", notiz: "Fortbildung Stillberatung" });
 
+  // M17: Fotos – abstrakte Platzhalterbilder (keine echten Fotos), Verlauf Nabel bei Mats Schulz
+  const schulz = (await anfrage(J, "GET", "/api/klientinnen?q=Schulz"))[0].id as string;
+  const mats = (await anfrage(J, "GET", `/api/klientinnen/${schulz}`)).betreuungen[0].kinder[0].id as string;
+  await anfrage(J, "PUT", `/api/klientinnen/${schulz}/einwilligungen/foto`, { erteilt: true, form: "papier", datum: tag(-11) });
+  // ohne FOTO_SCHLUESSEL (Betrieb) keine Demo-Fotos
+  if (fotoSchluessel()) for (const [offset, farbe, notiz] of [[-11, [214, 160, 150], "Nabelrest feucht"], [-9, [196, 170, 140], "trocknet ab, reizlos"], [-7, [222, 200, 180], "abgefallen, Nabelgrund trocken"]] as const) {
+    const neu = await anfrage(J, "POST", `/api/klientinnen/${schulz}/fotos`, { bild: `data:image/png;base64,${demoBild(farbe).toString("base64")}`, bereich: "nabel", kindId: mats, notiz });
+    await db.update(foto).set({ aufgenommenAm: new Date(`${tag(offset)}T10:45:00`) }).where(eq(foto.id, neu.id));
+  }
+
+  // M20: Team-Nachrichten und Aufgaben
+  const lange = (await anfrage(J, "GET", "/api/klientinnen?q=Lange"))[0].id as string;
+  const beckerK = (await anfrage(M, "GET", "/api/klientinnen?q=Becker"))[0].id as string;
+  await anfrage(M, "POST", "/api/nachrichten", { text: "Wer kann am Samstag die Rückbildung übernehmen? Ich bin auf einer Familienfeier." });
+  await anfrage(J, "POST", "/api/nachrichten", { text: "Ella Lange hat über 10 % abgenommen – ich fahre morgen früh hin. Falls du vorher angerufen wirst: Stillprobleme, Mutter sehr verunsichert.", anId: mid, klientinId: lange });
+  await anfrage(M, "POST", "/api/nachrichten", { text: "Laura Becker: EPDS 10 Punkte. Ich spreche es beim nächsten Besuch noch einmal an.", klientinId: beckerK });
+  await anfrage(J, "POST", "/api/aufgaben", { titel: "Ärztliche Anordnung für Sophie Berger holen", zustaendigId: jid, faelligAm: tag(0) });
+  await anfrage(M, "POST", "/api/aufgaben", { titel: "Gewichtskontrolle Ella", zustaendigId: jid, klientinId: lange, faelligAm: tag(1) });
+  await anfrage(J, "POST", "/api/aufgaben", { titel: "Verbrauchsmaterial für den Kursraum bestellen", faelligAm: tag(-1) });
+  await anfrage(M, "POST", "/api/aufgaben", { titel: "EPDS bei Laura Becker in zwei Wochen wiederholen", zustaendigId: mid, klientinId: beckerK, faelligAm: tag(12) });
+
   // Rückrufwünsche von der Website: einer mit Wunsch-Hebamme, einer zur Betreuung (→ „Als Betreuungsanfrage erfassen“)
   await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Lotta Stillfrage", telefon: "0170 0000203", anliegen: "stillen", zeitfenster: "vormittag", hebamme: "Marielena Pontus", nachricht: "Unser Sohn ist 10 Tage alt und trinkt sehr unruhig.", einwilligung: true });
   await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Svenja Neuhaus", telefon: "0170 0000204", anliegen: "betreuung", zeitfenster: "nachmittag", nachricht: "Bin in der 9. Woche und suche eine Hebamme in Bad Doberan.", einwilligung: true });
+}
+
+/** Abstraktes Platzhalterbild (PNG, 240 × 240): Farbverlauf mit hellem Kreis – nur für Demo-Daten */
+function demoBild([r, g, b]: readonly [number, number, number]): Buffer {
+  const groesse = 240;
+  const zeilen: Buffer[] = [];
+  for (let y = 0; y < groesse; y++) {
+    const z = Buffer.alloc(1 + groesse * 3);
+    for (let x = 0; x < groesse; x++) {
+      const abstand = Math.hypot(x - groesse / 2, y - groesse / 2);
+      const kreis = abstand < 45 ? 40 : abstand < 50 ? 20 : 0;
+      const verlauf = Math.round((y / groesse) * 30);
+      z[1 + x * 3] = Math.min(255, r - verlauf + kreis);
+      z[2 + x * 3] = Math.min(255, g - verlauf + kreis);
+      z[3 + x * 3] = Math.min(255, b - verlauf + kreis);
+    }
+    zeilen.push(z);
+  }
+  const block = (typ: string, daten: Buffer) => {
+    const laenge = Buffer.alloc(4);
+    laenge.writeUInt32BE(daten.length);
+    const inhalt = Buffer.concat([Buffer.from(typ, "latin1"), daten]);
+    const pruef = Buffer.alloc(4);
+    pruef.writeUInt32BE(crc32(inhalt) >>> 0);
+    return Buffer.concat([laenge, inhalt, pruef]);
+  };
+  const kopf = Buffer.alloc(13);
+  kopf.writeUInt32BE(groesse, 0);
+  kopf.writeUInt32BE(groesse, 4);
+  kopf[8] = 8; // Bittiefe
+  kopf[9] = 2; // RGB
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), block("IHDR", kopf), block("IDAT", deflateSync(Buffer.concat(zeilen))), block("IEND", Buffer.alloc(0))]);
 }
