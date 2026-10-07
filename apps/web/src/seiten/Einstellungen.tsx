@@ -16,6 +16,7 @@ const UNTER = [
   // Auf dem Handy fehlen diese in der unteren Leiste, daher nur dort hier verlinkt
   { to: "/anfragen", label: "Anfragen ›", nurHandy: true },
   { to: "/belegung", label: "Belegungsplan ›", nurHandy: true },
+  { to: "/nachrichten", label: "Nachrichten ›", nurHandy: true },
   { to: "/kalender", label: "Kalender ›", nurHandy: true },
   { to: "/kurse", label: "Kurse ›", nurHandy: true },
   { to: "/team", label: "Team ›", nurHandy: true },

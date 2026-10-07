@@ -667,3 +667,39 @@ export const abwesenheit = pgTable("abwesenheit", {
   notiz: text("notiz"),
   ...zeitstempel(),
 });
+
+/** M20: Team-Nachricht (an eine Kollegin oder das ganze Team), optional mit Bezug zu einer Akte */
+export const nachricht = pgTable("nachricht", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  vonId: uuid("von_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  /** null = ganzes Team */
+  anId: uuid("an_id").references(() => benutzer.id, { onDelete: "cascade" }),
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  text: text("text").notNull(),
+  ...zeitstempel(),
+});
+
+export const nachrichtGelesen = pgTable(
+  "nachricht_gelesen",
+  {
+    nachrichtId: uuid("nachricht_id").notNull().references(() => nachricht.id, { onDelete: "cascade" }),
+    benutzerId: uuid("benutzer_id").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+    gelesenAm: timestamp("gelesen_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.nachrichtId, t.benutzerId] })],
+);
+
+/** M20: Aufgabe mit Fälligkeit (für eine Hebamme oder das Team), optional mit Bezug zu einer Akte */
+export const aufgabe = pgTable("aufgabe", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  titel: text("titel").notNull(),
+  notiz: text("notiz"),
+  /** null = jemand aus dem Team */
+  zustaendigId: uuid("zustaendig_id").references(() => benutzer.id, { onDelete: "set null" }),
+  klientinId: uuid("klientin_id").references(() => klientin.id, { onDelete: "set null" }),
+  faelligAm: date("faellig_am"),
+  erledigtAm: timestamp("erledigt_am", { withTimezone: true }),
+  erledigtVon: uuid("erledigt_von").references(() => benutzer.id, { onDelete: "set null" }),
+  erstelltVon: uuid("erstellt_von").notNull().references(() => benutzer.id, { onDelete: "cascade" }),
+  ...zeitstempel(),
+});

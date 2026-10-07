@@ -365,6 +365,13 @@ Weitere Demo-Inhalte: Touren für heute (je vier Termine bei Johanna und Mariele
 3. Website → Kontakt.
 - Erwartet: Liste ab heute mit „heute“-Kennzeichen; nur aktive Hebammen wählbar (⚠️ Ende vor Beginn → Fehler). Auf der Website „Heute in Rufbereitschaft: …“; bei eingetragener Abwesenheit steht bei der Hebamme „bis … nicht erreichbar – das Team vertritt“ (ohne Grund). Demo: Marielena heute bis übermorgen.
 
+**K5 Team-Nachrichten und Aufgaben** 🤖
+1. Als Marielena: Startseite „… neue Team-Nachrichten (1 an dich)“ antippen → Nachricht von Johanna (Ella Lange) mit „neu“.
+2. Nachricht schreiben, „Empfängerin“ Johanna bzw. „ganzes Team“ → „Senden“; eigene Nachricht löschen.
+3. Reiter „Aufgaben“: Aufgabe mit „Fällig am“ und „Für“ (mich, Kollegin, Team) → „Anlegen“; abhaken; „Erledigte der letzten 30 Tage zeigen“.
+4. Akte Laura Becker → Kasten „Team“.
+- Erwartet: Direktnachrichten sehen nur Absenderin und Empfängerin, Team-Nachrichten alle; nach dem Ansehen verschwindet der Cockpit-Hinweis. Aufgaben erscheinen im Cockpit am Fälligkeitstag und am Tag davor (Warnung), danach als überfällig (dringend); Team-Aufgaben bei allen. Abhaken darf jede Hebamme, löschen nur die Erstellerin. In der Akte nur die Aufgaben und Nachrichten zu dieser Familie; neue Einträge dort sind automatisch mit der Akte verknüpft. Demo: Nachrichten zu Ella Lange und Laura Becker, Aufgaben (u. a. überfällige Team-Aufgabe „Verbrauchsmaterial …“).
+
 **K3 Teamkalender** 🤖
 1. Kalender (Handy: Einstellungen → „Kalender ›“): Woche mit einer Spalte je Hebamme; „‹“, „Diese Woche“, „›“.
 2. „Hebammen in Babypause zeigen“ ankreuzen; einen Hausbesuch bzw. Kurstermin antippen.

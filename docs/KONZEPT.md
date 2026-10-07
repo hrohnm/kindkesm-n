@@ -379,6 +379,7 @@ Legende: **H** = gibt es auch in Hebamio · **⭐ NEU** = Eigenidee bzw. Mehrwer
 ### M20 – Team-Nachrichten und Übergaben ⭐
 - Kurznachrichten **mit Bezug zur Akte**, verschlüsselt und praxisintern (ersetzt WhatsApp, das für Gesundheitsdaten nicht zulässig ist)
 - Aufgaben („Bitte Anordnung bei Dr. X anfordern“) mit Fälligkeit
+- **Umgesetzt:** Seite **Nachrichten** (Reiter Nachrichten/Aufgaben) und Kasten „Team“ in der Akte. Nachrichten an das ganze Team oder eine Kollegin (Direktnachrichten sehen nur die beiden), optional zu einer Akte; „neu“-Kennzeichen, beim Ansehen gelesen; eigene löschbar. Aufgaben für mich, eine Kollegin oder das Team mit Fälligkeit; jede Hebamme kann abhaken, löschen nur die Erstellerin. Im Cockpit: „n neue Team-Nachrichten (… an dich)“ sowie fällige (heute/morgen) und überfällige Aufgaben. Alles protokolliert, im Datenexport enthalten. Kein Website-Baustein (rein intern)
 
 ### M21 – QM, Fortbildung, Material
 - QM-Handbuch (Kapitel, Versionen, Lesebestätigung durch das Team)

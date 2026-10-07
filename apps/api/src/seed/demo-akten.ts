@@ -369,6 +369,17 @@ async function demoAnfragenAnlegen(anfrage: Anfrage, offen: OffeneAnfrage) {
   for (const [email, nachname, offset, t] of kommend) await anfrage(email, "POST", `/api/touren/${tag(offset)}/termine`, { ...t, betreuungId: await bid(email, nachname) });
   await anfrage(J, "POST", "/api/abwesenheiten", { von: tag(9), bis: tag(10), art: "fortbildung", notiz: "Fortbildung Stillberatung" });
 
+  // M20: Team-Nachrichten und Aufgaben
+  const lange = (await anfrage(J, "GET", "/api/klientinnen?q=Lange"))[0].id as string;
+  const beckerK = (await anfrage(M, "GET", "/api/klientinnen?q=Becker"))[0].id as string;
+  await anfrage(M, "POST", "/api/nachrichten", { text: "Wer kann am Samstag die Rückbildung übernehmen? Ich bin auf einer Familienfeier." });
+  await anfrage(J, "POST", "/api/nachrichten", { text: "Ella Lange hat über 10 % abgenommen – ich fahre morgen früh hin. Falls du vorher angerufen wirst: Stillprobleme, Mutter sehr verunsichert.", anId: mid, klientinId: lange });
+  await anfrage(M, "POST", "/api/nachrichten", { text: "Laura Becker: EPDS 10 Punkte. Ich spreche es beim nächsten Besuch noch einmal an.", klientinId: beckerK });
+  await anfrage(J, "POST", "/api/aufgaben", { titel: "Ärztliche Anordnung für Sophie Berger holen", zustaendigId: jid, faelligAm: tag(0) });
+  await anfrage(M, "POST", "/api/aufgaben", { titel: "Gewichtskontrolle Ella", zustaendigId: jid, klientinId: lange, faelligAm: tag(1) });
+  await anfrage(J, "POST", "/api/aufgaben", { titel: "Verbrauchsmaterial für den Kursraum bestellen", faelligAm: tag(-1) });
+  await anfrage(M, "POST", "/api/aufgaben", { titel: "EPDS bei Laura Becker in zwei Wochen wiederholen", zustaendigId: mid, klientinId: beckerK, faelligAm: tag(12) });
+
   // Rückrufwünsche von der Website: einer mit Wunsch-Hebamme, einer zur Betreuung (→ „Als Betreuungsanfrage erfassen“)
   await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Lotta Stillfrage", telefon: "0170 0000203", anliegen: "stillen", zeitfenster: "vormittag", hebamme: "Marielena Pontus", nachricht: "Unser Sohn ist 10 Tage alt und trinkt sehr unruhig.", einwilligung: true });
   await offen(null, "POST", "/api/oeffentlich/rueckruf", { name: "Svenja Neuhaus", telefon: "0170 0000204", anliegen: "betreuung", zeitfenster: "nachmittag", nachricht: "Bin in der 9. Woche und suche eine Hebamme in Bad Doberan.", einwilligung: true });

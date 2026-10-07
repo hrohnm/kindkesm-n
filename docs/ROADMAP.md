@@ -10,7 +10,7 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 
 | Bereich | Module |
 |---|---|
-| Hausbesuch (Phase 1) | M1 Cockpit mit Tour und Hinweisen · M2 Akte (Kontakte, Merkmale, Einwilligungen, Vertretung je Betreuung) · M5 Teamkalender mit Kalender-Abo · M3 Besuchsdokumentation mit persönlicher Ansicht, Textbausteinen, „wie letztes Mal“, EPDS und Beratungsthemen · M6 Tourenplanung · M7 Leistungen mit Plausibilitätsprüfung · M8 Abrechnungsunterlagen (Formulare 3.1/3.3/3.4, Versandmappe, Fristen) · M9 Fahrtenbuch und Wegegeld · M25 Konten, Rollen, Orte, Abrechnungseinstellungen, Zwei-Faktor-Anmeldung, App-Sperre, Geräte, Datenexport · M26 Regelwerk mit Vier-Augen-Freigabe · Offline-Betrieb |
+| Hausbesuch (Phase 1) | M1 Cockpit mit Tour und Hinweisen · M2 Akte (Kontakte, Merkmale, Einwilligungen, Vertretung je Betreuung) · M5 Teamkalender mit Kalender-Abo · M20 Team-Nachrichten und Aufgaben · M3 Besuchsdokumentation mit persönlicher Ansicht, Textbausteinen, „wie letztes Mal“, EPDS und Beratungsthemen · M6 Tourenplanung · M7 Leistungen mit Plausibilitätsprüfung · M8 Abrechnungsunterlagen (Formulare 3.1/3.3/3.4, Versandmappe, Fristen) · M9 Fahrtenbuch und Wegegeld · M25 Konten, Rollen, Orte, Abrechnungseinstellungen, Zwei-Faktor-Anmeldung, App-Sperre, Geräte, Datenexport · M26 Regelwerk mit Vier-Augen-Freigabe · Offline-Betrieb |
 | Praxis (Phase 2) | M10 Kinderurkunde · M11 Anfragen, Belegungsplan, Rückrufwünsche · M12 Kurse mit Anwesenheit und Online-Anmeldung · M15 Wachstumskurven (Gewicht, Länge, Kopfumfang) |
 | Website | Alle Seiten neu, Kurse mit Buchung, Betreuungsanfrage, Rückrufwunsch, Kapazitätsampel, Team-Status – live aus der App |
 
@@ -22,7 +22,6 @@ Aufwand grob: **S** = ein kleiner Arbeitsschritt (ein PR), **M** = zwei bis drei
 | **M5 Rest** | Raumbelegung Praxis/Kursraum, Terminbestätigung an Eltern | S | E-Mail |
 | **M13 Selbstzahler-Rechnungen** | Rechnungs-PDF mit fortlaufender Nummer und GiroCode (QR), Zahlungseingang, Rechnungen für Selbstzahlerkurse und Partnergebühren, EÜR-Export (CSV/DATEV) | M | Preisliste (M26, fertig) |
 | **M12 Rest** | Bestätigungs- und Erinnerungsmails an Teilnehmerinnen, Ratenzahlung, Stornoregeln | S | E-Mail, M13 |
-| **M20 Team-Nachrichten** | Nachrichten mit Bezug zur Akte (statt WhatsApp), Aufgaben mit Fälligkeit | M | – |
 | **M18 Vorlagen und Briefe** | Arztbrief, Überleitungsbericht, Bescheinigungen, Kursbescheinigung; Platzhalter, Briefkopf | M | – |
 | **M17 Fotos** | Fotos von Nabel, Naht, Haut verschlüsselt in der Akte (nicht in der Galerie), Verlauf nebeneinander, Prüfung der Einwilligung | M | Einwilligungen (fertig) |
 | **M22 Statistik** | Betreuungen je Hebamme und Monat, Orte, Kilometer, Umsatz Kasse/Selbstzahler, Kursauslastung, offene Beträge | M | M13 für Umsatz Selbstzahler |
@@ -66,7 +65,7 @@ Ziel: Alles, was die Hebammen im Parallelbetrieb täglich vermissen werden.
 Ziel: Zusammenarbeit der drei Hebammen ohne WhatsApp und Zettel.
 
 1. ~~**M19 Rest**~~ ✅ umgesetzt (Kurzübergabe, Rufbereitschaftsplan, Website-Hinweise)
-2. **M20 Team-Nachrichten und Aufgaben** (M)
+2. ~~**M20 Team-Nachrichten und Aufgaben**~~ ✅ umgesetzt (Nachrichten mit Aktenbezug, Aufgaben mit Fälligkeit, Hinweise im Cockpit)
 3. **M18 Vorlagen und Briefe** (M)
 4. **M17 Fotos** (M)
 5. **M22 Statistik** (M)
