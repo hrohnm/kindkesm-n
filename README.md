@@ -23,7 +23,7 @@ Praxis-App für die Hebammenpraxis Kindkesmöön (Bad Doberan): Tablet-optimiert
 | M-5 Regelwerk-Administration | ✅ |
 | M-6 Offline-Betrieb mit Synchronisation | ✅ |
 
-- [Konzept & Recherche](docs/KONZEPT.md)
+- [Konzept & Recherche](docs/KONZEPT.md) · [Roadmap (was noch offen ist)](docs/ROADMAP.md)
 - [Betrieb auf dem Hostinger-VPS](docs/BETRIEB.md)
 - [Entwicklung](docs/ENTWICKLUNG.md)
 - [Website der Praxis](apps/website/README.md) · [Recherche der bisherigen Website](docs/website/RECHERCHE.md)
