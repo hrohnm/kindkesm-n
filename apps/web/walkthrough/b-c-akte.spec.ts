@@ -211,6 +211,8 @@ test("C9 Wohnung auf der Karte", async ({ page }, info) => {
   const k = karte(page, "Wohnung auf der Karte");
   await k.getByRole("button", { name: "Position korrigieren" }).click();
   await expect(k.getByText("Auf die Karte tippen, wo sich die Haustür befindet.")).toBeVisible();
+  // Karte erst ins Bild holen – Mausklicks wirken nur im sichtbaren Bereich
+  await k.locator(".leaflet-container").scrollIntoViewIfNeeded();
   const box = (await k.locator(".leaflet-container").boundingBox())!;
   await page.mouse.click(box.x + box.width / 2 + 40, box.y + box.height / 2 + 20);
   await expect(k.getByText("Position von Hand gesetzt.")).toBeVisible();
