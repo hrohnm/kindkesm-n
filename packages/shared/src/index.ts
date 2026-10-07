@@ -16,3 +16,4 @@ export * from "./rueckruf";
 export * from "./warnungen";
 export * from "./automatisierungen";
 export * from "./epds";
+export * from "./kalender";

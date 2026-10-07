@@ -62,6 +62,9 @@ export const benutzer = pgTable(
     wiederherstellung: jsonb("wiederherstellung").$type<string[]>().notNull().default([]),
     /** App-Sperre nach so vielen Minuten ohne Bedienung (0 = aus) */
     sperreMinuten: smallint("sperre_minuten").notNull().default(15),
+    /** M5: SHA-256 des Tokens für das private Kalender-Abo (ICS) und letzter Abruf */
+    kalenderToken: text("kalender_token"),
+    kalenderAbgerufen: timestamp("kalender_abgerufen", { withTimezone: true }),
     ...zeitstempel(),
   },
   (t) => [uniqueIndex("benutzer_email_idx").on(sql`lower(${t.email})`)],

@@ -28,6 +28,7 @@ import { sicherheitRouten } from "./routes/sicherheit";
 import { rufbereitschaftRouten } from "./routes/rufbereitschaft";
 import { textbausteinRouten } from "./routes/textbausteine";
 import { oeffentlicheSchnittstellen } from "./oeffentlich";
+import { kalenderRouten } from "./routes/kalender";
 
 const OEFFENTLICH = new Set(["/api/auth/anmelden", "/api/gesundheit", "/api/demo"]);
 
@@ -55,7 +56,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
       if (request.benutzer) request.sitzungId = tokenHash(token);
     }
     // Online-Kursanmeldung: ohne Konto (nur Kursdaten lesen bzw. eine Anmeldung abgeben)
-    if (!OEFFENTLICH.has(pfad) && !pfad.startsWith("/api/oeffentlich/") && !request.benutzer) {
+    if (!OEFFENTLICH.has(pfad) && !pfad.startsWith("/api/oeffentlich/") && !pfad.startsWith("/api/abo/") && !request.benutzer) {
       return reply.code(401).send({ fehler: "Bitte anmelden" });
     }
     // Zwei-Faktor-Pflicht: bis zur Einrichtung nur Anmeldung und Einrichtung erlaubt
@@ -97,6 +98,7 @@ export async function appBauen(db: Datenbank, opts: { logger?: boolean } = {}) {
   await sicherheitRouten(app, db);
   await rufbereitschaftRouten(app, db);
   await textbausteinRouten(app, db);
+  await kalenderRouten(app, db);
 
   // Gebautes Frontend ausliefern (Single-Page-App)
   if (config.webDist && existsSync(config.webDist)) {

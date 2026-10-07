@@ -5,7 +5,7 @@
  * bzw. Warteliste). Direktlink auf einen Kurs: /kurse?kurs=<id> öffnet gleich das Formular.
  * Ohne Verbindung oder ohne PUBLIC_APP_URL erscheint ein Hinweis mit Kontaktweg.
  */
-import { appUrl } from "../skripte/app-url";
+import { api, appUrl } from "../skripte/app-url";
 interface Props {
   /** höchstens so viele Kurse anzeigen */
   max?: number;
@@ -14,6 +14,9 @@ interface Props {
 }
 const { max, filter = false } = Astro.props;
 const app = appUrl();
+// Kalender-Abo der Kurstermine (ohne Personendaten): webcal:// öffnet direkt die Kalender-App
+const ics = app ? api(app, "/api/oeffentlich/kurse.ics") : "";
+const webcal = /^https?:\/\//.test(ics) ? ics.replace(/^https?:/, "webcal:") : "";
 const feld = "mt-1 block min-h-12 w-full rounded-2xl border border-salbei-200 bg-white px-4 py-3 text-base focus:border-salbei-500 focus:ring-2 focus:ring-salbei-200 focus:outline-none";
 const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
 ---
@@ -28,6 +31,13 @@ const etikett = "block text-[0.95rem] font-semibold text-salbei-800";
   <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Kurse filtern" data-kurs-filter hidden></div>
   <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-kurs-liste hidden></ul>
   {max && <p class="mt-4 text-sm" data-kurs-alle hidden><a href="/kurse#termine">Alle Kurse &amp; Termine ›</a></p>}
+  {!max && ics && (
+    <p class="mt-6 text-sm text-salbei-700" data-kurs-abo>
+      Kurstermine im eigenen Kalender:
+      {webcal && <><a href={webcal}>abonnieren</a> · </>}
+      <a href={ics} download="kindkesmoeoen-kurse.ics">als Datei laden</a>
+    </p>
+  )}
 
   {app && (
     <dialog class="m-auto w-[min(42rem,calc(100%-2rem))] rounded-[2rem] bg-sand-50 p-0 text-salbei-900 shadow-2xl backdrop:bg-salbei-900/50" aria-labelledby="kurs-dialog-titel" data-kurs-dialog>
